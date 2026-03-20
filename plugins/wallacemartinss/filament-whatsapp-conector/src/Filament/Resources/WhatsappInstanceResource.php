@@ -42,7 +42,7 @@ class WhatsappInstanceResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('WhatsApp');
+        return __('Settings');
     }
 
     public static function getNavigationLabel(): string

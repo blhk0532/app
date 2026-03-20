@@ -1,0 +1,104 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\App\Resources\Bookings\Tables;
+
+use Adultdate\FilamentBooking\Enums\BookingStatus;
+use Adultdate\FilamentBooking\Models\Booking\Booking;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Grouping\Group;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+
+class BookingsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->query(fn () => Booking::query()->with(['client', 'serviceUser'])->where('booking_user_id', Auth::id()))
+            ->extraAttributes(['class' => 'my-booking-table min-h-[400px]'])
+            ->columns([
+                TextColumn::make('number')
+                    ->label('Bokningsnummer')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('serviceUser.name')
+                    ->label('Tekniker')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('client.name')
+                    ->label('Kund')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('client.address')
+                    ->label('Adress')
+                    ->searchable()
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('client.phone')
+                    ->label('Telefon')
+                    ->searchable()
+                    ->toggleable()
+                    ->sortable(),
+
+                TextColumn::make('created_at')
+                    ->label('Bokningsdatum')
+                    ->date()
+                    ->toggleable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(static fn ($state) => $state instanceof BookingStatus
+                            ? $state->getColor()
+                            : (is_string($state) ? BookingStatus::tryFrom($state)?->getColor() ?? 'primary' : 'primary')
+                    )
+                    ->sortable(),
+
+            ])
+            ->filters([
+                TrashedFilter::make(),
+
+                Filter::make('created_at')
+                    ->label('Booking date')
+                    ->schema([
+                        // keep simple - use Filament datepickers if desired
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query;
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        return [];
+                    }),
+            ])
+            ->recordActions([
+                EditAction::make()
+                    ->slideOver()
+                    ->extraModalFooterActions([
+                        DeleteAction::make()
+                            ->record(fn ($record) => $record),
+                    ]),
+                DeleteAction::make(),
+            ])
+            ->groupedBulkActions([
+                DeleteBulkAction::make(),
+            ])
+            ->groups([
+                Group::make('created_at')
+                    ->label('Booking date')
+                    ->date()
+                    ->collapsible(),
+            ])
+            ->recordClasses(fn (Booking $record) => match (true) {
+                $record->status === BookingStatus::Complete => 'bg-success-50 dark:bg-success-950/50',
+                $record->status === BookingStatus::Cancelled => 'bg-danger-50 dark:bg-danger-950/50',
+                default => null,
+            });
+    }
+}

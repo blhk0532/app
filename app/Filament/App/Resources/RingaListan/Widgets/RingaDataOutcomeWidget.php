@@ -1,0 +1,135 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\App\Resources\RingaListan\Widgets;
+
+use App\Enums\Outcomes;
+use App\Models\RingaData;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Schema;
+use Filament\Widgets\Widget;
+
+class RingaDataOutcomeWidget extends Widget implements HasForms
+{
+    use InteractsWithForms;
+
+    public ?RingaData $record = null;
+
+    protected string $view = 'filament.app.resources.ringa-data.widgets.ringa-data-outcome-widget';
+
+    protected int|string|array $columnSpan = '1/2';
+
+    protected static ?string $heading = 'Call Outcomes';
+
+    protected $listeners = ['record-selected' => 'updateRecord'];
+
+    public function updateRecord(int $recordId): void
+    {
+        $this->record = RingaData::find($recordId);
+    }
+
+    public function selectOutcome(string $outcomeValue): void
+    {
+        if (! $this->record) {
+            Notification::make()
+                ->title('No record selected')
+                ->body('Please select a record first.')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        $outcome = Outcomes::tryFrom($outcomeValue);
+        if (! $outcome) {
+            Notification::make()
+                ->title('Invalid outcome')
+                ->body('The selected outcome is not valid.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $this->record->update([
+            'outcome' => $outcome->value,
+            'is_outcome' => true,
+            'attempts' => ($this->record->attempts ?? 0) + 1,
+        ]);
+
+        RingaDataOutcome::query()->create([
+            'ringa_data_id' => $this->record->id,
+            'user_id' => auth()->id(),
+            'coutcome' => $outcome->value,
+        ]);
+
+        $affectedRecords = $this->updateSameAddressRecords($outcome);
+
+        Notification::make()
+            ->title('Utfall registrerat')
+            ->body("➤ {$outcome->getLabel()}".($affectedRecords > 0 ? " ({$affectedRecords} andra med samma adress uppdaterade)" : ''))
+            ->icon($outcome->getIcon())
+            ->color($outcome->getColor())
+            ->send();
+
+        $this->record->refresh();
+    }
+
+    private function isFinalOutcome(Outcomes $outcome): bool
+    {
+        return in_array($outcome, [
+            Outcomes::DMC,
+            Outcomes::Klickad,
+            Outcomes::EjIntresserad,
+            Outcomes::Felnummer,
+            Outcomes::NyligenGjort,
+            Outcomes::Yes,
+            Outcomes::Offert,
+            Outcomes::Aterkommer,
+            Outcomes::RingTillbaka,
+        ], true);
+    }
+
+    private function updateSameAddressRecords(Outcomes $outcome): int
+    {
+        if (! $this->isFinalOutcome($outcome)) {
+            return 0;
+        }
+
+        $gatuadress = trim((string) $this->record->gatuadress);
+
+        if (empty($gatuadress)) {
+            return 0;
+        }
+
+        $teamId = $this->record->team_id;
+
+        return RingaData::query()
+            ->whereRaw('TRIM(gatuadress) = ?', [$gatuadress])
+            ->where('id', '!=', $this->record->id)
+            ->where(function ($q) use ($teamId) {
+                $q->where('team_id', $teamId)
+                    ->orWhereNull('team_id');
+            })
+            ->whereNull('outcome')
+            ->update([
+                'outcome' => $outcome->value,
+                'outcome_category' => 'CO',
+                'started_at' => now(),
+                'expires_at' => now()->addYear(),
+            ]);
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
+                // The form will be handled in the Blade view with action buttons
+            ])
+            ->statePath('data');
+    }
+}

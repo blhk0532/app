@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MWGuerra\WebTerminal\Models;
 
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -80,6 +81,11 @@ class TerminalLog extends Model
             related: config('auth.providers.users.model', 'App\\Models\\User'),
             foreignKey: config('web-terminal.logging.user_foreign_key', 'user_id'),
         );
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'tenant_id');
     }
 
     /**

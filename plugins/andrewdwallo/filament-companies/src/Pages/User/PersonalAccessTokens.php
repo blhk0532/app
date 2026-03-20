@@ -41,18 +41,20 @@ class PersonalAccessTokens extends Page implements HasTable
      */
     public bool $displayingToken = false;
 
+    protected static ?string $navigationLabel = 'Access Tokens';
+
     protected string $view = 'filament-companies::filament.pages.user.personal-access-tokens';
 
     protected static bool $shouldRegisterNavigation = false;
 
     public function getTitle(): string
     {
-        return __('filament-companies::default.pages.titles.tokens');
+        return ' ';
     }
 
     public static function getSlug(?\Filament\Panel $panel = null): string
     {
-        return 'personal-access-tokens';
+        return 'access-tokens';
     }
 
     protected function getTableQuery(): Builder
@@ -140,7 +142,6 @@ class PersonalAccessTokens extends Page implements HasTable
         return [
             Action::make('create')
                 ->label(__('filament-companies::default.buttons.create_token'))
-                ->modalWidth(FilamentCompanies::getModals()['width'])
                 ->action(function (array $data) use ($permissions) {
                     $name = $data['name'];
                     $abilities = array_values($data['abilities']);
@@ -203,7 +204,6 @@ class PersonalAccessTokens extends Page implements HasTable
             Action::make('edit')
                 ->label(__('filament-companies::default.buttons.edit'))
                 ->icon('heroicon-o-pencil')
-                ->modalWidth(FilamentCompanies::getModals()['width'])
                 ->mountUsing(static function ($form, $record) use ($permissions) {
                     $selected = array_intersect($permissions, $record->abilities);
 
@@ -261,7 +261,6 @@ class PersonalAccessTokens extends Page implements HasTable
                     $records->each(static fn ($record) => $record->delete());
                 })
                 ->requiresConfirmation()
-                ->modalWidth(FilamentCompanies::getModals()['width'])
                 ->modalHeading(__('filament-companies::default.modal_titles.revoke_tokens'))
                 ->modalDescription(__('filament-companies::default.modal_descriptions.revoke_tokens'))
                 ->modalSubmitActionLabel(__('filament-companies::default.buttons.revoke'))

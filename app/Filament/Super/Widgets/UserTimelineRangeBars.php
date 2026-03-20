@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\Super\Widgets;
+
+use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+
+class UserTimelineRangeBars extends ApexChartWidget
+{
+    /**
+     * Chart Id
+     */
+    protected static ?string $chartId = 'userTimelineRangeBars';
+
+    /**
+     * Widget Title
+     */
+    protected static ?string $heading = 'UserTimelineRangeBars';
+
+    /**
+     * Chart options (series, labels, types, size, animations...)
+     * https://apexcharts.com/docs/options
+     */
+    protected function getOptions(): array
+    {
+        return [
+            'chart' => [
+                'type' => 'rangeBar',
+                'height' => 300,
+            ],
+            'series' => [
+                [
+                    'data' => [
+                        ['x' => 'Code', 'y' => [1, 3]],
+                        ['x' => 'Test', 'y' => [3, 5]],
+                        ['x' => 'Validation', 'y' => [5, 8]],
+                        ['x' => 'Deployment', 'y' => [8, 12]],
+                    ],
+                ],
+            ],
+            'xaxis' => [
+                'labels' => [
+                    'style' => [
+                        'fontFamily' => 'inherit',
+                    ],
+                ],
+            ],
+            'yaxis' => [
+                'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                'labels' => [
+                    'style' => [
+                        'fontFamily' => 'inherit',
+                    ],
+
+                ],
+            ],
+            'colors' => ['#f59e0b'],
+            'plotOptions' => [
+                'bar' => [
+                    'borderRadius' => 3,
+                    'horizontal' => true,
+                ],
+            ],
+        ];
+    }
+}

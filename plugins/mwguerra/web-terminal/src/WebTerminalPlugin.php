@@ -70,7 +70,7 @@ class WebTerminalPlugin implements Plugin
 
     protected ?int $terminalLogsNavigationSort = null;
 
-    protected ?string $terminalLogsNavigationGroup = null;
+    protected ?string $terminalLogsNavigationGroup = 'System LOGS';
 
     // =========================================================================
     // Plugin Interface Methods
@@ -378,6 +378,6 @@ class WebTerminalPlugin implements Plugin
      */
     public function getTerminalLogsNavigationGroup(): ?string
     {
-        return $this->terminalLogsNavigationGroup ?? 'System';
+        return $this->terminalLogsNavigationGroup ?? 'System LOGS';
     }
 }

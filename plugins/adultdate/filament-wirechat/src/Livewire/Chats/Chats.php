@@ -11,8 +11,15 @@ use Adultdate\Wirechat\Livewire\Concerns\HasPanel;
 use Adultdate\Wirechat\Livewire\Concerns\Widget;
 use Exception;
 use Filament\Facades\Filament;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
@@ -23,7 +30,7 @@ use Livewire\Component;
  *
  * Handles chat conversations, search, and real-time updates.
  *
- * @property \Illuminate\Contracts\Auth\Authenticatable|null $auth
+ * @property Authenticatable|null $auth
  */
 class Chats extends Component
 {
@@ -40,7 +47,7 @@ class Chats extends Component
     /**
      * The list of conversations.
      *
-     * @var \Illuminate\Support\Collection|array
+     * @var Collection|array
      */
     public $conversations = [];
 
@@ -85,8 +92,8 @@ class Chats extends Component
      */
     public function getListeners()
     {
-        $user = $this->auth;
-        $encodedType = MorphClassResolver::encode($user?->getMorphClass());
+        $user = $this->resolveAuthUser();
+        $encodedType = MorphClassResolver::encode($user instanceof Model ? $user->getMorphClass() : null);
         $userId = $user?->getKey();
 
         $listeners = [
@@ -95,7 +102,7 @@ class Chats extends Component
         ];
 
         if ($this->panel() === null) {
-            \Illuminate\Support\Facades\Log::warning('Wirechat:No panels registered in Chat Component');
+            Log::warning('Wirechat:No panels registered in Chat Component');
         } else {
             $panelId = $this->panel()->getId();
             // Construct the channel name using the encoded type and user ID.
@@ -207,7 +214,13 @@ class Chats extends Component
      */
     public function hydrateConversations()
     {
-        $this->conversations->map(function ($conversation) {
+        $authUser = $this->resolveAuthUser();
+
+        if (! $authUser instanceof Model && ! $authUser instanceof Authenticatable) {
+            return;
+        }
+
+        $this->conversations->map(function ($conversation) use ($authUser) {
             // Only load participants manually if not a group
             if (! $conversation->isGroup()) {
                 $participants = $conversation->participants()->select('id', 'participantable_id', 'participantable_type', 'conversation_id', 'conversation_read_at')->with(['participantable', 'actions'])->get();
@@ -215,8 +228,8 @@ class Chats extends Component
                 $conversation->setRelation('participants', $participants);
 
                 // Set peer and auth participants
-                $conversation->auth_participant = $conversation->participant($this->auth);
-                $conversation->peer_participant = $conversation->peerParticipant(reference: $this->auth);
+                $conversation->auth_participant = $conversation->participant($authUser);
+                $conversation->peer_participant = $conversation->peerParticipant(reference: $authUser);
             }
 
             return $conversation->loadMissing([
@@ -229,12 +242,29 @@ class Chats extends Component
     /**
      * Returns the authenticated user.
      *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return Authenticatable|null
      */
-    #[Computed(persist: true)]
+    #[Computed]
     public function auth()
     {
-        return auth()->user();
+        return Auth::user();
+    }
+
+    private function resolveAuthUser(): Model|Authenticatable|null
+    {
+        $user = $this->auth;
+
+        if ($user instanceof Model || $user instanceof Authenticatable) {
+            return $user;
+        }
+
+        $freshUser = Auth::user();
+
+        if ($freshUser instanceof Model || $freshUser instanceof Authenticatable) {
+            return $freshUser;
+        }
+
+        return null;
     }
 
     /**
@@ -245,7 +275,7 @@ class Chats extends Component
     public function mount()
     {
 
-        abort_unless(auth()->check(), 401);
+        abort_unless(Auth::check(), 401);
         $conversation = request()->route('conversation');
         $this->selectedConversationId = $conversation ? $conversation->id : request()->conversation;
         $this->conversations = collect();
@@ -335,7 +365,7 @@ class Chats extends Component
     /**
      * Loads conversations and renders the view.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function render()
     {
@@ -354,10 +384,18 @@ class Chats extends Component
      */
     protected function loadConversations()
     {
+        $authUser = $this->resolveAuthUser();
+
+        if (! $authUser instanceof Model && ! $authUser instanceof Authenticatable) {
+            $this->canLoadMore = false;
+
+            return;
+        }
+
         $perPage = 10;
         $offset = ($this->page - 1) * $perPage;
 
-        $additionalConversations = $this->auth->conversations()
+        $additionalConversations = $authUser->conversations()
             ->with([
                 'lastMessage.participant.participantable',
                 'group.cover' => fn ($query) => $query->select('id', 'url', 'attachable_type', 'attachable_id', 'file_path'),
@@ -373,15 +411,15 @@ class Chats extends Component
             ->get();
 
         // Set participants manually where needed
-        $additionalConversations->each(function ($conversation) {
+        $additionalConversations->each(function ($conversation) use ($authUser) {
             if ($conversation->isPrivate() || $conversation->isSelf()) {
                 // Manually load participants (only 2 expected in private/self)
                 $participants = $conversation->participants()->select('id', 'participantable_id', 'participantable_type', 'conversation_id', 'conversation_read_at')->with('participantable')->get();
                 $conversation->setRelation('participants', $participants);
 
                 // Set peer and auth participants
-                $conversation->auth_participant = $conversation->participant($this->auth);
-                $conversation->peer_participant = $conversation->peerParticipant($this->auth);
+                $conversation->auth_participant = $conversation->participant($authUser);
+                $conversation->peer_participant = $conversation->peerParticipant($authUser);
             }
         });
 
@@ -397,9 +435,9 @@ class Chats extends Component
     /**
      * Applies search conditions to the conversations query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query  The query builder instance.
+     * @param  Builder  $query  The query builder instance.
      */
-    protected function applySearchConditions($query): \Illuminate\Database\Eloquent\Builder
+    protected function applySearchConditions($query): Builder
     {
         $searchableFields = $this->panel()->getSearchableAttributes();
         $groupSearchableFields = ['name', 'description'];
@@ -516,7 +554,7 @@ class Chats extends Component
 
         // If it's a route name (contains only alphanumeric, dots, underscores, or hyphens)
         // and route exists, use route() helper
-        if (preg_match('/^[a-zA-Z0-9._-]+$/', $route) && \Illuminate\Support\Facades\Route::has($route)) {
+        if (preg_match('/^[a-zA-Z0-9._-]+$/', $route) && Route::has($route)) {
             return route($route);
         }
 

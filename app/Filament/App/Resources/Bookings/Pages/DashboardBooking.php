@@ -1,0 +1,110 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\App\Resources\Bookings\Pages;
+
+use App\Filament\App\Resources\Bookings\Widgets\BookingCalendar;
+use App\Models\BookingCalendar as BookingCalendarModel;
+use BackedEnum;
+use Closure;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Str;
+use UnitEnum;
+
+class DashboardBooking extends BaseDashboard
+{
+    use HasFiltersForm;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDateRange;
+
+    protected static ?string $navigationLabel = 'Kalender';
+
+    protected static ?string $title = '';
+
+    protected static string|UnitEnum|null $navigationGroup = '';
+
+    protected static string $routePath = 'service/booking';
+
+    protected static ?string $slug = 'booking';
+
+    //   protected string $view = 'filament-booking::pages.page';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return true;
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return ''.Str::ucfirst('Kalender') ?? 'User';
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return 'x1';
+
+    }
+
+    public static function getNavigationIcon(): string
+    {
+        return 'heroicon-c-calendar-date-range';
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'gray';
+    }
+
+    public function getWidgets(): array
+    {
+        return [
+            BookingCalendar::class,
+        ];
+    }
+
+    public function getMaxContentWidth(): Width
+    {
+        return Width::Full;
+    }
+
+    public function filtersForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make()
+                    ->schema([
+                        Select::make('booking_calendars')
+                            ->options(fn () => BookingCalendarModel::pluck('name', 'id')->toArray())
+                            ->label('Tekninker')
+                            ->placeholder('Select a calendar owner')
+                            ->searchable()
+                            ->live()
+                            ->afterStateUpdated(function () {
+                                $this->dispatch('refreshCalendar');
+                            }),
+
+                        DatePicker::make('startDate')
+                            ->maxDate(fn (Get $get) => $get('endDate') ?: now()),
+                        DatePicker::make('endDate')
+                            ->minDate(fn (Get $get) => $get('startDate') ?: now())
+                            ->maxDate(now()),
+                    ])
+                    ->columns(3)
+                    ->columnSpanFull(),
+            ]);
+    }
+
+    public function getPermissionCheckClosure(): Closure
+    {
+        return fn (string $widgetClass) => true;
+    }
+}

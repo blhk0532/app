@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Joaopaulolndev\FilamentEditProfile;
 
-use Filament\Auth\Http\Responses\Contracts\EmailChangeVerificationResponse as EmailChangeVerificationResponseContract;
 use Joaopaulolndev\FilamentEditProfile\Commands\FilamentEditProfileCommand;
-use Joaopaulolndev\FilamentEditProfile\Http\Responses\EmailChangeVerificationResponse;
-use Joaopaulolndev\FilamentEditProfile\Testing\TestsFilamentEditProfile;
-use Livewire\Features\SupportTesting\Testable;
+use Joaopaulolndev\FilamentEditProfile\Livewire\BrowserSessionsForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\CustomFieldsForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\DeleteAccountForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\EditPasswordForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\EditProfileForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\MultiFactorAuthentication;
+use Joaopaulolndev\FilamentEditProfile\Livewire\SanctumTokens;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -67,30 +71,18 @@ class FilamentEditProfileServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void
+    private function registerLivewireComponents(): void
     {
-        $this->app->bind(EmailChangeVerificationResponseContract::class, EmailChangeVerificationResponse::class);
-    }
+        Livewire::component('edit_profile_form', EditProfileForm::class);
+        Livewire::component('edit_password_form', EditPasswordForm::class);
+        Livewire::component('delete_account_form', DeleteAccountForm::class);
+        Livewire::component('multi_factor_authentication', MultiFactorAuthentication::class);
+        Livewire::component('sanctum_tokens', SanctumTokens::class);
+        Livewire::component('browser_sessions_form', BrowserSessionsForm::class);
 
-    public function packageBooted(): void
-    {
-        // Handle Stubs
-        if (app()->runningInConsole()) {
-            $publishMigration = function ($migrationFileName, $publishTag) {
-                if (! $this->migrationFileExists($migrationFileName)) {
-                    $this->publishes([
-                        __DIR__."/../database/migrations/{$migrationFileName}.stub" => database_path('migrations/'.date('Y_m_d_His', time()).'_'.$migrationFileName),
-                    ], $publishTag);
-                }
-            };
-            $publishMigration('add_avatar_url_to_users_table.php', 'filament-edit-profile-avatar-migration');
-            $publishMigration('add_custom_fields_to_users_table.php', 'filament-edit-profile-custom-field-migration');
-            $publishMigration('add_locale_to_users_table.php', 'filament-edit-profile-locale-migration');
-            $publishMigration('add_theme_color_to_users_table.php', 'filament-edit-profile-theme-color-migration');
+        if (config('filament-edit-profile.show_custom_fields') && ! empty(config('filament-edit-profile.custom_fields'))) {
+            Livewire::component('custom_fields_form', CustomFieldsForm::class);
         }
-
-        // Testing
-        Testable::mixin(new TestsFilamentEditProfile);
     }
 
     protected function getAssetPackageName(): ?string

@@ -2,6 +2,10 @@
 
 namespace AlperenErsoy\FilamentExport;
 
+use Filament\Facades\Filament;
+use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\ServiceProvider;
 
 class FilamentExportServiceProvider extends ServiceProvider
@@ -26,14 +30,14 @@ class FilamentExportServiceProvider extends ServiceProvider
         ], 'views');
 
         if (class_exists('\Filament\Support\Facades\FilamentAsset')) {
-            \Filament\Support\Facades\FilamentAsset::register([
-                \Filament\Support\Assets\Js::make('filament-export-4', __DIR__.'/../resources/js/filament-export.js'),
-                \Filament\Support\Assets\Css::make('filament-export-4', __DIR__.'/../resources/css/filament-export.css'),
+            FilamentAsset::register([
+                Js::make('filament-export', __DIR__.'/../resources/js/filament-export.js'),
+                Css::make('filament-export', __DIR__.'/../resources/css/filament-export.css'),
             ]);
 
-            \Filament\Facades\Filament::serving(function () {
-                \Filament\Support\Facades\FilamentAsset::renderScripts(['filament-export-4']);
-                \Filament\Support\Facades\FilamentAsset::renderStyles(['filament-export-4']);
+            Filament::serving(function () {
+                FilamentAsset::renderScripts(['filament-export']);
+                FilamentAsset::renderStyles(['filament-export']);
             });
         }
     }

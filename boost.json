@@ -6,19 +6,34 @@
     "guidelines": true,
     "herd_mcp": false,
     "mcp": true,
-    "nightwatch_mcp": false,
+    "nightwatch_mcp": true,
     "packages": [
         "laravel/fortify",
-        "filament/filament"
+        "filament/filament",
+        "jeffersongoncalves/filament-refresh-sidebar",
+        "inerba/filament-db-config",
+        "livewire/blaze",
+        "spatie/laravel-permission",
+        "spatie/laravel-query-builder"
     ],
     "sail": false,
     "skills": [
         "folio-routing",
+        "configuring-horizon",
+        "passport-development",
+        "pulse-development",
+        "socialite-development",
+        "wayfinder-development",
         "fluxui-development",
         "livewire-development",
         "volt-development",
         "pest-testing",
         "tailwindcss-development",
-        "fortify-development"
+        "filament-db-config",
+        "filament-refresh-sidebar-development",
+        "fortify-development",
+        "blaze-optimize",
+        "laravel-permission-development",
+        "laravel-query-builder"
     ]
 }

@@ -5,7 +5,7 @@
 <x-filament-panels::page>
     {{ $this->table }}
 
-    <x-filament::modal id="displayingToken" icon="heroicon-o-key" icon-color="primary" alignment="{{ $modals['alignment'] }}" footer-actions-alignment="{{ $modals['formActionsAlignment'] }}" width="{{ $modals['width'] }}">
+    <x-filament::modal id="displayingToken" icon="heroicon-o-key" icon-color="primary" alignment="{{ $modals['alignment'] ?? 'center' }}" footer-actions-alignment="{{ $modals['formActionsAlignment'] ?? 'center' }}" width="{{ $modals['width'] ?? '2xl' }}">
         <x-slot name="heading">
             {{ __('filament-companies::default.modal_titles.token') }}
         </x-slot>
@@ -22,7 +22,7 @@
             />
         </x-filament::input.wrapper>
 
-        @if($modals['cancelButtonAction'])
+        @if($modals['cancelButtonAction'] ?? false)
             <x-slot name="footerActions">
                 <x-filament::button color="gray" wire:click="cancelDisplayingToken">
                     {{ __('filament-companies::default.buttons.close') }}

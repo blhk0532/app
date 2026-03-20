@@ -1,0 +1,25 @@
+<?php
+
+namespace NoteBrainsLab\FilamentEmailTemplates;
+
+use NoteBrainsLab\FilamentEmailTemplates\Commands\FilamentEmailTemplatesCommand;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
+
+class FilamentEmailTemplatesServiceProvider extends PackageServiceProvider
+{
+    public function configurePackage(Package $package): void
+    {
+        /*
+         * This class is a Package Service Provider
+         *
+         * More info: https://github.com/spatie/laravel-package-tools
+         */
+        $package
+            ->name('notebrainslab-filament-email-templates')
+            ->hasConfigFile('filament-email-templates')
+            ->hasViews('filament-email-templates')
+            ->hasMigration('create_filament_email_templates_table')
+            ->hasCommand(FilamentEmailTemplatesCommand::class);
+    }
+}

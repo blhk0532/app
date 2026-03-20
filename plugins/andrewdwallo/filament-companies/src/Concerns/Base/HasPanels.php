@@ -57,4 +57,12 @@ trait HasPanels
 
         return static::$companyPanel;
     }
+
+    /**
+     * Determine if the company panel is set.
+     */
+    public static function hasCompanyPanel(): bool
+    {
+        return isset(static::$companyPanel);
+    }
 }

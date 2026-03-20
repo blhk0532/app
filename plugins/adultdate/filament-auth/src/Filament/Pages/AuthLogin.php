@@ -140,7 +140,11 @@ class AuthLogin extends Login
     public function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->label('Username')->required()->autofocus(),
+            TextInput::make('login')
+                ->label('Email or Username')
+                ->required()
+                ->autofocus()
+                ->autocomplete('username'),
             $this->getPasswordFormComponent(),
             $this->getRememberFormComponent(),
         ]);
@@ -254,7 +258,7 @@ class AuthLogin extends Login
     protected function throwFailureValidationException(): never
     {
         throw ValidationException::withMessages([
-            'data.email' => __('filament-panels::auth/pages/login.messages.failed'),
+            'data.login' => __('filament-panels::auth/pages/login.messages.failed'),
         ]);
     }
 
@@ -337,8 +341,18 @@ class AuthLogin extends Login
      */
     protected function getCredentialsFromFormData(#[SensitiveParameter] array $data): array
     {
-        return filter_var($data, FILTER_VALIDATE_EMAIL)
-        ? ['email' => $data, 'password' => $data['password']]
-        : ['name' => $data, 'password' => $data['password']];
+        $login = (string) ($data['login'] ?? '');
+
+        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            return [
+                'email' => $login,
+                'password' => $data['password'],
+            ];
+        }
+
+        return [
+            'name' => $login,
+            'password' => $data['password'],
+        ];
     }
 }

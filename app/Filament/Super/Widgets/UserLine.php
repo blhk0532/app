@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\Super\Widgets;
+
+use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+
+class UserLine extends ApexChartWidget
+{
+    /**
+     * Chart Id
+     */
+    protected static ?string $chartId = 'userLine';
+
+    /**
+     * Widget Title
+     */
+    protected static ?string $heading = 'UserLine';
+
+    /**
+     * Chart options (series, labels, types, size, animations...)
+     * https://apexcharts.com/docs/options
+     */
+    protected function getOptions(): array
+    {
+        return [
+            'chart' => [
+                'type' => 'line',
+                'height' => 300,
+            ],
+            'series' => [
+                [
+                    'name' => 'UserLine',
+                    'data' => [2, 4, 6, 10, 14, 7, 2, 9, 10, 15, 13, 18],
+                ],
+            ],
+            'xaxis' => [
+                'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                'labels' => [
+                    'style' => [
+                        'fontFamily' => 'inherit',
+                    ],
+                ],
+            ],
+            'yaxis' => [
+                'labels' => [
+                    'style' => [
+                        'fontFamily' => 'inherit',
+                    ],
+                ],
+            ],
+            'colors' => ['#f59e0b'],
+            'stroke' => [
+                'curve' => 'smooth',
+            ],
+        ];
+    }
+}

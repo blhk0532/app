@@ -95,14 +95,14 @@ class PanelSwitch extends Component
         if (auth()->user()?->role === 'super' || auth()->user()?->role === 'admin' || auth()->user()?->role === 'booking') {
 
             FilamentView::registerRenderHook(
-                name: PanelsRenderHook::TOPBAR_LOGO_AFTER,
+                name: PanelsRenderHook::GLOBAL_SEARCH_AFTER,
                 hook: function () use ($static) {
 
                     if (! $static->isVisible()) {
                         return '';
                     }
 
-                    return view('filament-panel-switch::panel-switch-menu', [
+                    return view('filament.admin.panel-switch-menu', [
                         'currentPanel' => $static->getCurrentPanel(),
                         'heading' => $static->getModalHeading(),
                         'icons' => $static->getIcons(),
@@ -125,7 +125,7 @@ class PanelSwitch extends Component
                         return '';
                     }
 
-                    return view('filament-panel-switch::panel-switch-menu', [
+                    return view('filament.admin.panel-switch-menu', [
                         'currentPanel' => $static->getCurrentPanel(),
                         'heading' => $static->getModalHeading(),
                         'icons' => $static->getIcons(),
