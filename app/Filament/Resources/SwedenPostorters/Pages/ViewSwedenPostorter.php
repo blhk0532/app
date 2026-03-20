@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SwedenPostorters\Pages;
 use App\Filament\Resources\SwedenPostorters\SwedenPostorterResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use App\Filament\Widgets\PostortViewMapWidget;
 
 class ViewSwedenPostorter extends ViewRecord
 {
@@ -14,6 +15,13 @@ class ViewSwedenPostorter extends ViewRecord
     {
         return [
             EditAction::make(),
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            PostortViewMapWidget::class,
         ];
     }
 }

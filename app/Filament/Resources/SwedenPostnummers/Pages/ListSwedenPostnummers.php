@@ -21,7 +21,6 @@ class ListSwedenPostnummers extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-
             MapPickerWidget::class,           // Table with map
         ];
     }

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Observers\TeamObserver;
 use App\Policies\TeamPolicy;
+use Carbon\CarbonImmutable;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasCurrentTenantLabel;
 use Filament\Models\Contracts\HasName;
@@ -16,8 +17,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Kirschbaum\Commentions\Contracts\Commentable;
-use Kirschbaum\Commentions\HasComments;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -27,14 +28,14 @@ use Kirschbaum\Commentions\HasComments;
  * @property string $name
  * @property string|null $slug
  * @property bool $personal_team
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property string|null $avatar
- * @property-read \App\Models\User|null $owner
- * @property-read Collection<int, \App\Models\TeamInvitation> $teamInvitations
+ * @property-read User|null $owner
+ * @property-read Collection<int, TeamInvitation> $teamInvitations
  * @property-read int|null $team_invitations_count
- * @property-read \App\Models\Membership|null $membership
- * @property-read Collection<int, \App\Models\User> $users
+ * @property-read Membership|null $membership
+ * @property-read Collection<int, User> $users
  * @property-read int|null $users_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Team newModelQuery()
@@ -55,10 +56,8 @@ use Kirschbaum\Commentions\HasComments;
  */
 #[ObservedBy(TeamObserver::class)]
 #[UsePolicy(TeamPolicy::class)]
-class Team extends Model implements Commentable, HasAvatar, HasCurrentTenantLabel, HasName
+class Team extends Model implements HasAvatar, HasCurrentTenantLabel, HasName
 {
-    use HasComments;
-
     protected $fillable = [
         'user_id',
         'name',
@@ -113,8 +112,8 @@ class Team extends Model implements Commentable, HasAvatar, HasCurrentTenantLabe
 
     public function getFilamentAvatarUrl(): ?string
     {
-        if ($this->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->avatar)) {
-            return \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar);
+        if ($this->avatar && Storage::disk('public')->exists($this->avatar)) {
+            return Storage::disk('public')->url($this->avatar);
         }
 
         return null;
@@ -136,7 +135,7 @@ class Team extends Model implements Commentable, HasAvatar, HasCurrentTenantLabe
 
         self::creating(function ($model) {
             if (empty($model->ulid)) {
-                $model->ulid = (string) \Illuminate\Support\Str::ulid();
+                $model->ulid = (string) Str::ulid();
             }
         });
     }

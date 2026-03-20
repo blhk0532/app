@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SwedenPostnummers;
 use App\Filament\Resources\SwedenPostnummers\Pages\CreateSwedenPostnummer;
 use App\Filament\Resources\SwedenPostnummers\Pages\EditSwedenPostnummer;
 use App\Filament\Resources\SwedenPostnummers\Pages\ListSwedenPostnummers;
+use App\Filament\Resources\SwedenPostnummers\Pages\PageSwedenPostnummers;
 use App\Filament\Resources\SwedenPostnummers\Pages\ViewSwedenPostnummer;
 use App\Filament\Resources\SwedenPostnummers\Schemas\SwedenPostnummerForm;
 use App\Filament\Resources\SwedenPostnummers\Schemas\SwedenPostnummerInfolist;
@@ -23,11 +24,11 @@ class SwedenPostnummerResource extends Resource
 
     protected static ?string $navigationLabel = 'Postnummer';
 
-     protected static string|UnitEnum|null $navigationGroup = 'Sweden GEO';
+    protected static string|UnitEnum|null $navigationGroup = 'Sweden GEO';
 
     protected static ?string $model = SwedenPostnummer::class;
 
-protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
     public static function form(Schema $schema): Schema
     {
@@ -58,6 +59,7 @@ protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapP
             'create' => CreateSwedenPostnummer::route('/create'),
             'view' => ViewSwedenPostnummer::route('/{record}'),
             'edit' => EditSwedenPostnummer::route('/{record}/edit'),
+            'page' => PageSwedenPostnummers::route('/page'),
         ];
     }
 
