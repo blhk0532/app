@@ -13,8 +13,10 @@
     ],
     "sail": false,
     "skills": [
+        "folio-routing",
         "fluxui-development",
         "livewire-development",
+        "volt-development",
         "pest-testing",
         "tailwindcss-development",
         "fortify-development"

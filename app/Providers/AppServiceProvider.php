@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Andreia\FilamentUiSwitcher\FilamentUiSwitcherServiceProvider;
 use Carbon\CarbonImmutable;
+use Cheesegrits\FilamentGoogleMaps\FilamentGoogleMapsServiceProvider;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -15,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->register(FilamentGoogleMapsServiceProvider::class);
+        $this->app->register(FilamentUiSwitcherServiceProvider::class);
     }
 
     /**

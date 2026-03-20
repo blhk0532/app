@@ -7,12 +7,29 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "adultdate/filament-wirechat": "@dev",
+        "andreia/filament-ui-switcher": "*",
+        "caresome/filament-auth-designer": "@dev",
+        "eduardoribeirodev/filament-leaflet": "@dev",
         "filament/filament": "^5.0",
+        "kirschbaum-development/commentions": "@dev",
+        "laravel/folio": "@dev",
         "laravel/fortify": "^1.34",
         "laravel/framework": "^13.0",
+        "laravel/nightwatch": "@dev",
+        "laravel/octane": "@dev",
+        "laravel/sanctum": "@dev",
         "laravel/tinker": "^3.0",
+        "laraveljutsu/zap": "@dev",
+        "leek/filament-dicebear": "@dev",
+        "livewire/blaze": "@dev",
         "livewire/flux": "^2.12.0",
-        "livewire/livewire": "^4.1"
+        "livewire/livewire": "^4.1",
+        "livewire/volt": "@dev",
+        "spatie/laravel-activitylog": "@dev",
+        "spatie/laravel-google-calendar": "@dev",
+        "spatie/laravel-model-states": "@dev",
+        "spatie/laravel-permission": "@dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
@@ -25,11 +42,442 @@
         "pestphp/pest": "^4.4",
         "pestphp/pest-plugin-laravel": "^4.1"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "plugins/crumbls/layup",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/mwguerra/web-terminal",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/andrewdwallo/filament-companies",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/alperenersoy/filament-export",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/aymanalhattami/filament-page-with-sidebar",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/andreia/filament-ui-switcher",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/tomatophp/filament-icons",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/tomatophp/filament-types",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/tomatophp/filament-translation-component",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/devonab/filament-easy-footer",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/joaopaulolndev/filament-world-clock",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/daacreators/creators-ticketing",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/jeffersongoncalves/filament-whatsapp-widget",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/alizharb/filament-activity-log",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/bezhansalleh/filament-exceptions",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/bytexr/filament-queueable-bulk-actions",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/binarybuilds/filament-cache-manager",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/cmsmaxinc/filament-error-pages",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/binarybuilds/filament-command-runner",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/binarybuilds/filament-failed-jobs",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/mwguerra/filemanager",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/pxlrbt/filament-excel",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/pxlrbt/filament-spotlight",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/relaticle/flowforge",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/leandrocfe/filament-apex-charts",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/bezhansalleh/filament-plugin-essentials",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/caresome/filament-auth-designer",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/dashed/filament-numpad-field",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/fahiem/filament-pinpoint",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/jeffersongoncalves/filament-logo",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/joaopaulolndev/filament-edit-profile",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/openplain/filament-shadcn-theme",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/shreejan/dash-arrange",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/spatie/laravel-google-calendar",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/wallacemartinss/filament-icon-picker",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/wallacemartinss/filament-whatsapp-conector",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/ysfkaya/filament-phone-input",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/adultdate/filament-auth",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/adultdate/filament-dialer",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/adultdate/filament-wirechat",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/adultdate/filament-tab-plugin",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/caresome/filament-auth-designer",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/bezhansalleh/filament-panel-switch",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/adultdate/filament-booking",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/jeffgreco13/filament-breezy",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/awcodes/overlook",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/aymanalhattami/filament-context-menu",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/devtical/filament-sanctum",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/eightynine/filament-excel-import",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/hydrat/filament-table-layout-toggle",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/marjose123/filament-lockscreen",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/mokhosh/filament-rating",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/muazzam/slick-scrollbar",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/webbingbrasil/filament-copyactions",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/joaopaulolndev/filament-edit-env",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/joaopaulolndev/filament-general-settings",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/joaopaulolndev/filament-pdf-viewer",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/guava/filament-icon-select-column",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/jeffersongoncalves/filament-ace-editor-field",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/anish/text-input-entry",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/zap",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "autoload": {
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Cheesegrits\\FilamentGoogleMaps\\": "plugins/cheesegrits/filament-google-maps/src/",
+            "Andreia\\FilamentUiSwitcher\\": "plugins/andreia/filament-ui-switcher/src/"
         }
     },
     "autoload-dev": {
@@ -100,6 +548,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
