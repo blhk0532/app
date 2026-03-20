@@ -2,7 +2,7 @@
     @php
         $statePath = $getStatePath();
     @endphp
-    
+
     <div
         x-ignore
         x-load
@@ -59,7 +59,7 @@
         wire:ignore
     >
         @if ($isSearchBoxControlEnabled())
-            <input x-ref="pacinput" type="text" placeholder="Search Box" />
+            <input x-ref="pacinput" type="text" placeholder="" />
         @endif
 
         <div

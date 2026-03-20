@@ -6,14 +6,18 @@
 @endphp
 
 <x-filament-widgets::widget>
+
+
+
     <x-filament::section
-            class="filament-google-maps-widget"
+                class="filament-google-maps-widget"
             :icon="$icon"
-            :collapsible="$collapsible"
+        id="filament-google-maps-widget-on-table"
+            x-on:filament-google-maps::widget/setMapCenter.window="isCollapsed = false; $el.classList.remove('fi-collapsed'); $el.classList.remove('is-collapsed')"
+             collapsible
+                collapsed
     >
-        <x-slot name="heading">
-            {{ $heading }}
-        </x-slot>
+
 
         @if ($filters)
             <x-slot name="headerEnd">
@@ -36,7 +40,7 @@
             </x-slot>
         @endif
 
-        <div>
+
             <div
                     wire:key="{{ rand() }}"
                     x-ignore
@@ -47,7 +51,7 @@
                         cachedData: {{  json_encode($this->getCachedData()) }},
                         config: {{ $this->getMapConfig()}},
                         mapEl: $refs.map,
-    {{--                    mapFilterIds: {{ $this->mapIsFilter() ? 'wire:@entangle("mapFilterIds")' : null}}--}}
+                     {{--        mapFilterIds: {{ $this->mapIsFilter() ? 'wire:@entangle("mapFilterIds")' : null}}--}}
                     })"
                     wire:ignore
                     @if ($maxHeight = $this->getMaxHeight())
@@ -68,10 +72,12 @@
                     "
                 ></div>
             </div>
-        </div>
+
     </x-filament::section>
 
-    <x-filament::section class="filament-google-maps-widget-table mt-2">
-        {{ $this->table }}
-    </x-filament::section>
+
+  <x-filament::section class="filament-google-maps-widget-table mt-6 p-0">
+  {{ $this->table }}
+</x-filament::section>
+
 </x-filament-widgets::widget>

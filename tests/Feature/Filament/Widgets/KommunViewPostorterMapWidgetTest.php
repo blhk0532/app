@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Filament\Widgets\KommunViewMapWidget;
+use App\Filament\Widgets\KommunViewPostorterMapWidget;
 use App\Models\RatsitPostort;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('it shows current kommun pin and related postorter pins', function () {
+test('it shows all postort pins for current kommun', function () {
     RatsitPostort::query()->create([
         'post_ort' => 'Gävle',
         'post_nummer' => '801 00',
@@ -45,7 +45,7 @@ test('it shows current kommun pin and related postorter pins', function () {
         'lng' => 17.6389,
     ]);
 
-    $widget = new class extends KommunViewMapWidget
+    $widget = new class extends KommunViewPostorterMapWidget
     {
         public function exposedMarkers(): array
         {
@@ -64,11 +64,9 @@ test('it shows current kommun pin and related postorter pins', function () {
 
     $markers = collect($widget->exposedMarkers())->map(fn ($marker) => $marker->toArray());
 
-    expect($markers)->toHaveCount(3)
-        ->and($markers->pluck('title')->all())->toContain('Kommun: Gävle')
-        ->toContain('801 00 - Gävle')
+    expect($markers)->toHaveCount(2)
+        ->and($markers->pluck('title')->all())->toContain('801 00 - Gävle')
         ->toContain('818 30 - Valbo')
-        ->not()->toContain('750 00 - Uppsala');
-
-    expect($widget->exposedMapCenter())->toBe([60.6749, 17.1413]);
+        ->not()->toContain('750 00 - Uppsala')
+        ->and($widget->exposedMapCenter())->toBe([60.6749, 17.1413]);
 });

@@ -42,10 +42,11 @@ class LocationMapPickerWidget extends Widget implements HasForms
     public function form(Schema $schema): Schema
     {
         return $schema
+        ->extraAttributes(['class' => 'pb-0 mb-0'])
             ->schema([
                 Grid::make()
-                    ->schema([
 
+                    ->schema([
                         Map::make(' ')
                             ->mapControls([
                                 'mapTypeControl' => true,
@@ -111,7 +112,6 @@ class LocationMapPickerWidget extends Widget implements HasForms
                     //        ->readOnly(),
                         TextInput::make('country')
                             ->label('...')
-                            ->hidden()
                             ->maxLength(255)
                             ->columnSpan(1)
                             ->readOnly(),
@@ -122,7 +122,7 @@ class LocationMapPickerWidget extends Widget implements HasForms
                             ->maxLength(255)
                             ->columnSpanFull(),
                     ])
-                    ->columns(3),
+                    ->columns(2),
 
             ])
             ->statePath('data');

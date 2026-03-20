@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SwedenKommuners\Pages;
 
 use App\Filament\Resources\SwedenKommuners\SwedenKommunerResource;
 use App\Filament\Widgets\KommunViewMapWidget;
+use App\Filament\Widgets\KommunViewPostorterMapWidget;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -20,10 +21,11 @@ class ViewSwedenKommuner extends ViewRecord
         ];
     }
 
-    protected function getFooterWidgets(): array
+    protected function getHeaderWidgets(): array
     {
         return [
             KommunViewMapWidget::class,
+            KommunViewPostorterMapWidget::class,
         ];
     }
 
@@ -35,6 +37,7 @@ class ViewSwedenKommuner extends ViewRecord
             'kommunName' => (string) ($record->kommun ?? ''),
             'kommunLatitude' => $record->latitude,
             'kommunLongitude' => $record->longitude,
+            'kommunPersoner' => $record->personer,
         ];
     }
 }

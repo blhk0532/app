@@ -29,6 +29,8 @@ class SwedenPostorterResource extends Resource
 
      protected static string|UnitEnum|null $navigationGroup = 'Sweden GEO';
 
+     protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Schema $schema): Schema
     {
         return SwedenPostorterForm::configure($schema);

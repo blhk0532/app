@@ -13,10 +13,10 @@
         wire:ignore
     >
         @if ($isSearchBoxControlEnabled())
-            <input x-ref="pacinput" type="text" placeholder="Search Box" />
+            <input x-ref="pacinput" type="text" placeholder="" />
         @endif
 
-        <div 
+        <div
             id="map-{{ $getMapId() }}"
             x-ref="map"
             class="w-full"

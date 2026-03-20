@@ -14,13 +14,15 @@ class KommunerMapWidget extends MapWidget
 {
     protected static ?int $sort = 1;
 
-    protected ?string $heading = 'Sweden Kommuner Map';
+    protected ?string $heading = ' ';
 
     protected array $mapCenter = [62.5333, 16.6667];
 
     protected int $defaultZoom = 5;
 
-    protected int $mapHeight = 660;
+    protected int $mapHeight = 655;
+
+
 
     public function getHeading(): ?string
     {

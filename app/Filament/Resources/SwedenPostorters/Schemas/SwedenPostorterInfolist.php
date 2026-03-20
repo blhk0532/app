@@ -4,6 +4,8 @@ namespace App\Filament\Resources\SwedenPostorters\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 
 class SwedenPostorterInfolist
 {
@@ -11,27 +13,24 @@ class SwedenPostorterInfolist
     {
         return $schema
             ->components([
+                Group::make()
+                    ->schema([
+                        Section::make('Kommun Information')
+                            ->schema([
                 TextEntry::make('post_ort'),
                 TextEntry::make('kommun')
                     ->placeholder('-'),
                 TextEntry::make('lan')
                     ->placeholder('-'),
-                TextEntry::make('latitude')
-                    ->placeholder('-'),
-                TextEntry::make('longitude')
-                    ->placeholder('-'),
                 TextEntry::make('personer')
                     ->numeric()
                     ->placeholder('-'),
-                TextEntry::make('foretag')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
+                            ])
+                            ->columnSpan('full')
+                            ->columns(4),
+                    ])
+                    ->columnSpan('full'),
             ]);
     }
 }
+

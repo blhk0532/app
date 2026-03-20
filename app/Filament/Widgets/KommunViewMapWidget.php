@@ -8,6 +8,7 @@ use App\Models\RatsitPostort;
 use EduardoRibeiroDev\FilamentLeaflet\Support\Markers\Marker;
 use EduardoRibeiroDev\FilamentLeaflet\Widgets\MapWidget;
 use Filament\Support\Colors\Color;
+use Illuminate\Database\Eloquent\Builder;
 
 class KommunViewMapWidget extends MapWidget
 {
@@ -15,19 +16,19 @@ class KommunViewMapWidget extends MapWidget
 
     protected ?string $heading = 'Sweden Kommuner Map';
 
-    protected array $mapCenter = [62.5333, 16.6667];
-
-    protected int $defaultZoom = 6;
+    protected int $defaultZoom = 7;
 
     protected int $mapHeight = 660;
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = '1/2';
 
     public ?string $kommunName = null;
 
     public int|float|string|null $kommunLatitude = null;
 
     public int|float|string|null $kommunLongitude = null;
+
+    public int|float|string|null $kommunPersoner = null;
 
     public function getHeading(): ?string
     {
@@ -49,6 +50,26 @@ class KommunViewMapWidget extends MapWidget
         ]));
     }
 
+    protected function getMapCenter(): array
+    {
+        $latitude = $this->parseCoordinate($this->kommunLatitude);
+        $longitude = $this->parseCoordinate($this->kommunLongitude);
+
+        if ($latitude !== null && $longitude !== null) {
+            return [$latitude, $longitude];
+        }
+
+        $firstPostort = $this->getRelatedPostorterQuery()
+            ->select('lat', 'lng')
+            ->first();
+
+        if ($firstPostort !== null) {
+            return [(float) $firstPostort->lat, (float) $firstPostort->lng];
+        }
+
+        return parent::getMapCenter();
+    }
+
     protected function getCurrentKommunMarker(): ?Marker
     {
         $latitude = $this->parseCoordinate($this->kommunLatitude);
@@ -64,29 +85,14 @@ class KommunViewMapWidget extends MapWidget
 
         return Marker::make($latitude, $longitude)
             ->title("Kommun: {$kommunName}")
+            ->tooltipContent('Personer: '.number_format((int) ($this->kommunPersoner ?? 0)))
             ->popupContent("{$kommunName}")
             ->color(Color::Red);
     }
 
     protected function getPostorterMarkersForCurrentKommun(): array
     {
-        $kommunName = trim((string) $this->kommunName);
-
-        if ($kommunName === '') {
-            return [];
-        }
-
-        $normalizedKommun = mb_strtolower($kommunName);
-        $like = '%'.$normalizedKommun.'%';
-
-        $postorter = RatsitPostort::query()
-            ->whereNotNull('lat')
-            ->whereNotNull('lng')
-            ->where(function ($query) use ($like): void {
-                $query->whereRaw('LOWER(kommun) LIKE ?', [$like])
-                    ->orWhereRaw('LOWER(personer_kommun) LIKE ?', [$like])
-                    ->orWhereRaw('LOWER(foretag_kommun) LIKE ?', [$like]);
-            })
+        $postorter = $this->getRelatedPostorterQuery()
             ->selectRaw('post_nummer, post_ort, lat, lng, SUM(personer_count) as personer_count, SUM(foretag_count) as foretag_count')
             ->groupBy('post_nummer', 'post_ort', 'lat', 'lng')
             ->get();
@@ -96,11 +102,49 @@ class KommunViewMapWidget extends MapWidget
         foreach ($postorter as $postort) {
             $markers[] = Marker::make((float) $postort->lat, (float) $postort->lng)
                 ->title($postort->post_nummer.' - '.$postort->post_ort)
+                ->tooltipContent('Personer: '.number_format((int) $postort->personer_count))
                 ->popupContent($postort->post_nummer.' '.$postort->post_ort.'<br>Personer: '.number_format((int) $postort->personer_count).'<br>Företag: '.number_format((int) $postort->foretag_count))
                 ->color(Color::Blue);
         }
 
         return $markers;
+    }
+
+    protected function getRelatedPostorterQuery(): Builder
+    {
+        $searchTerms = $this->getKommunSearchTerms();
+
+        return RatsitPostort::query()
+            ->whereNotNull('lat')
+            ->whereNotNull('lng')
+            ->when($searchTerms !== [], function ($query) use ($searchTerms): void {
+                $query->where(function ($query) use ($searchTerms): void {
+                    foreach ($searchTerms as $term) {
+                        $like = '%'.$term.'%';
+
+                        $query->orWhereRaw('LOWER(kommun) LIKE ?', [$like])
+                            ->orWhereRaw('LOWER(personer_kommun) LIKE ?', [$like])
+                            ->orWhereRaw('LOWER(foretag_kommun) LIKE ?', [$like]);
+                    }
+                });
+            });
+    }
+
+    protected function getKommunSearchTerms(): array
+    {
+        $normalizedKommun = mb_strtolower(trim((string) $this->kommunName));
+
+        if ($normalizedKommun === '') {
+            return [];
+        }
+
+        $baseKommun = preg_replace('/\s+kommun$/u', '', $normalizedKommun) ?? $normalizedKommun;
+        $baseKommun = trim($baseKommun);
+
+        return array_values(array_unique(array_filter([
+            $normalizedKommun,
+            $baseKommun,
+        ])));
     }
 
     protected function parseCoordinate(int|float|string|null $value): ?float

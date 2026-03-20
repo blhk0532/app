@@ -71,7 +71,7 @@
         </div>
     </x-filament::section>
 
-    <x-filament::section class="filament-google-maps-widget-table mt-2">
+    <x-filament::section class="filament-google-maps-widget-table mt-4">
         {{ $this->table }}
     </x-filament::section>
 </x-filament-widgets::widget>

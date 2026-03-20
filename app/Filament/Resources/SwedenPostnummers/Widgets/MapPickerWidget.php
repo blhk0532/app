@@ -42,6 +42,8 @@ class MapPickerWidget extends MapTableWidget
 
     protected static ?int $sort = 2;
 
+
+
     public function table(Table $table): Table
     {
         return $table->toolbarActions($this->getToolbarActions());
@@ -67,39 +69,40 @@ class MapPickerWidget extends MapTableWidget
             TextColumn::make('post_nummer')
                 ->label('Postnr')
                 ->sortable()
+                ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
             TextColumn::make('post_ort')
                 ->sortable()
+                ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
             TextColumn::make('kommun')
                 ->sortable()
+                ->toggleable(isToggledHiddenByDefault: false)
                 ->label('Kommun')
                 ->searchable(),
             TextColumn::make('lan')
                 ->sortable()
-                ->label('Län')
+                ->label('Landskap')
+                ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
             TextColumn::make('country')
                 ->hidden()
                 ->label('Land')
+                ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
-            TextColumn::make('latitude')
-                ->numeric()
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->sortable(),
-            TextColumn::make('longitude')
-                ->numeric()
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->sortable(),
             TextColumn::make('personer')
                 ->numeric()
+                ->toggleable(isToggledHiddenByDefault: false)
+                ->label('Pers')
                 ->sortable(),
             TextColumn::make('foretag')
                 ->numeric()
+                ->hidden()
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->sortable(),
             TextColumn::make('personer_saved')
                 ->label('Saved')
+                ->hidden()
                 ->dateTime()
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->sortable(),
@@ -110,24 +113,40 @@ class MapPickerWidget extends MapTableWidget
                 ->sortable(),
             TextColumn::make('personer_hitta_saved')
                 ->label('Hitta')
+                ->placeholder('-')
+                ->default('-')
                 ->numeric()
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->sortable(),
             TextColumn::make('personer_merinfo_saved')
                 ->label('Merinfo')
+                ->placeholder('-')
+                ->default('-')
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->sortable(),
             ToggleColumn::make('personer_merinfo_queue')
                 ->label('Queue')
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->sortable(),
+            TextColumn::make('latitude')
+                ->numeric()
+                ->hidden()
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->sortable(),
+            TextColumn::make('longitude')
+                ->numeric()
+                ->hidden()
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->sortable(),
             TextColumn::make('created_at')
                 ->dateTime()
                 ->sortable()
+                ->hidden()
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('updated_at')
                 ->dateTime()
                 ->sortable()
+                ->hidden()
                 ->toggleable(isToggledHiddenByDefault: true),
         ];
     }
@@ -139,6 +158,26 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Has Personer')
                 ->default(true)
                 ->query(fn (Builder $query) => $query->where('personer', '>', 0)),
+                    SelectFilter::make('post_nummer')
+                ->label('Postnr')
+                ->searchable()
+                ->multiple()
+                ->options(fn (): array => SwedenPostnummer::query()
+                    ->whereNotNull('post_nummer')
+                    ->where('post_nummer', '<>', '')
+                    ->orderBy('post_nummer')
+                    ->pluck('post_nummer', 'post_nummer')
+                    ->all()),
+                            SelectFilter::make('post_ort')
+                ->label('Postort')
+                ->searchable()
+                ->multiple()
+                ->options(fn (): array => SwedenPostnummer::query()
+                    ->whereNotNull('post_ort')
+                    ->where('post_ort', '<>', '')
+                    ->orderBy('post_ort')
+                    ->pluck('post_ort', 'post_ort')
+                    ->all()),
             SelectFilter::make('kommun')
                 ->label('Kommun')
                 ->searchable()
@@ -148,16 +187,6 @@ class MapPickerWidget extends MapTableWidget
                     ->where('kommun', '<>', '')
                     ->orderBy('kommun')
                     ->pluck('kommun', 'kommun')
-                    ->all()),
-            SelectFilter::make('post_ort')
-                ->label('Postort')
-                ->searchable()
-                ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
-                    ->whereNotNull('post_ort')
-                    ->where('post_ort', '<>', '')
-                    ->orderBy('post_ort')
-                    ->pluck('post_ort', 'post_ort')
                     ->all()),
             SelectFilter::make('lan')
                 ->label('Län')
@@ -225,7 +254,7 @@ class MapPickerWidget extends MapTableWidget
                         ->body("Queued batch {$batch->id} for {$postNummer}.")
                         ->send();
                 }),
-            ViewAction::make(),
+          //  ViewAction::make(),
             EditAction::make(),
             GoToAction::make()
                 ->label('Map')
