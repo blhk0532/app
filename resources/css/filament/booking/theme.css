@@ -1,4 +1,5 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../_vendor-sources.css';
 
 
 @source '../../../../app/Filament/**/*';
@@ -9,20 +10,16 @@
 @source '../../../../vendor/wallacemartinss/filament-whatsapp-conector/src/**/*';
 
 @import '../../../../vendor/adultdate/filament-wirechat/resources/css/filament-wirechat.css';
-@source '../../../../vendor/adultdate/filament-wirechat/resources/**/*.blade.php';
 
 @import '../../../../plugins/adultdate/filament-booking/resources/css/calendar.css';
 @import '../../../../plugins/adultdate/filament-booking/resources/css/filament-fullcalendar.css';
 @import '../../../../plugins/adultdate/filament-booking/resources/css/theme.css';
 @source '../../../../plugins/adultdate/filament-booking/resources/views/**/*.blade.php';
 
-@source '../../../../vendor/wallacemartinss/filament-icon-picker/resources/views/**/*';
 
 @import '../../../../vendor/bezhansalleh/filament-panel-switch/resources/css/panel-switch.css';
 
-@source '../../../../vendor/bezhansalleh/filament-panel-switch/resources/views/**/*.blade.php';
 
-@source '../../../../vendor/wallacemartinss/filament-icon-picker/resources/views/**/*';
 @source '../../../../vendor/awcodes/overlook/resources/**/*.blade.php';
 
 ::-webkit-scrollbar {

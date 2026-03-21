@@ -1,4 +1,5 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../_vendor-sources.css';
 
 @source '../../../../app/Filament/App/**/*';
 @source '../../../../resources/views/components/**/*';
@@ -13,11 +14,8 @@
 @source '../../../../plugins/adultdate/filament-booking/resources/views/**/*.blade.php';
 
 @import '../../../../vendor/adultdate/filament-wirechat/resources/css/filament-wirechat.css';
-@source '../../../../vendor/adultdate/filament-wirechat/resources/**/*.blade.php';
 
-@source '../../../../vendor/wallacemartinss/filament-icon-picker/resources/views/**/*';
 @import '../../../../vendor/bezhansalleh/filament-panel-switch/resources/css/panel-switch.css';
-@source '../../../../vendor/bezhansalleh/filament-panel-switch/resources/views/**/*.blade.php';
 
 @source '../../../../vendor/cmsmaxinc/filament-error-pages/resources/**/*.blade.php';
 
@@ -27,7 +25,6 @@
 @import '../../../../vendor/alperenersoy/filament-export/resources/css/filament-export.css';
 
 @source '../../../../vendor/andrewdwallo/filament-companies/resources/views';
-@source '../../../../vendor/harvirsidhu/filament-cards/resources/views';
 @source "../../../../vendor/relaticle/flowforge/resources/views/**/*.blade.php";
 ::-webkit-scrollbar {
     width: .56vw !important;

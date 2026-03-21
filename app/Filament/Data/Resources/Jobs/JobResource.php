@@ -25,9 +25,9 @@ class JobResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
 
-    protected static ?string $navigationLabel = 'Jobs Queue 🔥';
+    protected static ?string $navigationLabel = 'Jobs Queue';
 
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
     protected static ?string $modelLabel = 'Job';
 

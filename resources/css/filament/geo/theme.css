@@ -1,4 +1,9 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../_vendor-sources.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+
+.filament-google-maps-widget-table .fi-section-content{
+    padding: 0px!important;
+}

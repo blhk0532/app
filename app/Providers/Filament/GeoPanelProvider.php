@@ -55,7 +55,6 @@ class GeoPanelProvider extends PanelProvider
             ->brandLogo(fn () => view('filament.app.logo'))
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogoHeight('34px')
-            ->viteTheme('resources/css/filament/admin/theme.css')
             ->brandName('Noridic Digital')
             ->defaultThemeMode(ThemeMode::Dark)
             ->revealablePasswords(true)

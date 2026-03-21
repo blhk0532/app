@@ -4,6 +4,7 @@ namespace App\Actions\FilamentCompanies;
 
 use App\Models\Company;
 use App\Models\User;
+use Illuminate\Foundation\Auth\User as AuthenticatableUser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -17,7 +18,7 @@ class CreateNewUser implements CreatesNewUsers
      *
      * @param  array<string, string>  $input
      */
-    public function create(array $input): User
+    public function create(array $input): AuthenticatableUser
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],

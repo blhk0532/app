@@ -153,7 +153,7 @@ class SwedenPostnummersTable
                         ])
                             ->name("SwedenPostnummer {$postNummer} data scripts")
                             ->onConnection(config('queue.default'))
-                            ->onQueue('sweden-postnummer-data')
+                            ->onQueue('ratsit-hitta')
                             ->allowFailures()
                             ->dispatch();
 
@@ -218,7 +218,7 @@ class SwedenPostnummersTable
                                     ->count();
 
                                 $merinfoCount = MerinfoData::query()
-                                    ->where('postnummer', $normalizedPostNummer)
+                                    ->where('postnummer', $postNummer)
                                     ->count();
 
                                 $ratsitCount = RatsitData::query()
@@ -266,7 +266,7 @@ class SwedenPostnummersTable
                                 ])
                                     ->name("SwedenPostnummer {$postNummer} data scripts")
                                     ->onConnection(config('queue.default'))
-                                    ->onQueue('sweden-postnummer-data')
+                                    ->onQueue('ratsit-hitta')
                                     ->allowFailures()
                                     ->dispatch();
 

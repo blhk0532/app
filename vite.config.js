@@ -8,6 +8,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
+                'resources/js/app.tsx',
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/css/filament/admin/theme.css',
@@ -22,6 +23,7 @@ export default defineConfig({
                 'resources/css/filament/tools/theme.css',
                 'resources/css/filament/email/theme.css',
                 'resources/css/filament/super/theme.css',
+                'resources/css/filament/geo/theme.css',
                 ],
             refresh: true,
         }),
@@ -33,4 +35,14 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
+    build: {
+        rollupOptions: {
+            // Tailwind CSS legitimately dominates build time across 14 CSS entries;
+            // disable the Rolldown plugin-timings threshold warning.
+            checks: {
+                pluginTimings: false,
+            },
+        },
+    },
+    envPrefix: ["VITE_", "APP_", "DB_"],
 });

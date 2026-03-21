@@ -58,6 +58,8 @@ class Merinfo extends Model
     /** @use HasFactory<MerinfoFactory> */
     use HasFactory;
 
+    protected $table = 'merinfos';
+
     protected $fillable = [
         'type',
         'title',
@@ -74,6 +76,7 @@ class Merinfo extends Model
         'phone_number',
         'url',
         'same_address_url',
+        'zip_code',
     ];
 
     protected function casts(): array
@@ -85,6 +88,7 @@ class Merinfo extends Model
             'has_company_engagement' => 'boolean',
             'number_plus_count' => 'integer',
             'phone_number' => 'array',
+            'zip_code' => 'string',
         ];
     }
 }

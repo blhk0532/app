@@ -215,7 +215,7 @@ class MapPickerWidget extends MapTableWidget
                     ])
                         ->name("SwedenPostnummer {$postNummer} data scripts")
                         ->onConnection(config('queue.default'))
-                        ->onQueue('sweden-postnummer-data')
+                        ->onQueue('ratsit-hitta')
                         ->allowFailures()
                         ->dispatch();
 
@@ -297,7 +297,7 @@ class MapPickerWidget extends MapTableWidget
                                 ->count();
 
                             $merinfoCount = MerinfoData::query()
-                                ->where('postnummer', $normalizedPostNummer)
+                                ->where('postnummer', $postNummer)
                                 ->count();
 
                             $ratsitCount = RatsitData::query()
@@ -345,7 +345,7 @@ class MapPickerWidget extends MapTableWidget
                             ])
                                 ->name("SwedenPostnummer {$postNummer} data scripts")
                                 ->onConnection(config('queue.default'))
-                                ->onQueue('sweden-postnummer-data')
+                                ->onQueue('ratsit-hitta')
                                 ->allowFailures()
                                 ->dispatch();
 

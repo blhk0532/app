@@ -2,9 +2,6 @@
 
     <style>
 
-div.fi-page-header-main-ctn{
-    padding: 0rem!important;
-}
 
 /*
 

@@ -25,8 +25,8 @@ class CustomDashboard extends BaseDashboard
         return false;
     }
 
-    public static function getUrl(array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null): string
+    public static function getUrl(array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null, bool $shouldGuessMissingParameters = false, ?string $configuration = null): string
     {
-        return AdminDashboard::getUrl($parameters, $isAbsolute, $panel, $tenant);
+        return AdminDashboard::getUrl($parameters, $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
     }
 }

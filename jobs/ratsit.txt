@@ -1,0 +1,5 @@
+please help me inprove my ratsitSearchPersonsQueue.mjs - add cookies from ratsit_cookie.json file and then make sure that "Personnummer" is saved correctly with complete data
+
+here is example target HTML and in this example the data to save is 19690415-9073
+
+<p class="mt-0"><span class="color--gray5">Personnummer:</span><span class="color--gray5">Personnummer:</span> 19690415-9073</p>

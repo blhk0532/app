@@ -10,7 +10,8 @@ class GeneralSettingsPage extends BaseGeneralSettingsPage
     {
         parent::mount();
 
-        // Initialize site_description if not set
         $this->data['site_description'] = $this->data['site_description'] ?? '';
+        $this->data['google_analytics_id'] = $this->data['google_analytics_id'] ?? '';
+        $this->data['posthog_html_snippet'] = $this->data['posthog_html_snippet'] ?? '';
     }
 }

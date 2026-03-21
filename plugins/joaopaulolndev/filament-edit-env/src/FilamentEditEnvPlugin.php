@@ -27,12 +27,11 @@ class FilamentEditEnvPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        //
+        Livewire::component('change-env-file', ChangeEnvFileComponent::class);
     }
 
     public function boot(Panel $panel): void
     {
-        Livewire::component('change-env-file', ChangeEnvFileComponent::class);
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::GLOBAL_SEARCH_BEFORE,

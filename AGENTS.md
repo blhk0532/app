@@ -12,6 +12,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - php - 8.4
 - filament/filament (FILAMENT) - v5
 - inertiajs/inertia-laravel (INERTIA_LARAVEL) - v2
+- laravel/ai (AI) - v0
 - laravel/folio (FOLIO) - v1
 - laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13

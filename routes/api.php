@@ -56,6 +56,7 @@ Route::post('/personer-data', [PersonerDataController::class, 'store']);
 Route::post('/personer-data/bulk', [PersonerDataController::class, 'bulk']);
 Route::post('/ratsit-data', [RatsitDataController::class, 'store']);
 Route::post('/ratsit-data/bulk', [RatsitDataController::class, 'bulk']);
+Route::get('/ratsit-data/bulk', [RatsitDataController::class, 'bulk']);
 
 Route::apiResource('data-private', DataPrivateController::class);
 Route::post('/data-private/bulk', [DataPrivateController::class, 'bulkStore']);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,8 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_hus
  * @property int|null $merinfo_personer_total
  * @property int|null $merinfo_foretag_total
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property int|null $merinfo_personer_count
  * @property int|null $merinfo_personer_queue
  * @property-read string $telefon_preview
@@ -108,6 +109,7 @@ class MerinfoData extends Model
         'is_telefon' => 'boolean',
         'is_ratsit' => 'boolean',
         'is_hus' => 'boolean',
+        'postnummer' => 'string',
         // telefon: no cast - accepts any data type (string, array, etc.)
         'telefonnummer' => 'string',
         'telefoner' => 'array',
@@ -116,8 +118,6 @@ class MerinfoData extends Model
         'merinfo_personer_saved' => 'integer',
         'merinfo_foretag_saved' => 'integer',
         'merinfo_personer_phone_total' => 'integer',
-        'merinfo_foretag_phone_total' => 'integer',
-        'merinfo_personer_phone_saved' => 'integer',
         'merinfo_foretag_phone_saved' => 'integer',
         'merinfo_personer_house_saved' => 'integer',
         'merinfo_foretag_house_saved' => 'integer',

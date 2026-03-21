@@ -4,22 +4,25 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\SwedenPostnummers\Widgets;
 
+use App\Filament\Resources\SwedenPostnummers\Actions\RunRatsitHittaAction;
+use App\Filament\Resources\SwedenPostnummers\Actions\RunRatsitHittaBulkAction;
 use App\Jobs\RunHittaDataScriptJob;
 use App\Jobs\RunMerinfoDataScriptJob;
 use App\Jobs\RunRatsitDataScriptJob;
+use App\Jobs\RunScriptForPostnummerJob;
 use App\Models\HittaData;
+use App\Models\HittaSe;
+use App\Models\Merinfo;
 use App\Models\MerinfoData;
 use App\Models\RatsitData;
 use App\Models\SwedenPostnummer;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
-use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
@@ -41,8 +44,6 @@ class MapPickerWidget extends MapTableWidget
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 2;
-
-
 
     public function table(Table $table): Table
     {
@@ -158,7 +159,7 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Has Personer')
                 ->default(true)
                 ->query(fn (Builder $query) => $query->where('personer', '>', 0)),
-                    SelectFilter::make('post_nummer')
+            SelectFilter::make('post_nummer')
                 ->label('Postnr')
                 ->searchable()
                 ->multiple()
@@ -168,7 +169,7 @@ class MapPickerWidget extends MapTableWidget
                     ->orderBy('post_nummer')
                     ->pluck('post_nummer', 'post_nummer')
                     ->all()),
-                            SelectFilter::make('post_ort')
+            SelectFilter::make('post_ort')
                 ->label('Postort')
                 ->searchable()
                 ->multiple()
@@ -225,36 +226,8 @@ class MapPickerWidget extends MapTableWidget
     protected function getTableActions(): array
     {
         return [
-            Action::make('run')
-                ->label('Run')
-                ->icon('heroicon-o-play')
-                ->color('success')
-                ->requiresConfirmation()
-                ->modalHeading('Queue data jobs')
-                ->modalDescription(fn (SwedenPostnummer $record): string => "This will queue hitta_data.mjs, merinfo_data.mjs, and ratsit_data.mjs jobs for postnummer {$record->post_nummer}.")
-                ->modalSubmitActionLabel('Queue Jobs')
-                ->action(function (SwedenPostnummer $record): void {
-                    $postNummer = $record->post_nummer;
-                    $normalizedPostNummer = str_replace(' ', '', $postNummer);
-
-                    $batch = Bus::batch([
-                        new RunHittaDataScriptJob($normalizedPostNummer),
-                        new RunMerinfoDataScriptJob($normalizedPostNummer),
-                        new RunRatsitDataScriptJob($postNummer),
-                    ])
-                        ->name("SwedenPostnummer {$postNummer} data scripts")
-                        ->onConnection(config('queue.default'))
-                        ->onQueue('sweden-postnummer-data')
-                        ->allowFailures()
-                        ->dispatch();
-
-                    Notification::make()
-                        ->success()
-                        ->title('Batch queued')
-                        ->body("Queued batch {$batch->id} for {$postNummer}.")
-                        ->send();
-                }),
-          //  ViewAction::make(),
+            RunRatsitHittaAction::make(),
+            //  ViewAction::make(),
             EditAction::make(),
             GoToAction::make()
                 ->label('Map')
@@ -276,6 +249,72 @@ class MapPickerWidget extends MapTableWidget
     {
         return [
             BulkActionGroup::make([
+                //    RunRatsitHittaBulkAction::make(),
+                BulkAction::make('runScript')
+                    ->label('Run Queue Script')
+                    ->icon('heroicon-o-command-line')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Run script from scripts folder')
+                    ->modalDescription('Select a script from /scripts and run it now.')
+                    ->schema([
+                        Select::make('script_name')
+                            ->label('Script')
+                            ->options(function (): array {
+                                $scriptPaths = glob(base_path('scripts/*')) ?: [];
+
+                                return collect($scriptPaths)
+                                    ->filter(fn (string $path): bool => is_file($path))
+                                    ->map(fn (string $path): string => basename($path))
+                                    ->sort()
+                                    ->values()
+                                    ->mapWithKeys(fn (string $name): array => [$name => $name])
+                                    ->all();
+                            })
+                            ->searchable()
+                            ->required(),
+                    ])
+                    ->action(function (Collection $records, array $data): void {
+                        try {
+                            $scriptName = trim((string) ($data['script_name'] ?? ''));
+
+                            if ($scriptName === '' || ! preg_match('/^[A-Za-z0-9._-]+$/', $scriptName)) {
+                                throw new \Exception('Invalid script name.');
+                            }
+
+                            $scriptPath = base_path("scripts/{$scriptName}");
+
+                            if (! is_file($scriptPath)) {
+                                throw new \Exception("Script not found: {$scriptName}");
+                            }
+
+                            $queued = 0;
+
+                            foreach ($records as $record) {
+                                dispatch(new RunScriptForPostnummerJob(
+                                    scriptName: $scriptName,
+                                    postNummer: (string) $record->post_nummer,
+                                ));
+
+                                $queued++;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Script jobs queued')
+                                ->body("Queued {$queued} job(s) for {$scriptName} on queue: script.")
+                                ->send();
+                        } catch (\Throwable $exception) {
+                            report($exception);
+
+                            Notification::make()
+                                ->danger()
+                                ->title('Script failed')
+                                ->body($exception->getMessage())
+                                ->send();
+                        }
+                    })
+                    ->deselectRecordsAfterCompletion(),
                 BulkAction::make('setAllQueueFlags')
                     ->label('Set All Queue = 1')
                     ->icon('heroicon-o-queue-list')
@@ -321,24 +360,32 @@ class MapPickerWidget extends MapTableWidget
                             $postNummer = (string) $record->post_nummer;
                             $normalizedPostNummer = $record->csv_id;
 
-                            $hittaCount = HittaData::query()
+                            $hittaDataCount = HittaData::query()
                                 ->where('postnummer', $postNummer)
                                 ->count();
 
-                            $merinfoCount = MerinfoData::query()
-                                ->where('postnummer', $normalizedPostNummer)
+                            $hittaSeCount = HittaSe::query()
+                                ->where('postnummer', $postNummer)
                                 ->count();
 
-                            $ratsitCount = RatsitData::query()
+                            $merinfoDataCount = MerinfoData::query()
+                                ->where('postnummer', $postNummer)
+                                ->count();
+
+                            $merinfoCount = Merinfo::query()
+                                ->whereLike('address', $postNummer)
+                                ->count();
+
+                            $ratsitDataCount = RatsitData::query()
                                 ->where('postnummer', $postNummer)
                                 ->count();
 
                             SwedenPostnummer::query()
                                 ->whereKey($record->getKey())
                                 ->update([
-                                    'personer_hitta_saved' => $hittaCount,
-                                    'personer_merinfo_saved' => $merinfoCount,
-                                    'personer_ratsit_saved' => $ratsitCount,
+                                    'personer_hitta_saved' => $hittaDataCount > $hittaSeCount ? $hittaDataCount : $hittaSeCount,
+                                    'personer_merinfo_saved' => $merinfoDataCount > $merinfoCount ? $merinfoDataCount : $merinfoCount,
+                                    'personer_ratsit_saved' => $ratsitDataCount > 0 ? $ratsitDataCount : 0,
                                 ]);
 
                             $updated++;
@@ -351,44 +398,40 @@ class MapPickerWidget extends MapTableWidget
                             ->send();
                     })
                     ->deselectRecordsAfterCompletion(),
-                BulkAction::make('runAllData')
-                    ->label('Run All Data Scripts')
-                    ->icon('heroicon-o-play')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->modalHeading('Run All Data Scripts')
-                    ->modalDescription('This will queue data collection jobs (Hitta, Merinfo, Ratsit) for all selected records.')
-                    ->modalSubmitActionLabel('Run All Scripts')
-                    ->action(function (Collection $records): void {
-                        $batchCount = 0;
-                        $totalJobs = 0;
-
-                        foreach ($records as $record) {
-                            $postNummer = (string) $record->post_nummer;
-                            $normalizedPostNummer = str_replace(' ', '', $postNummer);
-
-                            $batch = Bus::batch([
-                                new RunHittaDataScriptJob($normalizedPostNummer),
-                                new RunMerinfoDataScriptJob($normalizedPostNummer),
-                                new RunRatsitDataScriptJob($postNummer),
-                            ])
-                                ->name("SwedenPostnummer {$postNummer} data scripts")
-                                ->onConnection(config('queue.default'))
-                                ->onQueue('sweden-postnummer-data')
-                                ->allowFailures()
-                                ->dispatch();
-
-                            $batchCount++;
-                            $totalJobs += 3;
-                        }
-
-                        Notification::make()
-                            ->success()
-                            ->title('Batches Queued')
-                            ->body("Queued {$batchCount} batch(es) with {$totalJobs} total job(s) for data collection.")
-                            ->send();
-                    })
-                    ->deselectRecordsAfterCompletion(),
+                //    BulkAction::make('runAllData')
+                //        ->label('Run All Data Scripts')
+                //        ->icon('heroicon-o-play')
+                //        ->color('success')
+                //        ->requiresConfirmation()
+                //        ->modalHeading('Run All Data Scripts')
+                //        ->modalDescription('This will queue data collection jobs (Hitta, Merinfo, Ratsit) for all selected records.')
+                //        ->modalSubmitActionLabel('Run All Scripts')
+                //        ->action(function (Collection $records): void {
+                //            $batchCount = 0;
+                //            $totalJobs = 0;
+                //            foreach ($records as $record) {
+                //                $postNummer = (string) $record->post_nummer;
+                //                $normalizedPostNummer = str_replace(' ', '', $postNummer);
+                //                $batch = Bus::batch([
+                //                    new RunHittaDataScriptJob($normalizedPostNummer),
+                //                    new RunMerinfoDataScriptJob($normalizedPostNummer),
+                //                    new RunRatsitDataScriptJob($postNummer),
+                //                ])
+                //                    ->name("SwedenPostnummer {$postNummer} data scripts")
+                //                    ->onConnection(config('queue.default'))
+                //                    ->onQueue('ratsit-hitta')
+                //                    ->allowFailures()
+                //                    ->dispatch();
+                //                $batchCount++;
+                //                $totalJobs += 3;
+                //            }
+                //            Notification::make()
+                //                ->success()
+                //                ->title('Batches Queued')
+                //                ->body("Queued {$batchCount} batch(es) with {$totalJobs} total job(s) for data collection.")
+                //                ->send();
+                //        })
+                //        ->deselectRecordsAfterCompletion(),
                 //        DeleteBulkAction::make(),
             ]),
         ];

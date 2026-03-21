@@ -13,6 +13,7 @@ use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use Caresome\FilamentAuthDesigner\View\AuthDesignerRenderHook;
+use EslamRedaDiv\FilamentCopilot\FilamentCopilotPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -21,6 +22,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -30,11 +32,11 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+// use TallCms\Cms\TallCmsPlugin;
 use Joaopaulolndev\FilamentEditEnv\FilamentEditEnvPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
-// use TallCms\Cms\TallCmsPlugin;
+// use Lartisan\Architect\ArchitectPlugin;
 use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
-use Lartisan\Architect\ArchitectPlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
 
 class DevPanelProvider extends PanelProvider
@@ -117,9 +119,10 @@ class DevPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugins([
-                ArchitectPlugin::make(),
-            ])
+        //    ->plugins([
+        //        ArchitectPlugin::make()
+        //     ->renderHook(PanelsRenderHook::SIDEBAR_NAV_START)
+        //    ])
             ->plugins([
                 FilamentGeneralSettingsPlugin::make()
                     ->canAccess(fn () => Auth::user()->role === 'super')
@@ -134,6 +137,7 @@ class DevPanelProvider extends PanelProvider
                     ->showButton(fn () => Auth::user()->role === 'super')
                     ->setIcon('heroicon-o-cog'),
             ])
+            ->plugin(FilamentCopilotPlugin::make())
             ->plugins([
                 FilamentWirechatPlugin::make()
                     ->onlyPages([])

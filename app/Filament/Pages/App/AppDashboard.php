@@ -26,11 +26,8 @@ class AppDashboard extends BaseDashboard
         return false;
     }
 
-    public static function getUrl(array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null): string
+    public static function getUrl(array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null, bool $shouldGuessMissingParameters = false, ?string $configuration = null): string
     {
-        // Ensure URLs generated for this compatibility shim always point to the `app` panel,
-        // even when the current panel during boot is `admin`. This avoids route-not-found
-        // errors when other plugins (e.g. Spotlight) call `::getUrl()` without a panel.
-        return parent::getUrl($parameters, $isAbsolute, $panel ?? 'app', $tenant);
+        return parent::getUrl($parameters, $isAbsolute, $panel ?? 'app', $tenant, $shouldGuessMissingParameters, $configuration);
     }
 }
