@@ -5,6 +5,7 @@ use App\Providers\AppServiceProvider;
 use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\AppPanelProvider;
 use App\Providers\Filament\BookingPanelProvider;
+use App\Providers\Filament\CachetPanelProvider;
 use App\Providers\Filament\CalendarPanelProvider;
 use App\Providers\Filament\ChatPanelProvider;
 use App\Providers\Filament\DataPanelProvider;
@@ -15,9 +16,12 @@ use App\Providers\Filament\NotifyPanelProvider;
 use App\Providers\Filament\QueuePanelProvider;
 use App\Providers\Filament\ToolsPanelProvider;
 use App\Providers\FortifyServiceProvider;
+use Cachet\CachetCoreServiceProvider;
 
 return [
     AppServiceProvider::class,
+    CachetCoreServiceProvider::class,
+    CachetPanelProvider::class,
     AdminPanelProvider::class,
     AppPanelProvider::class,
     BookingPanelProvider::class,

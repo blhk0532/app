@@ -292,11 +292,11 @@ class RatsitScraper {
       // Determine is_telefon: true if has phone numbers
       const hasTelefon = (Array.isArray(ratsitData.ps_telefon) && ratsitData.ps_telefon.length > 0) ||
         (Array.isArray(ratsitData.telefonnummer) && ratsitData.telefonnummer.length > 0);
-      
+
       // Determine is_hus: false if address indicates apartment
       const isHusFalsePattern = /lgh|1 tr|2 tr|3 tr|4 tr|5 tr|6 tr| nb| bv|\bBox\b|\b([1-9][0-9]?|100)\s*[A-Z]\b/i;
       const isHus = !(ratsitData.bo_gatuadress && isHusFalsePattern.test(ratsitData.bo_gatuadress));
-      
+
       const apiData = {
         gatuadress: ratsitData.bo_gatuadress || null,
         postnummer: ratsitData.bo_postnummer || null,
@@ -592,12 +592,12 @@ class RatsitScraper {
       // Determine is_telefon: true if has phone numbers from either source
       const hasTelefon = (Array.isArray(ratsitData.ps_telefon) && ratsitData.ps_telefon.length > 0) ||
         (Array.isArray(hittaData.telefon) && hittaData.telefon.length > 0);
-      
+
       // Determine is_hus: false if address indicates apartment
       const isHusFalsePattern = /lgh|1 tr|2 tr|3 tr|4 tr|5 tr|6 tr| nb| bv|\bBox\b|\b([1-9][0-9]?|100)\s*[A-Z]\b/i;
       const gatuadress = ratsitData.bo_gatuadress || hittaData.gatuadress || null;
       const isHus = !(gatuadress && isHusFalsePattern.test(gatuadress));
-      
+
       const apiData = {
         // Address fields (prefer Ratsit)
         gatuadress: gatuadress,
@@ -721,11 +721,11 @@ class RatsitScraper {
       // Determine is_telefon: true if has phone numbers
       const hasTelefon = (Array.isArray(ratsitData.ps_telefon) && ratsitData.ps_telefon.length > 0) ||
         (Array.isArray(ratsitData.telefonnummer) && ratsitData.telefonnummer.length > 0);
-      
+
       // Determine is_hus: false if address indicates apartment
       const isHusFalsePattern = /lgh|1 tr|2 tr|3 tr|4 tr|5 tr|6 tr| nb| bv|\bBox\b|\b([1-9][0-9]?|100)\s*[A-Z]\b/i;
       const isHus = !(ratsitData.bo_gatuadress && isHusFalsePattern.test(ratsitData.bo_gatuadress));
-      
+
       const updateData = {
         gatuadress: ratsitData.bo_gatuadress || null,
         postnummer: ratsitData.bo_postnummer || null,

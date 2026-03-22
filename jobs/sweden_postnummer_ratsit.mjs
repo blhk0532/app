@@ -18,6 +18,63 @@ function normalizePostnummer(value) {
 	return String(value || '').replace(/\D/g, '');
 }
 
+function parseCliFilters(argv) {
+	const args = Array.isArray(argv) ? argv : [];
+	let postort = null;
+	let postnummer = null;
+	let kommun = null;
+	let lan = null;
+
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+
+		if (arg.startsWith('--postort=')) {
+			postort = arg.slice('--postort='.length).trim() || null;
+			continue;
+		}
+
+		if (arg === '--postort' && args[i + 1]) {
+			postort = String(args[i + 1]).trim() || null;
+			i++;
+			continue;
+		}
+
+		if (arg.startsWith('--postnummer=')) {
+			postnummer = normalizePostnummer(arg.slice('--postnummer='.length)) || null;
+			continue;
+		}
+
+		if (arg === '--postnummer' && args[i + 1]) {
+			postnummer = normalizePostnummer(args[i + 1]) || null;
+			i++;
+			continue;
+		}
+
+		if (arg.startsWith('--kommun=')) {
+			kommun = arg.slice('--kommun='.length).trim() || null;
+			continue;
+		}
+
+		if (arg === '--kommun' && args[i + 1]) {
+			kommun = String(args[i + 1]).trim() || null;
+			i++;
+			continue;
+		}
+
+		if (arg.startsWith('--lan=')) {
+			lan = arg.slice('--lan='.length).trim() || null;
+			continue;
+		}
+
+		if (arg === '--lan' && args[i + 1]) {
+			lan = String(args[i + 1]).trim() || null;
+			i++;
+		}
+	}
+
+	return { postort, postnummer, kommun, lan };
+}
+
 async function scrapeRatsitGator(url, row, connection) {
 	console.log(`\nScraping: ${url} (${row.post_nummer} ${row.post_ort || ''})`);
 
@@ -203,16 +260,48 @@ async function scrapeRatsitGator(url, row, connection) {
 
 async function main() {
 	console.log('Starting Ratsit gator scrape from sweden_postnummer...\n');
+	const filters = parseCliFilters(process.argv.slice(2));
 
 	const connection = await createDbConnection();
 
 	try {
-		const [postnummerRows] = await connection.execute(
-			`SELECT id, post_nummer, post_ort, kommun, lan, ratsit_link
+		const whereClauses = [
+			`ratsit_link IS NOT NULL`,
+			`ratsit_link != ''`,
+			`is_done = 0`,
+		];
+		const queryParams = [];
+
+		if (filters.postort) {
+			whereClauses.push('post_ort = ?');
+			queryParams.push(filters.postort);
+		}
+
+		if (filters.postnummer) {
+			whereClauses.push('post_nummer = ?');
+			queryParams.push(filters.postnummer);
+		}
+
+		if (filters.kommun) {
+			whereClauses.push('kommun = ?');
+			queryParams.push(filters.kommun);
+		}
+
+		if (filters.lan) {
+			whereClauses.push('lan = ?');
+			queryParams.push(filters.lan);
+		}
+
+		const query = `SELECT id, post_nummer, post_ort, kommun, lan, ratsit_link
 			 FROM sweden_postnummer
-			 WHERE ratsit_link IS NOT NULL AND ratsit_link != '' AND is_done = 0
-			 ORDER BY id`,
-		);
+			 WHERE ${whereClauses.join(' AND ')}
+			 ORDER BY id`;
+
+		const [postnummerRows] = await connection.execute(query, queryParams);
+
+		if (filters.postort || filters.postnummer || filters.kommun || filters.lan) {
+			console.log(`Applied filters: postort=${filters.postort || '-'} postnummer=${filters.postnummer || '-'} kommun=${filters.kommun || '-'} lan=${filters.lan || '-'}`);
+		}
 
 		console.log(`Found ${postnummerRows.length} postnummer rows to process.\n`);
 

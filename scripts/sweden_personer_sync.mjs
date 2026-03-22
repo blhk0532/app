@@ -14,6 +14,7 @@ let dbPool = null;
 const APARTMENT_PATTERN = /lgh|1 tr|2 tr|3 tr|4 tr|5 tr|6 tr| nb| bv|\bBox\b|\b([1-9][0-9]?|100)\s*[A-Z]\b/i;
 const OWNER_PATTERN = /(tomträtt|äganderätt)/i;
 const APARTMENT_TYPE_PATTERN = /lägenhet/i;
+const ADD_PHONE_PLACEHOLDER = 'Lägg till telefonnummer';
 
 function loadEnvFile() {
   if (envLoaded) {
@@ -148,11 +149,11 @@ function normalizePhoneList(value) {
   if (Array.isArray(value)) {
     return value
       .map((item) => cleanString(typeof item === 'object' && item !== null ? item.text : item))
-      .filter(Boolean);
+      .filter((item) => item && item !== ADD_PHONE_PLACEHOLDER);
   }
 
   const text = cleanString(value);
-  return text ? [text] : [];
+  return text && text !== ADD_PHONE_PLACEHOLDER ? [text] : [];
 }
 
 function firstPhone(value) {
@@ -279,8 +280,8 @@ function buildRatsitPayload(ratsitData) {
     ratsit_data: toJsonString(ratsitData),
     is_hus: computeRatsitIsHus(ratsitData),
     is_active: true,
-    is_queue: false,
-    is_done: true,
+    is_queue: true,
+    is_done: false,
   };
 }
 

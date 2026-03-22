@@ -27,7 +27,7 @@ import { execSync } from "child_process";
 import { closeSwedenPersonPool, syncSwedenPersonsFromHittaBatch } from "./sweden_personer_sync.mjs";
 
 // --- API Configuration ---
-const API_BASE = process.env.API_BASE || process.env.APP_URL;
+const API_BASE = process.env.API_BASE || process.env.APP_URL || "http://localhost:8000";
 const BATCH_ENDPOINT = `${API_BASE.replace(/\/$/, "")}/api/hitta-se/batch`;
 const HITTA_DATA_BATCH_ENDPOINT = `${API_BASE.replace(/\/$/, "")}/api/hitta-data/bulk`;
 const RATSIT_DATA_BATCH_ENDPOINT = `${API_BASE.replace(/\/$/, "")}/api/ratsit-data/bulk`;
@@ -35,6 +35,7 @@ const RATSIT_DATA_BATCH_ENDPOINT = `${API_BASE.replace(/\/$/, "")}/api/ratsit-da
 // --- Helper Functions ---
 
 function mapPersonToApiPayload(person) {
+  const placeholderPhone = "Lägg till telefonnummer";
   const payload = {
     personnamn: person.personnamn || null,
     alder: person.alder || null,
@@ -58,9 +59,9 @@ function mapPersonToApiPayload(person) {
     payload.is_hus = false;
   }
 
-  if (person.telefon && person.telefon !== "Lägg till telefonnummer") {
+  if (person.telefon) {
     const clean = String(person.telefon).trim();
-    if (clean) {
+    if (clean && clean !== placeholderPhone) {
       payload.telefon = [clean];
       payload.is_telefon = true;
     } else {
@@ -174,6 +175,7 @@ async function savePersonsViaApi(persons) {
           const personPayload = mapPersonToApiPayload(p);
           return personPayload.is_hus === true && personPayload.is_telefon === true;
         });
+
 
         if (filteredBatch.length === 0) {
           console.log(`   ⏭️  No eligible records for ratsit_data (need is_hus=true and is_telefon=true)`);

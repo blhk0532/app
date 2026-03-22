@@ -254,36 +254,36 @@ class RatsitScraper {
      */
     try {
       const apiData = {
-        gatuadress: ratsitData.bo_gatuadress || null,
-        postnummer: ratsitData.bo_postnummer || null,
-        postort: ratsitData.bo_postort || null,
-        forsamling: ratsitData.bo_forsamling || null,
-        kommun: ratsitData.bo_kommun || null,
+        gatuadress: ratsitData.gatuadress || null,
+        postnummer: ratsitData.postnummer || null,
+        postort: ratsitData.postort || null,
+        forsamling: ratsitData.forsamling || null,
+        kommun: ratsitData.kommun || null,
         kommun_ratsit: ratsitData.kommun_ratsit || null,
-        lan: ratsitData.bo_lan || null,
+        lan: ratsitData.lan || null,
         adressandring: ratsitData.adressandring || null,
         telfonnummer: Array.isArray(ratsitData.telefonnummer) ? ratsitData.telefonnummer.join(' | ') : null,
         stjarntacken: ratsitData.stjarntacken || null,
-        fodelsedag: ratsitData.ps_fodelsedag || null,
-        personnummer: ratsitData.ps_personnummer || null,
-        alder: ratsitData.ps_alder || null,
-        kon: ratsitData.ps_kon || null,
-        civilstand: ratsitData.ps_civilstand || null,
-        fornamn: ratsitData.ps_fornamn || null,
-        efternamn: ratsitData.ps_efternamn || null,
-        personnamn: ratsitData.ps_personnamn || null,
-        telefon: ratsitData.ps_telefon || null,
-        agandeform: ratsitData.bo_agandeform || null,
-        bostadstyp: ratsitData.bo_bostadstyp || null,
-        boarea: ratsitData.bo_boarea || null,
-        byggar: ratsitData.bo_byggar || null,
-        personer: Array.isArray(ratsitData.bo_personer) ? ratsitData.bo_personer : null,
-        foretag: Array.isArray(ratsitData.bo_foretag) ? ratsitData.bo_foretag : null,
-        grannar: Array.isArray(ratsitData.bo_grannar) ? ratsitData.bo_grannar : null,
-        fordon: Array.isArray(ratsitData.bo_fordon) ? ratsitData.bo_fordon : null,
-        hundar: Array.isArray(ratsitData.bo_hundar) ? ratsitData.bo_hundar : null,
-        bolagsengagemang: Array.isArray(ratsitData.ps_bolagsengagemang) ? ratsitData.ps_bolagsengagemang : null,
-        longitude: ratsitData.bo_longitude || null,
+        fodelsedag: ratsitData.fodelsedag || null,
+        personnummer: ratsitData.personnummer || null,
+        alder: ratsitData.alder || null,
+        kon: ratsitData.kon || null,
+        civilstand: ratsitData.civilstand || null,
+        fornamn: ratsitData.fornamn || null,
+        efternamn: ratsitData.efternamn || null,
+        personnamn: ratsitData.personnamn || null,
+        telefon: ratsitData.telefon || null,
+        agandeform: ratsitData.agandeform || null,
+        bostadstyp: ratsitData.bostadstyp || null,
+        boarea: ratsitData.boarea || null,
+        byggar: ratsitData.byggar || null,
+        personer: Array.isArray(ratsitData.personer) ? ratsitData.personer : null,
+        foretag: Array.isArray(ratsitData.foretag) ? ratsitData.foretag : null,
+        grannar: Array.isArray(ratsitData.grannar) ? ratsitData.grannar : null,
+        fordon: Array.isArray(ratsitData.fordon) ? ratsitData.fordon : null,
+        hundar: Array.isArray(ratsitData.hundar) ? ratsitData.hundar : null,
+        bolagsengagemang: Array.isArray(ratsitData.bolagsengagemang) ? ratsitData.bolagsengagemang : null,
+        longitude: ratsitData.longitude || null,
         latitud: ratsitData.latitud || null,
         google_maps: ratsitData.google_maps || null,
         google_streetview: ratsitData.google_streetview || null,
@@ -332,9 +332,9 @@ class RatsitScraper {
         try {
           await syncSwedenPersonFromRatsit(ratsitData);
         } catch (syncError) {
-          console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.ps_personnamn || 'unknown'}: ${syncError.message}`);
+          console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.personnamn || 'unknown'}: ${syncError.message}`);
         }
-        console.log(`  ✓ Saved Ratsit data for ${ratsitData.ps_personnamn || 'unknown'} via API`);
+        console.log(`  ✓ Saved Ratsit data for ${ratsitData.personnamn || 'unknown'} via API`);
         console.log(`  ✓ API Response:`, JSON.stringify(response.data, null, 2));
 
         // If bulk response reports failures (e.g., duplicate entry), attempt to resolve and update
@@ -345,7 +345,7 @@ class RatsitScraper {
             console.log(`  → Bulk API reported ${summary.failed} failed records; attempting duplicate resolution`);
             for (const err of errors) {
               const errMsg = err.error || '';
-              const errPersonnummer = err.personnummer || ratsitData.ps_personnummer || null;
+              const errPersonnummer = err.personnummer || ratsitData.personnummer || null;
               // Only handle duplicate-entry style errors here
               if (typeof errMsg === 'string' && errMsg.toLowerCase().includes('duplicate')) {
                 console.log(`  → Duplicate error for index ${err.index} (${errPersonnummer || 'unknown'})`);
@@ -366,14 +366,14 @@ class RatsitScraper {
                 }
 
                 // Fallback: try name+address
-                if (!existingId && (ratsitData.ps_personnamn || ratsitData.personnamn)) {
+                if (!existingId && (ratsitData.personnamn || ratsitData.personnamn)) {
                   try {
-                    const name = ratsitData.ps_personnamn || ratsitData.personnamn;
+                    const name = ratsitData.personnamn || ratsitData.personnamn;
                     const searchUrl = `${this.api_url}/api/ratsit-data?personnamn=${encodeURIComponent(name)}&per_page=100`;
                     const sresp = await axios.get(searchUrl, { headers: { 'Accept': 'application/json', ...(this.api_token && { 'Authorization': `Bearer ${this.api_token}` }) }, timeout: 20000 });
                     if (sresp?.status === 200 && sresp.data && Array.isArray(sresp.data.data)) {
                       const candidates = sresp.data.data;
-                      const match = candidates.find(r => (r.gatuadress || '').trim() === (ratsitData.bo_gatuadress || '').trim());
+                      const match = candidates.find(r => (r.gatuadress || '').trim() === (ratsitData.gatuadress || '').trim());
                       if (match) {
                         existingId = match.id;
                         console.log(`  → Found existing record by personnamn+gatuadress: id=${existingId}`);
@@ -397,7 +397,7 @@ class RatsitScraper {
                       try {
                         await syncSwedenPersonFromRatsit(ratsitData);
                       } catch (syncError) {
-                        console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.ps_personnamn || 'unknown'}: ${syncError.message}`);
+                        console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.personnamn || 'unknown'}: ${syncError.message}`);
                       }
                       console.log(`  ✓ Updated existing ratsit_data id=${existingId} successfully (post-duplicate resolution)`);
                     } else {
@@ -429,9 +429,9 @@ class RatsitScraper {
             // Prefer lookup by personnummer when available
             let existingId = null;
 
-            if (ratsitData.ps_personnummer) {
+            if (ratsitData.personnummer) {
               try {
-                const searchUrl = `${this.api_url}/api/ratsit-data?personnummer=${encodeURIComponent(ratsitData.ps_personnummer)}&per_page=5`;
+                const searchUrl = `${this.api_url}/api/ratsit-data?personnummer=${encodeURIComponent(ratsitData.personnummer)}&per_page=5`;
                 const sresp = await axios.get(searchUrl, { headers: { 'Accept': 'application/json', ...(this.api_token && { 'Authorization': `Bearer ${this.api_token}` }) }, timeout: 20000 });
                 if (sresp?.status === 200 && sresp.data && Array.isArray(sresp.data.data) && sresp.data.data.length > 0) {
                   existingId = sresp.data.data[0].id;
@@ -443,14 +443,14 @@ class RatsitScraper {
             }
 
             // Fallback: search by personnamn and gatuadress
-            if (!existingId && (ratsitData.ps_personnamn || ratsitData.personnamn)) {
+            if (!existingId && (ratsitData.personnamn || ratsitData.personnamn)) {
               try {
-                const name = ratsitData.ps_personnamn || ratsitData.personnamn;
+                const name = ratsitData.personnamn || ratsitData.personnamn;
                 const searchUrl = `${this.api_url}/api/ratsit-data?personnamn=${encodeURIComponent(name)}&per_page=100`;
                 const sresp = await axios.get(searchUrl, { headers: { 'Accept': 'application/json', ...(this.api_token && { 'Authorization': `Bearer ${this.api_token}` }) }, timeout: 20000 });
                 if (sresp?.status === 200 && sresp.data && Array.isArray(sresp.data.data)) {
                   const candidates = sresp.data.data;
-                  const match = candidates.find(r => (r.gatuadress || '').trim() === (ratsitData.bo_gatuadress || '').trim());
+                  const match = candidates.find(r => (r.gatuadress || '').trim() === (ratsitData.gatuadress || '').trim());
                   if (match) {
                     existingId = match.id;
                     console.log(`  → Found existing record by personnamn+gatuadress: id=${existingId}`);
@@ -474,7 +474,7 @@ class RatsitScraper {
                   try {
                     await syncSwedenPersonFromRatsit(ratsitData);
                   } catch (syncError) {
-                    console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.ps_personnamn || 'unknown'}: ${syncError.message}`);
+                    console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.personnamn || 'unknown'}: ${syncError.message}`);
                   }
                   console.log(`  ✓ Updated existing ratsit_data id=${existingId} successfully`);
                   return true;
@@ -508,8 +508,8 @@ class RatsitScraper {
   //    * COMMENTED OUT: This method saves data to hitta_data table, which we don't want
   //    */
   //   try {
-  //     const personnamn = ratsitData.ps_personnamn || ratsitData.personnamn || null;
-  //     const gatuadress = ratsitData.bo_gatuadress || ratsitData.gatuadress || null;
+  //     const personnamn = ratsitData.personnamn || ratsitData.personnamn || null;
+  //     const gatuadress = ratsitData.gatuadress || ratsitData.gatuadress || null;
   //     if (!personnamn || !gatuadress) {
   //       console.log('  ⚠ Skipping hitta_data flag update (missing personnamn or gatuadress)');
   //       return;
@@ -545,45 +545,45 @@ class RatsitScraper {
       // Combine data from both sources
       const apiData = {
         // Address fields (prefer Ratsit)
-        gatuadress: ratsitData.bo_gatuadress || hittaData.gatuadress || null,
-        postnummer: ratsitData.bo_postnummer || hittaData.postnummer || null,
-        postort: ratsitData.bo_postort || hittaData.postort || null,
-        forsamling: ratsitData.bo_forsamling || null,
-        kommun: ratsitData.bo_kommun || null,
+        gatuadress: ratsitData.gatuadress || hittaData.gatuadress || null,
+        postnummer: ratsitData.postnummer || hittaData.postnummer || null,
+        postort: ratsitData.postort || hittaData.postort || null,
+        forsamling: ratsitData.forsamling || null,
+        kommun: ratsitData.kommun || null,
         kommun_ratsit: ratsitData.kommun_ratsit || null,
-        lan: ratsitData.bo_lan || null,
+        lan: ratsitData.lan || null,
         adressandring: ratsitData.adressandring || null,
 
         // Phone arrays (send as arrays, not JSON strings)
-        telefon: Array.isArray(ratsitData.ps_telefon) ? ratsitData.ps_telefon : (Array.isArray(hittaData.telefon) ? hittaData.telefon : []),
+        telefon: Array.isArray(ratsitData.telefon) ? ratsitData.telefon : (Array.isArray(hittaData.telefon) ? hittaData.telefon : []),
 
         // Person fields (Ratsit)
         stjarntacken: ratsitData.stjarntacken || null,
-        fodelsedag: ratsitData.ps_fodelsedag || null,
-        personnummer: ratsitData.ps_personnummer || null,
-        alder: ratsitData.ps_alder || hittaData.alder || null,
-        kon: ratsitData.ps_kon || hittaData.kon || null,
-        civilstand: ratsitData.ps_civilstand || null,
-        fornamn: ratsitData.ps_fornamn || null,
-        efternamn: ratsitData.ps_efternamn || null,
-        personnamn: ratsitData.ps_personnamn || hittaData.personnamn || null,
+        fodelsedag: ratsitData.fodelsedag || null,
+        personnummer: ratsitData.personnummer || null,
+        alder: ratsitData.alder || hittaData.alder || null,
+        kon: ratsitData.kon || hittaData.kon || null,
+        civilstand: ratsitData.civilstand || null,
+        fornamn: ratsitData.fornamn || null,
+        efternamn: ratsitData.efternamn || null,
+        personnamn: ratsitData.personnamn || hittaData.personnamn || null,
 
         // Dwelling fields (Ratsit)
-        agandeform: ratsitData.bo_agandeform || null,
-        bostadstyp: ratsitData.bo_bostadstyp || null,
-        boarea: ratsitData.bo_boarea || null,
-        byggar: ratsitData.bo_byggar || null,
+        agandeform: ratsitData.agandeform || null,
+        bostadstyp: ratsitData.bostadstyp || null,
+        boarea: ratsitData.boarea || null,
+        byggar: ratsitData.byggar || null,
 
         // Collections (Ratsit) - send as arrays
-        personer: Array.isArray(ratsitData.bo_personer) ? ratsitData.bo_personer : [],
-        foretag: Array.isArray(ratsitData.bo_foretag) ? ratsitData.bo_foretag : [],
-        grannar: Array.isArray(ratsitData.bo_grannar) ? ratsitData.bo_grannar : [],
-        fordon: Array.isArray(ratsitData.bo_fordon) ? ratsitData.bo_fordon : [],
-        hundar: Array.isArray(ratsitData.bo_hundar) ? ratsitData.bo_hundar : [],
-        bolagsengagemang: Array.isArray(ratsitData.ps_bolagsengagemang) ? ratsitData.ps_bolagsengagemang : [],
+        personer: Array.isArray(ratsitData.personer) ? ratsitData.personer : [],
+        foretag: Array.isArray(ratsitData.foretag) ? ratsitData.foretag : [],
+        grannar: Array.isArray(ratsitData.grannar) ? ratsitData.grannar : [],
+        fordon: Array.isArray(ratsitData.fordon) ? ratsitData.fordon : [],
+        hundar: Array.isArray(ratsitData.hundar) ? ratsitData.hundar : [],
+        bolagsengagemang: Array.isArray(ratsitData.bolagsengagemang) ? ratsitData.bolagsengagemang : [],
 
         // Geo & Links (combined)
-        longitude: ratsitData.bo_longitude || null,
+        longitude: ratsitData.longitude || null,
         latitud: ratsitData.latitud || null,
         google_maps: ratsitData.google_maps || null,
         google_streetview: ratsitData.google_streetview || null,
@@ -662,19 +662,19 @@ class RatsitScraper {
     try {
       // Prepare the update payload with Ratsit data
       const updateData = {
-        gatuadress: ratsitData.bo_gatuadress || null,
-        postnummer: ratsitData.bo_postnummer || null,
-        postort: ratsitData.bo_postort || null,
-        forsamling: ratsitData.bo_forsamling || null,
-        kommun: ratsitData.bo_kommun || null,
+        gatuadress: ratsitData.gatuadress || null,
+        postnummer: ratsitData.postnummer || null,
+        postort: ratsitData.postort || null,
+        forsamling: ratsitData.forsamling || null,
+        kommun: ratsitData.kommun || null,
         kommun_ratsit: ratsitData.kommun_ratsit || null,
-        lan: ratsitData.bo_lan || null,
+        lan: ratsitData.lan || null,
         adressandring: ratsitData.adressandring || null,
         telfonnummer: Array.isArray(ratsitData.telefonnummer) ? ratsitData.telefonnummer.join('|') : null,
         stjarntacken: ratsitData.stjarntacken || null,
         // Handle fodelsedag - try scraped value first, then derive from personnummer
         fodelsedag: (() => {
-          let fodelsedag = ratsitData.ps_fodelsedag || null;
+          let fodelsedag = ratsitData.fodelsedag || null;
           if (fodelsedag) {
             // If it's in Swedish format like "3 oktober 1966", convert to ISO format
             const swedishDateMatch = fodelsedag.match(/^(\d{1,2})\s+(\w+)\s+(\d{4})$/);
@@ -697,9 +697,9 @@ class RatsitScraper {
               }
             }
           }
-          if (!fodelsedag && ratsitData.ps_personnummer) {
+          if (!fodelsedag && ratsitData.personnummer) {
             // Extract date from personnummer (format: YYYYMMDD-XXXX)
-            const personnummerMatch = ratsitData.ps_personnummer.match(/^(\d{4})(\d{2})(\d{2})/);
+            const personnummerMatch = ratsitData.personnummer.match(/^(\d{4})(\d{2})(\d{2})/);
             if (personnummerMatch) {
               fodelsedag = `${personnummerMatch[1]}-${personnummerMatch[2]}-${personnummerMatch[3]}`;
               console.log(`  📅 Derived fodelsedag from personnummer: ${fodelsedag}`);
@@ -710,31 +710,31 @@ class RatsitScraper {
           }
           return fodelsedag;
         })(),
-        personnummer: ratsitData.ps_personnummer || null,
-        alder: ratsitData.ps_alder || null,
-        kon: ratsitData.ps_kon || null,
-        civilstand: ratsitData.ps_civilstand || null,
-        fornamn: ratsitData.ps_fornamn || null,
-        efternamn: ratsitData.ps_efternamn || null,
-        personnamn: ratsitData.ps_personnamn || null,
-        telefon: ratsitData.ps_telefon || null,
-        agandeform: ratsitData.bo_agandeform || null,
-        bostadstyp: ratsitData.bo_bostadstyp || null,
-        boarea: ratsitData.bo_boarea || null,
-        byggar: ratsitData.bo_byggar || null,
-        personer: Array.isArray(ratsitData.bo_personer) ? ratsitData.bo_personer.map(p => typeof p === 'object' ? p.text : p) : null,
-        foretag: Array.isArray(ratsitData.bo_foretag) ? ratsitData.bo_foretag.map(f => typeof f === 'object' ? f.text : f) : null,
-        grannar: Array.isArray(ratsitData.bo_grannar) ? ratsitData.bo_grannar.map(g => typeof g === 'object' ? g.text : g) : null,
-        fordon: Array.isArray(ratsitData.bo_fordon) ? ratsitData.bo_fordon.map(f => typeof f === 'object' ? f.text : f) : null,
-        hundar: Array.isArray(ratsitData.bo_hundar) ? ratsitData.bo_hundar.map(h => typeof h === 'object' ? h.text : h) : null,
-        bolagsengagemang: Array.isArray(ratsitData.ps_bolagsengagemang) ? ratsitData.ps_bolagsengagemang.map(b => typeof b === 'object' ? b.text : b) : null,
-        longitude: ratsitData.bo_longitude || null,
+        personnummer: ratsitData.personnummer || null,
+        alder: ratsitData.alder || null,
+        kon: ratsitData.kon || null,
+        civilstand: ratsitData.civilstand || null,
+        fornamn: ratsitData.fornamn || null,
+        efternamn: ratsitData.efternamn || null,
+        personnamn: ratsitData.personnamn || null,
+        telefon: ratsitData.telefon || null,
+        agandeform: ratsitData.agandeform || null,
+        bostadstyp: ratsitData.bostadstyp || null,
+        boarea: ratsitData.boarea || null,
+        byggar: ratsitData.byggar || null,
+        personer: Array.isArray(ratsitData.personer) ? ratsitData.personer.map(p => typeof p === 'object' ? p.text : p) : null,
+        foretag: Array.isArray(ratsitData.foretag) ? ratsitData.foretag.map(f => typeof f === 'object' ? f.text : f) : null,
+        grannar: Array.isArray(ratsitData.grannar) ? ratsitData.grannar.map(g => typeof g === 'object' ? g.text : g) : null,
+        fordon: Array.isArray(ratsitData.fordon) ? ratsitData.fordon.map(f => typeof f === 'object' ? f.text : f) : null,
+        hundar: Array.isArray(ratsitData.hundar) ? ratsitData.hundar.map(h => typeof h === 'object' ? h.text : h) : null,
+        bolagsengagemang: Array.isArray(ratsitData.bolagsengagemang) ? ratsitData.bolagsengagemang.map(b => typeof b === 'object' ? b.text : b) : null,
+        longitude: ratsitData.longitude || null,
         latitud: ratsitData.latitud || null,
         google_maps: ratsitData.google_maps || null,
         google_streetview: ratsitData.google_streetview || null,
         ratsit_se: ratsitData.ratsit_se || null,
-        is_hus: ratsitData.bo_agandeform === 'Äganderätt' || ratsitData.bo_agandeform === 'Tomträtt',
-        is_telefon: ratsitData.ps_telefon && ratsitData.ps_telefon.trim() !== '',
+        is_hus: ratsitData.agandeform === 'Äganderätt' || ratsitData.agandeform === 'Tomträtt',
+        is_telefon: ratsitData.telefon && ratsitData.telefon.trim() !== '',
         is_queued: false, // Mark as processed
       };
 
@@ -759,7 +759,7 @@ class RatsitScraper {
         try {
           await syncSwedenPersonFromRatsit(ratsitData);
         } catch (syncError) {
-          console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.ps_personnamn || ratsitData.personnamn || 'unknown'}: ${syncError.message}`);
+          console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.personnamn || ratsitData.personnamn || 'unknown'}: ${syncError.message}`);
         }
         console.log(` 𐦂𖨆𐀪𖠋𐀪𐀪 ✅ Successfully updated record ${recordId}`);
         return true;
@@ -808,7 +808,7 @@ class RatsitScraper {
                 try {
                   await syncSwedenPersonFromRatsit(ratsitData);
                 } catch (syncError) {
-                  console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.ps_personnamn || ratsitData.personnamn || 'unknown'}: ${syncError.message}`);
+                  console.log(`  ⚠ sweden_personer Ratsit sync failed for ${ratsitData.personnamn || ratsitData.personnamn || 'unknown'}: ${syncError.message}`);
                 }
                 console.log(`  ✅ Updated duplicate record ${exactMatch.id} successfully`);
                 // Mark original queue entry as processed (avoid reattempts)
@@ -1288,30 +1288,30 @@ class RatsitScraper {
 
             // Extract person data
             const personData = {
-            ps_personnummer: await this.extractRatsitTextAfterLabel(page, 'Personnummer:'),
-            ps_alder: await this.extractRatsitTextAfterLabel(page, 'Ålder:'),
-            ps_fodelsedag: await this.extractRatsitTextAfterLabel(page, 'Födelsedag:'),
-            ps_kon: await this.extractRatsitTextAfterLabel(page, 'Juridiskt kön:'),
-            ps_telefon: await this.extractRatsitTelefon(page),
-            ps_personnamn: await this.extractRatsitTextAfterLabel(page, 'Personnamn:'),
-            ps_fornamn: await this.extractRatsitTextAfterLabel(page, 'Förnamn:'),
-            ps_efternamn: await this.extractRatsitTextAfterLabel(page, 'Efternamn:'),
-            bo_gatuadress: await this.extractRatsitTextAfterLabel(page, 'Gatuadress:'),
-            bo_postnummer: await this.extractRatsitTextAfterLabel(page, 'Postnummer:'),
-            bo_postort: await this.extractRatsitTextAfterLabel(page, 'Postort:'),
+            personnummer: await this.extractRatsitTextAfterLabel(page, 'Personnummer:'),
+            alder: await this.extractRatsitTextAfterLabel(page, 'Ålder:'),
+            fodelsedag: await this.extractRatsitTextAfterLabel(page, 'Födelsedag:'),
+            kon: await this.extractRatsitTextAfterLabel(page, 'Juridiskt kön:'),
+            telefon: await this.extractRatsitTelefon(page),
+            personnamn: await this.extractRatsitTextAfterLabel(page, 'Personnamn:'),
+            fornamn: await this.extractRatsitTextAfterLabel(page, 'Förnamn:'),
+            efternamn: await this.extractRatsitTextAfterLabel(page, 'Efternamn:'),
+            gatuadress: await this.extractRatsitTextAfterLabel(page, 'Gatuadress:'),
+            postnummer: await this.extractRatsitTextAfterLabel(page, 'Postnummer:'),
+            postort: await this.extractRatsitTextAfterLabel(page, 'Postort:'),
             // Additional labels
-            bo_forsamling: await this.extractRatsitTextAfterLabel(page, 'Församling:'),
-            bo_kommun: await this.extractRatsitTextAfterLabel(page, 'Kommun:'),
+            forsamlingsnamn: await this.extractRatsitTextAfterLabel(page, 'Församling:'),
+            kommunnamn: await this.extractRatsitTextAfterLabel(page, 'Kommun:'),
             kommun_ratsit: await this.extractRatsitKommunLink(page),
-            bo_lan: await this.extractRatsitTextAfterLabel(page, 'Län:'),
-            ps_civilstand: await this.extractRatsitCivilstand(page),
+            lan: await this.extractRatsitTextAfterLabel(page, 'Län:'),
+            civilstand: await this.extractRatsitCivilstand(page),
             adressandring: await this.extractRatsitTextAfterLabel(page, 'Adressändring:'),
             stjarntacken: await this.extractRatsitTextAfterLabel(page, 'Stjärntecken:'),
             // Dwelling specific labels
-            bo_agandeform: await this.extractRatsitTextAfterLabel(page, 'Ägandeform:'),
-            bo_bostadstyp: await this.extractRatsitTextAfterLabel(page, 'Bostadstyp:'),
-            bo_boarea: await this.extractRatsitTextAfterLabel(page, 'Boarea:'),
-            bo_byggar: await this.extractRatsitTextAfterLabel(page, 'Byggår:'),
+            agandeform: await this.extractRatsitTextAfterLabel(page, 'Ägandeform:'),
+            bostadstyp: await this.extractRatsitTextAfterLabel(page, 'Bostadstyp:'),
+            boarea: await this.extractRatsitTextAfterLabel(page, 'Boarea:'),
+            byggar: await this.extractRatsitTextAfterLabel(page, 'Byggår:'),
           };
           // Link for saving
           personData.ratsit_se = link;
@@ -1327,17 +1327,17 @@ class RatsitScraper {
           }
 
           const personer = await this.extractSectionListStrong(page, 'Personer');
-          if (personer.length) personData.bo_personer = personer;
+          if (personer.length) personData.personer = personer;
           const foretag = await this.extractSectionForetag(page);
-          if (foretag.length) personData.bo_foretag = foretag;
+          if (foretag.length) personData.foretag = foretag;
           const grannar = await this.extractSectionGrannar(page);
-          if (grannar.length) personData.bo_grannar = grannar;
+          if (grannar.length) personData.grannar = grannar;
           const fordon = await this.extractSectionFordon(page);
-          if (fordon.length) personData.bo_fordon = fordon;
+          if (fordon.length) personData.fordon = fordon;
           const hundar = await this.extractSectionHundar(page);
-          if (hundar.length) personData.bo_hundar = hundar;
+          if (hundar.length) personData.hundar = hundar;
           const bolag = await this.extractSectionBolagsengagemang(page);
-          if (bolag.length) personData.ps_bolagsengagemang = bolag;
+          if (bolag.length) personData.bolagsengagemang = bolag;
 
           // Lat/Long & Streetview
           const latLongText = await this.extractLatLongText(page);
@@ -1345,7 +1345,7 @@ class RatsitScraper {
             const m = latLongText.match(/Latitud:\s*([0-9.+-]+).*Longitud:\s*([0-9.+-]+)/i);
             if (m) {
               personData.latitud = m[1];
-              personData.bo_longitude = m[2];
+              personData.longitude = m[2];
             }
           }
           personData.google_streetview = await this.extractStreetViewLink(page);
@@ -1354,25 +1354,25 @@ class RatsitScraper {
           personData.google_maps = await this.extractGoogleMapsLink(page);
 
           // Fallback: if Google Maps link wasn't found, generate it from address
-          if (!personData.google_maps && personData.bo_gatuadress && personData.bo_postnummer && personData.bo_postort) {
-            const addr = `${personData.bo_gatuadress}, ${personData.bo_postnummer} ${personData.bo_postort}`;
+          if (!personData.google_maps && personData.gatuadress && personData.postnummer && personData.postort) {
+            const addr = `${personData.gatuadress}, ${personData.postnummer} ${personData.postort}`;
             personData.google_maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
           }
 
           // Map gender value
-          if (personData.ps_kon) {
+          if (personData.kon) {
             const konMap = { 'man': 'M', 'kvinna': 'F', 'kvinno': 'F' };
-            const lowerKon = personData.ps_kon.toLowerCase().trim();
-            personData.ps_kon = konMap[lowerKon] || personData.ps_kon;
+            const lowerKon = personData.kon.toLowerCase().trim();
+            personData.kon = konMap[lowerKon] || personData.kon;
           }
 
           // Handle telefon as string (single number) and telefonnummer as array
-          // NOTE: We do NOT filter out ps_telefon from telefonnummer array anymore
+          // NOTE: We do NOT filter out telefon from telefonnummer array anymore
           // The telefonnummer array should contain ALL phone numbers from the "Telefonnummer" section
-          // ps_telefon is extracted separately from the "Telefon:" label
-          if (!personData.ps_telefon && personData.telefonnummer && Array.isArray(personData.telefonnummer) && personData.telefonnummer.length > 0) {
+          // telefon is extracted separately from the "Telefon:" label
+          if (!personData.telefon && personData.telefonnummer && Array.isArray(personData.telefonnummer) && personData.telefonnummer.length > 0) {
             // Only if we don't have a primary telefon, use first from array
-            personData.ps_telefon = personData.telefonnummer[0];
+            personData.telefon = personData.telefonnummer[0];
           }
 
           const cleanData = {};
@@ -1413,20 +1413,20 @@ class RatsitScraper {
 
           if (Object.keys(cleanData).length > 0) {
             results.push(cleanData);
-            console.log(`  → ✓ Extracted data for ${cleanData.ps_personnamn || 'Unknown'}`);
+            console.log(`  → ✓ Extracted data for ${cleanData.personnamn || 'Unknown'}`);
 
             // Log extracted data details
             console.log('\n  📋 Scraped Data Summary:');
-            console.log(`     Person: ${cleanData.ps_personnummer || 'N/A'} | ${cleanData.ps_personnamn || 'N/A'} | Age: ${cleanData.ps_alder || 'N/A'}`);
-            console.log(`     Address: ${cleanData.bo_gatuadress || 'N/A'}, ${cleanData.bo_postnummer || 'N/A'} ${cleanData.bo_postort || 'N/A'}`);
-            console.log(`     Location: ${cleanData.bo_forsamling || 'N/A'} / ${cleanData.bo_kommun || 'N/A'} / ${cleanData.bo_lan || 'N/A'}`);
-            console.log(`     Phone: ${cleanData.ps_telefon || 'N/A'}`);
+            console.log(`     Person: ${cleanData.personnummer || 'N/A'} | ${cleanData.personnamn || 'N/A'} | Age: ${cleanData.alder || 'N/A'}`);
+            console.log(`     Address: ${cleanData.gatuadress || 'N/A'}, ${cleanData.postnummer || 'N/A'} ${cleanData.postort || 'N/A'}`);
+            console.log(`     Location: ${cleanData.forsamling || 'N/A'} / ${cleanData.kommun || 'N/A'} / ${cleanData.lan || 'N/A'}`);
+            console.log(`     Phone: ${cleanData.telefon || 'N/A'}`);
             console.log(`     Additional Phones: ${Array.isArray(cleanData.telefonnummer) ? cleanData.telefonnummer.join(', ') : 'N/A'}`);
-            console.log(`     Dwelling: ${cleanData.bo_bostadstyp || 'N/A'} | ${cleanData.bo_agandeform || 'N/A'} | ${cleanData.bo_boarea || 'N/A'}m² | Built: ${cleanData.bo_byggar || 'N/A'}`);
-            console.log(`     Civil: ${cleanData.ps_civilstand || 'N/A'} | Sign: ${cleanData.stjarntacken || 'N/A'}`);
-            console.log(`     Collections: Personer(${cleanData.bo_personer?.length || 0}) Företag(${cleanData.bo_foretag?.length || 0}) Grannar(${cleanData.bo_grannar?.length || 0})`);
-            console.log(`                  Fordon(${cleanData.bo_fordon?.length || 0}) Hundar(${cleanData.bo_hundar?.length || 0}) Bolag(${cleanData.ps_bolagsengagemang?.length || 0})`);
-            console.log(`     Geo: Lat ${cleanData.latitud || 'N/A'}, Long ${cleanData.bo_longitude || 'N/A'}`);
+            console.log(`     Dwelling: ${cleanData.bostadstyp || 'N/A'} | ${cleanData.agandeform || 'N/A'} | ${cleanData.boarea || 'N/A'}m² | Built: ${cleanData.byggar || 'N/A'}`);
+            console.log(`     Civil: ${cleanData.civilstand || 'N/A'} | Sign: ${cleanData.stjarntacken || 'N/A'}`);
+            console.log(`     Collections: Personer(${cleanData.personer?.length || 0}) Företag(${cleanData.foretag?.length || 0}) Grannar(${cleanData.grannar?.length || 0})`);
+            console.log(`                  Fordon(${cleanData.fordon?.length || 0}) Hundar(${cleanData.hundar?.length || 0}) Bolag(${cleanData.bolagsengagemang?.length || 0})`);
+            console.log(`     Geo: Lat ${cleanData.latitud || 'N/A'}, Long ${cleanData.longitude || 'N/A'}`);
             console.log(`     Links: ${cleanData.ratsit_se ? '✓ Ratsit' : '✗'} ${cleanData.google_maps ? '✓ Maps' : '✗'} ${cleanData.google_streetview ? '✓ Street' : '✗'}\n`);
 
             // Save each collected result to API immediately when requested

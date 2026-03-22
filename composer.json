@@ -26,6 +26,7 @@
         "binarybuilds/filament-cache-manager": "@dev",
         "binarybuilds/filament-command-runner": "@dev",
         "binarybuilds/filament-failed-jobs": "@dev",
+        "cachethq/core": "@dev",
         "caresome/filament-auth-designer": "@dev",
         "cheesegrits/filament-google-maps": "@dev",
         "cmsmaxinc/filament-error-pages": "@dev",
@@ -41,6 +42,7 @@
         "finity-labs/fin-mail": "@dev",
         "flowframe/laravel-trend": "@dev",
         "guava/filament-icon-select-column": "@dev",
+        "guzzlehttp/guzzle": "@dev",
         "hammadzafar05/mobile-bottom-nav": "@dev",
         "harvirsidhu/filament-cards": "@dev",
         "hydrat/filament-table-layout-toggle": "@dev",
@@ -96,6 +98,7 @@
         "spiral/roadrunner-cli": "^2.6.0",
         "spiral/roadrunner-http": "^3.3.0",
         "stechstudio/filament-impersonate": "@dev",
+        "timacdonald/json-api": "@dev",
         "usamamuneerchaudhary/filament-notifier": "@dev",
         "wallacemartinss/filament-icon-picker": "@dev",
         "wallacemartinss/filament-whatsapp-conector": "@dev",
@@ -115,6 +118,20 @@
         "pestphp/pest-plugin-laravel": "^4.1"
     },
     "repositories": [
+        {
+            "type": "path",
+            "url": "plugins/cachethq/core",
+            "options": {
+                "symlink": true
+            }
+        },
+                {
+            "type": "path",
+            "url": "plugins/timacdonald/json-api",
+            "options": {
+                "symlink": true
+            }
+        },
         {
             "type": "path",
             "url": "plugins/eduardoribeirodev/filament-leaflet",
@@ -700,7 +717,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "cachethq/core"
+            ]
         }
     },
     "config": {
