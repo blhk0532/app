@@ -10,6 +10,7 @@ return [
     'domain' => env('CACHET_DOMAIN'),
     'guard' => env('CACHET_GUARD', null),
     'user_model' => env('CACHET_USER_MODEL', User::class),
+    'load_package_migrations' => env('CACHET_LOAD_PACKAGE_MIGRATIONS', false),
     'user_migrations' => env('CACHET_USER_MIGRATIONS', true),
     'middleware' => [
         'web',

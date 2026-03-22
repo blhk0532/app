@@ -32,6 +32,7 @@ use Awcodes\Overlook\Widgets\OverlookWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Devtical\Sanctum\Pages\Sanctum;
 use Filament\Actions\Action;
@@ -61,8 +62,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use JeffersonGoncalves\Filament\WhatsappWidget\WhatsappWidgetPlugin;
-use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 // use TallCms\Cms\TallCmsPlugin;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
@@ -168,6 +169,7 @@ class AdminPanelProvider extends PanelProvider
                     ->navigationIcon('heroicon-o-folder')
                     ->navigationSort(5),
             ])
+            ->plugin(PinnableNavigationPlugin::make())
             ->plugins([
                 //    FilamentGeneralSettingsPlugin::make()
                 //        ->canAccess(fn () => Auth::user()->role === 'super')

@@ -101,7 +101,7 @@ class Component extends Model
      */
     public function schedules(): BelongsToMany
     {
-        return $this->belongsToMany(Schedule::class, 'schedule_components')
+        return $this->belongsToMany(Schedule::class, 'cachet_schedule_components')
             ->withTimestamps()
             ->withPivot('component_status');
     }

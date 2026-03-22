@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class ScheduleComponent extends Pivot
 {
-    protected $table = 'schedule_components';
+    protected $table = 'cachet_schedule_components';
 
     /** @use HasFactory<ScheduleComponentFactory> */
     use HasFactory;

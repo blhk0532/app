@@ -27,6 +27,10 @@ class WebhookSubscriptionResource extends Resource
 {
     protected static ?string $model = WebhookSubscription::class;
 
+    protected static ?string $title = '';
+
+    protected static ?int $navigationSort = 10;
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');
@@ -34,7 +38,7 @@ class WebhookSubscriptionResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.items.manage_webhooks');
+        return __('Webhooks');
     }
 
     public static function secretField()

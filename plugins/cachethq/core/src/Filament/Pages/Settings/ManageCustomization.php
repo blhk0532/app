@@ -11,6 +11,10 @@ class ManageCustomization extends SettingsPage
 {
     protected static string $settings = CustomizationSettings::class;
 
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $title = '';
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');
@@ -18,7 +22,7 @@ class ManageCustomization extends SettingsPage
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.items.manage_customization');
+        return __('Customization');
     }
 
     public function form(Schema $schema): Schema

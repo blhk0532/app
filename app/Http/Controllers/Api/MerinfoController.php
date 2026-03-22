@@ -11,6 +11,7 @@ use DateTime;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -197,6 +198,8 @@ class MerinfoController extends Controller
         $errors = [];
         $merinfoDataCreated = 0;
         $merinfoDataUpdated = 0;
+        $swedenPersonerCreated = 0;
+        $swedenPersonerUpdated = 0;
 
         foreach ($validated['items'] as $itemIndex => $itemData) {
             Log::info('MerinfoController foreach item', [
@@ -308,6 +311,27 @@ class MerinfoController extends Controller
                     ]);
 
                     $merinfoData->wasRecentlyCreated ? $merinfoDataCreated++ : $merinfoDataUpdated++;
+
+                    $swedenSyncResult = $this->syncSwedenPersonerFromMerinfo(
+                        itemData: $itemData,
+                        street: $street,
+                        zipCode: $zipCode,
+                        city: $city,
+                        phoneRaw: $phoneRaw,
+                        phoneNumbers: $phoneNumbers,
+                        age: $age,
+                        personalNumber: $personalNumber,
+                        isTelefon: $isTelefon,
+                        isHus: $isHus,
+                    );
+
+                    if (($swedenSyncResult['created'] ?? false) === true) {
+                        $swedenPersonerCreated++;
+                    }
+
+                    if (($swedenSyncResult['updated'] ?? false) === true) {
+                        $swedenPersonerUpdated++;
+                    }
                 }
             } catch (Exception $e) {
                 $failed++;
@@ -325,6 +349,8 @@ class MerinfoController extends Controller
             'failed' => $failed,
             'merinfo_data_created' => $merinfoDataCreated,
             'merinfo_data_updated' => $merinfoDataUpdated,
+            'sweden_personer_created' => $swedenPersonerCreated,
+            'sweden_personer_updated' => $swedenPersonerUpdated,
             'errors' => $errors,
         ]);
 
@@ -337,9 +363,202 @@ class MerinfoController extends Controller
                 'failed' => $failed,
                 'merinfo_data_created' => $merinfoDataCreated,
                 'merinfo_data_updated' => $merinfoDataUpdated,
+                'sweden_personer_created' => $swedenPersonerCreated,
+                'sweden_personer_updated' => $swedenPersonerUpdated,
             ],
             'errors' => $errors,
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $itemData
+     * @param  array<int, mixed>  $phoneNumbers
+     * @return array{created: bool, updated: bool}
+     */
+    private function syncSwedenPersonerFromMerinfo(
+        array $itemData,
+        ?string $street,
+        ?string $zipCode,
+        ?string $city,
+        ?string $phoneRaw,
+        array $phoneNumbers,
+        ?int $age,
+        ?string $personalNumber,
+        bool $isTelefon,
+        bool $isHus,
+    ): array {
+        $personnamn = $this->normalizeNullableString($itemData['name'] ?? $itemData['personnamn'] ?? null);
+        $fornamn = $this->normalizeNullableString($itemData['givenNameOrFirstName'] ?? null);
+        $efternamn = null;
+
+        if ($personnamn !== null) {
+            $parts = preg_split('/\s+/', trim($personnamn)) ?: [];
+            if (count($parts) > 1) {
+                $efternamn = $parts[count($parts) - 1];
+            }
+        }
+
+        if ($fornamn === null && $personnamn !== null) {
+            $parts = preg_split('/\s+/', trim($personnamn)) ?: [];
+            if (count($parts) > 0) {
+                $fornamn = $parts[0];
+            }
+        }
+
+        $fornamn = $this->normalizeNullableString($fornamn);
+        $efternamn = $this->normalizeNullableString($efternamn);
+        $address = $this->normalizeNullableString($street);
+        $postnummer = $this->normalizePostnummer($zipCode);
+        $postort = $this->normalizeNullableString($city);
+        $personnummer = $this->normalizeNullableString($personalNumber);
+        $telefon = $this->normalizeNullableString($phoneRaw);
+        $merinfoLink = $this->normalizeNullableString($itemData['url'] ?? null);
+        $merinfoDataJson = json_encode($itemData, JSON_UNESCAPED_UNICODE);
+
+        $gender = $this->normalizeNullableString($itemData['gender'] ?? null);
+        $kon = match (strtolower((string) $gender)) {
+            'male' => 'M',
+            'female' => 'F',
+            default => $gender,
+        };
+
+        $telefonnummer = [];
+        if (! empty($phoneNumbers)) {
+            foreach ($phoneNumbers as $phone) {
+                if (is_array($phone)) {
+                    $raw = $this->normalizeNullableString($phone['raw'] ?? null);
+                    if ($raw !== null) {
+                        $telefonnummer[] = $raw;
+                    }
+                } elseif (is_string($phone)) {
+                    $raw = $this->normalizeNullableString($phone);
+                    if ($raw !== null) {
+                        $telefonnummer[] = $raw;
+                    }
+                }
+            }
+        }
+
+        if ($telefon !== null && ! in_array($telefon, $telefonnummer, true)) {
+            $telefonnummer[] = $telefon;
+        }
+
+        $telefonnummerJson = ! empty($telefonnummer)
+            ? json_encode(array_values(array_unique($telefonnummer)), JSON_UNESCAPED_UNICODE)
+            : null;
+
+        $existing = null;
+
+        if ($personnummer !== null) {
+            $existing = DB::table('sweden_personer')->where('personnummer', $personnummer)->first();
+        }
+
+        if ($existing === null && $merinfoLink !== null) {
+            $existing = DB::table('sweden_personer')->where('merinfo_link', $merinfoLink)->first();
+        }
+
+        if ($existing === null && $address !== null && $fornamn !== null && $efternamn !== null) {
+            $existing = DB::table('sweden_personer')
+                ->where('adress', $address)
+                ->where('fornamn', $fornamn)
+                ->where('efternamn', $efternamn)
+                ->first();
+        }
+
+        $incoming = [
+            'adress' => $address,
+            'postnummer' => $postnummer,
+            'postort' => $postort,
+            'fornamn' => $fornamn,
+            'efternamn' => $efternamn,
+            'personnamn' => $personnamn,
+            'alder' => $age,
+            'personnummer' => $personnummer,
+            'kon' => $kon,
+            'telefon' => $telefon,
+            'telefonnummer' => $telefonnummerJson,
+            'merinfo_link' => $merinfoLink,
+            'merinfo_data' => $merinfoDataJson,
+            'is_hus' => $isHus,
+            'is_active' => (bool) ($itemData['is_active'] ?? true),
+        ];
+
+        if ($existing !== null) {
+            $updateData = [];
+
+            foreach ($incoming as $key => $value) {
+                if ($value === null) {
+                    continue;
+                }
+
+                if (is_string($value) && trim($value) === '') {
+                    continue;
+                }
+
+                $updateData[$key] = $value;
+            }
+
+            if (empty($updateData)) {
+                return ['created' => false, 'updated' => false];
+            }
+
+            $updateData['updated_at'] = now();
+            DB::table('sweden_personer')->where('id', $existing->id)->update($updateData);
+
+            return ['created' => false, 'updated' => true];
+        }
+
+        if ($address === null || $fornamn === null || $efternamn === null) {
+            return ['created' => false, 'updated' => false];
+        }
+
+        $insertData = [
+            'adress' => $address,
+            'postnummer' => $postnummer,
+            'postort' => $postort,
+            'fornamn' => $fornamn,
+            'efternamn' => $efternamn,
+            'personnamn' => $personnamn,
+            'alder' => $age,
+            'personnummer' => $personnummer,
+            'kon' => $kon,
+            'telefon' => $telefon,
+            'telefonnummer' => $telefonnummerJson,
+            'merinfo_link' => $merinfoLink,
+            'merinfo_data' => $merinfoDataJson,
+            'is_hus' => $isHus,
+            'is_active' => (bool) ($itemData['is_active'] ?? true),
+            'is_queue' => false,
+            'is_done' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        DB::table('sweden_personer')->insert($insertData);
+
+        return ['created' => true, 'updated' => false];
+    }
+
+    private function normalizePostnummer(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $digits = preg_replace('/\D+/', '', (string) $value);
+
+        return $digits !== '' ? $digits : null;
+    }
+
+    private function normalizeNullableString(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $trimmed = trim((string) $value);
+
+        return $trimmed !== '' ? $trimmed : null;
     }
 
     /**

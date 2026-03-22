@@ -20,12 +20,14 @@
                         @endif
                     </div>
 
-                    <div class="flex justify-start sm:justify-end">
+                    <div class="flex justify-end sm:justify-end relative w-full md:w-auto">
+                        <div class="absolute right-0 bottom-0 mb-4 mr-2">
                         <x-cachet::badge :status="$schedule->status" />
+                            </div>
                     </div>
                 </div>
 
-                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">{!! $schedule->formattedMessage() !!}</div>
+                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal max-w-full">{!! $schedule->formattedMessage() !!}</div>
             </div>
         </div>
     </div>
@@ -37,7 +39,7 @@
                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
                     {{ $update->created_at->diffForHumans() }} — <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
                 </span>
-                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
+                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal max-w-full">{!! $update->formattedMessage() !!}</div>
             </div>
             @endforeach
         </div>

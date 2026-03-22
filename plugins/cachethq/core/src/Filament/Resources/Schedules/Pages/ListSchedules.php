@@ -3,8 +3,8 @@
 namespace Cachet\Filament\Resources\Schedules\Pages;
 
 use Cachet\Filament\Resources\Schedules\ScheduleResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListSchedules extends ListRecords
 {
@@ -13,7 +13,17 @@ class ListSchedules extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+
         ];
+    }
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
     }
 }

@@ -19,8 +19,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -34,12 +34,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class IncidentResource extends Resource
 {
     protected static ?string $model = Incident::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-incident';
+
+    protected static ?int $navigationSort = -1;
 
     public static function form(Schema $schema): Schema
     {
@@ -57,11 +60,11 @@ class IncidentResource extends Resource
                         ->columnSpanFull()
                         ->options(IncidentStatusEnum::class)
                         ->required(),
-                    MarkdownEditor::make('message')
+                    RichEditor::make('message')
                         ->label(__('cachet::incident.form.message_label'))
-                        ->required()
-                        ->columnSpanFull(),
+                        ->required(),
                     DateTimePicker::make('occurred_at')
+                        ->default(fn () => now())
                         ->label(__('cachet::incident.form.occurred_at_label'))
                         ->helperText(__('cachet::incident.form.occurred_at_helper')),
                     ToggleButtons::make('visible')
@@ -96,7 +99,7 @@ class IncidentResource extends Resource
                         ->label(__('User'))
                         ->helperText(__('cachet::incident.form.user_helper'))
                         ->relationship('user', 'name')
-                        ->default(auth()->id())
+                        ->default(Auth::user()->id)
                         ->searchable()
                         ->preload(),
                     Toggle::make('notifications')
@@ -169,7 +172,7 @@ class IncidentResource extends Resource
             ->recordActions([
                 Action::make('add-update')
                     ->disabled(fn (Incident $record) => $record->status === IncidentStatusEnum::fixed)
-                    ->label(__('cachet::incident.list.actions.record_update'))
+                    ->label(__('Update'))
                     ->color('info')
                     ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
                         $createIncidentUpdate->handle($record, CreateIncidentUpdateRequestData::from($data));
@@ -181,11 +184,9 @@ class IncidentResource extends Resource
                             ->send();
                     })
                     ->schema([
-                        MarkdownEditor::make('message')
+                        RichEditor::make('message')
                             ->label(__('cachet::incident.record_update.form.message_label'))
                             ->required()
-                            ->minHeight('200px')
-                            ->maxHeight('300px')
                             ->columnSpanFull(),
                         ToggleButtons::make('status')
                             ->label(__('cachet::incident.record_update.form.status_label'))
@@ -196,15 +197,17 @@ class IncidentResource extends Resource
                             ->label(__('cachet::incident.record_update.form.user_label'))
                             ->hint(__('cachet::incident.record_update.form.user_helper'))
                             ->relationship('user', 'name')
-                            ->default(auth()->id())
+                            ->default(Auth::user()->id)
                             ->searchable()
                             ->preload(),
                     ]),
                 Action::make('view-incident')
                     ->icon('heroicon-o-eye')
+                    ->color('primary')
                     ->url(fn (Incident $record): string => route('cachet.status-page.incident', $record))
-                    ->label(__('cachet::incident.list.actions.view_incident')),
-                EditAction::make(),
+                    ->label(__('View')),
+                EditAction::make()
+                    ->color('secondary'),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title' => 'Incidents',
-    'resource_label' => 'Incident|Incidents',
+    'title' => 'Information',
+    'resource_label' => 'Information|Information',
     'status' => [
         'investigating' => 'Investigating',
         'identified' => 'Identified',
@@ -10,13 +10,13 @@ return [
         'fixed' => 'Fixed',
         'reported' => 'Reported',
     ],
-    'edit_button' => 'Edit Incident',
-    'new_button' => 'New Incident',
-    'no_incidents_reported' => 'No incidents reported.',
+    'edit_button' => 'Edit Information',
+    'new_button' => 'Update',
+    'no_incidents_reported' => 'No information',
     'timeline' => [
-        'past_incidents_header' => 'Past Incidents',
-        'recent_incidents_header' => 'Recent Incidents',
-        'no_incidents_reported_between' => 'No incidents reported between :from and :to',
+        'past_incidents_header' => '',
+        'recent_incidents_header' => 'Recent Information',
+        'no_incidents_reported_between' => 'No information reported between :from and :to',
         'navigate' => [
             'previous' => 'Previous',
             'today' => 'Today',
@@ -37,11 +37,11 @@ return [
         ],
         'actions' => [
             'record_update' => 'Record Update',
-            'view_incident' => 'View incident',
+            'view_incident' => 'View information',
         ],
         'empty_state' => [
-            'heading' => 'Incidents',
-            'description' => 'Incidents are used to communicate and track the status of your services.',
+            'heading' => 'Information',
+            'description' => 'Information is used to communicate and track the status of your services.',
         ],
     ],
     'form' => [
@@ -49,13 +49,13 @@ return [
         'status_label' => 'Status',
         'message_label' => 'Message',
         'occurred_at_label' => 'Occurred at',
-        'occurred_at_helper' => 'The incident\'s created timestamp will be used if left empty.',
+        'occurred_at_helper' => 'The information\'s created timestamp will be used if left empty.',
         'visible_label' => 'Visible',
         'user_label' => 'User',
-        'user_helper' => 'The user who reported the incident.',
+        'user_helper' => 'The user who reported the information.',
         'notifications_label' => 'Notify Subscribers?',
-        'stickied_label' => 'Sticky Incident?',
-        'guid_label' => 'Incident UUID',
+        'stickied_label' => 'Sticky Information?',
+        'guid_label' => 'Information UUID',
         'add_component' => [
             'action_label' => 'Add Component',
             'header' => 'Components',
@@ -64,17 +64,17 @@ return [
         ],
     ],
     'record_update' => [
-        'success_title' => 'Incident :name Updated',
-        'success_body' => 'A new incident update has been recorded.',
+        'success_title' => 'Information :name Updated',
+        'success_body' => 'A new information update has been recorded.',
         'form' => [
             'message_label' => 'Message',
             'status_label' => 'Status',
             'user_label' => 'User',
-            'user_helper' => 'Who reported this incident.',
+            'user_helper' => 'Who reported this information.',
         ],
     ],
     'overview' => [
-        'total_incidents_label' => 'Total Incidents',
-        'total_incidents_description' => 'Total number of incidents.',
+        'total_incidents_label' => 'Total Information',
+        'total_incidents_description' => 'Total number of information.',
     ],
 ];

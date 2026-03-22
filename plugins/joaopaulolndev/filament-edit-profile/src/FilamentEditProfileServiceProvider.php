@@ -71,6 +71,11 @@ class FilamentEditProfileServiceProvider extends PackageServiceProvider
         }
     }
 
+    public function packageBooted(): void
+    {
+        $this->registerLivewireComponents();
+    }
+
     private function registerLivewireComponents(): void
     {
         Livewire::component('edit_profile_form', EditProfileForm::class);

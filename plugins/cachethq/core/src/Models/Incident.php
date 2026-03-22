@@ -206,7 +206,7 @@ class Incident extends Model
      */
     public function filamentDashboardEditUrl(): string
     {
-        return IncidentResource::getUrl(name: 'edit', parameters: ['record' => $this->id]);
+        return IncidentResource::getUrl(name: 'edit', parameters: ['record' => $this->id], panel: 'cachet');
     }
 
     /**

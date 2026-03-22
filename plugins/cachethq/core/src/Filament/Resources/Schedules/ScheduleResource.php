@@ -18,8 +18,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -28,12 +28,17 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ScheduleResource extends Resource
 {
     protected static ?string $model = Schedule::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-maintenance';
+
+    protected static ?int $navigationSort = -1;
+
+    protected static string|UnitEnum|null $navigationGroup = '';
 
     public static function form(Schema $schema): Schema
     {
@@ -43,7 +48,7 @@ class ScheduleResource extends Resource
                     TextInput::make('name')
                         ->label(__('cachet::schedule.form.name_label'))
                         ->required(),
-                    MarkdownEditor::make('message')
+                    RichEditor::make('message')
                         ->label(__('cachet::schedule.form.message_label'))
                         ->columnSpanFull(),
                     Repeater::make('scheduleComponents')
@@ -129,7 +134,7 @@ class ScheduleResource extends Resource
                             ->send();
                     })
                     ->schema([
-                        MarkdownEditor::make('message')
+                        RichEditor::make('message')
                             ->label(__('cachet::schedule.add_update.form.message_label'))
                             ->required(),
 

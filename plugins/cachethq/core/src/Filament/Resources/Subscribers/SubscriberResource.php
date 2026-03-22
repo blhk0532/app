@@ -21,10 +21,15 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use UnitEnum;
 
 class SubscriberResource extends Resource
 {
     protected static ?string $model = Subscriber::class;
+
+    protected static ?int $navigationSort = 12;
+
+    protected static string|UnitEnum|null $navigationGroup = ' ';
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-subscribers';
 

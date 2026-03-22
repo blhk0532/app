@@ -2,11 +2,11 @@
 
 namespace Cachet\Filament\Resources\Users;
 
+use App\Models\User;
 use Cachet\Cachet;
 use Cachet\Filament\Resources\Users\Pages\CreateUser;
 use Cachet\Filament\Resources\Users\Pages\EditUser;
 use Cachet\Filament\Resources\Users\Pages\ListUsers;
-use Cachet\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -28,6 +28,8 @@ use Illuminate\Support\Facades\Hash;
 class UserResource extends Resource
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function canAccess(): bool
     {

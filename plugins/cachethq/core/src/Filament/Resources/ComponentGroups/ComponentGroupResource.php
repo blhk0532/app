@@ -19,12 +19,23 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
+use Wallacemartinss\FilamentIconPicker\Enums\Heroicons;
 
 class ComponentGroupResource extends Resource
 {
     protected static ?string $model = ComponentGroup::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = Heroicons::OutlinedChartPie;
+
+    protected static ?int $navigationSort = 6;
+
+    protected static string|UnitEnum|null $navigationGroup = ' ';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
 
     public static function form(Schema $schema): Schema
     {

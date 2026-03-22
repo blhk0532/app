@@ -23,12 +23,17 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class MetricResource extends Resource
 {
     protected static ?string $model = Metric::class;
 
+    protected static ?int $navigationSort = 0;
+
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-metrics';
+
+    protected static string|UnitEnum|null $navigationGroup = ' ';
 
     public static function form(Schema $schema): Schema
     {
@@ -48,7 +53,6 @@ class MetricResource extends Resource
                         ->placeholder('e.g. ms, %, etc.'),
                     MarkdownEditor::make('description')
                         ->label(__('cachet::metric.form.description_label'))
-                        ->maxLength(255)
                         ->columnSpanFull(),
                     ToggleButtons::make('default_view')
                         ->label(__('cachet::metric.form.default_view_label'))

@@ -18,6 +18,8 @@ class ManageTheme extends SettingsPage
 {
     protected static string $settings = ThemeSettings::class;
 
+    protected static ?string $title = '';
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');
@@ -25,7 +27,7 @@ class ManageTheme extends SettingsPage
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.items.manage_theme');
+        return __('Themes');
     }
 
     public function form(Schema $schema): Schema

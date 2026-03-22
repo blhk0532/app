@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "82a167160a94caa98bcbdd37b659a6cc",
+    "content-hash": "162df113d285cd3b2d4c435f03ebf30b",
     "packages": [
         {
             "name": "achyutn/filament-log-viewer",
@@ -3194,6 +3194,69 @@
                 }
             ],
             "time": "2026-01-22T10:22:30+00:00"
+        },
+        {
+            "name": "devletes/filament-pinnable-navigation",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/devletes/filament-pinnable-navigation.git",
+                "reference": "c3e1eb5ad9e222547651e4b6ad9be6170ce31ec3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/devletes/filament-pinnable-navigation/zipball/c3e1eb5ad9e222547651e4b6ad9be6170ce31ec3",
+                "reference": "c3e1eb5ad9e222547651e4b6ad9be6170ce31ec3",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.18",
+                "orchestra/testbench": "^9.0|^10.0",
+                "pestphp/pest": "^3.8",
+                "pestphp/pest-plugin-laravel": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Devletes\\FilamentPinnableNavigation\\PinnableNavigationServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Devletes\\FilamentPinnableNavigation\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Devletes",
+                    "email": "packages@devletes.com"
+                }
+            ],
+            "description": "Pinnable navigation support for Filament 5 panels.",
+            "homepage": "https://github.com/devletes/filament-pinnable-navigation",
+            "keywords": [
+                "filament",
+                "filament-plugin",
+                "laravel",
+                "navigation",
+                "plugin"
+            ],
+            "support": {
+                "issues": "https://github.com/devletes/filament-pinnable-navigation/issues",
+                "source": "https://github.com/devletes/filament-pinnable-navigation"
+            },
+            "time": "2026-03-21T02:08:12+00:00"
         },
         {
             "name": "devonab/filament-easy-footer",
@@ -26323,6 +26386,7 @@
         "cheesegrits/filament-google-maps": 20,
         "cmsmaxinc/filament-error-pages": 20,
         "deldius/filament-user-field": 20,
+        "devletes/filament-pinnable-navigation": 20,
         "devonab/filament-easy-footer": 20,
         "devtical/filament-sanctum": 20,
         "eduardoribeirodev/filament-leaflet": 20,

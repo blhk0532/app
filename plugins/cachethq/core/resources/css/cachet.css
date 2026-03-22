@@ -1,9 +1,3 @@
-@import 'tailwindcss';
-@import '../../vendor/filament/support/resources/css/index.css';
-
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
-
 @theme {
   --color-primary-50: #e6f7ed;
   --color-primary-100: #c1edce;
@@ -67,7 +61,7 @@
 }
 
 @utility button--secondary {
-  @apply bg-zinc-300 text-zinc-800 hover:bg-zinc-400 focus-visible:outline-zinc-300 focus-visible:outline-zinc-800 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-zinc-700;
+  @apply bg-zinc-300 text-zinc-800 hover:bg-zinc-400 focus-visible:outline-zinc-300 focus-visible:outline-zinc-800 dark:bg-white/2 dark:text-zinc-400 dark:hover:bg-zinc-700;
 }
 
 @layer utilities {

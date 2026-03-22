@@ -25,6 +25,8 @@ class ApiKeyResource extends Resource
 {
     protected static ?string $model = PersonalAccessToken::class;
 
+    protected static ?int $navigationSort = 6;
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -39,7 +41,7 @@ class ApiKeyResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.items.manage_api_keys');
+        return __('Api Keys');
     }
 
     public static function form(Schema $schema): Schema

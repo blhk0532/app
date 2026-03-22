@@ -26,6 +26,10 @@
 
 @source '../../../../vendor/andrewdwallo/filament-companies/resources/views';
 @source "../../../../vendor/relaticle/flowforge/resources/views/**/*.blade.php";
+
+@source '../../../../plugins/cachethq/core/resources/views';
+@import '../../../../plugins/cachethq/core/resources/css/cachet.css';
+
 ::-webkit-scrollbar {
     width: .56vw !important;
     height: 8px !important;

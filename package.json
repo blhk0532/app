@@ -26,7 +26,11 @@
         "lightningcss-linux-x64-gnu": "^1.29.1"
     },
     "devDependencies": {
+        "@inertiajs/react": "^2.3.18",
         "@tailwindcss/vite": "^4.2.2",
+        "@vitejs/plugin-react": "^6.0.1",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4",
         "tailwindcss": "^4.2.2"
     }
 }

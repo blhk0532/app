@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Filament\Resources\Components\Pages;
 
 use Cachet\Filament\Resources\Components\ComponentResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListComponents extends ListRecords
 {
@@ -13,7 +15,17 @@ class ListComponents extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+
         ];
+    }
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
     }
 }

@@ -34,6 +34,8 @@ class OhDear extends Page
 
     public bool $import_incidents = false;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.integrations.label');

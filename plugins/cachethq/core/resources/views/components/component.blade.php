@@ -29,7 +29,17 @@
 
             <div class="flex flex-col gap-y-1 text-xs text-zinc-500 dark:text-zinc-300">
                 @if($component->description)
-                <p class="">{!! $component->description !!}</p>
+                @php
+                    $componentDescription = (string) $component->description;
+                    $hasHtmlTags = preg_match('/<[^>]+>/', $componentDescription) === 1;
+                    $renderedDescription = $hasHtmlTags
+                        ? $componentDescription
+                        : \Illuminate\Support\Str::markdown($componentDescription, [
+                            'html_input' => 'strip',
+                            'allow_unsafe_links' => false,
+                        ]);
+                @endphp
+                <div class="prose-sm md:prose prose-zinc max-w-none dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">{!! $renderedDescription !!}</div>
                 @endif
                 @if($component->link)
                 <a href="{{ $component->link }}" class="text-zinc-700 underline dark:text-zinc-300" target="_blank" rel="nofollow noopener">{{ __('cachet::component.view_details') }}</a>

@@ -1,7 +1,7 @@
 <x-cachet::cachet>
     <x-cachet::header />
 
-    <div class="container mx-auto flex max-w-5xl flex-col space-y-6 px-4 py-10 sm:px-6 lg:px-8">
+    <div class="container mx-auto flex flex-col space-y-6 w-full px-4 py-6">
         <x-cachet::status-bar />
 
         <x-cachet::about />

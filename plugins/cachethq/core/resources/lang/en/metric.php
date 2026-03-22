@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Metric|Metrics',
+    'resource_label' => 'statistics|statistics',
     'list' => [
         'headers' => [
             'name' => 'Name',
@@ -19,8 +19,8 @@ return [
             'updated_at' => 'Updated at',
         ],
         'empty_state' => [
-            'heading' => 'Metrics',
-            'description' => 'Metrics are used to track and display data.',
+            'heading' => 'statistics',
+            'description' => 'statistics are used to track and display data.',
         ],
     ],
     'form' => [

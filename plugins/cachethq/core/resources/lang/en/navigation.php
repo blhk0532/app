@@ -23,7 +23,7 @@ return [
         'label' => 'Resources',
         'items' => [
             'status_page' => 'Status Page',
-            'documentation' => 'Documentation',
+            'documentation' => '',
             'discord' => 'Join Discord',
             'sponsor' => 'Sponsor Cachet',
         ],

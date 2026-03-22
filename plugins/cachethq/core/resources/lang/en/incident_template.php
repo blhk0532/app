@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Incident Template|Incident Templates',
+    'resource_label' => 'Template|Templates',
     'list' => [
         'headers' => [
             'name' => 'Name',
@@ -12,8 +12,8 @@ return [
             'deleted_at' => 'Deleted at',
         ],
         'empty_state' => [
-            'heading' => 'Incident Templates',
-            'description' => 'Incident templates are used to create reusable incident messages.',
+            'heading' => 'Templates',
+            'description' => 'Templates are used to create reusable incident messages.',
         ],
     ],
     'form' => [

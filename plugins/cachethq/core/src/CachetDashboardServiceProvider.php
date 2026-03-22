@@ -51,7 +51,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->favicon('/vendor/cachethq/cachet/favicon.ico')
             ->viteTheme('resources/css/dashboard/theme.css', 'vendor/cachethq/cachet/build')
             ->discoverResources(__DIR__.'/Filament/Resources', 'Cachet\\Filament\\Resources')
-            ->discoverPages(__DIR__.'/Filament/Pages', 'Cachet\\Filament\\Pages')
+          //  ->discoverPages(__DIR__.'/Filament/Pages', 'Cachet\\Filament\\Pages')
             ->discoverWidgets(__DIR__.'/Filament/Widgets', 'Cachet\\Filament\\Widgets')
             ->navigationGroups([
                 NavigationGroup::make()
@@ -68,20 +68,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->navigationItems([
                 NavigationItem::make(fn (): string => __('cachet::navigation.resources.items.status_page'))
                     ->url(Cachet::path())
-                    ->group(fn (): string => __('cachet::navigation.resources.label'))
                     ->icon('cachet-component-performance-issues'),
-                NavigationItem::make(fn (): string => __('cachet::navigation.resources.items.documentation'))
-                    ->url('https://docs.cachethq.io/?ref=cachet-dashboard')
-                    ->group(fn (): string => __('cachet::navigation.resources.label'))
-                    ->icon('heroicon-o-book-open'),
-                NavigationItem::make(fn (): string => __('cachet::navigation.resources.items.discord'))
-                    ->url('https://discord.gg/gUv2qySfCU')
-                    ->group(fn (): string => __('cachet::navigation.resources.label'))
-                    ->icon('cachet-discord'),
-                NavigationItem::make(fn (): string => __('cachet::navigation.resources.items.sponsor'))
-                    ->url('https://github.com/sponsors/cachethq')
-                    ->group(fn (): string => __('cachet::navigation.resources.label'))
-                    ->icon('heroicon-o-heart'),
             ])
             ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))
             ->middleware([

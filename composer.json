@@ -31,6 +31,7 @@
         "cheesegrits/filament-google-maps": "@dev",
         "cmsmaxinc/filament-error-pages": "@dev",
         "deldius/filament-user-field": "@dev",
+        "devletes/filament-pinnable-navigation": "@dev",
         "devonab/filament-easy-footer": "@dev",
         "devtical/filament-sanctum": "@dev",
         "eduardoribeirodev/filament-leaflet": "@dev",

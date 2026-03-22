@@ -43,6 +43,8 @@ class Schedule extends Model
 
     use SoftDeletes;
 
+    protected $table = 'cachet_schedules';
+
     /** @var array<string, string> */
     protected $casts = [
         'scheduled_at' => 'datetime',
@@ -87,7 +89,7 @@ class Schedule extends Model
     {
         return $this->belongsToMany(
             Component::class,
-            'schedule_components',
+            'cachet_schedule_components',
         )->using(ScheduleComponent::class)
             ->withPivot(['component_status'])
             ->withTimestamps();

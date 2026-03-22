@@ -6,7 +6,6 @@ use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\AvatarProviders\UiAvatarsProvider;
 use Filament\Exceptions\NoDefaultPanelSetException;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
@@ -29,6 +28,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
+use Leek\FilamentDiceBear\DiceBearProvider;
 use lockscreen\FilamentLockscreen\Lockscreen;
 
 /**
@@ -157,14 +157,15 @@ class LockerScreen extends SimplePage
     {
         /** @var User $user */
         $user = \filament()->getCurrentPanel()->auth()->user();
+        $diceBearProvider = new DiceBearProvider;
 
         return ImageEntry::make('avatar')
             ->hiddenLabel()
             ->circular()
             ->imageSize(80)
             ->columnSpanFull()
-            ->defaultImageUrl((new UiAvatarsProvider)->get($user))
-            ->state(method_exists($user, 'getFilamentAvatarUrl') ? $user->getFilamentAvatarUrl() : (new UiAvatarsProvider)->get($user))
+            ->defaultImageUrl($diceBearProvider->get($user))
+            ->state(method_exists($user, 'getFilamentAvatarUrl') ? $user->getFilamentAvatarUrl() : $diceBearProvider->get($user))
             ->extraAttributes([
                 'style' => 'justify-content: center;',
             ]);

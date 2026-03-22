@@ -43,7 +43,6 @@ class ComponentsRelationManager extends RelationManager
                     ->required(),
                 MarkdownEditor::make('description')
                     ->label(__('cachet::component.form.description_label'))
-                    ->maxLength(255)
                     ->columnSpanFull(),
                 TextInput::make('link')
                     ->label(__('cachet::component.form.link_label'))

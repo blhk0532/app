@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'heading' => 'Lock Screen',
+    'heading' => '',
     'user_menu_title' => 'Lock Screen',
     'fields' => [
         'password' => 'Password',

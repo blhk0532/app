@@ -47,12 +47,17 @@ class Feed extends Widget
      */
     protected function getFeed(): array
     {
-        return Cache::flexible('cachet-feed', [
+        //   $feedUri = config('cachet.feed.uri');
+        $feedUri = [];
+
+        if (blank($feedUri)) {
+            return [];
+        }
+
+        return Cache::flexible('nordic-feed', [
             60 * 15,
             60 * 60,
-        ], fn () => $this->fetchFeed(
-            config('cachet.feed.uri')
-        ));
+        ], fn () => $this->fetchFeed(''));
     }
 
     /**
@@ -81,7 +86,7 @@ class Feed extends Widget
                         'utm_source' => 'cachet',
                         'utm_medium' => 'installation',
                         'utm_campaign' => 'dashboard',
-                    ]),
+                    ])->toString(),
                     'description' => Str::of($item->description ?? $item->summary ?? '')->limit(preserveWords: true),
                     'date' => Carbon::parse((string) ($item->pubDate ?? $item->updated ?? '')),
                 ];

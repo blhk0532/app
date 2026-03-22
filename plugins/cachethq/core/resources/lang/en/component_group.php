@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'resource_label' => 'Component Group|Component Groups',
+    'resource_label' => 'Collection|Collections',
     'incident_count' => ':count Incident|:count Incidents',
     'visibility' => [
         'expanded' => 'Always Expanded',
         'collapsed' => 'Always Collapsed',
-        'collapsed_unless_incident' => 'Collapsed Unless Ongoing Incident',
+        'collapsed_unless_incident' => 'Collapsed Unless Ongoing',
     ],
     'list' => [
         'headers' => [
@@ -17,8 +17,8 @@ return [
             'updated_at' => 'Updated at',
         ],
         'empty_state' => [
-            'heading' => 'Component Groups',
-            'description' => 'Group related components together.',
+            'heading' => 'Collections',
+            'description' => 'Collections related components together.',
         ],
     ],
     'form' => [

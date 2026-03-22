@@ -21,7 +21,7 @@ use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -71,20 +71,9 @@ class CachetPanelProvider extends PanelProvider
             ->navigationItems([
                 NavigationItem::make(fn (): string => __('cachet::navigation.resources.items.status_page'))
                     ->url(Cachet::path())
-                    ->group(fn (): string => __('cachet::navigation.resources.label'))
+                    ->visible(false)
+                    ->group(' ')
                     ->icon('cachet-component-performance-issues'),
-                NavigationItem::make(fn (): string => __('cachet::navigation.resources.items.documentation'))
-                    ->url('https://docs.cachethq.io/?ref=cachet-dashboard')
-                    ->group(fn (): string => __('cachet::navigation.resources.label'))
-                    ->icon('heroicon-o-book-open'),
-                NavigationItem::make(fn (): string => __('cachet::navigation.resources.items.discord'))
-                    ->url('https://discord.gg/gUv2qySfCU')
-                    ->group(fn (): string => __('cachet::navigation.resources.label'))
-                    ->icon('cachet-discord'),
-                NavigationItem::make(fn (): string => __('cachet::navigation.resources.items.sponsor'))
-                    ->url('https://github.com/sponsors/cachethq')
-                    ->group(fn (): string => __('cachet::navigation.resources.label'))
-                    ->icon('heroicon-o-heart'),
             ])
             ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))
             ->middleware([
@@ -93,7 +82,7 @@ class CachetPanelProvider extends PanelProvider
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
+                PreventRequestForgery::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,

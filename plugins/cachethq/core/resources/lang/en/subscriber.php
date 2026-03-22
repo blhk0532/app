@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Subscriber|Subscribers',
+    'resource_label' => 'Notification|Notification',
     'list' => [
         'headers' => [
             'email' => 'Email',
@@ -14,8 +14,8 @@ return [
             'updated_at' => 'Updated at',
         ],
         'empty_state' => [
-            'heading' => 'Subscribers',
-            'description' => 'Subscribers are people who have subscribed to your status page for notifications.',
+            'heading' => 'Notifications',
+            'description' => 'Notify people who have subscribed to your status page for notifications.',
         ],
         'actions' => [
             'verify_label' => 'Verify',
@@ -28,7 +28,7 @@ return [
         'global_label' => 'Global',
     ],
     'overview' => [
-        'total_subscribers_label' => 'Total Subscribers',
-        'total_subscribers_description' => 'Total number of subscribers.',
+        'total_subscribers_label' => 'Total Notifications',
+        'total_subscribers_description' => 'Total number of people to notify.',
     ],
 ];

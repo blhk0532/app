@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Schedule|Schedules',
+    'resource_label' => 'Schedule|Schedule',
     'list' => [
         'headers' => [
             'name' => 'Name',
@@ -13,7 +13,7 @@ return [
             'deleted_at' => 'Deleted at',
         ],
         'empty_state' => [
-            'heading' => 'Schedules',
+            'heading' => 'Schedule',
             'description' => 'Plan and schedule your maintenance.',
         ],
         'actions' => [
@@ -40,5 +40,5 @@ return [
         'in_progress' => 'In Progress',
         'complete' => 'Complete',
     ],
-    'planned_maintenance_header' => 'Planned Maintenance',
+    'planned_maintenance_header' => 'Schema',
 ];

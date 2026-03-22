@@ -64,7 +64,7 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::investigating => Color::Blue,
             self::watching => Color::Amber,
             self::fixed => Color::Green,
-            self::identified => Color::Purple,
+            self::identified => Color::Gray,
             default => Color::Red,
         };
     }

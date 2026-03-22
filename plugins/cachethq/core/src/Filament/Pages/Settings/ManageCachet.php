@@ -17,6 +17,8 @@ class ManageCachet extends SettingsPage
 {
     protected static string $settings = AppSettings::class;
 
+    protected static ?string $title = '';
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');
@@ -24,7 +26,7 @@ class ManageCachet extends SettingsPage
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.items.manage_cachet');
+        return __('Application');
     }
 
     public function form(Schema $schema): Schema

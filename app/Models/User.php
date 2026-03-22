@@ -421,6 +421,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return in_array($role, ['admin', 'super', 'super_admin', 'superadmin'], true);
     }
 
+    public function preferredLocale(): ?string
+    {
+        return $this->locale;
+    }
+
     /**
      * Determine if the user can access wirechat panel.
      * Accepts both Filament Panel (for Filament routes) and Wirechat Panel (for standalone routes).

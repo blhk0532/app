@@ -13,6 +13,8 @@ class ManageLocalization extends SettingsPage
 {
     protected static string $settings = AppSettings::class;
 
+    protected static ?string $title = '';
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');
@@ -20,7 +22,7 @@ class ManageLocalization extends SettingsPage
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.items.manage_localization');
+        return __('Localization');
     }
 
     public function form(Schema $schema): Schema

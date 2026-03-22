@@ -35,7 +35,7 @@ export class LeafletMapCore {
         if (typeof window !== 'undefined' && window.L && !window.L.PM) {
             window.L.PM = { optIn: true };
         }
-        
+
         this.map = null;
         this.config = config;
         this.layers = new Map();
@@ -81,7 +81,7 @@ export class LeafletMapCore {
             if (L && !L.PM) {
                 L.PM = { optIn: true };
             }
-        
+
             try {
         this.map = L.map(this.config.mapId, this.config.mapConfig || {})
             .setView(this.config.defaultCoord, this.config.defaultZoom);
@@ -450,7 +450,7 @@ export class LeafletMapCore {
         if (url) {
             iconOptions.html = `
             <div style="position: relative; width: ${size[0]}px; height: ${size[1]}px; overflow: visible;">
-                
+
                 <!-- SHADOW -->
                 <img src="${url}" style="
                     position: absolute;
@@ -474,7 +474,7 @@ export class LeafletMapCore {
                     top: 0;
                     z-index: 1;
                 "/>
-                
+
             </div>
             `;
 
@@ -504,11 +504,11 @@ export class LeafletMapCore {
             }
 
             iconOptions.html = `
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 36" 
-                width="${size[0]}" 
-                height="${size[1]}" 
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 36"
+                width="${size[0]}"
+                height="${size[1]}"
                 style="overflow: visible; display: block;"
             >
             <defs>
@@ -523,19 +523,19 @@ export class LeafletMapCore {
             </defs>
 
             <!-- SHADOW -->
-            <path 
-                d="${pathData}" 
+            <path
+                d="${pathData}"
                 fill="rgba(0,0,0,0.25)"
                 filter="url(#${shadowId})"
                 transform="translate(12, 36) skewX(-30) scale(1, 0.5) translate(-12, -30)"
             />
 
             <!-- MARKER -->
-            <path 
-                d="${pathData}" 
-                fill="url(#${gradientId})" 
-                stroke="${darkColor}" 
-                stroke-width="1" 
+            <path
+                d="${pathData}"
+                fill="url(#${gradientId})"
+                stroke="${darkColor}"
+                stroke-width="1"
             />
 
             <!-- INNER ICON (heroicon ou dot) -->

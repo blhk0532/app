@@ -28,10 +28,7 @@ class UpdatesRelationManager extends RelationManager
             ->components([
                 MarkdownEditor::make('message')
                     ->label(__('Message'))
-                    ->required()
-                    ->minHeight('200px')
-                    ->maxHeight('300px')
-                    ->columnSpanFull(),
+                    ->required(),
                 Select::make('user_id')
                     ->label(__('User'))
                     ->hint(__('The user who reported the incident.'))

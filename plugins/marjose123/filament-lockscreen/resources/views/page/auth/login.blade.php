@@ -1,10 +1,9 @@
-<div>
+<div class="lock-screen-div">
     <x-filament-panels::page.simple>
         @props([
             'heading' => null,
             'subheading' => null,
         ])
-
         {{ $this->content }}
 
     </x-filament-panels::page.simple>

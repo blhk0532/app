@@ -22,12 +22,17 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ComponentResource extends Resource
 {
     protected static ?string $model = Component::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-components';
+
+    protected static string|UnitEnum|null $navigationGroup = '';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {
@@ -47,7 +52,6 @@ class ComponentResource extends Resource
                         ->required(),
                     MarkdownEditor::make('description')
                         ->label(__('cachet::component.form.description_label'))
-                        ->maxLength(255)
                         ->columnSpanFull(),
                     Select::make('component_group_id')
                         ->relationship('group', 'name')
