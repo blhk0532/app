@@ -7,3 +7,7 @@
 .filament-google-maps-widget-table .fi-section-content{
     padding: 0px!important;
 }
+
+.map-picker-location-widget .fi-fo-field-label{
+    display: none!important;
+}

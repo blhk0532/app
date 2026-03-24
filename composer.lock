@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "162df113d285cd3b2d4c435f03ebf30b",
+    "content-hash": "4a65978e95cba65b840466c933366a32",
     "packages": [
         {
             "name": "achyutn/filament-log-viewer",
@@ -11915,6 +11915,97 @@
                 }
             ],
             "time": "2026-01-02T08:56:05+00:00"
+        },
+        {
+            "name": "mradder/filament-logger",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MrAdder/filament-logger.git",
+                "reference": "8724ac83b4f49a7144e19e30716bb023382ffcb3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MrAdder/filament-logger/zipball/8724ac83b4f49a7144e19e30716bb023382ffcb3",
+                "reference": "8724ac83b4f49a7144e19e30716bb023382ffcb3",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0 || ^4.3.1 || ^5.0",
+                "illuminate/contracts": "^11.0 | ^12.0 | ^13.0",
+                "php": "^8.2",
+                "spatie/laravel-activitylog": "^4.5",
+                "spatie/laravel-package-tools": "^1.13.5"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.9",
+                "nunomaduro/collision": "^8.0 | ^9.0 | ^10.0",
+                "orchestra/testbench": "^9.0 | ^10.0 | ^11.0",
+                "pestphp/pest": "^3.7 | ^4.0",
+                "pestphp/pest-plugin-laravel": "^3.1 | ^4.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^11.5 | ^12.0",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentLogger": "MrAdder\\FilamentLogger\\Facades\\FilamentLogger"
+                    },
+                    "providers": [
+                        "MrAdder\\FilamentLogger\\FilamentLoggerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MrAdder\\FilamentLogger\\": "src",
+                    "MrAdder\\FilamentLogger\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ziyaan Hassan",
+                    "email": "ziyaan2010@gmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Daniel Green",
+                    "email": "dgreen03@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Audit logging, activity tracking, exports, alerts, and dashboards for Filament admin panels.",
+            "homepage": "https://mradder.github.io/filament-logger/",
+            "keywords": [
+                "activity-log",
+                "activity-tracking",
+                "admin-panel",
+                "alerts",
+                "audit-log",
+                "compliance",
+                "exports",
+                "filament",
+                "filament-logger",
+                "filamentphp",
+                "laravel",
+                "laravel-activitylog",
+                "security",
+                "spatie-activitylog"
+            ],
+            "support": {
+                "docs": "https://mradder.github.io/filament-logger/",
+                "issues": "https://github.com/MrAdder/filament-logger/issues",
+                "source": "https://github.com/MrAdder/filament-logger"
+            },
+            "time": "2026-03-21T12:32:18+00:00"
         },
         {
             "name": "muazzam/slick-scrollbar",
@@ -26430,6 +26521,7 @@
         "mddev31/filament-dynamic-dashboard": 20,
         "mmes-design/filament-file-manager": 20,
         "mokhosh/filament-rating": 20,
+        "mradder/filament-logger": 20,
         "muazzam/slick-scrollbar": 20,
         "muhammadkazimsadiq/filament-quick-edit": 20,
         "mwguerra/filemanager": 20,

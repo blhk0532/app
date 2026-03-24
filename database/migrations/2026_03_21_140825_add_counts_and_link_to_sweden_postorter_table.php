@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('sweden_postorter')) {
+            return;
+        }
+
         Schema::table('sweden_postorter', function (Blueprint $table) {
             $table->after('foretag', function (Blueprint $table) {
                 $table->unsignedInteger('postnummer')->nullable()->default(null);
@@ -26,6 +30,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('sweden_postorter')) {
+            return;
+        }
+
         Schema::table('sweden_postorter', function (Blueprint $table) {
             $table->dropColumn(['postnummer', 'gator', 'adresser', 'ratsit_link']);
         });

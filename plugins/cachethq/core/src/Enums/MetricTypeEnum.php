@@ -21,8 +21,8 @@ enum MetricTypeEnum: int implements HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::sum => __('cachet::metric.sum_label'),
-            self::average => __('cachet::metric.average_label'),
+            self::sum => __('Summa'),
+            self::average => __('Genomsnitt'),
         };
     }
 }

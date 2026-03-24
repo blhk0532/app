@@ -1,0 +1,29 @@
+import { ResourceTimeline } from '@/components/resource-timeline'
+
+export function ResourceTimelineDemo1() {
+  return (
+    <ResourceTimeline
+      className='max-w-300 my-10 mx-auto'
+      schedulerLicenseKey='CC-Attribution-NonCommercial-NoDerivatives'
+      editable
+      selectable
+      nowIndicator
+      navLinks
+      locale='sv'
+      initialView='resourceTimelineWeek'
+      height='333px'
+      contentHeight={300}
+      aspectRatio={1.5}
+      timeZone='UTC'
+      resourceColumnHeaderContent='Service Tekniker'
+      resources='calendar/resources?with-nesting&with-colors'
+      events='calendar/events?single-day&for-resource-timeline'
+      addButton={{
+        text: 'Ny Tekniker',
+        click() {
+          alert('Ny Tekniker...')
+        }
+      }}
+    />
+  )
+}

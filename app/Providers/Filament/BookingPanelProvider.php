@@ -25,6 +25,7 @@ use App\Filament\Admin\Pages\Auth\Login;
 use App\Filament\Booking\Pages\GoogleCalendar;
 use App\Filament\Booking\Pages\InertiaCalendar;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 // use Emuniq\FilamentCollapsibleSubnav\CollapsibleSubnavPlugin;
@@ -55,7 +56,7 @@ class BookingPanelProvider extends PanelProvider
     {
         return $panel
             ->id('booking')
-            ->path('booking')
+            ->path('auth/booking')
             ->viteTheme('resources/css/filament/booking/theme.css')
             ->login(Login::class)
             ->colors([
@@ -160,6 +161,7 @@ class BookingPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

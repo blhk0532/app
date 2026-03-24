@@ -12,10 +12,12 @@ use Cachet\Models\ComponentGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -28,14 +30,13 @@ class ComponentGroupResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicons::OutlinedChartPie;
 
+    protected static bool $isScopedToTenant = false;
+
     protected static ?int $navigationSort = 6;
 
-    protected static string|UnitEnum|null $navigationGroup = ' ';
+    protected static string|UnitEnum|null $navigationGroup = '  ';
 
-    public static function canAccess(): bool
-    {
-        return auth()->user()->isAdmin();
-    }
+    protected static bool $isDiscovered = true;
 
     public static function form(Schema $schema): Schema
     {
@@ -53,8 +54,16 @@ class ComponentGroupResource extends Resource
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
+                        ->live()
                         ->required()
                         ->columnSpanFull(),
+                    Select::make('team_id')
+                        ->label(__('Team'))
+                        ->relationship('team', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->columnSpanFull()
+                        ->visible(fn (Get $get): bool => $get('visible') === ResourceVisibilityEnum::team || $get('visible') === ResourceVisibilityEnum::team->value),
                     ToggleButtons::make('collapsed')
                         ->label(__('cachet::component_group.form.collapsed_label'))
                         ->required()

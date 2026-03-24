@@ -27,9 +27,11 @@ class SubscriberResource extends Resource
 {
     protected static ?string $model = Subscriber::class;
 
+    protected static bool $isScopedToTenant = false;
+
     protected static ?int $navigationSort = 12;
 
-    protected static string|UnitEnum|null $navigationGroup = ' ';
+    protected static string|UnitEnum|null $navigationGroup = '  ';
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-subscribers';
 
@@ -98,9 +100,6 @@ class SubscriberResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

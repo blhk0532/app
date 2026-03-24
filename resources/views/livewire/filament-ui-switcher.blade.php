@@ -22,7 +22,8 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
     class="fi-sidebar-database-notifications-btn"
     x-show="$store.sidebar.isOpen"
     @else
-    class="fi-icon-btn fi-size-md fi-topbar-database-notifications-btn ml-2"
+    class="fi-icon-btn fi-size-md fi-topbar-database-notifications-btn"
+    Style="margin-left: 8px;"
     @endif
         aria-label="{{ __('filament-ui-switcher::filament-ui-switcher.button.aria_label') }}"
     >

@@ -8,9 +8,11 @@ use Filament\Support\Contracts\HasLabel;
 
 enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
 {
-    case authenticated = 0;
-    case guest = 1;
-    case hidden = 2;
+    case team = 0;
+    case admin = 1;
+    case authenticated = 2;
+    case guest = 3;
+    case hidden = 4;
 
     public static function visibleToGuests(): array
     {
@@ -25,6 +27,8 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
     public function getIcon(): string
     {
         return match ($this) {
+            self::team => 'heroicon-o-user-group',
+            self::admin => 'heroicon-o-shield-check',
             self::authenticated => 'heroicon-o-lock-closed',
             self::guest => 'heroicon-o-eye',
             self::hidden => 'heroicon-o-eye-slash',
@@ -34,18 +38,24 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::authenticated => __('cachet::resource.visibility.authenticated'),
-            self::guest => __('cachet::resource.visibility.guest'),
-            self::hidden => __('cachet::resource.visibility.hidden'),
+            self::team => __('Team'),
+            self::admin => __('Admin'),
+            self::authenticated => __('Inloggad'),
+            self::guest => __('Alla'),
+            self::hidden => __('Ingen'),
+
         };
     }
 
     public function getColor(): string
     {
         return match ($this) {
-            self::authenticated => 'warning',
-            self::guest => 'info',
+            self::team => 'gray',
+            self::admin => 'gray',
+            self::authenticated => 'gray',
+            self::guest => 'gray',
             self::hidden => 'danger',
+
         };
     }
 }

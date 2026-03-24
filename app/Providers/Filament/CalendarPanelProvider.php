@@ -16,6 +16,7 @@ use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\BookingCalenders
 use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\BookingCalendersX6;
 use App\Filament\Pages\Dashboard;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
@@ -32,7 +33,7 @@ use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -46,7 +47,7 @@ class CalendarPanelProvider extends PanelProvider
     {
         return $panel
             ->id('calendar')
-            ->path('calendar')
+            ->path('auth/calendar')
             ->viteTheme('resources/css/filament/calendar/theme.css')
             ->colors([
                 'primary' => Color::Amber,
@@ -118,11 +119,12 @@ class CalendarPanelProvider extends PanelProvider
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
+                PreventRequestForgery::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

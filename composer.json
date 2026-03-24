@@ -78,6 +78,7 @@
         "mddev31/filament-dynamic-dashboard": "@dev",
         "mmes-design/filament-file-manager": "@dev",
         "mokhosh/filament-rating": "@dev",
+        "mradder/filament-logger": "@dev",
         "muazzam/slick-scrollbar": "@dev",
         "muhammadkazimsadiq/filament-quick-edit": "@dev",
         "mwguerra/filemanager": "@dev",

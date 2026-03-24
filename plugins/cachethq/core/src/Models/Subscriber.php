@@ -2,6 +2,8 @@
 
 namespace Cachet\Models;
 
+use App\Models\Team;
+use Cachet\Concerns\BelongsToTenant;
 use Cachet\Database\Factories\SubscriberFactory;
 use Cachet\Events\Subscribers\SubscriberCreated;
 use Cachet\Events\Subscribers\SubscriberUnsubscribed;
@@ -10,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -28,6 +31,8 @@ use Illuminate\Support\Str;
  */
 class Subscriber extends Model
 {
+    use BelongsToTenant;
+
     /** @use HasFactory<SubscriberFactory> */
     use HasFactory;
 
@@ -48,6 +53,7 @@ class Subscriber extends Model
         'global',
         'verify_code',
         'verified_at',
+        'team_id',
     ];
 
     /**
@@ -93,5 +99,10 @@ class Subscriber extends Model
     protected static function newFactory(): Factory
     {
         return SubscriberFactory::new();
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 }

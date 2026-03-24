@@ -161,6 +161,7 @@ class LockerScreen extends SimplePage
 
         return ImageEntry::make('avatar')
             ->hiddenLabel()
+            ->hidden()
             ->circular()
             ->imageSize(80)
             ->columnSpanFull()

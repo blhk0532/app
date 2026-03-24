@@ -2,6 +2,8 @@
 
 namespace Cachet\Models;
 
+use App\Models\Team;
+use Cachet\Concerns\BelongsToTenant;
 use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
@@ -42,6 +44,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Component extends Model
 {
+    use BelongsToTenant;
+
     /** @use HasFactory<ComponentFactory> */
     use HasFactory;
 
@@ -65,6 +69,7 @@ class Component extends Model
         'component_group_id',
         'enabled',
         'meta',
+        'team_id',
     ];
 
     protected $dispatchesEvents = [
@@ -157,5 +162,10 @@ class Component extends Model
     protected static function newFactory(): Factory
     {
         return ComponentFactory::new();
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 }

@@ -7,6 +7,7 @@ namespace App\Filament\App\Pages;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Enums\Width;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class GoogleCalendar extends Page
@@ -41,7 +42,7 @@ class GoogleCalendar extends Page
         if (filament()->getTenant()->getAttribute('is_admin') !== true) {
             return false;
         }
-        if (auth()->user()->role === 'admin' || auth()->user()->role === 'super' || auth()->user()->role === 'manager') {
+        if (Auth::user()->role === 'admin' || Auth::user()->role === 'super' || Auth::user()->role === 'manager') {
             return true;
         }
 

@@ -66,7 +66,7 @@ class UpdatesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->modelLabel(__('Update'))
-            ->pluralModelLabel(__('Updates'))
+            ->pluralModelLabel(__('Update'))
             ->columns([
                 TextColumn::make('status')
                     ->label(__('Status'))

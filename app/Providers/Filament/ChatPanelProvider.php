@@ -10,6 +10,7 @@ use AdultDate\FilamentWirechat\Filament\Resources\Messages\MessageResource;
 use AdultDate\FilamentWirechat\FilamentWirechatPlugin;
 use App\Filament\Chat\Pages\ChatDashboard;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
@@ -40,7 +41,7 @@ class ChatPanelProvider extends PanelProvider
     {
         return $panel
             ->id('chat')
-            ->path('chat')
+            ->path('auth/chat')
             ->viteTheme('resources/css/filament/chat/theme.css')
             ->colors([
                 'primary' => Color::Gray,
@@ -115,6 +116,7 @@ class ChatPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

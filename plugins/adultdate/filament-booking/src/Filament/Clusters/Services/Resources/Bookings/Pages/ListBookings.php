@@ -9,6 +9,7 @@ use Filament\Actions\CreateAction;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListBookings extends ListRecords
 {
@@ -40,4 +41,14 @@ class ListBookings extends ListRecords
     //   {
     //       return BookingResource::getWidgets();
     //   }
+
+    public function getTitle(): string|Htmlable
+    {
+        return '';
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
+    }
 }

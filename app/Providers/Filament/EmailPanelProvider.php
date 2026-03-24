@@ -9,6 +9,7 @@ use AdultDate\FilamentWirechat\Filament\Resources\Messages\MessageResource;
 use AdultDate\FilamentWirechat\FilamentWirechatPlugin;
 use App\Filament\Email\Pages\EmailDashboard;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
@@ -40,7 +41,7 @@ class EmailPanelProvider extends PanelProvider
     {
         return $panel
             ->id('email')
-            ->path('email')
+            ->path('auth/email')
             ->viteTheme('resources/css/filament/email/theme.css')
             ->colors([
                 'primary' => Color::Gray,
@@ -110,6 +111,7 @@ class EmailPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

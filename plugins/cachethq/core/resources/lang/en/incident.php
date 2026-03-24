@@ -29,7 +29,7 @@ return [
             'status' => 'Status',
             'visible' => 'Visible',
             'stickied' => 'Stickied',
-            'occurred_at' => 'Occurred at',
+            'occurred_at' => 'Arbetsdag',
             'notified_subscribers' => 'Notified subscribers',
             'created_at' => 'Created at',
             'updated_at' => 'Updated at',
@@ -48,7 +48,7 @@ return [
         'name_label' => 'Name',
         'status_label' => 'Status',
         'message_label' => 'Message',
-        'occurred_at_label' => 'Occurred at',
+        'occurred_at_label' => 'Arbetsdag',
         'occurred_at_helper' => 'The information\'s created timestamp will be used if left empty.',
         'visible_label' => 'Visible',
         'user_label' => 'User',
@@ -57,9 +57,9 @@ return [
         'stickied_label' => 'Sticky Information?',
         'guid_label' => 'Information UUID',
         'add_component' => [
-            'action_label' => 'Add Component',
-            'header' => 'Components',
-            'component_label' => 'Component',
+            'action_label' => 'Add Tekniker',
+            'header' => 'Tekniker',
+            'component_label' => 'Tekniker',
             'status_label' => 'Status',
         ],
     ],
@@ -75,6 +75,6 @@ return [
     ],
     'overview' => [
         'total_incidents_label' => 'Total Information',
-        'total_incidents_description' => 'Total number of information.',
+        'total_incidents_description' => 'Uppdateringar.',
     ],
 ];

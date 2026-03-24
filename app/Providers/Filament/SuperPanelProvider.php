@@ -24,11 +24,12 @@ use Adultdate\FilamentBooking\Filament\Widgets\StatsOverviewWidget;
 use Adultdate\FilamentBooking\FilamentBookingPlugin;
 use AdultDate\FilamentWirechat\FilamentWirechatPlugin;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use App\Models\User;
 use Awcodes\Overlook\OverlookPlugin;
 use Awcodes\Overlook\Widgets\OverlookWidget;
 use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+// use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use BinaryBuilds\CommandRunner\CommandRunnerPlugin;
 use BinaryBuilds\FilamentCacheManager\FilamentCacheManagerPlugin;
 use BinaryBuilds\FilamentFailedJobs\FilamentFailedJobsPlugin;
@@ -69,7 +70,7 @@ use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 // use MWGuerra\FileManager\Filament\Resources\FileSystemItemResource;
 // use MWGuerra\FileManager\FileManagerPlugin;
 use lockscreen\FilamentLockscreen\Lockscreen;
-use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
+// use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 use Usamamuneerchaudhary\Notifier\FilamentNotifierPlugin;
 use WallaceMartinss\FilamentEvolution\FilamentEvolutionPlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
@@ -83,7 +84,7 @@ class SuperPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('super')
-            ->path('nds/super')
+            ->path('auth/super')
             ->login()
             ->authGuard('web')
             ->colors([
@@ -134,7 +135,7 @@ class SuperPanelProvider extends PanelProvider
                 OrderResource::class,
                 DailyLocationResource::class,
                 BookingServicePeriodResource::class,
-                BookingOutcallQueueResource::class,
+                //    BookingOutcallQueueResource::class,
                 UserResource::class,
                 BookingCalendarResource::class,
                 BookingDataLeadResource::class,
@@ -164,6 +165,7 @@ class SuperPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -253,7 +255,7 @@ class SuperPanelProvider extends PanelProvider
                     ->enablePlugin(), // Enable the plugin.
             ])
             ->plugins($this->getFileManagerPlugin() + [
-                FilamentSpatieLaravelBackupPlugin::make(),
+                //    FilamentSpatieLaravelBackupPlugin::make(),
                 FilamentFailedJobsPlugin::make(),
                 FilamentIconPickerPlugin::make(),
                 FilamentLogViewer::make()
@@ -304,16 +306,16 @@ class SuperPanelProvider extends PanelProvider
                     ->url('/nds/admin/'.config('filament-sanctum.navigation.slug'))
                     ->icon(config('filament-sanctum.navigation.icon', 'heroicon-o-finger-print')),
             ])
-            ->plugin(
-                FilamentShieldPlugin::make()
-                    ->navigationLabel('Roles')                  // string|Closure|null
-                    ->navigationIcon('heroicon-o-shield-check')         // string|Closure|null
-                    ->activeNavigationIcon('heroicon-s-shield-check')   // string|Closure|null
-                    ->navigationGroup('Användare')                  // string|Closure|null
-                    ->navigationSort(10)                        // int|Closure|null
-                    ->navigationBadge('Roles')                      // string|Closure|null
-                    ->navigationBadgeColor('success')           // string|array|Closure|null
-            )
+        //    ->plugin(
+        //        FilamentShieldPlugin::make()
+        //            ->navigationLabel('Roles')                  // string|Closure|null
+        //            ->navigationIcon('heroicon-o-shield-check')         // string|Closure|null
+        //            ->activeNavigationIcon('heroicon-s-shield-check')   // string|Closure|null
+        //            ->navigationGroup('Användare')                  // string|Closure|null
+        //            ->navigationSort(10)                        // int|Closure|null
+        //            ->navigationBadge('Roles')                      // string|Closure|null
+        //            ->navigationBadgeColor('success')           // string|array|Closure|null
+        //    )
             ->plugins([
                 FilamentWirechatPlugin::make(),
             ])

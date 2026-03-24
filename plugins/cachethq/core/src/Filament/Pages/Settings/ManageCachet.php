@@ -4,6 +4,8 @@ namespace Cachet\Filament\Pages\Settings;
 
 use Cachet\Settings\AppSettings;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\RichEditor\ToolbarButtonGroup;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
@@ -34,12 +36,83 @@ class ManageCachet extends SettingsPage
         return $schema
             ->components([
                 Section::make()->columns(2)->schema([
-                    TextInput::make('name')
-                        ->label(__('cachet::settings.manage_cachet.site_name_label'))
-                        ->maxLength(255),
-                    MarkdownEditor::make('about')
-                        ->label(__('cachet::settings.manage_cachet.about_this_site_label'))
-                        ->columnSpanFull(),
+                    MarkdownEditor::make('name')
+                        ->default(now())
+                        ->label('Dashboard Title'),
+                    RichEditor::make('about')
+                        ->label('Dashboard Message')
+                        ->extraAttributes(['data-tiptap-mentionable' => 'true', 'class' => 'min-h-[200px]'])
+                        ->extraFieldWrapperAttributes(['data-tiptap-mentionable' => 'true', 'class' => 'min-h-[200px]'])
+                        ->toolbarButtons([
+                            // Headings
+                            [
+                                ToolbarButtonGroup::make('Headings', [
+                                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                                ])->icon('fi-o-heading'),
+                            ],
+
+                            // Text alignment
+                            [
+                                ToolbarButtonGroup::make('Alignment', [
+                                    'alignStart', 'alignCenter', 'alignEnd', 'alignJustify',
+                                ])->icon('heroicon-o-bars-3-bottom-left'),
+                            ],
+
+                            // Text formatting
+                            [
+                                ToolbarButtonGroup::make('Text Style', [
+                                    'bold', 'italic', 'underline', 'strike',
+                                ])->icon('heroicon-o-bold'),
+
+                                ToolbarButtonGroup::make('Advanced Text', [
+                                    'subscript', 'superscript', 'small', 'lead',
+                                ]),
+                            ],
+
+                            // Colors & highlights
+                            [
+                                ToolbarButtonGroup::make('Colors', [
+                                    'textColor', 'highlight',
+                                ])->icon('heroicon-o-swatch'),
+                            ],
+
+                            // Structure
+                            [
+                                ToolbarButtonGroup::make('Structure', [
+                                    'paragraph', 'blockquote', 'horizontalRule',
+                                ])->icon('heroicon-o-document-text'),
+                            ],
+
+                            // Lists & content blocks
+                            [
+                                ToolbarButtonGroup::make('Lists', [
+                                    'bulletList', 'orderedList',
+                                ])->icon('heroicon-o-list-bullet'),
+
+                            ],
+
+                            // Media & embeds
+                            [
+                                ToolbarButtonGroup::make('Media', [
+                                    'link', 'table', 'attachFiles',
+                                ])->icon('heroicon-o-paper-clip'),
+                            ],
+
+                            // Advanced features
+                            [
+                                ToolbarButtonGroup::make('Advanced', [
+                                    'customBlocks', 'mergeTags', 'details', 'grid',  'code', 'codeBlock',
+                                ])->icon('heroicon-o-code-bracket'),
+                            ],
+
+                            // Utilities
+                            [
+                                ToolbarButtonGroup::make('Utilities', [
+                                    'clearFormatting', 'undo', 'redo',
+                                ])->icon('heroicon-o-arrow-path'),
+                            ],
+                        ])
+                        ->columnSpan('1/2'),
                 ]),
 
                 Section::make()->columns(3)->schema([
@@ -83,17 +156,18 @@ class ManageCachet extends SettingsPage
                 ]),
 
                 Section::make(__('cachet::settings.manage_cachet.display_settings_title'))
+                    ->label('')
                     ->schema([
                         Toggle::make('dashboard_login_link')
                             ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link')),
                         Toggle::make('show_support')
-                            ->label(__('cachet::settings.manage_cachet.toggles.support_cachet')),
+                            ->label(__('Support Nordic Digital')),
                         Toggle::make('display_graphs')
                             ->label(__('cachet::settings.manage_cachet.toggles.display_graphs')),
                         Toggle::make('enable_external_dependencies')
                             ->label(__('cachet::settings.manage_cachet.toggles.enable_external_dependencies')),
                         Toggle::make('only_disrupted_days')
-                            ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days')),
+                            ->label(__('Only Show Active Days')),
                     ]),
             ]);
     }

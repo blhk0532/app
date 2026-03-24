@@ -1,0 +1,12 @@
+- anslagstavlan
+- sms offert
+- samtal historik statistik
+- nummer utdelningen genomgång
+- rabatt kombipaket
+- telavox integration
+- nummerskrapning
+- fastighetsbeteckning auto
+- bokning rätt nummer dom ringdes
+- mer zoom default på karta ringlista
+- fakturera panels
+- offert sms och epost

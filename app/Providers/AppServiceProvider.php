@@ -60,7 +60,15 @@ class AppServiceProvider extends ServiceProvider
                     'super' => 'Super',
                     'tools' => 'Tools',
                     'dev' => 'Dev',
-
+                    'cachet' => 'Status',
+                    'super' => 'System',
+                    'dialer' => 'Dialer',
+                    'finance' => 'Finance',
+                    'manager' => 'Manager',
+                    'partner' => 'Partner',
+                    'script' => 'Script',
+                    'sheets' => 'Sheets',
+                    'stats' => 'Stats',
                 ])
                 ->icons([
                     'app' => 'heroicon-o-user-circle',
@@ -71,10 +79,19 @@ class AppServiceProvider extends ServiceProvider
                     'data' => 'heroicon-o-list-bullet',
                     'email' => 'heroicon-m-at-symbol',
                     'notify' => 'heroicon-o-megaphone',
-                    'queue' => 'heroicon-c-queue-list',
+                    'queue' => 'heroicon-c-clock',
                     'tools' => 'heroicon-s-bolt',
                     'dev' => 'heroicon-o-code-bracket',
                     'geo' => 'heroicon-o-map',
+                    'cachet' => 'heroicon-o-chart-bar',
+                    'super' => 'heroicon-o-star',
+                    'dialer' => 'heroicon-o-phone',
+                    'finance' => 'heroicon-o-currency-dollar',
+                    'manager' => 'heroicon-o-briefcase',
+                    'partner' => 'heroicon-o-user-group',
+                    'script' => 'heroicon-o-document-text',
+                    'sheets' => 'heroicon-o-table-cells',
+                    'stats' => 'heroicon-o-chart-pie',
                 ]);
 
             if ($user?->role && $user?->role === 'booking') {
@@ -82,7 +99,7 @@ class AppServiceProvider extends ServiceProvider
                     ->panels(['app', 'booking', 'calendar', 'chat'])
                     ->iconSize(32)
                     ->modalWidth('sm')
-                    ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_BEFORE)
+                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER)
                     ->sort('asc');
             }
 
@@ -91,7 +108,7 @@ class AppServiceProvider extends ServiceProvider
                     ->panels(['app', 'admin', 'booking', 'calendar', 'chat', 'email',  'notify', 'queue', 'geo'])
                     ->iconSize(32)
                     ->modalWidth('sm')
-                    ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_BEFORE)
+                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER)
                     ->sort('asc');
             }
 
@@ -100,15 +117,15 @@ class AppServiceProvider extends ServiceProvider
                     ->panels(['app', 'admin', 'booking', 'calendar', 'chat', 'email',  'notify', 'queue', 'geo'])
                     ->iconSize(32)
                     ->modalWidth('sm')
-                    ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_BEFORE)
+                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER)
                     ->sort('asc');
             }
 
             if ($user?->role && $user?->role === 'super') {
                 $panelSwitch
-                    ->panels(['app', 'admin', 'booking', 'calendar', 'chat', 'data', 'email', 'geo', 'notify', 'queue', 'dev', 'tools'])
+                    ->panels(['app', 'admin', 'booking', 'cachet', 'calendar', 'chat', 'data', 'email', 'geo', 'notify', 'queue', 'dev', 'tools', 'super', 'dialer', 'finance', 'manager', 'partner', 'script', 'sheets', 'stats'])
                     ->iconSize(20)
-                    ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_BEFORE)
+                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER)
                     ->modalWidth('sm');
             }
 

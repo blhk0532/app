@@ -9,6 +9,7 @@ use AdultDate\FilamentWirechat\Filament\Resources\Conversations\ConversationReso
 use AdultDate\FilamentWirechat\Filament\Resources\Messages\MessageResource;
 use AdultDate\FilamentWirechat\FilamentWirechatPlugin;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -33,7 +34,7 @@ class DataPanelProvider extends PanelProvider
     {
         return $panel
             ->id('data')
-            ->path('data')
+            ->path('auth/data')
             ->viteTheme('resources/css/filament/data/theme.css')
             ->colors([
                 'primary' => Color::Amber,
@@ -68,6 +69,7 @@ class DataPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('sweden_postorter')) {
+            return;
+        }
+
         Schema::table('sweden_postorter', function (Blueprint $table) {
             $table->after('updated_at', function (Blueprint $table) {
                 $table->boolean('is_active')->default(true);
@@ -25,6 +29,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('sweden_postorter')) {
+            return;
+        }
+
         Schema::table('sweden_postorter', function (Blueprint $table) {
             $table->dropColumn(['is_active', 'is_queue', 'is_done']);
         });

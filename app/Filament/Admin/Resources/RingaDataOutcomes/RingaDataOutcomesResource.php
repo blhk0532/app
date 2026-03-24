@@ -27,7 +27,7 @@ class RingaDataOutcomesResource extends Resource
 
     protected static bool $isScopedToTenant = false;
 
-    protected static ?string $tenantOwnershipRelationshipName = null;
+    // protected static ?string $tenantOwnershipRelationshipName = null;
 
     public static function form(Schema $schema): Schema
     {
@@ -45,7 +45,6 @@ class RingaDataOutcomesResource extends Resource
             //
         ];
     }
-
 
     public static function getPages(): array
     {

@@ -76,7 +76,7 @@ class PanelSwitch extends Component
             $yearTH = $nowThailand->year + 543;
             $bangkokTH = 'กรุงเทพมหานคร';
             $stockholmSv = 'Stockholm';
-            $nds = 'นอร์ดิกดิจิทัล';
+            $nds = auth()->user()?->role ? auth()->user()?->role : 'AUTHENTICATED';
 
             return "{$nds}";
         });
@@ -95,7 +95,7 @@ class PanelSwitch extends Component
         if (auth()->user()?->role === 'super' || auth()->user()?->role === 'admin' || auth()->user()?->role === 'booking') {
 
             FilamentView::registerRenderHook(
-                name: PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+                name: PanelsRenderHook::TOPBAR_LOGO_AFTER,
                 hook: function () use ($static) {
 
                     if (! $static->isVisible()) {

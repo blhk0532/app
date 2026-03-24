@@ -16,11 +16,14 @@ use Adultdate\Wirechat\Jobs\NotifyParticipants;
 use Adultdate\Wirechat\Livewire\Chats\Chats;
 use Adultdate\Wirechat\Livewire\Concerns\HasPanel;
 use Adultdate\Wirechat\Livewire\Concerns\Widget;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -34,7 +37,7 @@ use Throwable;
  *
  * Handles group, private and self conversations .
  *
- * @property \Illuminate\Contracts\Auth\Authenticatable|null $auth
+ * @property Authenticatable|null $auth
  */
 class Chat extends Component
 {
@@ -379,7 +382,7 @@ class Chat extends Component
 
                 ]);
 
-            } catch (\Illuminate\Validation\ValidationException $th) {
+            } catch (ValidationException $th) {
 
                 $errors = $th->errors();
                 foreach ($errors as $field => $messages) {
@@ -421,7 +424,7 @@ class Chat extends Component
 
                     // If Wirechat::storage()->disk() returns a disk name string, use Storage::disk($disk)
                     if (is_string($disk)) {
-                        /** @var \Illuminate\Filesystem\FilesystemAdapter $filesystem */
+                        /** @var FilesystemAdapter $filesystem */
                         $filesystem = Storage::disk($disk);
                         if (is_object($filesystem) && method_exists($filesystem, 'url')) {
                             try {
@@ -747,9 +750,9 @@ class Chat extends Component
     /**
      * Returns the authenticated user.
      *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return Authenticatable|null
      */
-    #[Computed(persist: true)]
+    #[Computed]
     public function auth()
     {
         return Auth::user();

@@ -19,6 +19,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -28,6 +29,8 @@ use UnitEnum;
 class MetricResource extends Resource
 {
     protected static ?string $model = Metric::class;
+
+    protected static bool $isScopedToTenant = false;
 
     protected static ?int $navigationSort = 0;
 
@@ -90,7 +93,14 @@ class MetricResource extends Resource
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
+                        ->live()
                         ->required(),
+                    Select::make('team_id')
+                        ->label(__('Team'))
+                        ->relationship('team', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->visible(fn (Get $get): bool => $get('visible') === ResourceVisibilityEnum::team || $get('visible') === ResourceVisibilityEnum::team->value),
                     Toggle::make('display_chart')
                         ->label(__('cachet::metric.form.display_chart_label'))
                         ->default(true)

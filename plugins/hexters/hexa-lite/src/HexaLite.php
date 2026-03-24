@@ -45,7 +45,8 @@ class HexaLite implements Plugin
         $this->registerGateList($panel);
 
         $panel->navigationItems([
-            NavigationItem::make(__('Role & Permissions'))
+            NavigationItem::make()
+                ->label(__('Role & Permissions'))
                 ->visible(fn () => hexa()->can('role.index'))
                 ->url(RoleResource::getUrl())
                 ->isActiveWhen(fn () => request()->fullUrlIs(RoleResource::getUrl().'*'))

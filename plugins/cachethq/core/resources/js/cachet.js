@@ -11,10 +11,16 @@ import Ui from '@alpinejs/ui'
 Chart.defaults.color = '#fff'
 window.Chart = Chart
 
-Alpine.plugin(Anchor)
-Alpine.plugin(Collapse)
-Alpine.plugin(Focus)
-Alpine.plugin(Ui)
+const hasExistingAlpine = typeof window.Alpine !== 'undefined'
+const alpine = window.Alpine ?? Alpine
 
-window.Alpine = Alpine
-Alpine.start()
+alpine.plugin(Anchor)
+alpine.plugin(Collapse)
+alpine.plugin(Focus)
+alpine.plugin(Ui)
+
+window.Alpine = alpine
+
+if (! hasExistingAlpine) {
+	alpine.start()
+}

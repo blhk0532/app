@@ -28,6 +28,7 @@
         "livewire-development",
         "volt-development",
         "pest-testing",
+        "inertia-react-development",
         "tailwindcss-development",
         "filament-db-config",
         "filament-refresh-sidebar-development",

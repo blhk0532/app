@@ -23,7 +23,7 @@ class GoogleCalendar extends Page
 
     protected static ?string $slug = 'google-calendar';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Boknings Kalendrar';
+    protected static string|UnitEnum|null $navigationGroup = 'Google Calendar';
 
     public function getMaxContentWidth(): Width
     {

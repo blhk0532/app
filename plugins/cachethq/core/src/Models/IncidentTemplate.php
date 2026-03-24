@@ -2,6 +2,8 @@
 
 namespace Cachet\Models;
 
+use App\Models\Team;
+use Cachet\Concerns\BelongsToTenant;
 use Cachet\Database\Factories\IncidentTemplateFactory;
 use Cachet\Enums\IncidentTemplateEngineEnum;
 use Cachet\Renderers\BladeRenderer;
@@ -10,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -25,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class IncidentTemplate extends Model
 {
+    use BelongsToTenant;
+
     /** @use HasFactory<IncidentTemplateFactory> */
     use HasFactory;
 
@@ -39,6 +44,7 @@ class IncidentTemplate extends Model
         'template',
         'slug',
         'engine',
+        'team_id',
     ];
 
     /**
@@ -74,5 +80,10 @@ class IncidentTemplate extends Model
     protected static function newFactory(): Factory
     {
         return IncidentTemplateFactory::new();
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 }

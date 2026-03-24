@@ -482,12 +482,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function canBeImpersonated(): bool
     {
-        return auth()->user()->role === 'super';
+        return Auth::user()->role === 'super';
     }
 
     public function getNdsUserName(): string
     {
-        return auth()->user()->name;
+        return Auth::user()->name;
     }
 
     public function ringaData(): HasMany
@@ -530,12 +530,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     protected function canManageTeam(): bool
     {
-        return auth()->user()->role === 'super' || auth()->user()->role === 'admin' || auth()->user()->role === 'manager';
+        return Auth::user()->role === 'super' || Auth::user()->role === 'admin' || Auth::user()->role === 'manager';
     }
 
     protected function canRegisterTeam(): bool
     {
-        return auth()->user()->role === 'super' || auth()->user()->role === 'admin' || auth()->user()->role === 'manager';
+        return Auth::user()->role === 'super' || Auth::user()->role === 'admin' || Auth::user()->role === 'manager';
     }
 
     protected function getCustomAvatarUrl(): ?string
@@ -545,6 +545,60 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         return null; // Falls back to DiceBear
+    }
+
+    public static function canView(): bool
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return false;
+        }
+
+        $role = $user->role ?? null;
+
+        return in_array($role, ['admin', 'super', 'manager'], true);
+    }
+
+    public function canViewManager(Model $tenant): bool
+    {
+
+        return Auth::user()->role === 'super' || Auth::user()->role === 'admin' || Auth::user()->role === 'manager';
+    }
+
+    public function canViewAdmin(Model $tenant): bool
+    {
+
+        return Auth::user()->role === 'super' || Auth::user()->role === 'admin';
+    }
+
+    public function canViewSuper(Model $tenant): bool
+    {
+
+        return Auth::user()->role === 'super';
+    }
+
+    public function canViewPartner(Model $tenant): bool
+    {
+
+        return Auth::user()->role === 'super' || Auth::user()->role === 'admin' || Auth::user()->role === 'partner';
+    }
+
+    public function canViewTeam(Model $tenant): bool
+    {
+
+        return Auth::user()->role === 'super' || Auth::user()->role === 'admin' || Auth::user()->role === 'partner';
+    }
+
+    public function canViewTeamOwner(Model $tenant): bool
+    {
+
+        return filament()->getTenant()->getAttribute('user_id') === Auth::user()->id();
+    }
+
+    public function canViewTeamAdmin(Model $tenant): bool
+    {
+
+        return filament()->getTenant()->getAttribute('is_admin') === true;
     }
 
     public function dicebearAvatarStyle(): DiceBearStyle

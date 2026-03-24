@@ -33,12 +33,13 @@ export default function fullcalendar({
                 eventDidMount,
                 eventWillUnmount,
                 events: (info, successCallback, failureCallback) => {
-                    this.$wire
-                        .fetchEvents({
+                    Promise.resolve(
+                        this.$wire.fetchEvents({
                             start: info.startStr,
                             end: info.endStr,
                             timezone: info.timeZone,
-                        })
+                        }),
+                    )
                         .then(successCallback)
                         .catch(failureCallback)
                 },

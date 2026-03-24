@@ -9,13 +9,17 @@ class Support extends Widget
 {
     protected int|string|array $columnSpan = 'full';
 
+    protected static ?int $sort = 1000;
+
+    protected static bool $isDiscovered = false;
+
     protected string $view = 'cachet::filament.widgets.support';
 
     public function getConsiderSupportingBlock()
     {
         return preg_replace(
             '/\*(.*?)\*/',
-            '<x-filament::link href="https://github.com/cachethq/cachet/?sponsor=1" target="_blank" rel="nofollow noopener">$1</x-filament::link>',
+            '<x-filament::link href="https://github.com/" target="_blank" rel="nofollow noopener">$1</x-filament::link>',
             __('cachet::cachet.support.consider_supporting')
         );
     }
@@ -24,7 +28,7 @@ class Support extends Widget
     {
         return preg_replace(
             '/\*(.*?)\*/',
-            '<x-filament::link href="https://blog.cachethq.io" target="_blank" rel="nofollow noopener">$1</x-filament::link>',
+            '<x-filament::link href="https://ndsth.com/blog" target="_blank" rel="nofollow noopener">$1</x-filament::link>',
             __('cachet::cachet.support.keep_up_to_date')
         );
     }

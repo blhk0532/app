@@ -2,6 +2,8 @@
 
 namespace Cachet\Models;
 
+use App\Models\Team;
+use Cachet\Concerns\BelongsToTenant;
 use Cachet\Concerns\HasVisibility;
 use Cachet\Database\Factories\ComponentGroupFactory;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
@@ -10,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -27,6 +30,8 @@ use Illuminate\Support\Collection;
  */
 class ComponentGroup extends Model
 {
+    use BelongsToTenant;
+
     /** @use HasFactory<ComponentGroupFactory> */
     use HasFactory;
 
@@ -45,6 +50,7 @@ class ComponentGroup extends Model
         'order',
         'collapsed',
         'visible',
+        'team_id',
     ];
 
     protected static function booted(): void
@@ -52,6 +58,16 @@ class ComponentGroup extends Model
         static::deleting(function (ComponentGroup $componentGroup): void {
             $componentGroup->components()->update(['component_group_id' => null]);
         });
+    }
+
+    /**
+     * Get the team this component group belongs to.
+     *
+     * @return BelongsTo<Team, $this>
+     */
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 
     /**

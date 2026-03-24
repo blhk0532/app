@@ -10,6 +10,7 @@ use App\Filament\Pages\SwedenKommuner;
 use App\Filament\Pages\SwedenPostnummer;
 use App\Filament\Pages\SwedenPostorter;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
@@ -39,7 +40,7 @@ class GeoPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('geo')
-            ->path('geo')
+            ->path('auth/geo')
             ->viteTheme('resources/css/filament/geo/theme.css')
             ->login()
             ->colors([
@@ -83,6 +84,7 @@ class GeoPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

@@ -6,6 +6,7 @@
         $hasTopNavigation = filament()->hasTopNavigation();
         $hasNavigation = filament()->hasNavigation();
         $hasTenancy = filament()->hasTenancy();
+        $shouldShowTopbarCloseSidebarButton = filament()->getId() !== 'cachet';
     @endphp
 
     <nav class="fi-topbar">
@@ -25,18 +26,20 @@
                 class="fi-topbar-open-sidebar-btn"
             />
 
-            <x-filament::icon-button
-                color="gray"
-                :icon="\Filament\Support\Icons\Heroicon::OutlinedXMark"
-                :icon-alias="\Filament\View\PanelsIconAlias::TOPBAR_CLOSE_SIDEBAR_BUTTON"
-                icon-size="lg"
-                :label="__('filament-panels::layout.actions.sidebar.collapse.label')"
-                x-cloak
-                x-data="{}"
-                x-on:click="$store.sidebar.close()"
-                x-show="$store.sidebar.isOpen"
-                class="fi-topbar-close-sidebar-btn"
-            />
+            @if ($shouldShowTopbarCloseSidebarButton)
+                <x-filament::icon-button
+                    color="gray"
+                    :icon="\Filament\Support\Icons\Heroicon::OutlinedXMark"
+                    :icon-alias="\Filament\View\PanelsIconAlias::TOPBAR_CLOSE_SIDEBAR_BUTTON"
+                    icon-size="lg"
+                    :label="__('filament-panels::layout.actions.sidebar.collapse.label')"
+                    x-cloak
+                    x-data="{}"
+                    x-on:click="$store.sidebar.close()"
+                    x-show="$store.sidebar.isOpen"
+                    class="fi-topbar-close-sidebar-btn"
+                />
+            @endif
         @endif
 
         <div class="fi-topbar-start">

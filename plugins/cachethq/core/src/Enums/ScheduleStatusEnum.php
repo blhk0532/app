@@ -38,9 +38,9 @@ enum ScheduleStatusEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::upcoming => __('cachet::schedule.status.upcoming'),
-            self::in_progress => __('cachet::schedule.status.in_progress'),
-            self::complete => __('cachet::schedule.status.complete'),
+            self::upcoming => __('Uppkommande'),
+            self::in_progress => __('Pågående'),
+            self::complete => __('Slutförd'),
         };
     }
 
@@ -49,7 +49,7 @@ enum ScheduleStatusEnum: int implements HasColor, HasIcon, HasLabel
         return match ($this) {
             self::upcoming => Color::Blue,
             self::in_progress => Color::Amber,
-            self::complete => Color::Green,
+            self::complete => Color::Red,
         };
     }
 

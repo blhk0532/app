@@ -2,6 +2,8 @@
 
 namespace Cachet\Models;
 
+use App\Models\Team;
+use Cachet\Concerns\BelongsToTenant;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\QueryBuilders\ScheduleBuilder;
@@ -10,6 +12,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -38,6 +41,8 @@ use Illuminate\Support\Str;
  */
 class Schedule extends Model
 {
+    use BelongsToTenant;
+
     /** @use HasFactory<ScheduleFactory> */
     use HasFactory;
 
@@ -57,6 +62,7 @@ class Schedule extends Model
         'message',
         'scheduled_at',
         'completed_at',
+        'team_id',
     ];
 
     /**
@@ -116,11 +122,26 @@ class Schedule extends Model
     }
 
     /**
-     * Render the Markdown message.
+     * Render rich HTML or Markdown message.
      */
     public function formattedMessage(): string
     {
-        return Str::of($this->message)->markdown();
+        $message = (string) ($this->message ?? '');
+
+        if ($message === '') {
+            return '';
+        }
+
+        if (preg_match('/<[^>]+>/', $message) === 1) {
+            return $message;
+        }
+
+        return Str::of($message)
+            ->markdown([
+                'html_input' => 'strip',
+                'allow_unsafe_links' => false,
+            ])
+            ->toString();
     }
 
     /**
@@ -140,5 +161,10 @@ class Schedule extends Model
     protected static function newFactory(): Factory
     {
         return ScheduleFactory::new();
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 }

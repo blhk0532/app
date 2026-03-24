@@ -1,6 +1,7 @@
 import {
     defineConfig
 } from 'vite';
+import { fileURLToPath, URL } from 'node:url';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from "@tailwindcss/vite";
@@ -11,8 +12,9 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/js/app.tsx',
-                'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/inertia/app.tsx',
+                'resources/css/app.css',
                 'resources/css/filament/admin/theme.css',
                 'resources/css/filament/app/theme.css',
                 'resources/css/filament/booking/theme.css',
@@ -24,13 +26,25 @@ export default defineConfig({
                 'resources/css/filament/notify/theme.css',
                 'resources/css/filament/tools/theme.css',
                 'resources/css/filament/email/theme.css',
-                'resources/css/filament/super/theme.css',
+                'resources/css/filament/cachet/theme.css',
                 'resources/css/filament/geo/theme.css',
+                'resources/css/filament/manager/theme.css',
+                'resources/css/filament/dialer/theme.css',
+                'resources/css/filament/finance/theme.css',
+                'resources/css/filament/partner/theme.css',
+                'resources/css/filament/script/theme.css',
+                'resources/css/filament/sheets/theme.css',
+                'resources/css/filament/stats/theme.css',
                 ],
             refresh: true,
         }),
         tailwindcss(),
     ],
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./resources/js/inertia', import.meta.url)),
+        },
+    },
     server: {
         cors: true,
         watch: {

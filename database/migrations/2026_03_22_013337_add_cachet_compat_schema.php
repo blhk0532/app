@@ -35,6 +35,10 @@ return new class extends Migration
 
     private function updateComponentGroupsTable(): void
     {
+        if (! Schema::hasTable('component_groups')) {
+            return;
+        }
+
         if (! Schema::hasColumn('component_groups', 'order')) {
             Schema::table('component_groups', function (Blueprint $table): void {
                 $table->unsignedInteger('order')->default(0)->after('name');
@@ -56,6 +60,10 @@ return new class extends Migration
 
     private function updateComponentsTable(): void
     {
+        if (! Schema::hasTable('components')) {
+            return;
+        }
+
         if (! Schema::hasColumn('components', 'component_group_id')) {
             Schema::table('components', function (Blueprint $table): void {
                 $table->unsignedInteger('component_group_id')->nullable()->after('group_id');
@@ -83,6 +91,10 @@ return new class extends Migration
 
     private function updateIncidentsTable(): void
     {
+        if (! Schema::hasTable('incidents')) {
+            return;
+        }
+
         if (! Schema::hasColumn('incidents', 'visible')) {
             Schema::table('incidents', function (Blueprint $table): void {
                 $table->unsignedTinyInteger('visible')->default(1)->after('status');
@@ -136,6 +148,10 @@ return new class extends Migration
 
     private function updateMetricsTable(): void
     {
+        if (! Schema::hasTable('metrics')) {
+            return;
+        }
+
         if (! Schema::hasColumn('metrics', 'places')) {
             Schema::table('metrics', function (Blueprint $table): void {
                 $table->unsignedInteger('places')->default(2)->after('display_chart');
@@ -175,6 +191,10 @@ return new class extends Migration
 
     private function updateMetricPointsTable(): void
     {
+        if (! Schema::hasTable('metric_points')) {
+            return;
+        }
+
         if (! Schema::hasColumn('metric_points', 'counter')) {
             Schema::table('metric_points', function (Blueprint $table): void {
                 $table->unsignedInteger('counter')->default(1)->after('value');

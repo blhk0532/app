@@ -63,11 +63,26 @@ class Update extends Model
     }
 
     /**
-     * Render the Markdown message.
+     * Render rich HTML or Markdown message.
      */
     public function formattedMessage(): string
     {
-        return Str::of($this->message)->markdown();
+        $message = (string) ($this->message ?? '');
+
+        if ($message === '') {
+            return '';
+        }
+
+        if (preg_match('/<[^>]+>/', $message) === 1) {
+            return $message;
+        }
+
+        return Str::of($message)
+            ->markdown([
+                'html_input' => 'strip',
+                'allow_unsafe_links' => false,
+            ])
+            ->toString();
     }
 
     /**

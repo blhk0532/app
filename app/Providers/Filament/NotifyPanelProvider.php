@@ -7,6 +7,7 @@ namespace App\Providers\Filament;
 use AdultDate\FilamentWirechat\FilamentWirechatPlugin;
 use App\Filament\Notify\Pages\NotifyDashboard;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
@@ -38,7 +39,7 @@ class NotifyPanelProvider extends PanelProvider
     {
         return $panel
             ->id('notify')
-            ->path('notify')
+            ->path('auth/notify')
             ->viteTheme('resources/css/filament/notify/theme.css')
             ->colors([
                 'primary' => Color::Gray,
@@ -108,6 +109,7 @@ class NotifyPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

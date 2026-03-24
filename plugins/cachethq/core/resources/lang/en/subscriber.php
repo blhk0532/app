@@ -15,7 +15,7 @@ return [
         ],
         'empty_state' => [
             'heading' => 'Notifications',
-            'description' => 'Notify people who have subscribed to your status page for notifications.',
+            'description' => 'Notify people who have subscribed to notifications.',
         ],
         'actions' => [
             'verify_label' => 'Verify',

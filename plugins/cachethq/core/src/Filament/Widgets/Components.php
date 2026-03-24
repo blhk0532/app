@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Widgets;
 
+use App\Models\User;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -24,9 +25,18 @@ class Components extends Widget implements HasSchemas
 
     protected static bool $isLazy = false;
 
+    protected static bool $isDiscovered = false;
+
+    protected static ?int $sort = 10;
+
     public Collection $formData;
 
     public Collection $components;
+
+    public static function canView(): bool
+    {
+        return User::canView();
+    }
 
     public function mount(): void
     {
@@ -53,6 +63,7 @@ class Components extends Widget implements HasSchemas
                             ->map(fn (Component $component) => Group::make([$this->buildToggleButton($component)]))
                             ->toArray();
                     })
+                    ->columnSpan(1)
                     ->collapsed($componentGroup->isCollapsible())
                     ->persistCollapsed();
             })
@@ -63,6 +74,7 @@ class Components extends Widget implements HasSchemas
             ->map(function (Component $component): \Filament\Schemas\Components\Component {
                 return Section::make($component->name)
                     ->schema(fn () => [$this->buildToggleButton($component)])
+                    ->columnSpan(1)
                     ->collapsible()
                     ->persistCollapsed();
             })
@@ -71,7 +83,9 @@ class Components extends Widget implements HasSchemas
         return $form->components([
             ...$componentGroupSchema,
             ...$ungroupedComponentSchema,
-        ])->statePath('formData');
+        ])
+            ->columns(3)
+            ->statePath('formData');
     }
 
     protected function buildToggleButton(Component $component): ToggleButtons
@@ -92,5 +106,10 @@ class Components extends Widget implements HasSchemas
             ->where('visible', '=', true)
             ->orderBy('order')
             ->get();
+    }
+
+    public static function isDiscovered(): bool
+    {
+        return parent::isDiscovered();
     }
 }

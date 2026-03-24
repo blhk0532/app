@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Resources\Schedules;
 
+use App\Models\User;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\ComponentStatusEnum;
@@ -20,6 +21,8 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\RichEditor\MentionProvider;
+use Filament\Forms\Components\RichEditor\ToolbarButtonGroup;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -36,9 +39,15 @@ class ScheduleResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-maintenance';
 
+    protected static bool $isScopedToTenant = false;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?int $navigationSort = -1;
 
     protected static string|UnitEnum|null $navigationGroup = '';
+
+    protected static bool $isGloballySearchable = true;
 
     public static function form(Schema $schema): Schema
     {
@@ -49,24 +58,146 @@ class ScheduleResource extends Resource
                         ->label(__('cachet::schedule.form.name_label'))
                         ->required(),
                     RichEditor::make('message')
+                        ->toolbarButtons([
+                            // Headings
+                            [
+                                ToolbarButtonGroup::make('Headings', [
+                                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                                ])->icon('fi-o-heading'),
+                            ],
+
+                            // Text alignment
+                            [
+                                ToolbarButtonGroup::make('Alignment', [
+                                    'alignStart', 'alignCenter', 'alignEnd', 'alignJustify',
+                                ])->icon('heroicon-o-bars-3-bottom-left'),
+                            ],
+
+                            // Text formatting
+                            [
+                                ToolbarButtonGroup::make('Text Style', [
+                                    'bold', 'italic', 'underline', 'strike',
+                                ])->icon('heroicon-o-bold'),
+
+                                ToolbarButtonGroup::make('Advanced Text', [
+                                    'subscript', 'superscript', 'small', 'lead',
+                                ]),
+                            ],
+
+                            // Colors & highlights
+                            [
+                                ToolbarButtonGroup::make('Colors', [
+                                    'textColor', 'highlight',
+                                ])->icon('heroicon-o-swatch'),
+                            ],
+
+                            // Structure
+                            [
+                                ToolbarButtonGroup::make('Structure', [
+                                    'paragraph', 'blockquote', 'horizontalRule',
+                                ])->icon('heroicon-o-document-text'),
+                            ],
+
+                            // Lists & content blocks
+                            [
+                                ToolbarButtonGroup::make('Lists', [
+                                    'bulletList', 'orderedList',
+                                ])->icon('heroicon-o-list-bullet'),
+
+                                ToolbarButtonGroup::make('Code', [
+                                    'code', 'codeBlock',
+                                ])->icon('heroicon-o-code-bracket'),
+                            ],
+
+                            // Media & embeds
+                            [
+                                ToolbarButtonGroup::make('Media', [
+                                    'link', 'table', 'attachFiles',
+                                ])->icon('heroicon-o-paper-clip'),
+                            ],
+
+                            // Advanced features
+                            [
+                                ToolbarButtonGroup::make('Advanced', [
+                                    'customBlocks', 'mergeTags', 'details', 'grid',
+                                ])->icon('heroicon-o-cog-6-tooth'),
+                            ],
+
+                            // Utilities
+                            [
+                                ToolbarButtonGroup::make('Utilities', [
+                                    'clearFormatting', 'undo', 'redo',
+                                ])->icon('heroicon-o-arrow-path'),
+                            ],
+                        ])
+                        ->mentions([
+                            MentionProvider::make('@')
+                                ->getSearchResultsUsing(fn (string $search): array => User::query()
+                                    ->where('name', 'like', "%{$search}%")
+                                    ->orderBy('name')
+                                    ->limit(10)
+                                    ->pluck('name', 'id')
+                                    ->all())
+                                ->getLabelsUsing(fn (array $ids): array => User::query()
+                                    ->whereIn('id', $ids)
+                                    ->pluck('name', 'id')
+                                    ->all()),
+                        ])
+                        ->fileAttachmentsDisk('disk')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('public')
+                        ->customTextColors()
+                        ->resizableImages()
+                        ->mergeTags([
+                            'name',
+                            'today',
+                        ])
+                        ->floatingToolbars([
+                            'paragraph' => [
+                                'bold',
+                                'italic',
+                                'underline',
+                                'strike',
+                                'subscript',
+                                'superscript',
+                            ],
+                            'heading' => [
+                                'h1',
+                                'h2',
+                                'h3',
+                            ],
+                            'table' => [
+                                'tableAddColumnBefore',
+                                'tableAddColumnAfter',
+                                'tableDeleteColumn',
+                                'tableAddRowBefore',
+                                'tableAddRowAfter',
+                                'tableDeleteRow',
+                                'tableMergeCells',
+                                'tableSplitCell',
+                                'tableToggleHeaderRow',
+                                'tableToggleHeaderCell',
+                                'tableDelete',
+                            ],
+                        ])
                         ->label(__('cachet::schedule.form.message_label'))
                         ->columnSpanFull(),
                     Repeater::make('scheduleComponents')
                         ->visibleOn('create')
                         ->relationship()
                         ->defaultItems(0)
-                        ->addActionLabel(__('Add Component'))
+                        ->addActionLabel(__('Add Tekniker'))
                         ->schema([
                             Select::make('component_id')
                                 ->preload()
                                 ->required()
                                 ->relationship('component', 'name')
                                 ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                ->label(__('Component')),
+                                ->label(__('Tekniker')),
                             Hidden::make('component_status')
                                 ->default(ComponentStatusEnum::operational->value),
                         ])
-                        ->label(__('Affected Components'))
+                        ->label(__('Affected Tekniker'))
                         ->columnSpanFull(),
                 ])->columnSpan(3),
                 Section::make()->schema([
@@ -122,7 +253,7 @@ class ScheduleResource extends Resource
             ->recordActions([
                 Action::make('add-update')
                     ->disabled(fn (Schedule $record) => $record->status === ScheduleStatusEnum::complete)
-                    ->label(__('cachet::schedule.list.actions.record_update'))
+                    ->label(__('Update'))
                     ->color('info')
                     ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
                         $createUpdate->handle($record, CreateScheduleUpdateRequestData::from($data));
@@ -134,7 +265,7 @@ class ScheduleResource extends Resource
                             ->send();
                     })
                     ->schema([
-                        RichEditor::make('message')
+                        TextInput::make('message')
                             ->label(__('cachet::schedule.add_update.form.message_label'))
                             ->required(),
 
@@ -143,12 +274,15 @@ class ScheduleResource extends Resource
                     ]),
                 Action::make('complete')
                     ->disabled(fn (Schedule $record): bool => $record->status === ScheduleStatusEnum::complete)
-                    ->label(__('cachet::schedule.list.actions.complete'))
+                    ->label(__('Slutför'))
+                    ->color('danger')
                     ->schema([
                         DateTimePicker::make('completed_at')
+                            ->label(__('Slutdatum'))
+                            ->default(now())
                             ->required(),
                     ])
-                    ->color('success')
+                    ->color('danger')
                     ->action(fn (Schedule $record, array $data) => $record->update(['completed_at' => $data['completed_at']])),
                 EditAction::make(),
             ])

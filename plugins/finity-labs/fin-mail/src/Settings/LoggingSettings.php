@@ -9,15 +9,15 @@ use Spatie\LaravelSettings\Settings;
 
 class LoggingSettings extends Settings
 {
-    public bool $enabled;
+    public bool $enabled = true;
 
-    public bool $store_rendered_body;
+    public bool $store_rendered_body = true;
 
-    public ?int $retention_days;
+    public ?int $retention_days = 90;
 
-    public bool $cleanup_enabled;
+    public bool $cleanup_enabled = false;
 
-    public CleanupFrequency $cleanup_frequency;
+    public CleanupFrequency $cleanup_frequency = CleanupFrequency::Daily;
 
     public static function group(): string
     {

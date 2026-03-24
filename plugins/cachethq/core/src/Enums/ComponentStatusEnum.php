@@ -28,12 +28,13 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::operational => __('cachet::component.status.operational'),
-            self::performance_issues => __('cachet::component.status.performance_issues'),
-            self::partial_outage => __('cachet::component.status.partial_outage'),
-            self::major_outage => __('cachet::component.status.major_outage'),
-            self::under_maintenance => __('cachet::component.status.under_maintenance'),
-            default => __('cachet::component.status.unknown'),
+            self::operational => __('Tillgänglig'),
+            self::performance_issues => __('Begränsad'),
+            self::partial_outage => __('Halvdag'),
+            self::major_outage => __('Avbrott'),
+            self::under_maintenance => __('Underhåll'),
+            default => __('Okänd'),
+
         };
     }
 
@@ -44,7 +45,7 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::performance_issues => 'cachet-component-performance-issues',
             self::partial_outage => 'cachet-component-partial-outage',
             self::major_outage => 'cachet-component-major-outage',
-            self::under_maintenance => 'cachet-component-under-maintenance',
+            self::under_maintenance => 'heroicon-o-cog-6-tooth',
             default => 'cachet-unknown',
         };
     }
@@ -53,11 +54,11 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
     {
         return match ($this) {
             self::operational => Color::Green,
-            self::performance_issues => Color::Purple,
+            self::performance_issues => Color::Gray,
             self::partial_outage => Color::Amber,
             self::major_outage => Color::Red,
             self::under_maintenance => Color::Orange,
-            default => Color::Blue,
+            default => Color::Gray,
         };
     }
 }

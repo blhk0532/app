@@ -9,6 +9,7 @@ use AdultDate\FilamentWirechat\Filament\Resources\Messages\MessageResource;
 use AdultDate\FilamentWirechat\FilamentWirechatPlugin;
 use App\Filament\Dev\Pages\DevDashboard;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
@@ -45,7 +46,7 @@ class DevPanelProvider extends PanelProvider
     {
         return $panel
             ->id('dev')
-            ->path('dev')
+            ->path('auth/dev')
             ->viteTheme('resources/css/filament/dev/theme.css')
             ->colors([
                 'primary' => Color::Gray,
@@ -115,6 +116,7 @@ class DevPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

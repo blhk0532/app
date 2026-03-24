@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Component|Components',
+    'resource_label' => 'Tekniker|Tekniker',
     'list' => [
         'headers' => [
             'name' => 'Name',
@@ -14,19 +14,19 @@ return [
             'deleted_at' => 'Deleted at',
         ],
         'empty_state' => [
-            'heading' => 'Components',
-            'description' => 'Components represent the various parts of your system that can affect the status of your status page.',
+            'heading' => 'Tekniker',
+            'description' => 'Tekniker represent the various parts of your system that can affect the status of your status page.',
         ],
     ],
-    'last_updated' => 'Last updated :timestamp',
+    'last_updated' => ':timestamp',
     'view_details' => 'View Details',
     'form' => [
-        'name_label' => 'Name',
+        'name_label' => 'Tekniker',
         'status_label' => 'Status',
         'description_label' => 'Description',
-        'component_group_label' => 'Component Group',
+        'Tekniker_group_label' => 'Tekniker Group',
         'link_label' => 'Link',
-        'link_helper' => 'An optional link to the component.',
+        'link_helper' => 'Länk Tekniker.',
     ],
     'status' => [
         'operational' => 'Operational',

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Adultdate\FilamentBooking\Filament\Clusters\Services\Resources\Clients\Pages;
 
 use Adultdate\FilamentBooking\Filament\Clusters\Services\Resources\Clients\ClientResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListClients extends ListRecords
 {
@@ -15,7 +15,17 @@ class ListClients extends ListRecords
     protected function getActions(): array
     {
         return [
-            CreateAction::make(),
+
         ];
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return '';
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
     }
 }

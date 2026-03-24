@@ -7,6 +7,6 @@
     ]),
 ])->merge(['title' => $title]) }}>
     <div class="absolute -left-[calc(28px+10px+13px)] top-4 flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-white text-custom-700 isolate">
-        @svg($icon, 'size-5')
+          <x-heroicon-c-information-circle class="size-6" />
     </div>
 </div>

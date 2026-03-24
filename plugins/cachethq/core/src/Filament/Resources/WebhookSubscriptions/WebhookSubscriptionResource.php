@@ -31,6 +31,8 @@ class WebhookSubscriptionResource extends Resource
 
     protected static ?int $navigationSort = 10;
 
+    protected static bool $isScopedToTenant = false;
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');

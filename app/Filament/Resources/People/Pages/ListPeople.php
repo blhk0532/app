@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\People\Pages;
 
 use App\Filament\Resources\People\PersonResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListPeople extends ListRecords
 {
@@ -13,7 +13,17 @@ class ListPeople extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+
         ];
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return '';
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
     }
 }

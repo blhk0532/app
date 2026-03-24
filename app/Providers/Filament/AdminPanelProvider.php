@@ -23,6 +23,7 @@ use App\Filament\App\Resources\TeamUsers\TeamUserResource;
 use App\Http\Middleware\ApplyTenantScopes;
 use App\Http\Middleware\CurrentTenant;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use App\Models\Team;
 use App\Models\User;
 use Asmit\ResizedColumn\ResizedColumnPlugin;
@@ -84,7 +85,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('auth/admin')
             ->tenant(Team::class, slugAttribute: 'slug', ownershipRelationship: null)
             ->viteTheme('resources/css/filament/admin/theme.css')
             // ->login(fn ($config) => $config
@@ -112,7 +113,6 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-calendar-days'),
             ])
 
-            ->defaultThemeMode(ThemeMode::Dark)
             ->sidebarFullyCollapsibleOnDesktop()
             // ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\\Filament\\Admin\\Clusters')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
@@ -138,6 +138,7 @@ class AdminPanelProvider extends PanelProvider
             ->resources([
                 //    BookingCalendarResource::class,
                 TeamUserResource::class,
+                config('filament-logger.activity_resource'),
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -150,6 +151,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -306,7 +308,7 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-user-circle'),
                 Action::make('sanctum')
                     ->label(trans('Auth Tokens'))
-                    ->url('/nds/admin/'.config('filament-sanctum.navigation.slug'))
+                    ->url('/auth/admin/'.config('filament-sanctum.navigation.slug'))
                     ->icon(config('filament-sanctum.navigation.icon', 'heroicon-o-finger-print')),
                 Action::make('company')
                     ->label('Company')
@@ -315,7 +317,7 @@ class AdminPanelProvider extends PanelProvider
                     ->url(static fn () => Dashboard::getUrl(panel: FilamentCompanies::getCompanyPanel(), tenant: Auth::user()->personalCompany())),
             ])
             ->navigationItems([
-                NavigationItem::make('Access Tokens')
+                NavigationItem::make()
                     ->label('Access Tokens')
                     ->icon('heroicon-o-finger-print')
                     ->badge(fn () => Auth::user()->tokens()->count())

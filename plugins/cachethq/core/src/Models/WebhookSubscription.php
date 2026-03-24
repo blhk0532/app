@@ -2,18 +2,23 @@
 
 namespace Cachet\Models;
 
+use App\Models\Team;
 use Cachet\Cachet;
+use Cachet\Concerns\BelongsToTenant;
 use Cachet\Database\Factories\WebhookSubscriptionFactory;
 use Cachet\Enums\WebhookEventEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\WebhookServer\WebhookCall;
 
 class WebhookSubscription extends Model
 {
+    use BelongsToTenant;
+
     /** @use HasFactory<WebhookSubscriptionFactory> */
     use HasFactory;
 
@@ -24,6 +29,7 @@ class WebhookSubscription extends Model
         'description',
         'send_all_events',
         'selected_events',
+        'team_id',
     ];
 
     protected $hidden = [
@@ -99,5 +105,10 @@ class WebhookSubscription extends Model
         $this->success_rate_24h = $totalAttempts24h > 0 ? $successfulAttempts24h / $totalAttempts24h : 0;
 
         return $this;
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 }

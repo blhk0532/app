@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Settings;
 
 use Spatie\LaravelSettings\Settings;
@@ -11,6 +13,8 @@ class AppSettings extends Settings
     public ?string $name = 'Cachet';
 
     public ?string $about;
+
+    public ?string $status_page_announcement = '';
 
     public bool $show_support = true;
 
@@ -41,5 +45,15 @@ class AppSettings extends Settings
     public static function group(): string
     {
         return 'app';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function defaults(): array
+    {
+        return [
+            'status_page_announcement' => '',
+        ];
     }
 }

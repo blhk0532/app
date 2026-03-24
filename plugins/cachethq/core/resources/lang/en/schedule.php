@@ -18,7 +18,7 @@ return [
         ],
         'actions' => [
             'record_update' => 'Record Update',
-            'complete' => 'Complete Maintenance',
+            'complete' => 'Complete',
         ],
     ],
     'form' => [
@@ -40,5 +40,5 @@ return [
         'in_progress' => 'In Progress',
         'complete' => 'Complete',
     ],
-    'planned_maintenance_header' => 'Schema',
+    'planned_maintenance_header' => '',
 ];

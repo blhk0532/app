@@ -2,6 +2,8 @@
 
 namespace Cachet\Models;
 
+use App\Models\Team;
+use Cachet\Concerns\BelongsToTenant;
 use Cachet\Concerns\HasVisibility;
 use Cachet\Database\Factories\IncidentFactory;
 use Cachet\Enums\IncidentStatusEnum;
@@ -11,6 +13,7 @@ use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -23,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 /**
@@ -58,6 +62,8 @@ use Illuminate\Support\Str;
  */
 class Incident extends Model
 {
+    use BelongsToTenant;
+
     /** @use HasFactory<IncidentFactory> */
     use HasFactory;
 
@@ -87,6 +93,7 @@ class Incident extends Model
         'external_id',
         'user_id',
         'component_id',
+        'team_id',
         'name',
         'status',
         'visible',
@@ -120,6 +127,16 @@ class Incident extends Model
     }
 
     /**
+     * Get the primary component attached to this incident.
+     *
+     * @return BelongsTo<Component, $this>
+     */
+    public function component(): BelongsTo
+    {
+        return $this->belongsTo(Component::class);
+    }
+
+    /**
      * Get the impacted components for this incident.
      */
     public function incidentComponents(): HasMany
@@ -135,6 +152,16 @@ class Incident extends Model
     public function updates(): MorphMany
     {
         return $this->morphMany(Update::class, 'updateable')->chaperone();
+    }
+
+    /**
+     * Get the team this incident belongs to.
+     *
+     * @return BelongsTo<Team, $this>
+     */
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 
     /**
@@ -194,11 +221,26 @@ class Incident extends Model
     }
 
     /**
-     * Render the Markdown message.
+     * Render rich HTML or Markdown message.
      */
     public function formattedMessage(): string
     {
-        return Str::of($this->message)->markdown();
+        $message = (string) ($this->message ?? '');
+
+        if ($message === '') {
+            return '';
+        }
+
+        if (preg_match('/<[^>]+>/', $message) === 1) {
+            return $message;
+        }
+
+        return Str::of($message)
+            ->markdown([
+                'html_input' => 'strip',
+                'allow_unsafe_links' => false,
+            ])
+            ->toString();
     }
 
     /**
@@ -206,7 +248,23 @@ class Incident extends Model
      */
     public function filamentDashboardEditUrl(): string
     {
-        return IncidentResource::getUrl(name: 'edit', parameters: ['record' => $this->id], panel: 'cachet');
+        $tenant = filament()->getTenant();
+
+        if ($tenant === null && Auth::check()) {
+            $user = Auth::user();
+            $panel = Filament::getPanel('cachet');
+
+            if ($panel !== null && method_exists($user, 'getDefaultTenant')) {
+                $tenant = $user->getDefaultTenant($panel);
+            }
+        }
+
+        return IncidentResource::getUrl(
+            name: 'edit',
+            parameters: ['record' => $this->id],
+            panel: 'cachet',
+            tenant: $tenant,
+        );
     }
 
     /**

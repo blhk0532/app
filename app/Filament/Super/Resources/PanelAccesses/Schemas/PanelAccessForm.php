@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Super\Resources\PanelAccesses\Schemas;
 
 use App\Enums\AuthRole;
-use Filament\Forms\Components\MultiSelect;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -19,7 +19,8 @@ class PanelAccessForm
                     ->label('Panel ID')
                     ->required(),
 
-                MultiSelect::make('role_access')
+                Select::make('role_access')
+                    ->multiple()
                     ->label('Role Access')
                     ->options(collect(AuthRole::cases())->mapWithKeys(fn ($case) => [$case->value => $case->label()]))
                     ->required(),

@@ -38,12 +38,28 @@
             align-items: center !important;
             justify-content: center !important;
         }
+
+        .panel-switch-modal .fi-modal-content {
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .panel-switch-modal .fi-modal {
+    right: auto !important;
+    left: 0 !important;
+    transform: translateX(-100%) !important;
+}
+
+.panel-switch-modal.fi-modal-open .fi-modal {
+    transform: translateX(0%) !important;
+}
+
     </style>
     <x-filament::icon-button
         x-data="{}"
         icon="heroicon-s-square-2-stack"
         icon-alias="panels::panel-switch-modern-icon"
         icon-size="lg"
+        clasa="p-2"
         @click="$dispatch('open-modal', { id: 'panel-switch' })"
         :label="$heading"
         @class(["bg-gray-100 !rounded-full dark:bg-custom-500/20"])

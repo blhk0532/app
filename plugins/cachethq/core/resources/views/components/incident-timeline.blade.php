@@ -1,17 +1,12 @@
 <div class="flex flex-col gap-8">
-    <div class="bline">
-        <div>
-            <h2 class="text-2xl font-semibold">
-                {{ $recentIncidentsOnly ? __('cachet::incident.timeline.recent_incidents_header') : __('cachet::incident.timeline.past_incidents_header') }}</h2>
-        </div>
-    </div>
+
 
     <div class="flex flex-col gap-14 w-full">
         @forelse ($incidents as $date => $incident)
             <x-cachet::incident :date="$date" :incidents="$incident" />
         @empty
             <div class="text-zinc-500 dark:text-zinc-400 text-center">
-                {{ __('cachet::incident.timeline.no_incidents_reported_between', ['from' => $from, 'to' => $to]) }}
+
             </div>
         @endforelse
     </div>
@@ -38,7 +33,7 @@
     </div>
 
 
-            <div class="flex
+            <div style="display:none;" class="flex
                 items-center justify-center gap-2 text-sm text-zinc-500 dark:text-zinc-400"
             x-data="{ from: new Date(@js($from)), to: new Date(@js($to)) }">
 

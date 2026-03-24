@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class Overview extends BaseWidget
 {
+    protected int|string|array $columnSpan = 'full';
+
+    protected static ?int $sort = 8;
+
     protected function getColumns(): int
     {
         return 3;

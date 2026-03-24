@@ -28,6 +28,10 @@ class ComponentResource extends Resource
 {
     protected static ?string $model = Component::class;
 
+    protected static bool $isScopedToTenant = false;
+
+    protected static ?string $slug = 'tekniker';
+
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-components';
 
     protected static string|UnitEnum|null $navigationGroup = '';
@@ -55,10 +59,12 @@ class ComponentResource extends Resource
                         ->columnSpanFull(),
                     Select::make('component_group_id')
                         ->relationship('group', 'name')
+                        ->hidden()
                         ->searchable()
                         ->preload()
-                        ->label(__('cachet::component.form.component_group_label')),
+                        ->label(__('Team Group')),
                     TextInput::make('link')
+                        ->hidden()
                         ->label(__('cachet::component.form.link_label'))
                         ->url()
                         ->label(__('cachet::component.form.link_helper')),
@@ -66,6 +72,7 @@ class ComponentResource extends Resource
 
                 Section::make()->columns(2)->schema([
                     KeyValue::make('meta')
+                        ->hidden()
                         ->columnSpanFull(),
                     Toggle::make('enabled')
                         ->required(),
@@ -92,6 +99,7 @@ class ComponentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('group.name')
                     ->label(__('cachet::component.list.headers.group'))
+                    ->hidden()
                     ->sortable(),
                 IconColumn::make('enabled')
                     ->label(__('cachet::component.list.headers.enabled'))
@@ -148,17 +156,17 @@ class ComponentResource extends Resource
 
     public static function getLabel(): ?string
     {
-        return trans_choice('cachet::component.resource_label', 1);
+        return trans_choice('Tekniker', 1);
     }
 
     public static function getPluralLabel(): ?string
     {
-        return trans_choice('cachet::component.resource_label', 2);
+        return trans_choice('Tekniker', 2);
     }
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) Component::outage()->count();
+        return (string) Component::query()->count();
     }
 
     public static function getNavigationBadgeColor(): string

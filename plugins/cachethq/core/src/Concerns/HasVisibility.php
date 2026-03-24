@@ -4,6 +4,7 @@ namespace Cachet\Concerns;
 
 use Cachet\Enums\ResourceVisibilityEnum;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @method static Builder<static>|static query()
@@ -19,9 +20,22 @@ trait HasVisibility
      */
     public function scopeVisible(Builder $query, bool $authenticated = false): void
     {
-        $query->whereIn('visible', match ($authenticated) {
-            true => ResourceVisibilityEnum::visibleToUsers(),
-            default => ResourceVisibilityEnum::visibleToGuests(),
+        $query->where(function (Builder $q) use ($authenticated): void {
+            $q->whereIn('visible', match ($authenticated) {
+                true => ResourceVisibilityEnum::visibleToUsers(),
+                default => ResourceVisibilityEnum::visibleToGuests(),
+            });
+
+            if ($authenticated && ($user = Auth::user())) {
+                $teamIds = $user->teams->pluck('id')->toArray();
+
+                if (! empty($teamIds)) {
+                    $q->orWhere(function (Builder $inner) use ($teamIds): void {
+                        $inner->where('visible', ResourceVisibilityEnum::team)
+                            ->whereIn('team_id', $teamIds);
+                    });
+                }
+            }
         });
     }
 
@@ -46,6 +60,19 @@ trait HasVisibility
      */
     public function scopeUsers(Builder $query): void
     {
-        $query->whereIn('visible', ResourceVisibilityEnum::visibleToUsers());
+        $query->where(function (Builder $q): void {
+            $q->whereIn('visible', ResourceVisibilityEnum::visibleToUsers());
+
+            if ($user = Auth::user()) {
+                $teamIds = $user->teams->pluck('id')->toArray();
+
+                if (! empty($teamIds)) {
+                    $q->orWhere(function (Builder $inner) use ($teamIds): void {
+                        $inner->where('visible', ResourceVisibilityEnum::team)
+                            ->whereIn('team_id', $teamIds);
+                    });
+                }
+            }
+        });
     }
 }

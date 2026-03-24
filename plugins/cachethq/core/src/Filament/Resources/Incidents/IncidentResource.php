@@ -19,6 +19,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -28,6 +29,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -42,6 +44,8 @@ class IncidentResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-incident';
 
+    protected static bool $isScopedToTenant = false;
+
     protected static ?int $navigationSort = -1;
 
     public static function form(Schema $schema): Schema
@@ -50,19 +54,33 @@ class IncidentResource extends Resource
             ->components([
                 Section::make()->schema([
                     TextInput::make('name')
-                        ->label(__('cachet::incident.form.name_label'))
+                        ->label(__('Område'))
                         ->required()
                         ->maxLength(255)
                         ->autocomplete(false),
                     ToggleButtons::make('status')
-                        ->label(__('cachet::incident.form.name_label'))
+                        ->label(__('Status'))
                         ->inline()
                         ->columnSpanFull()
                         ->options(IncidentStatusEnum::class)
+                        ->default(IncidentStatusEnum::unknown)
                         ->required(),
-                    RichEditor::make('message')
-                        ->label(__('cachet::incident.form.message_label'))
-                        ->required(),
+                    MarkdownEditor::make('message')
+                        ->label(__('Meddelande'))
+                        ->required()
+                        ->columnSpanFull()
+                        ->toolbarButtons([
+                            ['bold', 'italic', 'strike', 'link'],
+                            ['heading'],
+                            ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                            ['table', 'attachFiles'],
+                            ['undo', 'redo'],
+                        ]),
+                    Select::make('component_id')
+                        ->label(__('Tekniker'))
+                        ->relationship('component', 'name')
+                        ->searchable()
+                        ->preload(),
                     DateTimePicker::make('occurred_at')
                         ->default(fn () => now())
                         ->label(__('cachet::incident.form.occurred_at_label'))
@@ -71,8 +89,17 @@ class IncidentResource extends Resource
                         ->label(__('cachet::incident.form.visible_label'))
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
-                        ->default(ResourceVisibilityEnum::guest)
+                        ->default(ResourceVisibilityEnum::team)
+                        ->live()
                         ->required(),
+                    Select::make('team_id')
+                        ->label(__('Team'))
+                        ->relationship('team', 'name')
+                        ->default(fn (): ?int => filament()->getTenant()?->getKey() ?? Auth::user()?->current_team_id)
+                        ->searchable()
+                        ->preload()
+                        ->visible(fn (Get $get): bool => $get('visible') === ResourceVisibilityEnum::team || $get('visible') === ResourceVisibilityEnum::team->value)
+                        ->nullable(),
                     Repeater::make('incidentComponents')
                         ->visibleOn('create')
                         ->relationship()
@@ -97,9 +124,18 @@ class IncidentResource extends Resource
                 Section::make()->schema([
                     Select::make('user_id')
                         ->label(__('User'))
+                        ->hidden()
                         ->helperText(__('cachet::incident.form.user_helper'))
-                        ->relationship('user', 'name')
-                        ->default(Auth::user()->id)
+                        ->options(function (): array {
+                            $userModel = config('cachet.user_model');
+
+                            return $userModel::query()
+                                ->orderBy('name')
+                                ->pluck('name', 'id')
+                                ->all();
+                        })
+                        ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
+                        ->default(fn (): ?int => Auth::id())
                         ->searchable()
                         ->preload(),
                     Toggle::make('notifications')
@@ -125,15 +161,19 @@ class IncidentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('cachet::incident.list.headers.name'))
+                    ->label(__('Område'))
+                    ->searchable(),
+                TextColumn::make('component.name')
+                    ->label(__('Tekniker'))
                     ->searchable(),
                 TextColumn::make('latest_status')
                     ->label(__('cachet::incident.list.headers.status'))
                     ->sortable()
                     ->badge(),
                 TextColumn::make('visible')
-                    ->label(__('cachet::incident.list.headers.visible'))
+                    ->label(__('Synlighet'))
                     ->sortable()
+                    ->color('warning')
                     ->badge(),
                 IconColumn::make('stickied')
                     ->label(__('cachet::incident.list.headers.stickied'))
@@ -142,6 +182,9 @@ class IncidentResource extends Resource
                 TextColumn::make('occurred_at')
                     ->label(__('cachet::incident.list.headers.occurred_at'))
                     ->dateTime()
+                    ->state(fn (Incident $record) => $record->occurred_at?->format('Y-m-d') ?? '-')
+                    ->limit(12)
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->sortable(),
                 IconColumn::make('notifications')
                     ->label(__('cachet::incident.list.headers.notified_subscribers'))
@@ -150,8 +193,9 @@ class IncidentResource extends Resource
                 TextColumn::make('created_at')
                     ->label(__('cachet::incident.list.headers.created_at'))
                     ->dateTime()
+                    ->hidden()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->label(__('cachet::incident.list.headers.updated_at'))
                     ->dateTime()
@@ -160,6 +204,7 @@ class IncidentResource extends Resource
                 TextColumn::make('deleted_at')
                     ->label(__('cachet::incident.list.headers.deleted_at'))
                     ->dateTime()
+                    ->hidden()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -197,7 +242,7 @@ class IncidentResource extends Resource
                             ->label(__('cachet::incident.record_update.form.user_label'))
                             ->hint(__('cachet::incident.record_update.form.user_helper'))
                             ->relationship('user', 'name')
-                            ->default(Auth::user()->id)
+                            ->default(fn (): ?int => Auth::id())
                             ->searchable()
                             ->preload(),
                     ]),
@@ -207,7 +252,7 @@ class IncidentResource extends Resource
                     ->url(fn (Incident $record): string => route('cachet.status-page.incident', $record))
                     ->label(__('View')),
                 EditAction::make()
-                    ->color('secondary'),
+                    ->color('warning'),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

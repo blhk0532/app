@@ -23,7 +23,7 @@ class ComponentsRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('Components');
+        return __('Tekniker');
     }
 
     public function form(Schema $schema): Schema
@@ -44,8 +44,8 @@ class ComponentsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
-            ->modelLabel(__('Component'))
-            ->pluralModelLabel(__('Components'))
+            ->modelLabel(__('Tekniker'))
+            ->pluralModelLabel(__('Tekniker'))
             ->columns([
                 TextColumn::make('name')
                     ->label(__('Name')),

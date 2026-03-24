@@ -29,6 +29,8 @@ class IncidentTemplateResource extends Resource
 {
     protected static ?string $model = IncidentTemplate::class;
 
+    protected static bool $isScopedToTenant = false;
+
     protected static ?int $navigationSort = 10;
 
     protected static string|UnitEnum|null $navigationGroup = ' ';

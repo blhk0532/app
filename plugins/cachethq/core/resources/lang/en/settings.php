@@ -21,7 +21,7 @@ return [
             'recent_incidents_only' => 'Show Recent Incidents Only',
             'recent_incidents_days' => 'Number of Days to Show Recent Incidents',
         ],
-        'display_settings_title' => 'Display Settings',
+        'display_settings_title' => '',
     ],
     'manage_customization' => [
         'header_label' => 'Custom Header HTML',

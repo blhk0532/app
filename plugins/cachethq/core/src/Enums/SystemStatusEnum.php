@@ -17,10 +17,10 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::operational => __('cachet::system_status.operational'),
-            self::partial_outage => __('cachet::system_status.partial_outage'),
-            self::major_outage => __('cachet::system_status.major_outage'),
-            self::under_maintenance => __('cachet::system_status.under_maintenance'),
+            self::operational => __('Öppen'),
+            self::partial_outage => __('Avbrott'),
+            self::major_outage => __('Stängd'),
+            self::under_maintenance => __('Underhåll'),
         };
     }
 

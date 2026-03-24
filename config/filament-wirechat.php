@@ -18,7 +18,7 @@ return [
     | migrations generate UUID-based keys or unsigned big integers.
     |
     */
-    'uses_uuid_for_conversations' => false,
+    'uses_uuid_for_conversations' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -178,13 +178,12 @@ return [
      | The URL to redirect to when clicking the home/redirect button in the chat header.
      |
      | Options:
-     | - '/admin' (default): Redirects to /admin (Filament admin panel)
-     | - 'default': Uses the default Filament panel URL
-     | - A specific URL string: e.g., '/dashboard', etc.
+     | - 'default' (or null): Uses the default Filament panel URL
+     | - A specific URL string: e.g., '/admin', '/dashboard', etc.
      | - A route name: e.g., 'dashboard' (will be resolved via route() helper)
      |
      */
-    'dashboard_route' => env('WIRECHAT_DASHBOARD_ROUTE', '/admin'),
+    'dashboard_route' => env('WIRECHAT_DASHBOARD_ROUTE', 'default'),
 
     /*
      |--------------------------------------------------------------------------

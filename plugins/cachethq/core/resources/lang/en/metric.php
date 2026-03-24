@@ -38,7 +38,7 @@ return [
         'show_when_empty_label' => 'Show when empty',
     ],
     'overview' => [
-        'metric_points_label' => 'Metric Points',
+        'metric_points_label' => '',
         'metric_points_description' => 'Recent metric points.',
     ],
     'sum_label' => 'Sum',

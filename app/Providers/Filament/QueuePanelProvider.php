@@ -16,6 +16,7 @@ use App\Filament\Queue\Pages\Terminal;
 use App\Filament\Queue\Pages\Terminals;
 use App\Filament\Queue\Resources\RatsitData\RatsitDataResource;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use BinaryBuilds\FilamentFailedJobs\FilamentFailedJobsPlugin;
 use Bytexr\QueueableBulkActions\Enums\StatusEnum;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
@@ -48,7 +49,7 @@ class QueuePanelProvider extends PanelProvider
     {
         return $panel
             ->id('queue')
-            ->path('queue')
+            ->path('auth/queue')
             ->viteTheme('resources/css/filament/queue/theme.css')
             ->colors([
                 'primary' => Color::Gray,
@@ -120,6 +121,7 @@ class QueuePanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

@@ -6,11 +6,11 @@ namespace App\Http\Controllers\Api;
 
 use Adultdate\FilamentBooking\Enums\BookingStatus;
 use Adultdate\FilamentBooking\Models\Booking\DailyLocation;
+use Adultdate\FilamentBooking\Models\BookingServicePeriod;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreBookingRequest;
 use App\Http\Requests\Api\UpdateBookingRequest;
 use App\Models\Booking;
-use App\Models\BookingServicePeriod;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

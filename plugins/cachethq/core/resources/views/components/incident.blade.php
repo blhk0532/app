@@ -19,7 +19,7 @@
                 {{ $incident->components->pluck('name')->join(', ', ' and ') }}
             </div>
             @endif
-            <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-start sm:items-center">
+            <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-start">
                 <div class="flex flex-col flex-1">
                     <div class="flex gap-2 items-center">
                         <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">

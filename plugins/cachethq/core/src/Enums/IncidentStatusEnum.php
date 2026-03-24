@@ -39,11 +39,11 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::investigating => __('cachet::incident.status.investigating'),
-            self::identified => __('cachet::incident.status.identified'),
-            self::watching => __('cachet::incident.status.watching'),
-            self::fixed => __('cachet::incident.status.fixed'),
-            default => __('cachet::incident.status.reported'),
+            self::investigating => __('Pågående'),
+            self::identified => __('Kommande'),
+            self::watching => __('Undersöks'),
+            self::fixed => __('Slutfört'),
+            default => __('Tillgänglig'),
         };
     }
 
@@ -65,7 +65,7 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::watching => Color::Amber,
             self::fixed => Color::Green,
             self::identified => Color::Gray,
-            default => Color::Red,
+            default => Color::Green,
         };
     }
 }

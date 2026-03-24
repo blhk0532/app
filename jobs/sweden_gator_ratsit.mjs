@@ -24,6 +24,7 @@ function parseCliFilters(argv) {
 	let postnummer = null;
 	let kommun = null;
 	let lan = null;
+    let order = null;
 
 	for (let i = 0; i < args.length; i++) {
 		const arg = args[i];
@@ -70,9 +71,19 @@ function parseCliFilters(argv) {
 			lan = String(args[i + 1]).trim() || null;
 			i++;
 		}
+
+        if (arg.startsWith('--order=')) {
+			order = arg.slice('--order='.length).trim() || null;
+			continue;
+		}
+
+		if (arg === '--order' && args[i + 1]) {
+			order = String(args[i + 1]).trim() || null;
+			i++;
+		}
 	}
 
-	return { postort, postnummer, kommun, lan };
+	return { postort, postnummer, kommun, lan, order };
 }
 
 async function scrapeRatsitAdresser(url, row, connection) {
@@ -261,7 +272,7 @@ async function scrapeRatsitAdresser(url, row, connection) {
 async function main() {
 	console.log('Starting Ratsit adress scrape from sweden_gator...\n');
 	const filters = parseCliFilters(process.argv.slice(2));
-
+    const orderPararm = filters.order ? `ORDER BY id ${filters.order}` : 'ORDER BY id';
 	const connection = await createDbConnection();
 
 	try {
@@ -295,7 +306,7 @@ async function main() {
 		const query = `SELECT id, gata, postnummer, postort, kommun, lan, ratsit_link
 			 FROM sweden_gator
 			 WHERE ${whereClauses.join(' AND ')}
-			 ORDER BY id`;
+			 ${orderPararm}`;
 
 		const [gatorRows] = await connection.execute(query, queryParams);
 

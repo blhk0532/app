@@ -11,10 +11,14 @@ Route::prefix('spa')
     ->middleware(['auth', 'verified', HandleInertiaRequests::class])
     ->group(function (): void {
         Route::get('/', function () {
-            return Inertia::render('Home');
+            return Inertia::render('app');
         })->name('home');
 
+        Route::get('/app', function () {
+            return Inertia::render('app');
+        })->name('app');
+
         Route::get('/dashboard', function () {
-            return Inertia::render('Dashboard');
+            return Inertia::render('dashboard');
         })->name('dashboard');
     });

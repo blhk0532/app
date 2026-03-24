@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('incident_templates')) {
+            return;
+        }
+
         if (! Schema::hasColumn('incident_templates', 'engine')) {
             Schema::table('incident_templates', function (Blueprint $table): void {
                 $table->char('engine')->default('twig')->after('template');

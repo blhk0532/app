@@ -18,6 +18,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -27,11 +28,13 @@ class ApiKeyResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
+    protected static bool $isScopedToTenant = false;
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('tokenable_type', auth()->user()::class)
-            ->where('tokenable_id', auth()->id());
+            ->where('tokenable_type', Auth::user()::class)
+            ->where('tokenable_id', Auth::id());
     }
 
     public static function getNavigationGroup(): ?string

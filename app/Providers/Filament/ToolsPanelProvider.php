@@ -11,6 +11,7 @@ use AdultDate\FilamentWirechat\Filament\Resources\Messages\MessageResource;
 use AdultDate\FilamentWirechat\FilamentWirechatPlugin;
 use App\Filament\Tools\Pages\ToolsDashboard;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use App\Models\User;
 use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use BinaryBuilds\CommandRunner\CommandRunnerPlugin;
@@ -46,7 +47,7 @@ class ToolsPanelProvider extends PanelProvider
     {
         return $panel
             ->id('tools')
-            ->path('tools')
+            ->path('auth/tools')
             ->viteTheme('resources/css/filament/tools/theme.css')
             ->colors([
                 'primary' => Color::Gray,
@@ -116,6 +117,7 @@ class ToolsPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

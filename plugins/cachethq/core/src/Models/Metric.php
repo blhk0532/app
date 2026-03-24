@@ -2,6 +2,8 @@
 
 namespace Cachet\Models;
 
+use App\Models\Team;
+use Cachet\Concerns\BelongsToTenant;
 use Cachet\Concerns\HasVisibility;
 use Cachet\Database\Factories\MetricFactory;
 use Cachet\Enums\MetricTypeEnum;
@@ -14,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -39,6 +42,8 @@ use Illuminate\Support\Collection;
  */
 class Metric extends Model
 {
+    use BelongsToTenant;
+
     /** @use HasFactory<MetricFactory> */
     use HasFactory;
 
@@ -75,7 +80,18 @@ class Metric extends Model
         'default_view',
         'visible',
         'order',
+        'team_id',
     ];
+
+    /**
+     * Get the team this metric belongs to.
+     *
+     * @return BelongsTo<Team, $this>
+     */
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
 
     /**
      * Get the metrics points.

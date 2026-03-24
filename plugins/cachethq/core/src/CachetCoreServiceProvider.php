@@ -14,11 +14,6 @@ use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Cachet\View\ViewManager;
 use Dedoc\Scramble\Scramble;
-use Dedoc\Scramble\Support\Generator\OpenApi;
-use Dedoc\Scramble\Support\Generator\Operation;
-use Dedoc\Scramble\Support\Generator\SecurityScheme;
-use Dedoc\Scramble\Support\Generator\Server;
-use Dedoc\Scramble\Support\RouteInfo;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -32,7 +27,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 
@@ -227,23 +221,9 @@ class CachetCoreServiceProvider extends ServiceProvider
      */
     private function configureScramble(): void
     {
-        if (! class_exists(Scramble::class)) {
+        if (! class_exists('Dedoc\Scramble\Scramble')) {
             return;
         }
 
-        Scramble::configure()
-            ->withDocumentTransformers(function (OpenApi $openApi) {
-                $openApi->info->description = 'API documentation for Cachet, the open-source, self-hosted status page system.';
-
-                $openApi->addServer(Server::make('https://v3.cachethq.io/api')->setDescription('The Cachet v3 demo server.'));
-                $openApi->secure(SecurityScheme::http('bearer'));
-            })
-            ->withOperationTransformers(function (Operation $operation, RouteInfo $routeInfo) {
-                $hasAuthMiddleware = collect($routeInfo->route->gatherMiddleware())->contains(fn ($m) => Str::startsWith($m, 'auth:'));
-
-                if (! $hasAuthMiddleware) {
-                    $operation->security = [];
-                }
-            });
     }
 }

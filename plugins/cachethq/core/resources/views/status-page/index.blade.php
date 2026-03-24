@@ -4,6 +4,8 @@
     <div class="container mx-auto flex flex-col space-y-6 w-full px-4 py-6">
         <x-cachet::status-bar />
 
+        <x-cachet::status-announcement />
+
         <x-cachet::about />
         @foreach ($componentGroups as $componentGroup)
             <x-cachet::component-group :component-group="$componentGroup" />

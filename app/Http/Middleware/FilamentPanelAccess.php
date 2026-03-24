@@ -8,6 +8,7 @@ namespace App\Http\Middleware;
 
 use App\Models\PanelAccess;
 use Closure;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ final class FilamentPanelAccess
         $path = parse_url($requestPath, PHP_URL_PATH);
         $segments = array_values(array_filter(explode('/', $path)));
 
-        if (($i = array_search('nds', $segments)) !== false) {
+        if (($i = array_search('auth', $segments)) !== false) {
             $panelId = $segments[$i + 1] ?? null;
         } else {
             $panelId = $segments[0] ?? null;
@@ -37,20 +38,34 @@ final class FilamentPanelAccess
         $user = Auth::user();
 
         if (! $user) {
-            $loginRoute = $this->getPanelLoginRoute($panelId);
-
-            return redirect()->to($loginRoute)->with('error', 'Unauthorized access');
+            return $next($request);
         }
 
-        if (! $this->checkPanelAccess($panelId) && $panelId === 'app') {
-            return redirect('/')->with('error', 'Unauthorized access');
+        $userRole = (string) ($user->role ?? '');
+
+        if ($this->checkPanelAccess($panelId)) {
+            return $next($request);
         }
 
-        if (! $this->checkPanelAccess($panelId) && $panelId !== 'app' && $user->role !== 'super') {
-            abort(403, 'Unauthorized to access '.$panelId.' panel');
+        Notification::make()
+           ->title('Unauthorized 🛇o(≧o≦)🛇o การเข้าถึงถูกปฏิเสธ')
+            ->body('Oops, you do not have sufficient permissions
+           Can\'t manage the resource ⊹ ACCESS DENIED
+           System is currently in development and some
+           features may be restricted due to maintenance.
+            If you believe this is a mistake, contact admin')
+            ->warning()
+            ->send();
+
+        $previousUrl = url()->previous();
+
+        if (empty($previousUrl) || $previousUrl === $request->fullUrl()) {
+            $previousUrl = '/';
         }
 
-        return $next($request);
+        return redirect()->to($previousUrl)->with('error', 'Unauthorized access to this resource.');
+
+        // return $next($request);
     }
 
     private function getPanelLoginRoute(?string $panelId): string

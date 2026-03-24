@@ -39,6 +39,7 @@ use App\Filament\Widgets\RatsitDataStatsWidget;
 use App\Http\Middleware\ApplyTenantScopes;
 use App\Http\Middleware\CurrentTenant;
 use App\Http\Middleware\FilamentPanelAccess;
+use App\Http\Middleware\FilamentResourceAccess;
 use App\Models\Team;
 use App\Models\User;
 use App\Support\Filament\AppPanelRedirect;
@@ -117,7 +118,8 @@ class AppPanelProvider extends PanelProvider
             ->homeUrl(fn () => AppPanelRedirect::urlFor(Auth::user()))
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
-            ->brandLogoHeight(fn () => request()->is('admin/login', 'admin/password-reset/*') ? '68px' : '34px')
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->viteTheme('resources/css/filament/app/theme.css')
             ->defaultThemeMode(ThemeMode::Dark)
             //    ->discoverClusters(in: app_path('Filament/App/Clusters'), for: 'App\\Filament\\App\\Clusters')
@@ -132,12 +134,6 @@ class AppPanelProvider extends PanelProvider
             ->homeUrl(fn () => AppPanelRedirect::urlFor(Auth::user()))
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->favicon(fn () => asset('favicon.svg'))
-            ->brandLogo(fn () => view('filament.app.logo'))
-            ->brandLogoHeight(fn () => request()->is('admin/login', 'admin/password-reset/*') ? '68px' : '34px')
-            ->viteTheme('resources/css/filament/app/theme.css')
-            ->defaultThemeMode(ThemeMode::Dark)
-            ->databaseNotificationsPolling('30s')
             //    ->discoverClusters(in: app_path('Filament/App/Clusters'), for: 'App\\Filament\\App\\Clusters')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
@@ -226,6 +222,7 @@ class AppPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 FilamentPanelAccess::class,
+                FilamentResourceAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

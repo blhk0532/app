@@ -23,17 +23,25 @@ use Filament\Tables\Table;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
+    protected static bool $isScopedToTenant = true;
+
+    protected static ?string $tenantOwnershipRelationshipName = 'teams';
+
     protected static bool $shouldRegisterNavigation = false;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static bool $isGloballySearchable = true;
 
     public static function canAccess(): bool
     {
-        return auth()->user()->isAdmin();
+        return Auth::user()?->isAdmin() ?? false;
     }
 
     public static function getEditAuthorizationResponse(Model $record): Response
@@ -42,11 +50,11 @@ class UserResource extends Resource
             return Response::deny();
         }
 
-        if (auth()->user()->is($record)) {
+        if (Auth::user()?->is($record)) {
             return Response::allow();
         }
 
-        if (auth()->user()->isAdmin()) {
+        if (Auth::user()?->isAdmin()) {
             return Response::allow();
         }
 
@@ -77,9 +85,8 @@ class UserResource extends Resource
                         ->password()
                         ->required(fn (string $context): bool => $context === 'create')
                         ->maxLength(255)
-                        ->autocomplete(false)
-                        ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                        ->dehydrated(fn ($state) => filled($state)),
+                        ->autocomplete(false),
+                    //       ->dehydrated(fn ($state) => filled($state)),
 
                     TextInput::make('password_confirmation')
                         ->password()
@@ -97,8 +104,9 @@ class UserResource extends Resource
                         ->label(__('cachet::user.form.preferred_locale')),
 
                     Toggle::make('is_admin')
+
                         ->label(__('cachet::user.form.is_admin_label'))
-                        ->disabled(fn (?User $record) => $record?->is(auth()->user())),
+                        ->disabled(fn (?User $record) => $record?->is(Auth::user())),
                 ]),
             ]);
     }
@@ -120,7 +128,7 @@ class UserResource extends Resource
                     ->dateTime(),
 
                 ToggleColumn::make('is_admin')
-                    ->disabled(fn (User $record) => auth()->user()->is($record))
+                    ->disabled(fn (User $record) => Auth::user()?->is($record) ?? false)
                     ->label(__('cachet::user.list.headers.is_admin')),
             ])
             ->filters([
