@@ -28,7 +28,7 @@
     --ec-button-active-text-color: var(--dark-hover-text);
 }
 
-
+/*
 .ec-button {
     @apply rounded-lg border-0 text-sm py-2 px-3 font-medium;
 
@@ -37,7 +37,7 @@
     }
 }
 
-/* This adds the "divider" between buttons in a button group */
+
 .ec-button-group {
     & .ec-button {
         @apply me-px;
@@ -84,7 +84,7 @@
         @apply rounded-lg;
     }
 }
-
+*/
 /*.ec-event {*/
 /*    @apply bg-[var(--bg)] dark:bg-[var(--dark-bg)];*/
 /*    & .ec-event-body {*/
@@ -92,7 +92,7 @@
 /*    }*/
 /*}*/
 
-/* Only apply these settings in day and time grid views (not in list views) */
+/* Only apply these settings in day and time grid views (not in list views)
 .ec-day-grid,
 .ec-time-grid {
 
@@ -100,9 +100,9 @@
         @apply text-gray-400 dark:text-gray-400;
     }
     & .ec-event {
-        /* We need to apply hover using our custom class since one event is split into multiple elements if wrapped inside multiple calendar rows */
+
         &.gu-hover {
-            /*@apply bg-red-400;*/
+
             @apply text-[var(--hover-text)] dark:text-[var(--dark-hover-text)] bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)];
         }
 
@@ -111,3 +111,4 @@
         }
     }
 }
+*/

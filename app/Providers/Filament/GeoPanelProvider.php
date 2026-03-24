@@ -41,7 +41,7 @@ class GeoPanelProvider extends PanelProvider
             ->default()
             ->id('geo')
             ->path('auth/geo')
-            ->viteTheme('resources/css/filament/geo/theme.css')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->colors([
                 'primary' => Color::Amber,

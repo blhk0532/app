@@ -11,9 +11,9 @@ use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
-use Livewire\Component;
+use Livewire\Component as LivewireComponent;
 
-class AnnouncementEditor extends Component
+class AnnouncementEditor extends LivewireComponent
 {
     public int|string|null $editingId = null;
 

@@ -11,10 +11,11 @@ export default defineConfig({
         react(),
         laravel({
             input: [
+                'resources/js/inertia/app.tsx',
                 'resources/js/app.tsx',
                 'resources/js/app.js',
-                'resources/js/inertia/app.tsx',
                 'resources/css/app.css',
+                'resources/css/theme.css',
                 'resources/css/filament/admin/theme.css',
                 'resources/css/filament/app/theme.css',
                 'resources/css/filament/booking/theme.css',
@@ -35,6 +36,7 @@ export default defineConfig({
                 'resources/css/filament/script/theme.css',
                 'resources/css/filament/sheets/theme.css',
                 'resources/css/filament/stats/theme.css',
+                'resources/css/filament/super/theme.css',
                 ],
             refresh: true,
         }),

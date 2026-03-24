@@ -19,7 +19,6 @@ class AnnouncementWidget extends Widget
 
     public Collection $announcements;
 
-
     protected static bool $isDiscovered = true;
 
     protected array $extraWidgetAttributes = [
@@ -50,6 +49,23 @@ class AnnouncementWidget extends Widget
             ->with(['user', 'tekniker', 'component'])
             ->orderBy('starts_at', 'desc')
             ->get();
+    }
+
+    public function deleteAnnouncement(int $id): void
+    {
+        /** @var Announcement|null $announcement */
+        $announcement = Announcement::find($id);
+
+        if ($announcement) {
+            $announcement->delete();
+        }
+
+        $this->refreshAnnouncements();
+    }
+
+    public function editAnnouncement(int $id): void
+    {
+        $this->redirect(url()->current().'?edit_announcement='.$id, navigate: true);
     }
 
     protected function getViewData(): array

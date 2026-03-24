@@ -38,6 +38,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\HtmlString;
+use Filament\Actions\ViewAction;
+use App\Exports\PeopleExporter;
+use App\Models\Person;
+use App\Services\GoogleSheets\PeopleSheetsSyncService;
+use App\Services\Import\PeopleImportService;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ExportAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 
 class MapPickerWidget extends MapTableWidget
 {
@@ -158,12 +170,12 @@ class MapPickerWidget extends MapTableWidget
             Filter::make('has_personer')
                 ->label('Has Personer')
                 ->default(true)
-                ->query(fn (Builder $query) => $query->where('personer', '>', 0)),
+                ->query(fn(Builder $query) => $query->where('personer', '>', 0)),
             SelectFilter::make('post_nummer')
                 ->label('Postnr')
                 ->searchable()
                 ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
+                ->options(fn(): array => SwedenPostnummer::query()
                     ->whereNotNull('post_nummer')
                     ->where('post_nummer', '<>', '')
                     ->orderBy('post_nummer')
@@ -173,7 +185,7 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Postort')
                 ->searchable()
                 ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
+                ->options(fn(): array => SwedenPostnummer::query()
                     ->whereNotNull('post_ort')
                     ->where('post_ort', '<>', '')
                     ->orderBy('post_ort')
@@ -183,7 +195,7 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Kommun')
                 ->searchable()
                 ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
+                ->options(fn(): array => SwedenPostnummer::query()
                     ->whereNotNull('kommun')
                     ->where('kommun', '<>', '')
                     ->orderBy('kommun')
@@ -193,7 +205,7 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Län')
                 ->searchable()
                 ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
+                ->options(fn(): array => SwedenPostnummer::query()
                     ->whereNotNull('lan')
                     ->where('lan', '<>', '')
                     ->orderBy('lan')
@@ -249,7 +261,113 @@ class MapPickerWidget extends MapTableWidget
     {
         return [
             BulkActionGroup::make([
-                //    RunRatsitHittaBulkAction::make(),
+                DeleteBulkAction::make(),
+                BulkAction::make('setAllQueueFlags')
+                    ->label('Set All Queue = 1')
+                    ->icon('heroicon-o-queue-list')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Set Queue Columns')
+                    ->modalDescription('This will set personer_hitta_queue, personer_merinfo_queue, and personer_ratsit_queue to 1 for all selected records.')
+                    ->modalSubmitActionLabel('Set Queue = 1')
+                    ->action(function (Collection $records): void {
+                        $updated = 0;
+
+                        foreach ($records as $record) {
+                            SwedenPostnummer::query()
+                                ->whereKey($record->getKey())
+                                ->update([
+                                    'personer_hitta_queue' => 1,
+                                    'personer_merinfo_queue' => 1,
+                                    'personer_ratsit_queue' => 1,
+                                ]);
+
+                            $updated++;
+                        }
+
+                        Notification::make()
+                            ->success()
+                            ->title('Queue Columns Updated')
+                            ->body("Set all queue columns to 1 for {$updated} record(s).")
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+                BulkAction::make('syncToGoogleSheets')
+                    ->label('Sync to Sheets')
+                    ->icon('heroicon-o-table-cells')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Sync selected people to Google Sheets')
+                    ->modalDescription('Syncs the selected records to Google Sheets.')
+                    ->schema([
+                        TextInput::make('spreadsheet_id')
+                            ->label('Spreadsheet ID')
+                            ->default(config('services.google_sheets.default_spreadsheet_id'))
+                            ->required(),
+                        TextInput::make('sheet_name')
+                            ->label('Sheet tab name')
+                            ->default(config('services.google_sheets.default_sheet_name', 'People'))
+                            ->required(),
+                    ])
+                    ->action(function (Collection $records, array $data): void {
+                        try {
+                            $count = app(PeopleSheetsSyncService::class)->syncRecords(
+                                records: $records,
+                                spreadsheetId: (string) ($data['spreadsheet_id'] ?? ''),
+                                sheetName: (string) ($data['sheet_name'] ?? 'People'),
+                            );
+
+                            Notification::make()
+                                ->success()
+                                ->title('Google Sheets sync completed')
+                                ->body("Synced {$count} people to Google Sheets.")
+                                ->send();
+                        } catch (\Throwable $exception) {
+                            report($exception);
+
+                            Notification::make()
+                                ->danger()
+                                ->title('Google Sheets sync failed')
+                                ->body($exception->getMessage())
+                                ->send();
+                        }
+                    })
+                    ->deselectRecordsAfterCompletion(),
+                BulkAction::make('runAllData')
+                    ->label('Run All Scrapers')
+                    ->icon('heroicon-o-play')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Run All Scrapers')
+                    ->modalDescription('This will queue data collection jobs (Hitta, Merinfo, Ratsit) for all selected records.')
+                    ->modalSubmitActionLabel('Run All Scripts')
+                    ->action(function (Collection $records): void {
+                        $batchCount = 0;
+                        $totalJobs = 0;
+                        foreach ($records as $record) {
+                            $postNummer = (string) $record->post_nummer;
+                            $normalizedPostNummer = str_replace(' ', '', $postNummer);
+                            $batch = Bus::batch([
+                                new RunHittaDataScriptJob($normalizedPostNummer),
+                                new RunMerinfoDataScriptJob($normalizedPostNummer),
+                                new RunRatsitDataScriptJob($postNummer),
+                            ])
+                                ->name("SwedenPostnummer {$postNummer} data scripts")
+                                ->onConnection(config('queue.default'))
+                                ->onQueue('ratsit-hitta')
+                                ->allowFailures()
+                                ->dispatch();
+                            $batchCount++;
+                            $totalJobs += 3;
+                        }
+                        Notification::make()
+                            ->success()
+                            ->title('Batches Queued')
+                            ->body("Queued {$batchCount} batch(es) with {$totalJobs} total job(s) for data collection.")
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
                 BulkAction::make('runScript')
                     ->label('Run Queue Script')
                     ->icon('heroicon-o-command-line')
@@ -264,11 +382,11 @@ class MapPickerWidget extends MapTableWidget
                                 $scriptPaths = glob(base_path('scripts/*')) ?: [];
 
                                 return collect($scriptPaths)
-                                    ->filter(fn (string $path): bool => is_file($path))
-                                    ->map(fn (string $path): string => basename($path))
+                                    ->filter(fn(string $path): bool => is_file($path))
+                                    ->map(fn(string $path): string => basename($path))
                                     ->sort()
                                     ->values()
-                                    ->mapWithKeys(fn (string $name): array => [$name => $name])
+                                    ->mapWithKeys(fn(string $name): array => [$name => $name])
                                     ->all();
                             })
                             ->searchable()
@@ -315,36 +433,8 @@ class MapPickerWidget extends MapTableWidget
                         }
                     })
                     ->deselectRecordsAfterCompletion(),
-                BulkAction::make('setAllQueueFlags')
-                    ->label('Set All Queue = 1')
-                    ->icon('heroicon-o-queue-list')
-                    ->color('warning')
-                    ->requiresConfirmation()
-                    ->modalHeading('Set Queue Columns')
-                    ->modalDescription('This will set personer_hitta_queue, personer_merinfo_queue, and personer_ratsit_queue to 1 for all selected records.')
-                    ->modalSubmitActionLabel('Set Queue = 1')
-                    ->action(function (Collection $records): void {
-                        $updated = 0;
+                RunRatsitHittaBulkAction::make(),
 
-                        foreach ($records as $record) {
-                            SwedenPostnummer::query()
-                                ->whereKey($record->getKey())
-                                ->update([
-                                    'personer_hitta_queue' => 1,
-                                    'personer_merinfo_queue' => 1,
-                                    'personer_ratsit_queue' => 1,
-                                ]);
-
-                            $updated++;
-                        }
-
-                        Notification::make()
-                            ->success()
-                            ->title('Queue Columns Updated')
-                            ->body("Set all queue columns to 1 for {$updated} record(s).")
-                            ->send();
-                    })
-                    ->deselectRecordsAfterCompletion(),
                 BulkAction::make('checkDbCounts')
                     ->label('Check DB Counts')
                     ->icon('heroicon-o-calculator')
@@ -360,32 +450,24 @@ class MapPickerWidget extends MapTableWidget
                             $postNummer = (string) $record->post_nummer;
                             $normalizedPostNummer = $record->csv_id;
 
-                            $hittaDataCount = HittaData::query()
+                            $hittaCount = HittaData::query()
                                 ->where('postnummer', $postNummer)
                                 ->count();
 
-                            $hittaSeCount = HittaSe::query()
+                            $merinfoCount = MerinfoData::query()
                                 ->where('postnummer', $postNummer)
                                 ->count();
 
-                            $merinfoDataCount = MerinfoData::query()
-                                ->where('postnummer', $postNummer)
-                                ->count();
-
-                            $merinfoCount = Merinfo::query()
-                                ->whereLike('address', $postNummer)
-                                ->count();
-
-                            $ratsitDataCount = RatsitData::query()
+                            $ratsitCount = RatsitData::query()
                                 ->where('postnummer', $postNummer)
                                 ->count();
 
                             SwedenPostnummer::query()
                                 ->whereKey($record->getKey())
                                 ->update([
-                                    'personer_hitta_saved' => $hittaDataCount > $hittaSeCount ? $hittaDataCount : $hittaSeCount,
-                                    'personer_merinfo_saved' => $merinfoDataCount > $merinfoCount ? $merinfoDataCount : $merinfoCount,
-                                    'personer_ratsit_saved' => $ratsitDataCount > 0 ? $ratsitDataCount : 0,
+                                    'personer_hitta_saved' => $hittaCount,
+                                    'personer_merinfo_saved' => $merinfoCount,
+                                    'personer_ratsit_saved' => $ratsitCount,
                                 ]);
 
                             $updated++;
@@ -398,42 +480,109 @@ class MapPickerWidget extends MapTableWidget
                             ->send();
                     })
                     ->deselectRecordsAfterCompletion(),
-                //    BulkAction::make('runAllData')
-                //        ->label('Run All Data Scripts')
-                //        ->icon('heroicon-o-play')
-                //        ->color('success')
-                //        ->requiresConfirmation()
-                //        ->modalHeading('Run All Data Scripts')
-                //        ->modalDescription('This will queue data collection jobs (Hitta, Merinfo, Ratsit) for all selected records.')
-                //        ->modalSubmitActionLabel('Run All Scripts')
-                //        ->action(function (Collection $records): void {
-                //            $batchCount = 0;
-                //            $totalJobs = 0;
-                //            foreach ($records as $record) {
-                //                $postNummer = (string) $record->post_nummer;
-                //                $normalizedPostNummer = str_replace(' ', '', $postNummer);
-                //                $batch = Bus::batch([
-                //                    new RunHittaDataScriptJob($normalizedPostNummer),
-                //                    new RunMerinfoDataScriptJob($normalizedPostNummer),
-                //                    new RunRatsitDataScriptJob($postNummer),
-                //                ])
-                //                    ->name("SwedenPostnummer {$postNummer} data scripts")
-                //                    ->onConnection(config('queue.default'))
-                //                    ->onQueue('ratsit-hitta')
-                //                    ->allowFailures()
-                //                    ->dispatch();
-                //                $batchCount++;
-                //                $totalJobs += 3;
-                //            }
-                //            Notification::make()
-                //                ->success()
-                //                ->title('Batches Queued')
-                //                ->body("Queued {$batchCount} batch(es) with {$totalJobs} total job(s) for data collection.")
-                //                ->send();
-                //        })
-                //        ->deselectRecordsAfterCompletion(),
-                //        DeleteBulkAction::make(),
+                BulkAction::make('selectionSummary')
+                    ->label('Count Databases')
+                    ->icon('heroicon-o-chart-bar')
+                    ->color('info')
+                    ->action(function (Collection $records): void {
+                        $total = $records->count();
+                        $withPin = $records->filter(fn(Person $record): bool => filled($record->personnummer))->count();
+                        $withPhone = $records->filter(function (Person $record): bool {
+                            $phones = $record->telefonnummer;
+
+                            return is_array($phones) && count(array_filter($phones)) > 0;
+                        })->count();
+
+                        Notification::make()
+                            ->title('Database Match Summary')
+                            ->success()
+                            ->body("Total: {$total} · With personnummer: {$withPin} · With phone: {$withPhone}")
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
             ]),
+            Action::make('importFromFile')
+                ->label('Import')
+                ->icon('heroicon-o-document-arrow-up')
+                ->color('warning')
+                ->schema([
+                    FileUpload::make('import_file')
+                        ->label('CSV or XLSX file')
+                        ->required()
+                        ->acceptedFileTypes(['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'])
+                        ->maxSize(50 * 1024), // 50MB
+                ])
+                ->action(function (array $data): void {
+                    try {
+                        $filePath = $data['import_file'];
+
+                        if (! is_string($filePath)) {
+                            throw new \Exception('Invalid file upload');
+                        }
+
+                        $count = app(PeopleImportService::class)->importFromFile(
+                            storage_path("app/{$filePath}")
+                        );
+
+                        Notification::make()
+                            ->success()
+                            ->title('Import completed')
+                            ->body("Imported/updated {$count} people into personer.")
+                            ->send();
+                    } catch (\Throwable $exception) {
+                        report($exception);
+
+                        Notification::make()
+                            ->danger()
+                            ->title('Import failed')
+                            ->body($exception->getMessage())
+                            ->send();
+                    }
+                }),
+            Action::make('importFromGoogleSheets')
+                ->label('Import')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('info')
+                ->requiresConfirmation()
+                ->modalHeading('Import people from Google Sheets')
+                ->modalDescription('Reads rows from the sheet and upserts into personer using personnummer or name+address+postnummer.')
+                ->schema([
+                    TextInput::make('spreadsheet_id')
+                        ->label('Spreadsheet ID')
+                        ->default(config('services.google_sheets.default_spreadsheet_id'))
+                        ->required(),
+                    TextInput::make('sheet_name')
+                        ->label('Sheet tab name')
+                        ->default(config('services.google_sheets.default_sheet_name', 'People'))
+                        ->required(),
+                ])
+                ->action(function (array $data): void {
+                    try {
+                        $count = app(PeopleSheetsSyncService::class)->importIntoDatabase(
+                            spreadsheetId: (string) ($data['spreadsheet_id'] ?? ''),
+                            sheetName: (string) ($data['sheet_name'] ?? 'People'),
+                        );
+
+                        Notification::make()
+                            ->success()
+                            ->title('Google Sheets import completed')
+                            ->body("Imported {$count} people into personer.")
+                            ->send();
+                    } catch (\Throwable $exception) {
+                        report($exception);
+
+                        Notification::make()
+                            ->danger()
+                            ->title('Google Sheets import failed')
+                            ->body($exception->getMessage())
+                            ->send();
+                    }
+                }),
+            ExportAction::make()
+                ->label('Export')
+                ->exporter(PeopleExporter::class)
+                ->icon('heroicon-o-arrow-up-tray'),
+
         ];
     }
 

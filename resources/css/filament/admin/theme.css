@@ -516,13 +516,14 @@ div.fi-modal-window{
 #ui-switcher-modal{
     max-width:320px;
 }
+/*
 .fi-modal-window.fi-modal-window-has-close-btn.fi-modal-window-has-content.fi-align-start.fi-width-md{
     max-width: 320px;
 }
 .fi-modal-window.fi-modal-window-has-close-btn.fi-modal-window-has-content.fi-align-start.fi-width-sm{
     max-width: 320px;
 }
-
+*/
 .fc-dom-91{
     position: absolute;
   left: 180px;

@@ -35,23 +35,28 @@ class PeopleTable
                 TextColumn::make('personnamn')
                     ->label('Namn')
                     ->searchable()
+                    ->sortable()
                     ->sortable(),
                 TextColumn::make('personnummer')
                     ->label('Personnummer')
                     ->searchable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('fornamn')
                     ->label('Förnamn')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('efternamn')
                     ->label('Efternamn')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('gatuadress')
                     ->label('Adress')
                     ->searchable()
-                    ->wrap(),
+                    ->wrap()
+                    ->sortable(),
                 TextColumn::make('postnummer')
                     ->label('Postnr')
                     ->searchable()
@@ -63,11 +68,13 @@ class PeopleTable
                 TextColumn::make('kommun')
                     ->label('Kommun')
                     ->searchable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('bostadstyp')
                     ->label('Bostadstyp')
                     ->badge()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('telefonnummer')
                     ->label('Telefon')
                     ->formatStateUsing(function (mixed $state): string {
@@ -100,30 +107,34 @@ class PeopleTable
                         return $moreCount > 0 ? "{$firstNumber} (+{$moreCount} more)" : $firstNumber;
                     })
                     ->searchable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('sources')
                     ->label('Sources')
-                    ->formatStateUsing(fn (mixed $state): string => is_array($state) ? implode(', ', array_filter($state)) : (string) ($state ?? ''))
+                    ->formatStateUsing(fn(mixed $state): string => is_array($state) ? implode(', ', array_filter($state)) : (string) ($state ?? ''))
                     ->badge()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
             ])
             ->filters([
                 Filter::make('has_personnummer')
                     ->label('Has personnummer')
-                    ->query(fn (Builder $query): Builder => $query
+                    ->query(fn(Builder $query): Builder => $query
                         ->whereNotNull('personnummer')
                         ->where('personnummer', '<>', '')),
                 Filter::make('has_telefonnummer')
                     ->label('Has phone')
-                    ->query(fn (Builder $query): Builder => $query
+                    ->query(fn(Builder $query): Builder => $query
                         ->whereNotNull('telefonnummer')
                         ->whereRaw('JSON_LENGTH(telefonnummer) > 0')),
                 SelectFilter::make('kommun')
@@ -131,7 +142,7 @@ class PeopleTable
                     ->searchable()
                     ->multiple()
                     ->preload()
-                    ->options(fn (): array => Person::query()
+                    ->options(fn(): array => Person::query()
                         ->whereNotNull('kommun')
                         ->where('kommun', '<>', '')
                         ->orderBy('kommun')
@@ -142,7 +153,7 @@ class PeopleTable
                     ->searchable()
                     ->multiple()
                     ->preload()
-                    ->options(fn (): array => Person::query()
+                    ->options(fn(): array => Person::query()
                         ->whereNotNull('postort')
                         ->where('postort', '<>', '')
                         ->orderBy('postort')
@@ -152,7 +163,7 @@ class PeopleTable
                     ->label('Bostadstyp')
                     ->searchable()
                     ->multiple()
-                    ->options(fn (): array => Person::query()
+                    ->options(fn(): array => Person::query()
                         ->whereNotNull('bostadstyp')
                         ->where('bostadstyp', '<>', '')
                         ->orderBy('bostadstyp')
@@ -166,8 +177,8 @@ class PeopleTable
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['created_from'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('created_at', '>=', $date))
-                            ->when($data['created_until'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('created_at', '<=', $date));
+                            ->when($data['created_from'] ?? null, fn(Builder $query, string $date): Builder => $query->whereDate('created_at', '>=', $date))
+                            ->when($data['created_until'] ?? null, fn(Builder $query, string $date): Builder => $query->whereDate('created_at', '<=', $date));
                     }),
             ])
             ->defaultSort('created_at', 'desc')
@@ -179,9 +190,9 @@ class PeopleTable
                     Action::make('openMap')
                         ->label('Open map')
                         ->icon('heroicon-o-map')
-                        ->url(fn (Person $record): string => "https://www.google.com/maps?q={$record->latitud},{$record->longitude}")
+                        ->url(fn(Person $record): string => "https://www.google.com/maps?q={$record->latitud},{$record->longitude}")
                         ->openUrlInNewTab()
-                        ->visible(fn (Person $record): bool => filled($record->latitud) && filled($record->longitude)),
+                        ->visible(fn(Person $record): bool => filled($record->latitud) && filled($record->longitude)),
                 ]),
             ])
             ->toolbarActions([
@@ -194,7 +205,7 @@ class PeopleTable
                         ->requiresConfirmation()
                         ->modalHeading('Sync selected people to Google Sheets')
                         ->modalDescription('Syncs the selected records to Google Sheets.')
-                        ->form([
+                        ->schema([
                             TextInput::make('spreadsheet_id')
                                 ->label('Spreadsheet ID')
                                 ->default(config('services.google_sheets.default_spreadsheet_id'))
@@ -234,7 +245,7 @@ class PeopleTable
                         ->color('info')
                         ->action(function (Collection $records): void {
                             $total = $records->count();
-                            $withPin = $records->filter(fn (Person $record): bool => filled($record->personnummer))->count();
+                            $withPin = $records->filter(fn(Person $record): bool => filled($record->personnummer))->count();
                             $withPhone = $records->filter(function (Person $record): bool {
                                 $phones = $record->telefonnummer;
 

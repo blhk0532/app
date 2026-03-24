@@ -3,29 +3,87 @@
     id="announcement-widget"
     wire:poll.10s="refreshAnnouncements"
 >
-    <div class="w-full">
+
+    <div class="w-full relative bottom-6" style="top:-24px;margin-bottom: -24px;">
         @if(count($announcements) > 0)
             @foreach($announcements as $announcement)
-                <div class="bg-gray-100 p-4 rounded-md mb-4">
-                    <div class="flex justify-between items-start">
-                        <h3 class="font-bold">{{ $announcement->title }}</h3>
-                        <a
-                            href="?edit_announcement={{ $announcement->id }}"
-                            class="text-xs text-blue-500 hover:text-blue-700"
+             <section class="fi-section  announcement-widget-item" style="padding: 0px;" id="status-overview-widget-section">
+                <div class="bg-transparent p-6 rounded-md mt-6">
+                    <div class="flex justify-between items-start relative">
+
+<div class="grid gap-1">
+<div class="flex">
+                       <p class="text-sm">{{ $announcement->title }}</p>
+</div>
+<div class="flex">
+                     <p class="font-semibold text-xl"> {!! $announcement->content !!} </p>
+</div>
+</div>
+
+
+<div class="announcement-dates grid gap-3" style="position: relative;right: 36px;">
+<span class="fi-color fi-color-success fi-text-color-700 dark:fi-text-color-300 fi-badge fi-size-md">
+    <span class="fi-badge-label-ctn">
+        <span class="fi-badge-label">
+
+
+                            <span class="font-semibold"></span>
+                            {{ \Carbon\Carbon::parse($announcement->starts_at)->format('D j M') }}
+
+        </span>
+    </span>
+</span>
+
+  @if($announcement->ends_at)
+<span class="fi-color fi-color-danger fi-text-color-700 dark:fi-text-color-300 fi-badge fi-size-md">
+    <span class="fi-badge-label-ctn">
+        <span class="fi-badge-label">
+
+
+
+
+                                <span class="font-semibold"></span>
+                                {{ \Carbon\Carbon::parse($announcement->ends_at)->format('D j M') }}
+
+
+        </span>
+    </span>
+</span>
+  @endif
+</div>
+
+
+
+                      <button
+                            wire:click="deleteAnnouncement(@js($announcement->id))"
+                            type="button"
+                            class="text-xs text-gray-500 hover:text-red-500 cursor-pointer"
+                            style="position: absolute;z-index: 100;right:0px;top:3px;background:none;border:none;padding:0;"
+                            title="Delete announcement"
                         >
-                            ...
-                        </a>
+<x-filament::icon
+    icon="heroicon-o-trash"
+    class="w-4 h-4 opacity-60 hover:opacity-80 hover:text-red-500 transition"
+/>
+                         </button>
+
+                      <button
+                            wire:click="editAnnouncement(@js($announcement->id))"
+                            type="button"
+                            class="text-xs text-gray-500 hover:text-blue-500 cursor-pointer"
+                            style="position: absolute;z-index: 100;right:0px;top:40px;background:none;border:none;padding:0;"
+                            title="Edit announcement"
+                        >
+<x-filament::icon
+    icon="heroicon-o-pencil-square"
+    class="w-4 h-4 opacity-60 hover:opacity-80 hover:text-blue-500 transition"
+/>
+                         </button>
+
+
                     </div>
-                    <p class="text-gray-600">{!! $announcement->content !!}</p>
+
                     <div class="text-xs text-gray-500 mt-2 space-y-1">
-                        <p>
-                            <span class="font-semibold">From:</span>
-                            {{ \Carbon\Carbon::parse($announcement->starts_at)->format('Y-m-d H:i') }}
-                            @if($announcement->ends_at)
-                                <span class="font-semibold">To:</span>
-                                {{ \Carbon\Carbon::parse($announcement->ends_at)->format('Y-m-d H:i') }}
-                            @endif
-                        </p>
                         @if($announcement->user)
                             <p><span class="font-semibold">Created by:</span> {{ $announcement->user->name }}</p>
                         @endif
@@ -35,21 +93,14 @@
                         @if($announcement->component)
                             <p><span class="font-semibold">Component:</span> {{ $announcement->component->name }}</p>
                         @endif
-                        @if($announcement->priority)
-                            <p>
-                                <span class="px-2 py-0.5 rounded text-white {{
-                                    $announcement->priority === 'high' ? 'bg-red-500' :
-                                    ($announcement->priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500')
-                                }}">
-                                    {{ ucfirst($announcement->priority) }}
-                                </span>
-                            </p>
-                        @endif
+
                     </div>
                 </div>
+                 </section>
             @endforeach
         @else
             <p class="text-gray-500">No announcements.</p>
         @endif
     </div>
+
 </x-filament-widgets::widget>

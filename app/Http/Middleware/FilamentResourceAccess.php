@@ -33,11 +33,11 @@ final class FilamentResourceAccess
         }
 
         Notification::make()
-           ->title('Unauthorized 🛇o(≧o≦)🛇o การเข้าถึงถูกปฏิเสธ')
+           ->title('Unauthorized 🛇o(≧o≦)o🛇 การเข้าถึงถูกปฏิเสธ')
             ->body('Oops, you do not have sufficient permissions
             Can\'t manage the resource ⊹ ACCESS DENIED
             System is currently in development and some
-            features are restricted due to maintenance.
+            Features are restricted due to maintenances.
             If you believe this is a mistake, contact admin')
             ->warning()
             ->send();

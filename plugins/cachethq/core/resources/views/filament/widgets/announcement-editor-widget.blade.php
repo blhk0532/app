@@ -1,5 +1,5 @@
 <x-filament-widgets::widget class="overflow-hidden" id="announcement-editor-widget">
-    <x-filament::section :heading="$editingId ? 'Edit Announcement' : 'Create Announcement'">
+    <x-filament::section :heading="$editingId ? 'Edit Announcement' : now()->format('D j M Y H:i:s')">
         <form wire:submit="save">
             {{ $this->form }}
 

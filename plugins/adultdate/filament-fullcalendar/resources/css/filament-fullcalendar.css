@@ -54,6 +54,7 @@ html.dark .filament-fullcalendar {
     --fc-event-text-color: var(--primary-950);
 }
 
+/*
 .filament-fullcalendar .fc-button {
     @apply rounded-lg px-3 py-2 text-sm font-medium !outline-none !shadow-none;
 
@@ -83,3 +84,4 @@ html.dark .filament-fullcalendar {
 .filament-fullcalendar .fc-list-sticky .fc-list-day th {
     @apply bg-inherit;
 }
+*/

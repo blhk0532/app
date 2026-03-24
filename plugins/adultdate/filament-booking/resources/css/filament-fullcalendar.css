@@ -53,7 +53,7 @@ html.dark .filament-fullcalendar {
     --fc-event-border-color: var(--primary-600);
     --fc-event-text-color: var(--primary-950);
 }
-
+/*
 .filament-fullcalendar .fc-button {
     @apply rounded-lg px-3 py-2 text-sm font-medium !outline-none !shadow-none;
 
@@ -105,3 +105,5 @@ div.fc-timegrid-event .fc-event-time{
   margin-top: -4px!important;
   font-weight: bold!important;
 }
+
+*/
