@@ -8,13 +8,21 @@ use App\Models\Announcement;
 use App\Models\User;
 use Cachet\Models\Component;
 use Carbon\Carbon;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-class AnnouncementEditorWidget extends Widget
+class AnnouncementEditorWidget extends Widget implements HasSchemas
 {
+    use InteractsWithSchemas;
+
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 3;
@@ -23,30 +31,8 @@ class AnnouncementEditorWidget extends Widget
 
     public ?int $editingId = null;
 
-    public ?string $title = null;
-
-    public ?string $content = null;
-
-    public string $priority = 'low';
-
-    public ?int $tekniker_id = null;
-
-    public ?int $component_id = null;
-
-    public ?string $starts_at = null;
-
-    public ?string $ends_at = null;
-
-    public Collection $users;
-
-    public Collection $components;
-
-    protected array $validationAttributes = [
-        'title' => 'Title',
-        'content' => 'Content',
-        'priority' => 'Priority',
-        'starts_at' => 'Starts At',
-    ];
+    /** @var array<string, mixed> */
+    public ?array $data = [];
 
     public static function canView(): bool
     {
@@ -55,72 +41,134 @@ class AnnouncementEditorWidget extends Widget
 
     public function mount(): void
     {
-        $this->users = User::where('current_team_id', Auth::user()?->current_team_id)->get();
-        $this->components = Component::where('team_id', Auth::user()?->current_team_id)->get();
-
         $editId = request()->query('edit_announcement');
         $this->editingId = $editId ? (int) $editId : null;
 
         if ($this->editingId) {
             $announcement = Announcement::find($this->editingId);
             if ($announcement) {
-                $this->title = $announcement->title;
-                $this->content = $announcement->content;
-                $this->priority = $announcement->priority;
-                $this->tekniker_id = $announcement->tekniker_id;
-                $this->component_id = $announcement->component_id;
-                $this->starts_at = $announcement->starts_at?->format('Y-m-d\TH:i');
-                $this->ends_at = $announcement->ends_at?->format('Y-m-d\TH:i');
+                $this->form->fill([
+                    'title' => $announcement->title,
+                    'content' => $announcement->content,
+                    'priority' => $announcement->priority,
+                    'tekniker_id' => $announcement->tekniker_id,
+                    'component_id' => $announcement->component_id,
+                    'starts_at' => $announcement->starts_at?->format('Y-m-d H:i:s'),
+                    'ends_at' => $announcement->ends_at?->format('Y-m-d H:i:s'),
+                ]);
+
+                return;
             }
-        } else {
-            $this->priority = 'low';
-            $this->starts_at = now()->format('Y-m-d\TH:i');
         }
+
+        $this->form->fill([
+            'priority' => 'low',
+            'starts_at' => now()->format('Y-m-d H:i:s'),
+        ]);
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        $teamId = Auth::user()?->current_team_id;
+
+        return $schema
+            ->schema([
+                TextInput::make('title')
+                    ->label('Title')
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+
+                Textarea::make('content')
+                    ->label('Content')
+                    ->rows(5)
+                    ->columnSpanFull(),
+
+                Select::make('priority')
+                    ->label('Priority')
+                    ->options([
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                    ])
+                    ->required()
+                    ->default('low'),
+
+                Select::make('component_id')
+                    ->label('Component')
+                    ->options(
+                        Component::where('team_id', $teamId)
+                            ->pluck('name', 'id')
+                    )
+                    ->nullable()
+                    ->placeholder('None'),
+
+                Select::make('tekniker_id')
+                    ->label('Tekniker')
+                    ->options(
+                        User::where('current_team_id', $teamId)
+                            ->pluck('name', 'id')
+                    )
+                    ->nullable()
+                    ->placeholder('None'),
+
+                DateTimePicker::make('starts_at')
+                    ->label('Starts At')
+                    ->required()
+                    ->default(now()),
+
+                DateTimePicker::make('ends_at')
+                    ->label('Ends At')
+                    ->nullable(),
+            ])
+            ->columns(3)
+            ->statePath('data');
     }
 
     public function save(): void
     {
-        $this->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-            'priority' => ['required', 'in:low,medium,high'],
-            'starts_at' => ['required'],
-        ]);
+        $data = $this->form->getState();
 
-        $data = [
-            'title' => $this->title,
-            'content' => $this->content ?? '',
-            'priority' => $this->priority,
-            'starts_at' => Carbon::parse($this->starts_at),
-            'ends_at' => $this->ends_at ? Carbon::parse($this->ends_at) : null,
-            'tekniker_id' => $this->tekniker_id,
-            'component_id' => $this->component_id,
+        $isUpdate = $this->editingId !== null;
+
+        $saveData = [
+            'title' => $data['title'],
+            'content' => $data['content'] ?? '',
+            'priority' => $data['priority'],
+            'starts_at' => Carbon::parse($data['starts_at']),
+            'ends_at' => isset($data['ends_at']) ? Carbon::parse($data['ends_at']) : null,
+            'tekniker_id' => $data['tekniker_id'] ?? null,
+            'component_id' => $data['component_id'] ?? null,
             'is_active' => true,
             'team_id' => Auth::user()?->current_team_id,
             'user_id' => Auth::id(),
         ];
 
-        $isUpdate = $this->editingId !== null;
-
         if ($isUpdate) {
+            /** @var Announcement|null $announcement */
             $announcement = Announcement::find($this->editingId);
-            if ($announcement) {
-                $announcement->update($data);
-                $message = 'Announcement updated successfully.';
-            } else {
-                $message = 'Announcement not found.';
+
+            if (! $announcement) {
+                Notification::make()->danger()->title('Error')->body('Announcement not found.')->send();
+
+                return;
             }
+
+            $announcement->update($saveData);
+            $title = 'Announcement Updated';
+            $body = 'Announcement updated successfully.';
         } else {
-            Announcement::create($data);
-            $message = 'Announcement created successfully.';
+            Announcement::create($saveData);
+            $title = 'Announcement Created';
+            $body = 'Announcement created successfully.';
         }
 
         $this->resetForm();
 
         Notification::make()
             ->success()
-            ->title($isUpdate ? 'Announcement Updated' : 'Announcement Created')
-            ->body($message)
+            ->title($title)
+            ->body($body)
             ->send();
 
         $this->dispatch('refresh-announcement-widget');
@@ -128,8 +176,15 @@ class AnnouncementEditorWidget extends Widget
 
     public function resetForm(): void
     {
-        $this->reset(['title', 'content', 'editingId', 'tekniker_id', 'component_id', 'ends_at']);
-        $this->priority = 'low';
-        $this->starts_at = now()->format('Y-m-d\TH:i');
+        $this->editingId = null;
+        $this->form->fill([
+            'priority' => 'low',
+            'starts_at' => now()->format('Y-m-d H:i:s'),
+            'title' => null,
+            'content' => null,
+            'tekniker_id' => null,
+            'component_id' => null,
+            'ends_at' => null,
+        ]);
     }
 }

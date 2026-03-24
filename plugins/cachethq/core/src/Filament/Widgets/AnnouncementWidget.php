@@ -19,11 +19,17 @@ class AnnouncementWidget extends Widget
 
     public Collection $announcements;
 
+
     protected static bool $isDiscovered = true;
 
     protected array $extraWidgetAttributes = [
         'wire:poll.10s' => 'refreshAnnouncements',
     ];
+
+    public function getColumnSpan(): int|string|array
+    {
+        return 'full';
+    }
 
     protected $listeners = ['refresh-announcement-widget' => 'refreshAnnouncements'];
 

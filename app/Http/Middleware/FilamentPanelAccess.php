@@ -50,9 +50,9 @@ final class FilamentPanelAccess
         Notification::make()
            ->title('Unauthorized 🛇o(≧o≦)🛇o การเข้าถึงถูกปฏิเสธ')
             ->body('Oops, you do not have sufficient permissions
-           Can\'t manage the resource ⊹ ACCESS DENIED
-           System is currently in development and some
-           features may be restricted due to maintenance.
+            Can\'t manage the resource ⊹ ACCESS DENIED
+            System is currently in development and some
+            features maybe restricted due to maintenance.
             If you believe this is a mistake, contact admin')
             ->warning()
             ->send();
