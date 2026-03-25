@@ -20,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+
+
+
+
     public function register(): void
     {
         $this->app->register(FilamentGoogleMapsServiceProvider::class);
@@ -36,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }
+
+
+
 
         PanelSwitch::configureUsing(function (PanelSwitch $panelSwitch) {
 

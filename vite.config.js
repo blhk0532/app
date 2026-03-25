@@ -1,12 +1,10 @@
-import {
-    defineConfig
-} from 'vite';
+import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from "@tailwindcss/vite";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [
         react(),
         laravel({
@@ -69,4 +67,4 @@ export default defineConfig({
     define: {
             'process.env.NODE_ENV': JSON.stringify(mode),
     },
-});
+}));

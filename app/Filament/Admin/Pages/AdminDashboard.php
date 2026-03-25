@@ -32,6 +32,8 @@ class AdminDashboard extends BaseDashboard
 
     protected static ?int $sort = 0;
 
+
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartPie;
 
     // Prevent this app-level Dashboard from being auto-discovered so that
@@ -40,6 +42,7 @@ class AdminDashboard extends BaseDashboard
 
     public static function shouldRegisterNavigation(): bool
     {
+
         return true;
     }
 
