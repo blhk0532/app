@@ -38,9 +38,6 @@ Livewire::setUpdateRoute(function ($handle, $path) {
 });
 
 Route::get('/', fn () => redirect('/app'))->name('app');
-
-Route::get('/nds', fn () => redirect('/app'));
-
 Route::get('/nds/{any}', fn () => redirect('/app'))
     ->where('any', '.*')
     ->name('app');
