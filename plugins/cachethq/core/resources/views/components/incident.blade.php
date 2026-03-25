@@ -9,8 +9,8 @@
     <h3 class="text-xl font-semibold"><time datetime="{{ $date }}" x-text="forDate.toLocaleDateString('en-GB', {@if($appSettings->timezone !== '-')timeZone: '{{$appSettings->timezone}}', @endif weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'}).replace(',', '')"></time></h3>
     @forelse($incidents as $incident)
     <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }" class="bg-gray border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-white/2">
-        <div @class([
-            'flex flex-col bg-zinc-50 p-4 dark:bg-accent-background gap-2',
+        <div style="background:text;" @class([
+            'flex flex-col bg-zinc-50 p-4 gap-2',
             'rounded-t-lg' => $incident->updates->isNotEmpty(),
             'rounded-lg' => $incident->updates->isEmpty(),
         ])>

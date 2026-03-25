@@ -59,7 +59,7 @@ class LatestOrders extends BaseWidget
             ->emptyStateActions([
                 Action::make('RingaListan')
                     ->label('Ringlista')
-                    ->url(route('spa.dashboard'))
+                    ->url(route('spa.user-dashboard'))
                     ->icon('heroicon-m-phone-arrow-up-right')
                     ->button(),
             ])
