@@ -1,4 +1,3 @@
-import type FullCalendar from '@fullcalendar/react'
 import FullCalendar from '@fullcalendar/react'
 import type { RefObject } from 'react'
 import { type CalendarOptions, type DayCellData } from '@fullcalendar/core'
