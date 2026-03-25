@@ -49,7 +49,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
-
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 class BookingPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -107,16 +107,17 @@ class BookingPanelProvider extends PanelProvider
             ->databaseTransactions()
             ->maxContentWidth(Width::Full)
             ->databaseNotificationsPolling('30s')
-            ->brandLogo(fn () => view('filament.app.logo'))
             ->favicon(fn () => asset('favicon.svg'))
-            ->brandLogoHeight(fn () => request()->is('admin/login', 'admin/password-reset/*') ? '68px' : '34px')
+            ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->discoverResources(in: app_path('Filament/Booking/Resources'), for: 'App\Filament\Booking\Resources')
             ->discoverResources(in: app_path('Filament/Panels/Resources'), for: 'App\Filament\Panels\Resources')
             ->discoverPages(in: app_path('Filament/Booking/Pages'), for: 'App\Filament\Booking\Pages')
             ->discoverClusters(in: app_path('Filament/Booking/Clusters'), for: 'App\\Filament\\Booking\\Clusters')
             ->navigationGroups([
-                NavigationGroup::make('Boknings Kalendrar')
-                    ->icon('heroicon-o-calendar'),
+            //   NavigationGroup::make('Boknings Kalendrar')
+            //       ->icon('heroicon-o-calendar'),
             ])
             ->pages([
                 //   Dashboard::class,
@@ -166,7 +167,7 @@ class BookingPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-
+     ->plugin(PinnableNavigationPlugin::make())
             ->plugins([
                 FilamentBookingPlugin::make(),
             ]);

@@ -83,6 +83,7 @@ class ComponentsRelationManager extends RelationManager
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+                  CreateAction::make(),
             ])
             ->reorderable('order')
             ->defaultSort('order');

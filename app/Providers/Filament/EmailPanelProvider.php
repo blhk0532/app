@@ -42,7 +42,7 @@ class EmailPanelProvider extends PanelProvider
         return $panel
             ->id('email')
             ->path('auth/email')
-            ->viteTheme('resources/css/filament/email/theme.css')
+              ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Gray,
             ])
@@ -55,9 +55,10 @@ class EmailPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop(true)
             ->maxContentWidth(Width::Full)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->brandLogoHeight('34px')
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->plugin(
                 AuthDesignerPlugin::make()
                     ->login(

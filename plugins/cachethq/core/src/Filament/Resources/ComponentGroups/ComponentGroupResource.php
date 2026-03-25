@@ -21,8 +21,11 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Cachet\Models\Component;
 use UnitEnum;
 use Wallacemartinss\FilamentIconPicker\Enums\Heroicons;
+use Wallacemartinss\FilamentIconPicker\Enums\SimpleIcons;
+
 
 class ComponentGroupResource extends Resource
 {
@@ -32,9 +35,9 @@ class ComponentGroupResource extends Resource
 
     protected static bool $isScopedToTenant = false;
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 2;
 
-    protected static string|UnitEnum|null $navigationGroup = '  ';
+    protected static string|UnitEnum|null $navigationGroup = '';
 
     protected static bool $isDiscovered = true;
 
@@ -142,5 +145,19 @@ class ComponentGroupResource extends Resource
     public static function getPluralLabel(): ?string
     {
         return trans_choice('cachet::component_group.resource_label', 2);
+    }
+
+        public static function getNavigationBadge(): ?string
+    {
+        return (string) \Cachet\Models\ComponentGroup::query()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'info';
+        }
+
+        return 'gray';
     }
 }

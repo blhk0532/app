@@ -39,8 +39,8 @@ class StatsPanelProvider extends PanelProvider
     {
         return $panel
             ->id('stats')
-            ->path('nds/stats')
-            ->viteTheme('resources/css/filament/stats/theme.css')
+            ->path('auth/stats')
+                 ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Gray,
             ])
@@ -52,10 +52,11 @@ class StatsPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->brandLogoHeight('34px')
             ->maxContentWidth(Width::Full)
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->plugin(
                 AuthDesignerPlugin::make()
                     ->login(

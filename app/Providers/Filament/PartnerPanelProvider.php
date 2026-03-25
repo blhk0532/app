@@ -38,14 +38,14 @@ class PartnerPanelProvider extends PanelProvider
     {
         return $panel
             ->id('partner')
-            ->path('nds/partner')
+            ->path('auth/partner')
             ->authGuard('web')
             ->colors([
                 'primary' => Color::Gray,
             ])
             ->spa()
          // ->profile()
-            ->viteTheme('resources/css/filament/partner/theme.css')
+           ->viteTheme('resources/css/filament/app/theme.css')
             ->passwordReset()
             ->unsavedChangesAlerts()
             ->databaseNotifications()

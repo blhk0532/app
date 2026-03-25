@@ -50,7 +50,7 @@ class QueuePanelProvider extends PanelProvider
         return $panel
             ->id('queue')
             ->path('auth/queue')
-            ->viteTheme('resources/css/filament/queue/theme.css')
+                ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Gray,
             ])
@@ -62,10 +62,11 @@ class QueuePanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->brandLogoHeight('34px')
             ->maxContentWidth(Width::Full)
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->plugin(
                 AuthDesignerPlugin::make()
                     ->login(

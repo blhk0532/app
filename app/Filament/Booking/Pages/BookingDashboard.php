@@ -79,6 +79,16 @@ class BookingDashboard extends BaseDashboard
         return 'success';
     }
 
+public function getWidgets(): array
+{
+    return [];
+}
+
+public function getFooterWidgets(): array
+{
+    return [];
+}
+
     public function getHeaderWidgets(): array
     {
 

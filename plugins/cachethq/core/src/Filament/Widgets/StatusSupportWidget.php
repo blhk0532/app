@@ -13,9 +13,9 @@ class StatusSupportWidget extends Widget implements HasForms
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static bool $isDiscovered = false;
+    protected static bool $isDiscovered = true;
 
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 99;
 
     protected string $view = 'cachet::filament.widgets.status-support';
 

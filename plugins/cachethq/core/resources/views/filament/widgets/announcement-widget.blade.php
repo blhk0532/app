@@ -58,7 +58,7 @@
                             wire:click="deleteAnnouncement(@js($announcement->id))"
                             type="button"
                             class="text-xs text-gray-500 hover:text-red-500 cursor-pointer"
-                            style="position: absolute;z-index: 100;right:0px;top:3px;background:none;border:none;padding:0;"
+                            style="position: absolute;z-index: 100;right:1px;top:3px;background:none;border:none;padding:0;"
                             title="Delete announcement"
                         >
 <x-filament::icon

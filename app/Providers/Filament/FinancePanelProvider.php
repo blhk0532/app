@@ -38,7 +38,7 @@ class FinancePanelProvider extends PanelProvider
     {
         return $panel
             ->id('finance')
-            ->path('nds/finance')
+            ->path('auth/finance')
             ->viteTheme('resources/css/filament/finance/theme.css')
             ->colors([
                 'primary' => Color::Gray,
@@ -52,9 +52,10 @@ class FinancePanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop(true)
             ->maxContentWidth(Width::Full)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->brandLogoHeight('34px')
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->plugin(
                 AuthDesignerPlugin::make()
                     ->login(

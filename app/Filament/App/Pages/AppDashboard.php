@@ -49,7 +49,7 @@ class AppDashboard extends BasePage
 
     protected static ?string $navigationLabel = 'Team';
 
-    //  protected string $view = 'filament.app.dashboard';
+      protected string $view = 'filament.app.dashboard';
 
     protected static ?int $navigationSort = -10;
 
@@ -66,7 +66,7 @@ class AppDashboard extends BasePage
 
     // Prevent this app-level Dashboard from being auto-discovered so that
     // the explicit `AdminDashboard` can be registered as the admin panel root.
-    protected static bool $isDiscovered = false;
+    protected static bool $isDiscovered = true;
 
     public static function shouldRegisterNavigation(): bool
     {

@@ -31,6 +31,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\CreateAction;
 use UnitEnum;
 
 class ScheduleResource extends Resource
@@ -45,7 +46,7 @@ class ScheduleResource extends Resource
 
     protected static ?int $navigationSort = -1;
 
-    protected static string|UnitEnum|null $navigationGroup = '';
+    // protected static string|UnitEnum|null $navigationGroup = '';
 
     protected static bool $isGloballySearchable = true;
 
@@ -204,10 +205,12 @@ class ScheduleResource extends Resource
                     DateTimePicker::make('scheduled_at')
                         ->label(__('cachet::schedule.form.scheduled_at_label'))
                         ->native(false) // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
-                        ->required(),
+                            ->default(now())
+                            ->required(),
                     DateTimePicker::make('completed_at')
                         ->label(__('cachet::schedule.form.completed_at_label'))
-                        ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
+                        ->native(false) // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
+                           ->default(now()->addDay())
                 ])->columnSpan(1),
             ])->columns(4);
     }
@@ -290,6 +293,11 @@ class ScheduleResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+                                CreateAction::make()
+                    ->label('')
+                    ->icon('heroicon-c-plus-circle')
+                    ->url(fn() => static::getUrl('create'))
+                    ->color('success'),
             ])
             ->emptyStateHeading(__('cachet::schedule.list.empty_state.heading'))
             ->emptyStateDescription(__('cachet::schedule.list.empty_state.description'));
@@ -324,13 +332,14 @@ class ScheduleResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) Schedule::inTheFuture()->count();
+        return (string) Schedule::query()->count();
+    //    return (string) Schedule::inTheFuture()->count();
     }
 
     public static function getNavigationBadgeColor(): string
     {
         if ((int) static::getNavigationBadge() > 0) {
-            return 'warning';
+            return 'danger';
         }
 
         return 'success';

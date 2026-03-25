@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4a65978e95cba65b840466c933366a32",
+    "content-hash": "bd4ca90dd11c3f90ea55bc0a0ca6c93e",
     "packages": [
         {
             "name": "achyutn/filament-log-viewer",
@@ -2895,6 +2895,87 @@
                 }
             ],
             "time": "2025-08-20T19:15:30+00:00"
+        },
+        {
+            "name": "coringawc/filament-single-record-resource",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CoringaWc/filament-single-record-resource.git",
+                "reference": "113c3e91816ec7194f6e4b0a7e973c369d0f41f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CoringaWc/filament-single-record-resource/zipball/113c3e91816ec7194f6e4b0a7e973c369d0f41f3",
+                "reference": "113c3e91816ec7194f6e4b0a7e973c369d0f41f3",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^4.0 || ^5.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/framework": "^11.0 || ^12.0",
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^8.0",
+                "orchestra/testbench": "^9.0 || ^10.0",
+                "orchestra/workbench": "^9.0|^10.0",
+                "pestphp/pest": "^3.7|^4.0",
+                "pestphp/pest-plugin-arch": "^3.0|^4.0",
+                "pestphp/pest-plugin-laravel": "^3.0|^4.0",
+                "pestphp/pest-plugin-livewire": "^3.0|^4.0",
+                "rector/rector": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentSingleRecordResource": "CoringaWc\\FilamentSingleRecordResource\\Facades\\FilamentSingleRecordResource"
+                    },
+                    "providers": [
+                        "CoringaWc\\FilamentSingleRecordResource\\FilamentSingleRecordResourceServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "CoringaWc\\FilamentSingleRecordResource\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Argemiro Dias",
+                    "email": "nt_170@hotmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Filament plugin that solves the single-record resource pattern — resources that display exactly one record per authenticated user (e.g. 'My Profile', 'My Wallet', 'My Settings') without an index page, and their arbitrarily nested child resources.",
+            "homepage": "https://github.com/coringawc/filament-single-record-resource",
+            "keywords": [
+                "CoringaWc",
+                "filament",
+                "filament-plugin",
+                "filament-single-record-resource",
+                "filamentphp",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/coringawc/filament-single-record-resource/issues",
+                "source": "https://github.com/coringawc/filament-single-record-resource"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/CoringaWc",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-12T04:40:49+00:00"
         },
         {
             "name": "danharrin/date-format-converter",
@@ -15610,6 +15691,60 @@
             "time": "2025-12-14T04:43:48+00:00"
         },
         {
+            "name": "rarq/filament-whatsapp-message-preview",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "plugins/rarq/filament-whatsapp-message-preview",
+                "reference": "c5b2cc0657afff0f1d19a160da7ec53521fd8624"
+            },
+            "require": {
+                "filament/forms": "^3.0|^4.0|^5.0",
+                "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Rarq\\FilamentWhatsappMessagePreview\\WhatsappMessagePreviewServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rarq\\FilamentWhatsappMessagePreview\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rodrigo Alfonso Ríos Quevedo",
+                    "email": "rodrigoarq140599@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A FilamentPHP field plugin that renders a real-time WhatsApp-style message preview with support for formatting, lists, quotes and message direction.",
+            "keywords": [
+                "filament",
+                "filament-forms",
+                "filament-package",
+                "filament-plugin",
+                "filamentphp",
+                "laravel",
+                "message",
+                "preview",
+                "whatsapp"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "ratchet/rfc6455",
             "version": "v0.4.0",
             "source": {
@@ -26476,6 +26611,7 @@
         "caresome/filament-auth-designer": 20,
         "cheesegrits/filament-google-maps": 20,
         "cmsmaxinc/filament-error-pages": 20,
+        "coringawc/filament-single-record-resource": 20,
         "deldius/filament-user-field": 20,
         "devletes/filament-pinnable-navigation": 20,
         "devonab/filament-easy-footer": 20,
@@ -26523,12 +26659,12 @@
         "mokhosh/filament-rating": 20,
         "mradder/filament-logger": 20,
         "muazzam/slick-scrollbar": 20,
-        "muhammadkazimsadiq/filament-quick-edit": 20,
         "mwguerra/filemanager": 20,
         "mwguerra/web-terminal": 20,
         "nakanakaii/filament-countries": 20,
         "notebrainslab/filament-email-templates": 20,
         "pxlrbt/filament-excel": 20,
+        "rarq/filament-whatsapp-message-preview": 20,
         "relaticle/flowforge": 20,
         "secondnetwork/blade-tabler-icons": 20,
         "shreejan/actionable-column": 20,

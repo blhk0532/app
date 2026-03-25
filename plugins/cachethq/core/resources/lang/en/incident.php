@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title' => 'Information',
-    'resource_label' => 'Information|Information',
+    'title' => 'Områden',
+    'resource_label' => 'Områden|Områden',
     'status' => [
         'investigating' => 'Investigating',
         'identified' => 'Identified',
@@ -10,13 +10,13 @@ return [
         'fixed' => 'Fixed',
         'reported' => 'Reported',
     ],
-    'edit_button' => 'Edit Information',
+    'edit_button' => 'Edit Områden',
     'new_button' => 'Update',
-    'no_incidents_reported' => 'No information',
+    'no_incidents_reported' => 'No Områden',
     'timeline' => [
         'past_incidents_header' => '',
-        'recent_incidents_header' => 'Recent Information',
-        'no_incidents_reported_between' => 'No information reported between :from and :to',
+        'recent_incidents_header' => 'Recent Områden',
+        'no_incidents_reported_between' => 'No Områden reported between :from and :to',
         'navigate' => [
             'previous' => 'Previous',
             'today' => 'Today',
@@ -40,8 +40,8 @@ return [
             'view_incident' => 'View information',
         ],
         'empty_state' => [
-            'heading' => 'Information',
-            'description' => 'Information is used to communicate and track the status of your services.',
+            'heading' => 'Områden',
+            'description' => 'Områden is used to communicate and track the status of your services.',
         ],
     ],
     'form' => [

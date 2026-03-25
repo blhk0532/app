@@ -38,8 +38,8 @@ class ScriptPanelProvider extends PanelProvider
     {
         return $panel
             ->id('script')
-            ->path('nds/script')
-            ->viteTheme('resources/css/filament/script/theme.css')
+            ->path('auth/script')
+            ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Gray,
             ])
@@ -51,10 +51,11 @@ class ScriptPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->brandLogoHeight('34px')
             ->maxContentWidth(Width::Full)
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->plugin(
                 AuthDesignerPlugin::make()
                     ->login(

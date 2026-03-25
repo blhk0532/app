@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Manager\Pages;
 
 use BackedEnum;
-use daacreators\CreatorsTicketing\Filament\Widgets\TicketStatsWidget;
+// use daacreators\CreatorsTicketing\Filament\Widgets\TicketStatsWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
 
@@ -79,7 +79,7 @@ class ManagerDashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            TicketStatsWidget::class,
+         //   TicketStatsWidget::class,
         ];
     }
 
@@ -90,6 +90,6 @@ class ManagerDashboard extends BaseDashboard
 
     protected function getHeaderTitle(): string
     {
-        return false;
+        return '';
     }
 }

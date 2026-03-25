@@ -27,6 +27,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class DataPanelProvider extends PanelProvider
 {
@@ -35,15 +36,20 @@ class DataPanelProvider extends PanelProvider
         return $panel
             ->id('data')
             ->path('auth/data')
-            ->viteTheme('resources/css/filament/data/theme.css')
+             ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->authGuard('web')
             ->brandName('Noridic Digital')
             ->sidebarCollapsibleOnDesktop(true)
-            ->brandLogo(fn () => view('filament.app.logo'))
             ->favicon(fn () => asset('favicon.svg'))
+            ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
+             ->spa()
+         // ->profile()
+            ->passwordReset()
             ->unsavedChangesAlerts()
             ->databaseNotifications()
             ->maxContentWidth(Width::Full)
@@ -79,6 +85,7 @@ class DataPanelProvider extends PanelProvider
                 //   FilamentDialerPlugin::make(),
 
             ])
+             ->plugin(PinnableNavigationPlugin::make())
             ->plugins([
                 FilamentWirechatPlugin::make()
                     ->onlyPages([])

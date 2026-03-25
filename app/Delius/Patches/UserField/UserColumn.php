@@ -47,7 +47,33 @@ trait HasActiveState
         $isActiveField = config('user-field.active_state.field', 'is_active');
         $user = $this->getState();
 
-        return $user->{$isActiveField} ?? null;
+        // If state is an array (cached as array) or model, try to return field.
+        if (is_array($user)) {
+            return $user[$isActiveField] ?? null;
+        }
+
+        // Handle incomplete/unserialised objects stored in cache.
+        if (is_object($user) && get_class($user) === '__PHP_Incomplete_Class') {
+            $data = (array) $user;
+
+            // Look for the internal attributes array key (contains "attributes").
+            foreach ($data as $key => $value) {
+                if (str_ends_with($key, "attributes") || str_contains($key, "attributes")) {
+                    if (is_array($value)) {
+                        return $value[$isActiveField] ?? null;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // Normal object (Eloquent model) — access property safely.
+        if (is_object($user)) {
+            return $user->{$isActiveField} ?? null;
+        }
+
+        return null;
     }
 }
 

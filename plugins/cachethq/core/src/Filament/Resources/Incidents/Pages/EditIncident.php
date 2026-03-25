@@ -5,6 +5,7 @@ namespace Cachet\Filament\Resources\Incidents\Pages;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Support\Htmlable;
 
 class EditIncident extends EditRecord
 {
@@ -12,8 +13,14 @@ class EditIncident extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            DeleteAction::make(),
-        ];
+        return [];
+    }
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+    public function getBreadcrumbs(): array
+    {
+        return [];
     }
 }

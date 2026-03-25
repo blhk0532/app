@@ -1,5 +1,5 @@
  @include('cachet::filament.widgets.partials.cachet-widget-assets')
-<x-filament::widget class="overflow-hidden col-span-3" id="status-components-widget">
+    <x-filament-widgets::widget id="status-components-widget" >
 <div class="text-zinc-700 dark:text-zinc-300 w-full">
     @if ($ungroupedComponents->isNotEmpty())
         {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_BEFORE) }}
@@ -19,3 +19,4 @@
         {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_AFTER) }}
     @endif
 </div>
+</x-filament-widgets::widget>

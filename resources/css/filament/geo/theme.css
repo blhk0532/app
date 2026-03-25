@@ -11,3 +11,7 @@
 .map-picker-location-widget .fi-fo-field-label{
     display: none!important;
 }
+
+.fi-main.fi-width-full{
+    min-height:555vh!important;
+}

@@ -635,3 +635,7 @@ footer.fi-footer {
 .fi-ta-col-manager-actions-ctn{
     padding-top:2rem
 }
+
+.fi-dropdown.fi-tenant-menu{
+height:50px;
+}

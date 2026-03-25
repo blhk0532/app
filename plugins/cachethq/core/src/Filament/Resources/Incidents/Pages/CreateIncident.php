@@ -12,11 +12,14 @@ class CreateIncident extends CreateRecord
 
     protected ?string $heading = null;
 
+      protected function getHeaderActions(): array
+    {
+        return [];
+    }
     public function getHeading(): string|Htmlable|null
     {
         return null;
     }
-
     public function getBreadcrumbs(): array
     {
         return [];

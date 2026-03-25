@@ -38,8 +38,8 @@ class SheetsPanelProvider extends PanelProvider
     {
         return $panel
             ->id('sheets')
-            ->path('nds/sheets')
-            ->viteTheme('resources/css/filament/sheets/theme.css')
+            ->path('auth/sheets')
+             ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Gray,
             ])
@@ -51,10 +51,11 @@ class SheetsPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->brandLogoHeight('34px')
             ->maxContentWidth(Width::Full)
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->plugin(
                 AuthDesignerPlugin::make()
                     ->login(

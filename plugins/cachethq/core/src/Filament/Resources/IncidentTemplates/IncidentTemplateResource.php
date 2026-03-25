@@ -33,7 +33,7 @@ class IncidentTemplateResource extends Resource
 
     protected static ?int $navigationSort = 10;
 
-    protected static string|UnitEnum|null $navigationGroup = ' ';
+    protected static string|UnitEnum|null $navigationGroup = '';
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-incident-templates';
 
@@ -141,5 +141,19 @@ class IncidentTemplateResource extends Resource
     public static function getPluralLabel(): ?string
     {
         return trans_choice('cachet::incident_template.resource_label', 2);
+    }
+
+            public static function getNavigationBadge(): ?string
+    {
+        return (string) \Cachet\Models\IncidentTemplate::query()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'info';
+        }
+
+        return 'gray';
     }
 }

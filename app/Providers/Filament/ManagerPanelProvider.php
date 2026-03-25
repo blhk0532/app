@@ -14,7 +14,7 @@ use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 // use daacreators\CreatorsTicketing\TicketingPlugin;
 use Caresome\FilamentAuthDesigner\View\AuthDesignerRenderHook;
-use daacreators\CreatorsTicketing\Filament\Widgets\TicketStatsWidget;
+// use daacreators\CreatorsTicketing\Filament\Widgets\TicketStatsWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -40,8 +40,8 @@ class ManagerPanelProvider extends PanelProvider
     {
         return $panel
             ->id('manager')
-            ->path('nds/manager')
-            ->viteTheme('resources/css/filament/manager/theme.css')
+            ->path('auth/manager')
+             ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Gray,
             ])
@@ -54,9 +54,10 @@ class ManagerPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->brandLogoHeight('34px')
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->plugins([
                 //    TicketingPlugin::make(),
             ])
@@ -101,7 +102,7 @@ class ManagerPanelProvider extends PanelProvider
             ->widgets([
                 //    AccountWidget::class,
                 //    FilamentInfoWidget::class,
-                TicketStatsWidget::class,
+                //    TicketStatsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

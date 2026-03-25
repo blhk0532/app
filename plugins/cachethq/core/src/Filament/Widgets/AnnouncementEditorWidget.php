@@ -8,20 +8,19 @@ use App\Models\Announcement;
 use App\Models\User;
 use Cachet\Models\Component;
 use Carbon\Carbon;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 
-use function Symfony\Component\Clock\now;
 
 class AnnouncementEditorWidget extends Widget implements HasSchemas
 {
@@ -81,17 +80,25 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     ->label('Title')
                     ->required()
                     ->maxLength(255)
-                    ->columnSpanFull(),
-
+                    ->autocomplete(false),
+DateTimePicker::make('starts_at')
+    ->label('Starts At')
+    ->required()
+    ->default(now()),
+DateTimePicker::make('ends_at')
+    ->label('Ends At')
+    ->required()
+    ->default(now())
+    ->nullable(),
                 RichEditor::make('content')
                     ->label('Content')
-                     ->required()
+                    ->required()
                     ->columnSpanFull(),
 
                 Select::make('priority')
                     ->label('Priority')
                     ->hidden()
-                            ->default('low')
+                    ->default('low')
                     ->options([
                         'low' => 'Low',
                         'medium' => 'Medium',
@@ -101,7 +108,7 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     ->default('low'),
 
                 Select::make('component_id')
-                  ->hidden()
+                    ->hidden()
                     ->label('Component')
                     ->options(
                         Component::where('team_id', $teamId)
@@ -111,7 +118,7 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     ->placeholder('None'),
 
                 Select::make('tekniker_id')
-                  ->hidden()
+                    ->hidden()
                     ->label('Tekniker')
                     ->options(
                         User::where('current_team_id', $teamId)
@@ -119,16 +126,6 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     )
                     ->nullable()
                     ->placeholder('None'),
-
-                DateTimePicker::make('starts_at')
-                    ->label('Starts At')
-                    ->required()
-                    ->default(now()),
-
-                DateTimePicker::make('ends_at')
-                    ->label('Ends At')
-                    ->default(now())
-                    ->nullable(),
             ])
             ->columns(3)
             ->statePath('data');
@@ -145,7 +142,7 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
             'content' => $data['content'] ?? '',
             'priority' => $data['priority'] ?? 'low',
             'starts_at' => isset($data['starts_at']) ? Carbon::parse($data['starts_at']) : now(),
-            'ends_at' => isset($data['ends_at']) ? Carbon::parse($data['ends_at']) : null,
+            'ends_at' => isset($data['ends_at']) ? Carbon::parse($data['ends_at']) : now()->addDay(),
             'tekniker_id' => $data['tekniker_id'] ?? null,
             'component_id' => $data['component_id'] ?? null,
             'is_active' => true,

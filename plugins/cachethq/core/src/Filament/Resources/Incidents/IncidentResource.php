@@ -37,6 +37,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Actions\CreateAction;
+use UnitEnum;
 
 class IncidentResource extends Resource
 {
@@ -259,6 +261,11 @@ class IncidentResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+                                CreateAction::make()
+                    ->label('')
+                    ->icon('heroicon-c-plus-circle')
+                    ->url(fn() => static::getUrl('create'))
+                    ->color('success'),
             ])
             ->emptyStateHeading(__('cachet::incident.list.empty_state.heading'))
             ->emptyStateDescription(__('cachet::incident.list.empty_state.description'));

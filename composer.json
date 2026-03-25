@@ -30,6 +30,7 @@
         "caresome/filament-auth-designer": "@dev",
         "cheesegrits/filament-google-maps": "@dev",
         "cmsmaxinc/filament-error-pages": "@dev",
+        "coringawc/filament-single-record-resource": "@dev",
         "deldius/filament-user-field": "@dev",
         "devletes/filament-pinnable-navigation": "@dev",
         "devonab/filament-easy-footer": "@dev",
@@ -80,12 +81,13 @@
         "mokhosh/filament-rating": "@dev",
         "mradder/filament-logger": "@dev",
         "muazzam/slick-scrollbar": "@dev",
-        "muhammadkazimsadiq/filament-quick-edit": "@dev",
+        "muhammadkazimsadiq/filament-quick-edit": "^1.0",
         "mwguerra/filemanager": "@dev",
         "mwguerra/web-terminal": "@dev",
         "nakanakaii/filament-countries": "@dev",
         "notebrainslab/filament-email-templates": "@dev",
         "pxlrbt/filament-excel": "@dev",
+        "rarq/filament-whatsapp-message-preview": "@dev",
         "relaticle/flowforge": "@dev",
         "secondnetwork/blade-tabler-icons": "@dev",
         "shreejan/actionable-column": "@dev",
@@ -127,7 +129,14 @@
                 "symlink": true
             }
         },
-                {
+        {
+            "type": "path",
+            "url": "plugins/rarq/filament-whatsapp-message-preview",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
             "type": "path",
             "url": "plugins/timacdonald/json-api",
             "options": {

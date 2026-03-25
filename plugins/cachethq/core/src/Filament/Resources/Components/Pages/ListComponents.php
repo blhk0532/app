@@ -14,16 +14,12 @@ class ListComponents extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-
-        ];
+        return [];
     }
-
     public function getHeading(): string|Htmlable|null
     {
         return null;
     }
-
     public function getBreadcrumbs(): array
     {
         return [];

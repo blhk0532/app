@@ -13,7 +13,7 @@
         $defaultLat = $getDefaultLat();
         $defaultLng = $getDefaultLng();
         $defaultZoom = $getDefaultZoom();
-        $height = 420
+        $height = 420;
         $lat = $getLat();
         $lng = $getLng();
         $apiKey = $getApiKey();

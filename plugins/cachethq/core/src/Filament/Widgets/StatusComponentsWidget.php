@@ -21,7 +21,7 @@ class StatusComponentsWidget extends Widget
 
     protected static ?int $sort = 9;
 
-    protected static bool $isDiscovered = false;
+    protected static bool $isDiscovered = true;
 
     /**
      * @var view-string

@@ -40,6 +40,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class CalendarPanelProvider extends PanelProvider
 {
@@ -48,7 +49,7 @@ class CalendarPanelProvider extends PanelProvider
         return $panel
             ->id('calendar')
             ->path('auth/calendar')
-            ->viteTheme('resources/css/filament/calendar/theme.css')
+                 ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -61,9 +62,10 @@ class CalendarPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->maxContentWidth(Width::Full)
-            ->brandLogoHeight('34px')
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->resources([
                 BookingCalendarResource::class,
             ])
@@ -129,6 +131,7 @@ class CalendarPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+             ->plugin(PinnableNavigationPlugin::make())
             ->plugins([
                 FilamentApexChartsPlugin::make(),
             ])

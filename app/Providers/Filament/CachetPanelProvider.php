@@ -29,8 +29,9 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -43,6 +44,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use lockscreen\FilamentLockscreen\Lockscreen;
 use  Cachet\Filament\Widgets\AnnouncementEditorWidget;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class CachetPanelProvider extends PanelProvider
 {
@@ -67,6 +69,7 @@ class CachetPanelProvider extends PanelProvider
             ->brandLogoHeight('2rem')
             ->brandName('Noridic Digital')
             ->defaultThemeMode(ThemeMode::Dark)
+                        ->maxContentWidth(Width::Full)
             ->spa()
             ->colors([
                 'primary' => Color::generateV3Palette('rgb(4, 193, 71)'),
@@ -126,6 +129,7 @@ class CachetPanelProvider extends PanelProvider
                     ->sort(-1)
                     ->visible(fn () => User::canManageTeam() !== false),
             ])
+       //      ->plugin(PinnableNavigationPlugin::make())
             ->plugin(
                 Lockscreen::make()
                     ->enablePlugin(),

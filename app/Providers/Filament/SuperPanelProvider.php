@@ -56,7 +56,7 @@ use Hydrat\TableLayoutToggle\Persisters\LocalStoragePersister;
 use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
@@ -91,10 +91,11 @@ class SuperPanelProvider extends PanelProvider
                 'primary' => Color::Orange,
             ])
             ->sidebarCollapsibleOnDesktop(true)
-            ->brandLogo(fn () => view('filament.app.logo'))
             ->favicon(fn () => asset('favicon.svg'))
-            ->brandLogoHeight(fn () => request()->is('admin/login', 'admin/password-reset/*') ? '68px' : '34px')
-            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
+              ->viteTheme('resources/css/filament/app/theme.css')
             ->brandName('Noridic Digital')
             ->maxContentWidth(Width::Full)
             ->defaultThemeMode(ThemeMode::Dark)
@@ -160,7 +161,7 @@ class SuperPanelProvider extends PanelProvider
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
+                PreventRequestForgery::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
@@ -303,7 +304,7 @@ class SuperPanelProvider extends PanelProvider
                     }),
                 Action::make('sanctum')
                     ->label(trans('Auth Tokens'))
-                    ->url('/nds/admin/'.config('filament-sanctum.navigation.slug'))
+                    ->url('/auth/admin/'.config('filament-sanctum.navigation.slug'))
                     ->icon(config('filament-sanctum.navigation.icon', 'heroicon-o-finger-print')),
             ])
         //    ->plugin(

@@ -22,6 +22,8 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\Filter;
+use Filament\Actions\CreateAction;
 use UnitEnum;
 
 class ComponentResource extends Resource
@@ -34,7 +36,7 @@ class ComponentResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-components';
 
-    protected static string|UnitEnum|null $navigationGroup = '';
+   // protected static string|UnitEnum|null $navigationGroup = '';
 
     protected static ?int $navigationSort = 1;
 
@@ -131,6 +133,11 @@ class ComponentResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+                CreateAction::make()
+                    ->label('')
+                    ->icon('heroicon-c-plus-circle')
+                    ->url(fn() => static::getUrl('create'))
+                    ->color('success'),
             ])
             ->reorderable('order')
             ->defaultSort('order')

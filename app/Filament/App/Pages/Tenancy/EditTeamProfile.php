@@ -14,7 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\Tenancy\EditTenantProfile;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-
+use Illuminate\Support\Facades\Auth;
 /**
  * @property Team $tenant
  */
@@ -75,7 +75,7 @@ class EditTeamProfile extends EditTenantProfile
                                     ->label(__('User'))
                                     ->options(fn (): array => User::query()
                                         ->whereNotIn('id', [$this->tenant->user_id])
-                                        ->where('id', '!=', auth()->id())
+                                        ->where('id', '!=', Auth::user()->id())
                                         ->pluck('name', 'id')
                                         ->toArray())
                                     ->searchable()

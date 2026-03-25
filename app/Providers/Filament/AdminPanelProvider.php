@@ -33,7 +33,6 @@ use Awcodes\Overlook\Widgets\OverlookWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
-use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Devtical\Sanctum\Pages\Sanctum;
 use Filament\Actions\Action;
@@ -74,10 +73,10 @@ use WallaceMartinss\FilamentEvolution\FilamentEvolutionPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
 use Wallo\FilamentCompanies\FilamentCompanies;
-
 // use Wallo\FilamentCompanies\Pages\User\Profile;
-
 // use Rupadana\ApiService\ApiServicePlugin;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -98,9 +97,10 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
             ->spaUrlExceptions(['tel:*', 'mailto:*'])
             ->sidebarCollapsibleOnDesktop(true)
-            ->brandLogo(fn () => view('filament.app.logo'))
             ->favicon(fn () => asset('favicon.svg'))
-            ->brandLogoHeight('34px')
+            ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->brandName('Noridic Digital')
             ->defaultThemeMode(ThemeMode::Dark)

@@ -32,7 +32,7 @@ class StatusTimelineWidget extends Widget
 
     public Collection $schedules;
 
-    protected static bool $isDiscovered = false;
+    protected static bool $isDiscovered = true;
 
     public bool $display_graphs = false;
 

@@ -8,6 +8,7 @@ use App\Models\Announcement;
 use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Js;
 
 class AnnouncementWidget extends Widget
 {
@@ -65,7 +66,8 @@ class AnnouncementWidget extends Widget
 
     public function editAnnouncement(int $id): void
     {
-        $this->redirect(url()->current().'?edit_announcement='.$id, navigate: true);
+        $url = url()->current().'?edit_announcement='.$id;
+        $this->js('window.location.href = '.Js::from($url).';');
     }
 
     protected function getViewData(): array

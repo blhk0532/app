@@ -15,7 +15,7 @@ class CachetStatusWidget extends Widget
     protected static ?string $heading = '';
 
     protected static bool $isDiscovered = false;
-
+    ///////// FASLE ///////////
     /**
      * @var view-string
      */

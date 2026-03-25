@@ -32,11 +32,11 @@ class MetricResource extends Resource
 
     protected static bool $isScopedToTenant = false;
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 3;
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-metrics';
 
-    protected static string|UnitEnum|null $navigationGroup = ' ';
+    protected static string|UnitEnum|null $navigationGroup = '';
 
     public static function form(Schema $schema): Schema
     {
@@ -216,4 +216,19 @@ class MetricResource extends Resource
             'edit' => EditMetric::route('/{record}/edit'),
         ];
     }
+
+        public static function getNavigationBadge(): ?string
+    {
+        return (string) \Cachet\Models\Metric::query()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'info';
+        }
+
+        return 'gray';
+    }
+
 }

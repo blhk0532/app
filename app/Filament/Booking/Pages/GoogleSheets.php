@@ -23,7 +23,7 @@ class GoogleSheets extends Page
 
     protected static ?string $slug = 'google-sheets';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Google Sheets';
+    protected static string|UnitEnum|null $navigationGroup = 'Google Services';
 
     public function getMaxContentWidth(): Width
     {

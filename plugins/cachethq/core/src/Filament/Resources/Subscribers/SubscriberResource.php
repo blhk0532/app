@@ -31,7 +31,7 @@ class SubscriberResource extends Resource
 
     protected static ?int $navigationSort = 12;
 
-    protected static string|UnitEnum|null $navigationGroup = '  ';
+    protected static string|UnitEnum|null $navigationGroup = '';
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-subscribers';
 
@@ -142,5 +142,19 @@ class SubscriberResource extends Resource
     public static function getPluralLabel(): ?string
     {
         return trans_choice('cachet::subscriber.resource_label', 2);
+    }
+
+            public static function getNavigationBadge(): ?string
+    {
+        return (string) \Cachet\Models\Subscriber::query()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'info';
+        }
+
+        return 'gray';
     }
 }

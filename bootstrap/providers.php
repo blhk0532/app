@@ -1,7 +1,7 @@
 <?php
 
-use App\Providers\Adultdate\ChatsPanelProvider;
 use App\Providers\AppServiceProvider;
+use App\Providers\Adultdate\ChatsPanelProvider;
 use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\AppPanelProvider;
 use App\Providers\Filament\BookingPanelProvider;
@@ -23,6 +23,9 @@ use App\Providers\Filament\SheetsPanelProvider;
 use App\Providers\Filament\StatsPanelProvider;
 use App\Providers\Filament\SuperPanelProvider;
 use App\Providers\Filament\ToolsPanelProvider;
+use App\Providers\Filament\SystemPanelProvider;
+use App\Providers\Filament\CompanyPanelProvider;
+use App\Providers\Filament\PrivatePanelProvider;
 use App\Providers\FortifyServiceProvider;
 use Cachet\CachetCoreServiceProvider;
 
@@ -52,4 +55,7 @@ return [
     ScriptPanelProvider::class,
     SheetsPanelProvider::class,
     StatsPanelProvider::class,
+    SystemPanelProvider::class,
+    CompanyPanelProvider::class,
+    PrivatePanelProvider::class,
 ];

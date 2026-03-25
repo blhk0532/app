@@ -91,6 +91,7 @@ use Muazzam\SlickScrollbar\SlickScrollbarPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\Enums\Tabler;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -120,6 +121,7 @@ class AppPanelProvider extends PanelProvider
             ->brandLogo(fn () => view('filament.app.logo'))
             ->brandLogoHeight('32px')
             ->sidebarWidth('21rem')
+            ->collapsedSidebarWidth('1rem')
             ->viteTheme('resources/css/filament/app/theme.css')
             ->defaultThemeMode(ThemeMode::Dark)
             //    ->discoverClusters(in: app_path('Filament/App/Clusters'), for: 'App\\Filament\\App\\Clusters')
@@ -134,7 +136,7 @@ class AppPanelProvider extends PanelProvider
             ->homeUrl(fn () => AppPanelRedirect::urlFor(Auth::user()))
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            //    ->discoverClusters(in: app_path('Filament/App/Clusters'), for: 'App\\Filament\\App\\Clusters')
+         //   ->discoverClusters(in: app_path('Filament/App/Clusters'), for: 'App\\Filament\\App\\Clusters')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
@@ -227,14 +229,15 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            //     ->plugin(PinnableNavigationPlugin::make())
             ->plugins([
                 //    WeatherWidget::make(),
                 SlickScrollbarPlugin::make(),
                 FilamentErrorPagesPlugin::make()
                     ->routes([
-                        'nds/*',
-                        'nds/app/*',
-                        'nds/app/team/*',
+                        'auth/*',
+                        'auth/app/*',
+                        'auth/app/team/*',
                     ]),
             ])
             ->plugins([

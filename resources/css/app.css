@@ -360,11 +360,11 @@ div.tiptap.ProseMirror{
 }
 
 p.is-empty.is-editor-empty{
-    min-height: 204px!important;
+    min-height: 80px!important;
 }
 .fi-fo-rich-editor-main{
-    min-height: 204px!important;
+    min-height: 80px!important;
 }
 div.fi-fo-rich-editor-main{
-    min-height: 204px!important;
+    min-height: 80px!important;
 }

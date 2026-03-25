@@ -12,6 +12,8 @@ class ManageDashboard extends SettingsPage
 
     protected static ?string $title = '';
 
+    protected static bool $isDiscovered = false;
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');

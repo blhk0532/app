@@ -25,7 +25,7 @@ class Components extends Widget implements HasSchemas
 
     protected static bool $isLazy = false;
 
-    protected static bool $isDiscovered = false;
+    protected static bool $isDiscovered = true;
 
     protected static ?int $sort = 10;
 

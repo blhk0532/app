@@ -39,8 +39,8 @@ class DialerPanelProvider extends PanelProvider
     {
         return $panel
             ->id('dialer')
-            ->path('nds/dialer')
-            ->viteTheme('resources/css/filament/dialer/theme.css')
+            ->path('auth/dialer')
+                 ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Gray,
             ])
@@ -52,10 +52,11 @@ class DialerPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->brandLogoHeight('34px')
-            ->maxContentWidth(Width::Full)
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
+            ->brandLogoHeight('32px')
+            ->sidebarWidth('21rem')
+            ->maxContentWidth(Width::Full)
             ->plugin(
                 AuthDesignerPlugin::make()
                     ->login(

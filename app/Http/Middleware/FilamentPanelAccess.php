@@ -48,12 +48,8 @@ final class FilamentPanelAccess
         }
 
         Notification::make()
-           ->title('Unauthorized 🛇o(≧o≦)o🛇 การเข้าถึงถูกปฏิเสธ')
-            ->body('Oops, you do not have sufficient permissions
-            Can\'t manage the resource ⊹ ACCESS DENIED
-            System is currently in development and some
-            Features maybe restricted due to maintenance.
-            If you believe this is a mistake, contact admin')
+           ->title('ACCESS DENIED ( ˶°ㅁ°) !! การเข้าถึงถูกปฏิเสธ')
+            ->body('')
             ->warning()
             ->send();
 

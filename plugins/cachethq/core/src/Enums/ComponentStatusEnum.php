@@ -27,14 +27,21 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
 
     public function getLabel(): string
     {
-        return match ($this) {
-            self::operational => __('Tillgänglig'),
-            self::performance_issues => __('Begränsad'),
-            self::partial_outage => __('Halvdag'),
-            self::major_outage => __('Avbrott'),
-            self::under_maintenance => __('Underhåll'),
-            default => __('Okänd'),
-
+   //    return match ($this) {
+   //        self::operational => __('Tillgänglig'),
+   //        self::performance_issues => __('Begränsad'),
+   //        self::partial_outage => __('Halvdag'),
+   //        self::major_outage => __('Avbrott'),
+   //        self::under_maintenance => __('Underhåll'),
+   //        default => __('Okänd'),
+   //    };
+           return match ($this) {
+            self::operational => __(''),
+            self::performance_issues => __(''),
+            self::partial_outage => __(''),
+            self::major_outage => __(''),
+            self::under_maintenance => __(''),
+            default => __(''),
         };
     }
 
