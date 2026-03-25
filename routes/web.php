@@ -23,7 +23,7 @@ use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Livewire\Livewire;
 
 Route::view('/home', 'welcome')->name('home');
-Route::redirect('/', '/app')->name('app');
+// Route::redirect('/', '/app')->name('app');
 Route::redirect('/login', '/app/login')->name('app.login');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
@@ -38,11 +38,11 @@ Livewire::setUpdateRoute(function ($handle, $path) {
     return Route::post($path, $handle)->name('livewire.update');
 });
 
-// Route::get('/', fn () => Inertia::render('welcome'))->name('home');
+Route::get('/', fn () => redirect('/app'))->name('app');
 
 Route::get('/spa', function () {
     return redirect('/spa/app');
-})->name('home');
+})->name('spa');
 
 Route::prefix('api/calendar')->group(function (): void {
     Route::get('bookings/public', [CalendarBookingController::class, 'publicIndex']);
@@ -132,15 +132,15 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     // User Email Verification...
-    Route::get('spa/verify-email', [UserEmailVerificationNotificationController::class, 'create'])->name('verification.notice');
+ //   Route::get('spa/verify-email', [UserEmailVerificationNotificationController::class, 'create'])->name('verification.notice');
     Route::post('spa/email/verification-notification', [UserEmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
 
-    // User Email Verification...
-    Route::get('spa/verify-email/{id}/{hash}', [UserEmailVerificationNotificationController::class, 'update'])
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
+    // User Email Verification... (handled by Fortify's Features::emailVerification())
+    // Route::get('spa/verify-email/{id}/{hash}', [UserEmailVerificationNotificationController::class, 'update'])
+    //     ->middleware(['signed', 'throttle:6,1'])
+    //     ->name('verification.verify');
 
     // Session...
     Route::post('spa/logout', [SessionController::class, 'destroy'])->name('logout');

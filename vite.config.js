@@ -66,4 +66,7 @@ export default defineConfig({
         },
     },
     envPrefix: ["VITE_", "APP_", "DB_"],
+    define: {
+            'process.env.NODE_ENV': JSON.stringify(mode),
+    },
 });

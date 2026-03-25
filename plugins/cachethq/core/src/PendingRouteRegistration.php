@@ -44,7 +44,8 @@ class PendingRouteRegistration
 
             });
 
-        $this->registerEmailVerificationRoutes();
+        // Email verification routes are handled by Fortify's Features::emailVerification()
+        // $this->registerEmailVerificationRoutes();
     }
 
     private function registerEmailVerificationRoutes(): void
