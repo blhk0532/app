@@ -23,15 +23,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Cachet\Models\Component;
 use UnitEnum;
-use Wallacemartinss\FilamentIconPicker\Enums\Heroicons;
-use Wallacemartinss\FilamentIconPicker\Enums\SimpleIcons;
+// use Wallacemartinss\FilamentIconPicker\Enums\Heroicons;
+// use Wallacemartinss\FilamentIconPicker\Enums\SimpleIcons;
 
 
 class ComponentGroupResource extends Resource
 {
     protected static ?string $model = ComponentGroup::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = Heroicons::OutlinedChartPie;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-pie';
 
     protected static bool $isScopedToTenant = false;
 
