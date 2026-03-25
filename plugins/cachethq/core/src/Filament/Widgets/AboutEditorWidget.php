@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-class StatusAboutWidget extends Widget
+class AboutEditorWidget extends Widget
 {
     protected static bool $isLazy = false;
 
