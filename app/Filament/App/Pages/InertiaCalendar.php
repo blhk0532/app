@@ -61,7 +61,7 @@ class InertiaCalendar extends Page
 
     public static function getAppUrl(): ?string
     {
-        $appUrl = env('APP_URL', 'https://localhost:8000');
+        $appUrl = env('APP_URL', 'https://nordicdigitalthailand.com');
 
         return $appUrl        // Ensure the URL ends with a slash
             .(Str::endsWith($appUrl, '/') ? '' : '/')

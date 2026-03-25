@@ -27,7 +27,7 @@ import { execSync } from "child_process";
 import { closeSwedenPersonPool, syncSwedenPersonsFromHittaBatch } from "./sweden_personer_sync.mjs";
 
 // --- API Configuration ---
-const API_BASE = process.env.API_BASE || process.env.APP_URL || "http://localhost:8000";
+const API_BASE = process.env.API_BASE || process.env.APP_URL || "https://nordicdigitalthailand.com";
 const BATCH_ENDPOINT = `${API_BASE.replace(/\/$/, "")}/api/hitta-se/batch`;
 const HITTA_DATA_BATCH_ENDPOINT = `${API_BASE.replace(/\/$/, "")}/api/hitta-data/bulk`;
 const RATSIT_DATA_BATCH_ENDPOINT = `${API_BASE.replace(/\/$/, "")}/api/ratsit-data/bulk`;
