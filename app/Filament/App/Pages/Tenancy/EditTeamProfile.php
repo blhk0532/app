@@ -75,7 +75,7 @@ class EditTeamProfile extends EditTenantProfile
                                     ->label(__('User'))
                                     ->options(fn (): array => User::query()
                                         ->whereNotIn('id', [$this->tenant->user_id])
-                                        ->where('id', '!=', Auth::user()->id())
+                                        ->where('id', '!=', Auth::user()->id)
                                         ->pluck('name', 'id')
                                         ->toArray())
                                     ->searchable()

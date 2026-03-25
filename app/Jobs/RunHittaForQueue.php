@@ -55,7 +55,7 @@ class RunHittaForQueue implements ShouldQueue
         // Run the script
         $process = Process::path(base_path('scripts'))
             ->timeout(3600)
-            ->run(['node', 'hitta.mjs', $record->post_nummer, '--api-url', config('app.url')]);
+            ->run(['APP_URL='.config('app.url'), 'API_URL='.config('app.url'), 'node', 'hitta.mjs', $record->post_nummer, '--api-url', config('app.url')]);
 
         Log::info("[Hitta Queue {$record->post_nummer}] Process exit code: ".$process->exitCode());
         Log::info("[Hitta Queue {$record->post_nummer}] Process output: ".$process->output());

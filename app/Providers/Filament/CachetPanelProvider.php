@@ -16,9 +16,12 @@ use App\Models\Team;
 use App\Models\User;
 use Cachet\Cachet;
 use Cachet\Filament\Pages\EditProfile;
+use Cachet\Filament\Pages\TenantProfile;
+use Cachet\Filament\Widgets\AnnouncementEditorWidget;
 use Cachet\Filament\Widgets\AnnouncementWidget;
 use Cachet\Http\Middleware\SetAppLocale;
 use Cachet\Settings\AppSettings;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 use Filament\Actions\Action;
 use Filament\Enums\ThemeMode;
 use Filament\FontProviders\LocalFontProvider;
@@ -29,9 +32,9 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
-use Filament\Schemas\Components\Section;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -41,10 +44,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use lockscreen\FilamentLockscreen\Lockscreen;
-use  Cachet\Filament\Widgets\AnnouncementEditorWidget;
-use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class CachetPanelProvider extends PanelProvider
 {
@@ -69,7 +71,7 @@ class CachetPanelProvider extends PanelProvider
             ->brandLogoHeight('2rem')
             ->brandName('Noridic Digital')
             ->defaultThemeMode(ThemeMode::Dark)
-                        ->maxContentWidth(Width::Full)
+            ->maxContentWidth(Width::Full)
             ->spa()
             ->colors([
                 'primary' => Color::generateV3Palette('rgb(4, 193, 71)'),
@@ -81,7 +83,11 @@ class CachetPanelProvider extends PanelProvider
             ->favicon('/vendor/cachethq/cachet/favicon.ico')
             ->viteTheme('resources/css/filament/cachet/theme.css')
             ->discoverResources(__DIR__.'/../../../plugins/cachethq/core/src/Filament/Resources', 'Cachet\\Filament\\Resources')
-            ->discoverPages(__DIR__.'/../../../plugins/cachethq/core/src/Filament/Pages', 'Cachet\\Filament\\Pages')
+            ->discoverPages(__DIR__.'/../../../plugins/cachethq/core/src/Filament/Pages', 'Cachet\Filament\Pages')
+            ->tenantRoutes(function () {
+                Route::get('my-profile', TenantProfile::class)
+                    ->name('profile');
+            })
             ->discoverWidgets(__DIR__.'/../../../plugins/cachethq/core/src/Filament/Widgets', 'Cachet\\Filament\\Widgets')
             ->navigationGroups([
                 NavigationGroup::make()

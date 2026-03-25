@@ -28,6 +28,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('home.dashboard');
 });
 
+Route::get('spa/admin/tenant/{tenant}/profile', function ($tenant) {
+    return redirect()->to(EditProfilePage::getUrl(parameters: ['tenant' => filament()->getTenant()?->id]));
+})->name('filament.admin.tenant.profile');
+
 // Livewire routes - MUST be registered for Livewire to work
 Livewire::setScriptRoute(function ($handle, $path) {
     return Route::get($path, $handle)->name('livewire.script');

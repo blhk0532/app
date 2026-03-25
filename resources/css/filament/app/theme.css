@@ -639,3 +639,9 @@ footer.fi-footer {
 .fi-dropdown.fi-tenant-menu{
 height:50px;
 }
+.fi-avatar.fi-size-md.fi-tenant-avatar {
+    overflow: hidden;
+    width: 24px;
+    height: 24px;
+    margin-top: 10px;
+}

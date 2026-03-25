@@ -16,7 +16,8 @@ use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-
+use App\Filament\App\Resources\Bookings\BookingResource;
+use Filament\Actions\CreateAction;
 class BookingsTable
 {
     public static function configure(Table $table): Table
@@ -57,7 +58,7 @@ class BookingsTable
                     ->badge()
                     ->color(static fn ($state) => $state instanceof BookingStatus
                             ? $state->getColor()
-                            : (is_string($state) ? BookingStatus::tryFrom($state)?->getColor() ?? 'primary' : 'primary')
+                            : (is_string($state) ? BookingStatus::tryFrom($state)?->getColor() ?? 'gray' : 'gray')
                     )
                     ->sortable(),
 
@@ -89,6 +90,11 @@ class BookingsTable
             ->groupedBulkActions([
                 DeleteBulkAction::make(),
             ])
+            ->toolbarActions([
+                CreateAction::make()
+                ->label('Ny Bokning')
+                ->url(fn () => BookingResource::getUrl('create')),
+            ])
             ->groups([
                 Group::make('created_at')
                     ->label('Booking date')
@@ -96,8 +102,8 @@ class BookingsTable
                     ->collapsible(),
             ])
             ->recordClasses(fn (Booking $record) => match (true) {
-                $record->status === BookingStatus::Complete => 'bg-success-50 dark:bg-success-950/50',
-                $record->status === BookingStatus::Cancelled => 'bg-danger-50 dark:bg-danger-950/50',
+                $record->status === BookingStatus::Complete => 'bg-success-500/50 dark:bg-success-950/50 ',
+                $record->status === BookingStatus::Cancelled => 'bg-danger-500/50 dark:bg-danger-950/50',
                 default => null,
             });
     }

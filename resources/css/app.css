@@ -368,3 +368,10 @@ p.is-empty.is-editor-empty{
 div.fi-fo-rich-editor-main{
     min-height: 80px!important;
 }
+
+main {
+      overflow-x: hidden !important;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+

@@ -33,6 +33,7 @@ use Awcodes\Overlook\Widgets\OverlookWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Devtical\Sanctum\Pages\Sanctum;
 use Filament\Actions\Action;
@@ -61,8 +62,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use JeffersonGoncalves\Filament\WhatsappWidget\WhatsappWidgetPlugin;
 // use TallCms\Cms\TallCmsPlugin;
+use JeffersonGoncalves\Filament\WhatsappWidget\WhatsappWidgetPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
@@ -72,10 +73,9 @@ use MmesDesign\FilamentFileManager\FileManagerPlugin;
 use WallaceMartinss\FilamentEvolution\FilamentEvolutionPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
-use Wallo\FilamentCompanies\FilamentCompanies;
 // use Wallo\FilamentCompanies\Pages\User\Profile;
 // use Rupadana\ApiService\ApiServicePlugin;
-use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
+use Wallo\FilamentCompanies\FilamentCompanies;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -124,7 +124,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 //    Sanctum::class,
                 TeamInvitationAccept::class,
-                //    Profile::class,
+                Profile::class,
                 //    ControlPanel::class,
                 PersonalAccessTokens::class,
             ])

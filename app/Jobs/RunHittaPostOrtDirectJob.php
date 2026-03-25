@@ -147,6 +147,7 @@ class RunHittaPostOrtDirectJob implements ShouldQueue
 
             // Build Node command for this page
             $command = [
+                'APP_URL='.config('app.url'), 'API_URL='.config('app.url'),
                 'node',
                 $script, // Uses hitta_post_ort.mjs
                 (string) $query,

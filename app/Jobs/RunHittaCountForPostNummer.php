@@ -45,6 +45,7 @@ class RunHittaCountForPostNummer implements ShouldQueue
         $script = base_path('resources/scripts/hittaCounts.mjs');
 
         $process = Process::timeout(300)->run([
+            'APP_URL='.config('app.url'), 'API_URL='.config('app.url'),
             'node',
             $script,
             $query,

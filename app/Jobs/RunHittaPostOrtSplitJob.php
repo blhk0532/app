@@ -68,6 +68,7 @@ class RunHittaPostOrtSplitJob implements ShouldQueue
         // First, compute total results using --onlyTotals
         $script = base_path('jobs/post_ort_hitta.mjs');
         $command = [
+            'APP_URL='.config('app.url'), 'API_URL='.config('app.url'),
             'node',
             $script,
             (string) $query,

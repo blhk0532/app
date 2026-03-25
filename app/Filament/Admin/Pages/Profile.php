@@ -26,6 +26,6 @@ class Profile extends BaseProfile
 
     public function mount(): void
     {
-        $this->redirect(EditProfilePage::getUrl(tenant: filament()->getTenant()));
+        // $this->redirect(EditProfilePage::getUrl(tenant: filament()->getTenant()));
     }
 }

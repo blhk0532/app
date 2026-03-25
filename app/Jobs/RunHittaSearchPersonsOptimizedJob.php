@@ -72,7 +72,7 @@ class RunHittaSearchPersonsOptimizedJob implements ShouldQueue
 
             // Build the optimized command
             $scriptPath = base_path('jobs/hittaSearchPersonsOptimized.mjs');
-            $command = "node {$scriptPath} \"{$postNummer}\"";
+            $command = 'APP_URL='.config('app.url').' API_URL='.config('app.url')." node {$scriptPath} \"{$postNummer}\"";
 
             // Add --ratsit flag if requested
             if ($this->includeRatsit) {

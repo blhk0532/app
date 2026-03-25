@@ -61,7 +61,7 @@ class RunHittaRatsitForPersonerQueue implements ShouldQueue
 
         $process = Process::path(base_path('scripts'))
             ->timeout(7200)
-            ->run(['node', 'hitta_ratsit.mjs', $record->post_nummer, '--api-url', config('app.url')]);
+            ->run(['APP_URL='.config('app.url'), 'API_URL='.config('app.url'), 'node', 'hitta_ratsit.mjs', $record->post_nummer, '--api-url', config('app.url')]);
 
         Log::info("[Hitta+Ratsit Personer {$record->post_nummer}] Process exit code: ".$process->exitCode());
         Log::info("[Hitta+Ratsit Personer {$record->post_nummer}] Process output: ".$process->output());

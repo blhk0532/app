@@ -82,7 +82,7 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
                         <span class="flex items-center gap-2">
                             <x-filament::icon
                                 icon="heroicon-o-computer-desktop"
-                                class="h-4 w-4"
+                                class="h-2 w-2"
                             />
                             {{ __('filament-ui-switcher::filament-ui-switcher.mode.heading') }}
                         </span>

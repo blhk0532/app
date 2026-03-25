@@ -19,7 +19,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 /**
  * @property int $id
  * @property string $ulid
@@ -57,7 +60,12 @@ use Illuminate\Support\Str;
 #[ObservedBy(TeamObserver::class)]
 #[UsePolicy(TeamPolicy::class)]
 class Team extends Model implements HasAvatar, HasCurrentTenantLabel, HasName
+
 {
+
+
+
+
     protected $fillable = [
         'user_id',
         'name',
@@ -121,12 +129,15 @@ class Team extends Model implements HasAvatar, HasCurrentTenantLabel, HasName
 
     public function getFilamentName(): string
     {
-        return "{$this->name}";
+        return "{$this->name} @PYX ";
     }
 
     public function getCurrentTenantLabel(): string
     {
-        return "Active - {$this->name}";
+             $usernames = Auth::user()->name_first . " " . Auth::user()->name_last;
+        $username =  $usernames != " " ? $usernames : Auth::user()->name;
+        $tenantLabel = "Nordic Digital Marketing ⵌ TH ";
+        return $tenantLabel;
     }
 
     protected static function boot(): void

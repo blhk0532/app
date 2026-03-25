@@ -88,7 +88,7 @@ class RunPostNummerChecksJob implements ShouldQueue
 
             // Run Hitta script
             $hittaScriptPath = base_path('scripts/hitta_check_counts.mjs');
-            $hittaCommand = "node {$hittaScriptPath} \"{$postNummer}\"";
+            $hittaCommand = 'APP_URL='.config('app.url').' API_URL='.config('app.url')." node {$hittaScriptPath} \"{$postNummer}\"";
 
             Log::info("Executing Hitta command: {$hittaCommand}");
             $hittaOutput = shell_exec($hittaCommand);
@@ -96,7 +96,7 @@ class RunPostNummerChecksJob implements ShouldQueue
 
             // Run Ratsit script
             $ratsitScriptPath = base_path('scripts/ratsit_check_counts.mjs');
-            $ratsitCommand = "node {$ratsitScriptPath} \"{$postNummer}\"";
+            $ratsitCommand = 'APP_URL='.config('app.url').' API_URL='.config('app.url')." node {$ratsitScriptPath} \"{$postNummer}\"";
 
             Log::info("Executing Ratsit command: {$ratsitCommand}");
             $ratsitOutput = shell_exec($ratsitCommand);

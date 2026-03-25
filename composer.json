@@ -20,6 +20,8 @@
         "awcodes/filament-badgeable-column": "@dev",
         "awcodes/mason": "@dev",
         "awcodes/overlook": "@dev",
+        "aymanalhattami/filament-page-with-sidebar": "@dev",
+        "benriadh1/filament-notification-bell": "@dev",
         "bezhansalleh/filament-exceptions": "@dev",
         "bezhansalleh/filament-panel-switch": "@dev",
         "bezhansalleh/filament-plugin-essentials": "@dev",
@@ -108,8 +110,7 @@
         "wallacemartinss/filament-whatsapp-conector": "@dev",
         "webbingbrasil/filament-copyactions": "@dev",
         "ysfkaya/filament-phone-input": "@dev",
-        "zvizvi/user-fields": "@dev",
-        "aymanalhattami/filament-page-with-sidebar": "@dev"
+        "zvizvi/user-fields": "@dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

@@ -48,7 +48,7 @@ class CheckHittaTotals implements ShouldQueue
 
         $result = Process::path(base_path('scripts'))
             ->timeout($this->timeout)
-            ->run(['node', 'post_ort_update.mjs', $searchQuery, '--onlyTotals']);
+            ->run(['APP_URL='.config('app.url'), 'API_URL='.config('app.url'), 'node', 'post_ort_update.mjs', $searchQuery, '--onlyTotals']);
 
         if (! $result->successful()) {
             Log::error("[CheckHittaTotals {$this->postNummer}] Script failed: {$result->errorOutput()}");

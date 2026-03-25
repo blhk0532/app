@@ -70,6 +70,7 @@ class RunHittaPostOrtPageJob implements ShouldQueue
         // Build Node command: one page only via --maxResults 25
         $script = base_path('jobs/post_ort_hitta.mjs');
         $command = [
+            'APP_URL='.config('app.url'), 'API_URL='.config('app.url'),
             'node',
             $script,
             (string) $query,

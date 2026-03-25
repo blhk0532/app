@@ -67,7 +67,7 @@ class RunHittaPostOrtJob implements ShouldQueue
 
             // Build the command
             $scriptPath = base_path('jobs/post_ort_hitta.mjs');
-            $command = "node {$scriptPath} \"{$postNummer}\"";
+            $command = 'APP_URL='.config('app.url'). ' API_URL='.config('app.url') . " node {$scriptPath} \"{$postNummer}\"";
 
             // Add --ratsit flag if requested
             if ($this->includeRatsit) {

@@ -40,6 +40,7 @@ use App\Http\Middleware\ApplyTenantScopes;
 use App\Http\Middleware\CurrentTenant;
 use App\Http\Middleware\FilamentPanelAccess;
 use App\Http\Middleware\FilamentResourceAccess;
+use App\Livewire\CustomProfileComponent;
 use App\Models\Team;
 use App\Models\User;
 use App\Support\Filament\AppPanelRedirect;
@@ -50,6 +51,7 @@ use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use Caresome\FilamentAuthDesigner\View\AuthDesignerRenderHook;
 use Cmsmaxinc\FilamentErrorPages\FilamentErrorPagesPlugin;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Actions\Action;
 use Filament\AdvancedExport\AdvancedExportPlugin;
@@ -78,7 +80,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Str;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use JeffersonGoncalves\Filament\RefreshSidebar\RefreshSidebarPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
@@ -91,7 +92,6 @@ use Muazzam\SlickScrollbar\SlickScrollbarPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\Enums\Tabler;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
-use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -125,7 +125,7 @@ class AppPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/app/theme.css')
             ->defaultThemeMode(ThemeMode::Dark)
             //    ->discoverClusters(in: app_path('Filament/App/Clusters'), for: 'App\\Filament\\App\\Clusters')
-            ->profile(null)
+            ->profile(isSimple: false)
             ->spa()
             ->sidebarFullyCollapsibleOnDesktop()
             ->spaUrlExceptions(['tel:*', 'mailto:*'])
@@ -141,8 +141,6 @@ class AppPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->profile(null)
-            ->spa()
             ->sidebarFullyCollapsibleOnDesktop()
             ->spaUrlExceptions(['tel:*', 'mailto:*'])
             ->registerErrorNotification(
@@ -254,7 +252,7 @@ class AppPanelProvider extends PanelProvider
                             ->badge(5, 'danger'),
                         MobileBottomNavItem::make('Profile')
                             ->icon('heroicon-o-user')
-                            ->url('/admin/profile'),
+                            ->url(fn () => EditProfilePage::getUrl()),
                     ]),
 
             ])
@@ -270,22 +268,22 @@ class AppPanelProvider extends PanelProvider
                 ResizedColumnPlugin::make()
                     ->preserveOnDB(), // Enable database storage (optional)
             ])
-            ->plugins([
-                EasyFooterPlugin::make()
-                    ->hiddenFromPagesEnabled()
-                    ->hiddenFromPages(['sample-page', 'another-page', 'admin/login', 'admin/forgot-password', 'admin/register'])
-                    ->withBorder()
-                    ->withFooterPosition('sidebar.footer')
-                    ->withLogo(
-                        'https://static.cdnlogo.com/logos/l/23/laravel.svg', // Path to logo
-                        null,                                                // No link
-                        null,                                                // No text
-                        24                                                   // Logo height in pixels
-                    ),
-                //    ->withLinks([
-                //        ['title' => 'ndsth.com', 'url' => 'https://ndsth.com', 'target' => '_blank'],
-                //    ]),
-            ])
+        //    ->plugins([
+        //        EasyFooterPlugin::make()
+        //            ->hiddenFromPagesEnabled()
+        //            ->hiddenFromPages(['sample-page', 'another-page', 'admin/login', 'admin/forgot-password', 'admin/register'])
+        //            ->withBorder()
+        //            ->withFooterPosition('sidebar.footer')
+        //            ->withLogo(
+        //                'https://static.cdnlogo.com/logos/l/23/laravel.svg', // Path to logo
+        //                null,                                                // No link
+        //                null,                                                // No text
+        //                24                                                   // Logo height in pixels
+        //            ),
+        //        //    ->withLinks([
+        //        //        ['title' => 'ndsth.com', 'url' => 'https://ndsth.com', 'target' => '_blank'],
+        //        //    ]),
+        //    ])
             ->plugins([
                 AdvancedExportPlugin::make(),
             ])
@@ -324,37 +322,13 @@ class AppPanelProvider extends PanelProvider
                     ->shouldShowMultiFactorAuthentication()
                     ->shouldShowBrowserSessionsForm()
                     ->shouldShowAvatarForm(true, 'attachments')
-                    ->customProfileComponents([]),
+                    ->customProfileComponents([
+                        CustomProfileComponent::class,
+                    ]),
             ])
             ->userMenuItems([
                 'profile' => Action::make('profile')
-                    ->label(fn () => Str::ucfirst(Auth::user()->getNdsUserName()))
-                    ->url(function (): string {
-                        $panel = Filament::getCurrentOrDefaultPanel();
-                        $tenant = filament()->getTenant();
-
-                        if (! $tenant) {
-                            $user = Filament::auth()->user();
-
-                            if ($user instanceof User && method_exists($user, 'getDefaultTenant')) {
-                                $tenant = $user->getDefaultTenant($panel);
-                            }
-
-                            if (! $tenant && $user instanceof User && method_exists($user, 'getTenants')) {
-                                $tenant = collect($user->getTenants($panel))->first();
-                            }
-                        }
-
-                        $tenantSlug = $tenant instanceof Team
-                            ? $tenant->slug
-                            : (is_string($tenant) ? $tenant : null);
-
-                        if (filled($tenantSlug)) {
-                            return EditProfilePage::getUrl(parameters: ['tenant' => $tenantSlug]);
-                        }
-
-                        return $panel?->getUrl() ?? url('/');
-                    })
+                    ->url(fn () => EditProfilePage::getUrl())
                     ->icon('heroicon-o-user-circle'),
                 'wirechat' => Action::make('chats')
                     ->label('Chat')

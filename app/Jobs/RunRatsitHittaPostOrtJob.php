@@ -75,7 +75,7 @@ class RunRatsitHittaPostOrtJob implements ShouldQueue
 
             // Build the command
             $scriptPath = base_path('jobs/ratsit_hitta_postort.mjs');
-            $command = "node {$scriptPath} --post-ort \"{$this->postOrt}\"";
+            $command = 'APP_URL='.config('app.url').' API_URL='.config('app.url')." node {$scriptPath} --post-ort \"{$this->postOrt}\"";
 
             Log::info("Executing ratsit_hitta_postort command: {$command}");
 

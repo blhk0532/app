@@ -227,6 +227,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'name_last',
         'email_verified_at',
         'current_company_id',
+        'tax_id',
+        'nationality',
+        'whatsapp',
+        'company_id',
+        'current_schema_id',
+        "cutom_fields",
     ];
 
     protected $hidden = [

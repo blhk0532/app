@@ -34,6 +34,7 @@ class RunMerinfoCheckCountsJob implements ShouldQueue
         $script = base_path('jobs/ratsit_check_counts.mjs');
 
         $process = Process::timeout(300)->run([
+            'APP_URL='.config('app.url'), 'API_URL='.config('app.url'),
             'node',
             $script,
             $this->postNummer,

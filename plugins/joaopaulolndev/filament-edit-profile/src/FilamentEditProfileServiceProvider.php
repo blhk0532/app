@@ -35,6 +35,13 @@ class FilamentEditProfileServiceProvider extends PackageServiceProvider
         return false;
     }
 
+    public function boot(): void
+    {
+        parent::boot();
+
+        $this->registerLivewireComponents();
+    }
+
     public function configurePackage(Package $package): void
     {
         /*

@@ -24,6 +24,7 @@ class RunHittaDataScriptJob implements ShouldQueue
         $normalizedPostNummer = str_replace(' ', '', $this->postNummer);
 
         $process = new Process([
+            'APP_URL='.config('app.url'), 'API_URL='.config('app.url'),
             'node',
             $script,
             $normalizedPostNummer,

@@ -32,6 +32,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class GeoPanelProvider extends PanelProvider
 {
@@ -43,9 +44,6 @@ class GeoPanelProvider extends PanelProvider
             ->path('auth/geo')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
             ->colors([
                 'primary' => Color::Orange,
             ])
@@ -89,22 +87,6 @@ class GeoPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->plugins([
-                EasyFooterPlugin::make()
-                    ->hiddenFromPagesEnabled()
-                    ->hiddenFromPages(['sample-page', 'another-page', 'admin/login', 'admin/forgot-password', 'admin/register'])
-                    ->withBorder()
-                    ->withLoadTime()
-                    ->withLogo(
-                        'https://static.cdnlogo.com/logos/l/23/laravel.svg', // Path to logo
-                        null,                                                // No link
-                        null,                                                // No text
-                        24                                                   // Logo height in pixels
-                    )
-                    ->withLinks([
-                        ['title' => 'ndsth.com', 'url' => 'https://ndsth.com', 'target' => '_blank'],
-                    ]),
             ])
             ->plugin(
                 AuthDesignerPlugin::make()

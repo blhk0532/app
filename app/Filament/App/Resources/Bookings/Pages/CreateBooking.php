@@ -87,4 +87,19 @@ class CreateBooking extends CreateRecord
             ])
             ->sendToDatabase([$user]);
     }
+        protected function getActions(): array
+    {
+        return [
+        ];
+    }
+
+public function getHeading(): string|Htmlable|null
+{
+    return null;
+}
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
+    }
 }

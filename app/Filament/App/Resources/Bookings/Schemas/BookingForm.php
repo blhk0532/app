@@ -89,26 +89,8 @@ class BookingForm
     public static function getDetailsComponents(array $clientDefaults = []): array
     {
         return [
-            TextInput::make('number')
-                ->default('OR-'.random_int(100000, 999999))
-                ->disabled()
-                ->dehydrated()
-                ->required()
-                ->hidden()
-                ->maxLength(32)
-                ->unique(Booking::class, 'number', ignoreRecord: true),
-            Select::make('service_id')
-                ->relationship('service', 'name')
-                ->searchable()
-                ->hidden(),
-            Select::make('service_user_id')
-                ->label('Tekniker')
-                ->options(User::where('role', 'service')->pluck('name', 'id'))
-                ->searchable()
-                ->required(),
-
             DatePicker::make('service_date')
-                ->label('Datum')
+                ->label('Arbetsdag')
                 ->required()
                 ->columnSpan(1),
 
@@ -118,6 +100,8 @@ class BookingForm
                         ->label('Starttid')
                         ->seconds(false)
                         ->displayFormat('H:i')
+                        ->default('08:00')
+
                         ->native(false)
                         ->required(),
 
@@ -125,55 +109,70 @@ class BookingForm
                         ->label('Sluttid')
                         ->seconds(false)
                         ->displayFormat('H:i')
+                        ->default(fn (callable $get) => $get('start_time') ? now()->setTimeFromTimeString($get('start_time'))->addHour()->addHour()->format('H:i') : null)
                         ->native(false)
                         ->required(),
                 ])
                 ->columns(2)
                 ->columnSpan(1),
-
             Select::make('booking_client_id')
-                ->label('Kund')
+                ->label('Fastighetsägare')
                 ->relationship('client', 'name')
                 ->searchable()
                 ->required()
                 ->createOptionForm([
                     Group::make()
-                        ->columns(2)
+                        ->columns(12)
                         ->schema([
                             TextInput::make('name')
+                               ->label('Fulständigt namn')
                                 ->default($clientDefaults['name'] ?? null)
                                 ->required()
+                                ->columnSpan(6)
                                 ->maxLength(255),
+
+                        TextInput::make('personnummer')
+                                ->label('Personnummer')
+                                  ->columnSpan(3)
+                                ->default('')
+                                ->maxLength(255)
+                                ->placeholder('Sweden'),
                             TextInput::make('phone')
+                               ->label('Telefonnummer')
                                 ->default($clientDefaults['phone'] ?? null)
+                                ->columnSpan(3)
                                 ->maxLength(255)
                                 ->required(),
-                            TextInput::make('email')
-                                ->label('Email address')
-                                ->default($clientDefaults['email'] ?? null)
-                                ->email()
-                                ->maxLength(255)
-                                ->unique(),
-
                             TextInput::make('street')
-                                ->label('Street address')
+                                ->label('Gatuadress')
                                 ->default($clientDefaults['street'] ?? null)
                                 ->maxLength(255)
+                                 ->columnSpan(4)
                                 ->required(),
-
                             TextInput::make('zip')
-                                ->label('Postal code')
+                                ->label('Postnr')
                                 ->default($clientDefaults['zip'] ?? null)
                                 ->maxLength(20)
+                                 ->columnSpan(2)
                                 ->required(),
-
                             TextInput::make('city')
+                                ->label('Posrort')
                                 ->default($clientDefaults['city'] ?? null)
                                 ->maxLength(255)
+                                 ->columnSpan(3)
                                 ->required(),
 
-                            TextInput::make('country')
-                                ->hidden()
+                                                            TextInput::make('email')
+                                ->label('E-postadress')
+                                ->default($clientDefaults['email'] ?? null)
+                                ->email()
+                                ->columnSpan(3)
+                                ->maxLength(255)
+                                ->unique(),
+                                TextInput::make('fastighetsbeteckning')
+                                ->label('Fastighetsbeteckning')
+                                  ->columnSpan(6)
+                                ->maxLength(255)
                                 ->placeholder('Sweden'),
                         ]),
                 ])
@@ -197,7 +196,23 @@ class BookingForm
 
                     return $client->id;
                 }),
-
+            TextInput::make('number')
+                ->default('OR-'.random_int(100000, 999999))
+                ->disabled()
+                ->dehydrated()
+                ->required()
+                ->hidden()
+                ->maxLength(32)
+                ->unique(Booking::class, 'number', ignoreRecord: true),
+            Select::make('service_id')
+                ->relationship('service', 'name')
+                ->searchable()
+                ->hidden(),
+            Select::make('service_user_id')
+                ->label('Tekniker')
+                ->options(User::where('role', 'service')->pluck('name', 'id'))
+                ->searchable()
+                ->required(),
             TextInput::make('booking_user_id')
                 ->hidden()
                 ->dehydrated(),
@@ -218,7 +233,7 @@ class BookingForm
                 ->label('Status')
                 ->inline()
                 ->required()
-                ->hidden(fn (?Booking $record) => ! self::canShowStatus($record))
+                ->hidden()
                 ->columnSpan('full'),
             RichEditor::make('notes')
                 ->label('Anteckningar')

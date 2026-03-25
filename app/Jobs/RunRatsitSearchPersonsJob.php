@@ -62,7 +62,7 @@ class RunRatsitSearchPersonsJob implements ShouldQueue
 
             // Build the command
             $scriptPath = base_path('jobs/ratsit_hitta.mjs');
-            $command = "node {$scriptPath} \"{$postNummer}\"";
+            $command = 'APP_URL='.config('app.url').' API_URL='.config('app.url')." node {$scriptPath} \"{$postNummer}\"";
 
             Log::info("Executing ratsitSearchPersonsQueue command: {$command}");
 

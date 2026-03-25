@@ -66,7 +66,7 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
                     icon="{{ $this->icon }}"
                     class="h-6 w-6"
                 />
-                <span class="text-lg font-semibold">{{ __('filament-ui-switcher::filament-ui-switcher.modal.heading') }}</span>
+                <span class="text-lg font-semibold">{{ __('UI Settings') }}</span>
             </div>
         </x-slot>
 @php
@@ -93,75 +93,10 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
                 </div>
             @endif
 
-            {{-- Layout Selector --}}
-            <div>
-                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    <span class="flex items-center gap-2">
-                        <x-filament::icon
-                            icon="heroicon-o-tv"
-                            class="h-4 w-4"
-                        />
-                        {{ __('filament-ui-switcher::filament-ui-switcher.layout.heading') }}
-                    </span>
-                </h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <button
-                        wire:click="setLayout('sidebar')"
-                        wire:loading.class="opacity-50 cursor-wait"
-                        wire:target="setLayout"
-                        type="button"
-                        class="relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all hover:border-primary-400 hover:shadow-md {{ $layout === 'sidebar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 ring-2 ring-primary-200 dark:ring-primary-800' : 'border-gray-200 dark:border-gray-700' }}">
-                        <div class="flex flex-col gap-0.5 mb-2">
-                            <div class="w-14 h-1 rounded bg-gray-300 dark:bg-gray-700"></div>
-                            <div class="flex gap-0.5">
-                                <div class="w-3.5 h-7 rounded bg-gray-300 dark:bg-gray-300"></div>
-                                <div class="w-10 h-7 rounded bg-gray-300 dark:bg-gray-600"></div>
-                            </div>
-                        </div>
-                        <span class="text-xs font-medium">{{ __('filament-ui-switcher::filament-ui-switcher.layout.sidebar') }}</span>
-                    </button>
-
-                    <button
-                        wire:click="setLayout('sidebar-collapsed')"
-                        type="button"
-                        class="relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'sidebar-collapsed' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
-                        <div class="flex flex-col gap-0.5 mb-2">
-                            <div class="w-14 h-1 rounded bg-gray-300 dark:bg-gray-700"></div>
-                            <div class="flex gap-0.5">
-                                <div class="w-2 h-7 rounded bg-gray-300 dark:bg-gray-700"></div>
-                                <div class="w-12 h-7 rounded bg-gray-300 dark:bg-gray-600"></div>
-                            </div>
-                        </div>
-                        <span class="text-xs font-medium">{{ __('filament-ui-switcher::filament-ui-switcher.layout.compact') }}</span>
-                    </button>
-
-                    <button
-                        wire:click="setLayout('sidebar-no-topbar')"
-                        type="button"
-                        class="relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'sidebar-no-topbar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
-                        <div class="flex gap-0.5 mb-2">
-                            <div class="w-3.5 h-8 rounded bg-gray-300 dark:bg-gray-700"></div>
-                            <div class="w-10 h-8 rounded bg-gray-300 dark:bg-gray-600"></div>
-                        </div>
-                        <span class="text-xs font-medium text-center leading-tight">{{ __('filament-ui-switcher::filament-ui-switcher.layout.no_topbar') }}</span>
-                    </button>
-
-                    <button
-                        wire:click="setLayout('topbar')"
-                        type="button"
-                        class="relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'topbar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
-                        <div class="flex flex-col gap-0.5 mb-2">
-                            <div class="w-12 h-2 rounded bg-gray-300 dark:bg-gray-700"></div>
-                            <div class="w-12 h-8 rounded bg-gray-300 dark:bg-gray-600"></div>
-                        </div>
-                        <span class="text-xs font-medium">{{ __('filament-ui-switcher::filament-ui-switcher.layout.topbar') }}</span>
-                    </button>
-                </div>
-            </div>
 
             {{-- Color --}}
             <div>
-                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     <span class="flex items-center gap-2">
                         <x-filament::icon
                             icon="heroicon-o-swatch"
@@ -191,6 +126,73 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
                     </div>
                 </div>
             </div>
+
+            {{-- Layout Selector --}}
+            <div>
+                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    <span class="flex items-center gap-2">
+                        <x-filament::icon
+                            icon="heroicon-o-tv"
+                            class="h-4 w-4"
+                        />
+                        {{ __('filament-ui-switcher::filament-ui-switcher.layout.heading') }}
+                    </span>
+                </h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button
+                        wire:click="setLayout('sidebar')"
+                        wire:loading.class="opacity-50 cursor-wait"
+                        wire:target="setLayout"
+                        type="button"
+                        class="relative flex flex-col items-center justify-center p-2 max-h-[48px] rounded-lg border-2 transition-all hover:border-primary-400 hover:shadow-md {{ $layout === 'sidebar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 ring-2 ring-primary-200 dark:ring-primary-800' : 'border-gray-200 dark:border-gray-700' }}">
+                        <div class="flex flex-col gap-0.5">
+                            <div class="w-14 h-1 rounded bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="flex gap-0.5">
+                                <div class="w-3.5 h-7 rounded bg-gray-300 dark:bg-gray-300"></div>
+                                <div class="w-10 h-7 rounded bg-gray-300 dark:bg-gray-600"></div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-medium hidden">{{ __('filament-ui-switcher::filament-ui-switcher.layout.sidebar') }}</span>
+                    </button>
+
+                    <button
+                        wire:click="setLayout('sidebar-collapsed')"
+                        type="button"
+                        class="relative flex flex-col items-center justify-center p-2 max-h-[48px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'sidebar-collapsed' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
+                        <div class="flex flex-col gap-0.5">
+                            <div class="w-14 h-1 rounded bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="flex gap-0.5">
+                                <div class="w-2 h-7 rounded bg-gray-300 dark:bg-gray-700"></div>
+                                <div class="w-12 h-7 rounded bg-gray-300 dark:bg-gray-600"></div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-medium hidden">{{ __('filament-ui-switcher::filament-ui-switcher.layout.compact') }}</span>
+                    </button>
+
+                    <button
+                        wire:click="setLayout('sidebar-no-topbar')"
+                        type="button"
+                        class="relative flex flex-col items-center justify-center p-2 max-h-[48px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'sidebar-no-topbar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
+                        <div class="flex gap-0.5 mb-0">
+                            <div class="w-3.5 h-8 rounded bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="w-10 h-8 rounded bg-gray-300 dark:bg-gray-600"></div>
+                        </div>
+                        <span class="text-xs font-medium text-center leading-tight hidden">{{ __('filament-ui-switcher::filament-ui-switcher.layout.no_topbar') }}</span>
+                    </button>
+
+                    <button
+                        wire:click="setLayout('topbar')"
+                        type="button"
+                        class="relative flex flex-col items-center justify-center p-2 max-h-[48px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'topbar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
+                        <div class="flex flex-col gap-0.5">
+                            <div class="w-13 h-2 rounded bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="w-13 h-6 rounded bg-gray-300 dark:bg-gray-600"></div>
+                        </div>
+                        <span class="text-xs font-medium hidden">{{ __('filament-ui-switcher::filament-ui-switcher.layout.topbar') }}</span>
+                    </button>
+                </div>
+            </div>
+
 
             {{-- Font Family --}}
             <div>

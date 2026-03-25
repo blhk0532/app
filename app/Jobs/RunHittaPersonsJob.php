@@ -83,7 +83,7 @@ class RunHittaPersonsJob implements ShouldQueue
             // Build the command
             $query = mb_trim($postNum->post_nummer);
             $scriptPath = base_path('jobs/post_ort_hitta.mjs');
-            $command = "node {$scriptPath} \"{$postNummer}\"";
+            $command = 'APP_URL='.config('app.url'). ' API_URL='.config('app.url') . " node {$scriptPath} \"{$postNummer}\"";
 
             Log::info("[Hitta Counts Queue {$postNum->post_nummer}] Starting count extraction");
 

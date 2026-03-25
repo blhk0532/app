@@ -65,7 +65,7 @@ class ProcessPostNummer implements ShouldQueue
         Log::info("[Postnummer {$this->postNummer}] Running pre-flight check (onlyTotals)");
         $checkResult = Process::path(base_path('scripts'))
             ->timeout(120) // 2 minute timeout for quick check
-            ->run(['node', 'post_ort_update.mjs', $searchQuery, '--onlyTotals']);
+            ->run(['APP_URL='.config('app.url'), 'API_URL='.config('app.url'), 'node', 'post_ort_update.mjs', $searchQuery, '--onlyTotals']);
 
         if ($checkResult->successful()) {
             $checkOutput = $checkResult->output();
@@ -133,7 +133,7 @@ class ProcessPostNummer implements ShouldQueue
         $currentCount = (int) max(0, $resumeCount);
         $result = Process::path(base_path('scripts'))
             ->timeout($this->timeout)
-            ->run(['node', 'post_ort_update.mjs', $searchQuery, '--startPage', (string) $resumePage, '--startIndex', (string) $resumeCount], function (string $type, string $buffer) use ($record, &$currentTotalCount, &$currentCount) {
+            ->run(['APP_URL='.config('app.url'), 'API_URL='.config('app.url'), 'node', 'post_ort_update.mjs', $searchQuery, '--startPage', (string) $resumePage, '--startIndex', (string) $resumeCount], function (string $type, string $buffer) use ($record, &$currentTotalCount, &$currentCount) {
                 // Parse output in real-time to update progress
                 $lines = explode("\n", $buffer);
                 $phoneCount = (int) ($record->phone ?? 0);

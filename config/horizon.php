@@ -214,7 +214,7 @@ return [
         ],
         'supervisor-scrape' => [
             'connection' => 'redis',
-            'queue' => ['scrape', 'ratsit', 'hitta', 'merinfo'],
+            'queue' => ['scrape', 'ratsit', 'hitta', 'merinfo', 'data', 'ratsit-hitta', 'sweden-personer', 'sweden-adresser', 'sweden-postnummer', 'sweden-gator'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => (int) env('HORIZON_SCRAPE_MAX_PROCESSES', 2),

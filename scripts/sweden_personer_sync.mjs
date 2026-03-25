@@ -63,9 +63,9 @@ async function getDbPool() {
     return dbPool;
   }
 
-  const database = process.env.DB_DATABASE || 'nordic_new';
+  const database = process.env.DB_DATABASE || 'app_new';
   const user = process.env.DB_USERNAME || 'root';
-  const password = process.env.DB_PASSWORD || 'bkkbkk';
+  const password = process.env.DB_PASSWORD || '9JVQqZea1bWgqxbZuyZz';
   const host = process.env.DB_HOST || '127.0.0.1';
   const port = process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306;
   const socketPath = process.env.DB_SOCKET || undefined;

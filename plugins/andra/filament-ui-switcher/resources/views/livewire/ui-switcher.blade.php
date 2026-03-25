@@ -64,7 +64,7 @@
         </x-slot>
 
         <div class="space-y-8 py-4">
-            {{-- Mode Switcher (Optional) --}}
+            {{-- Mode Switcher (Optional) !! --}}
             @if($hasModeSwitcher)
                 <div>
                     <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">

@@ -46,7 +46,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->default()
             ->login()
             ->passwordReset()
-            ->profile(EditProfile::class)
+            ->profile(EditProfile::class, isTenantProfile: false)
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->brandLogoHeight('2rem')
             ->colors([
@@ -67,6 +67,11 @@ class CachetDashboardServiceProvider extends PanelProvider
                 StatusOverview::class,
                 EditStatusSettingsForm::class,
             ])
+            ->routes(function ($router) {
+                $router->get('{tenant}/my-profile', TenantProfile::class)
+                    ->name('tenant.profile')
+                    ->middleware('web');
+            })
             ->discoverWidgets(__DIR__.'/Filament/Widgets', 'Cachet\\Filament\\Widgets')
             ->navigationGroups([
                 NavigationGroup::make()

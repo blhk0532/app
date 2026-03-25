@@ -9,12 +9,14 @@ use Filament\Auth\Notifications\VerifyEmailChange;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification as FilamentNotification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
+use Filament\Support\Markdown;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
@@ -62,35 +64,89 @@ class EditProfileForm extends BaseProfileForm
             ->components([
                 Section::make(__('filament-edit-profile::default.profile_information'))
                     ->aside()
+                    ->columns(12)
                     ->description(__('filament-edit-profile::default.profile_information_description'))
                     ->schema([
                         FileUpload::make(config('filament-edit-profile.avatar_column', 'avatar_url'))
                             ->label(__('filament-edit-profile::default.avatar'))
                             ->avatar()
                             ->imageEditor()
+                            ->columnSpan(6)
                             ->disk(config('filament-edit-profile.disk', 'public'))
                             ->visibility(config('filament-edit-profile.visibility', 'public'))
                             ->directory(filament('filament-edit-profile')->getAvatarDirectory())
                             ->rules(filament('filament-edit-profile')->getAvatarRules())
                             ->hidden(! filament('filament-edit-profile')->getShouldShowAvatarForm()),
-                        TextInput::make('name')
-                            ->label(__('filament-edit-profile::default.name'))
-                            ->required(),
-                        TextInput::make('email')
-                            ->label(__('filament-edit-profile::default.email'))
-                            ->email()
-                            ->required()
+                        Section::make()
+                            ->columnSpan(6)
+                            ->columns(6)
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label(__('Användarnamn'))
+                                    ->columnSpan(6)
+                                    ->disabled()
+                                    ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm())
+                                    ->required(),
+                                TextInput::make('phone')
+                                    ->label(__('Telefonnummer'))
+                                    ->disabled()
+                                    ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm())
+                                    ->columnSpan(6)
+                                    ->unique($this->userClass, ignorable: $this->user),
+
+                            ]),
+                        TextInput::make('name_first')
+                            ->label(__('Förnamn'))
+                            ->columnSpan(6)
                             ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm())
-                            ->unique($this->userClass, ignorable: $this->user),
-                        Select::make('locale')
-                            ->label(__('filament-edit-profile::default.locale'))
-                            ->options(filament('filament-edit-profile')->getOptionsLocaleForm())
-                            ->rules(filament('filament-edit-profile')->getLocaleRules())
-                            ->hidden(! filament('filament-edit-profile')->getShouldShowLocaleForm()),
+                            ->required(),
+                        TextInput::make('name_last')
+                            ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm())
+                            ->label(__('Efternamn'))
+                            ->columnSpan(6)
+
+                            ->required(),
+
+
+                        TextInput::make('adress')
+                            ->label(__('Bostdsadress'))
+                            ->columnSpan(8)
+                            ->required(),
+                        TextInput::make('country')
+                            ->label(__('Land'))
+                            ->columnSpan(4)
+                            ->required(),
+
+
+                        TextInput::make('email')
+                            ->label(__('Epostaddress'))
+                            ->columnSpan(4)
+                            ->required(),
+                        TextInput::make('private_phone')
+                            ->label(__('Mobilnummer'))
+                            ->columnSpan(4)
+                            ->required(),
+                        TextInput::make('whatsapp')
+                            ->label(__('WhatsApp'))
+                            ->columnSpan(4)
+                            ->required(),
+
+                        MarkdownEditor::make('bio')
+                            ->label(__('Noteringar'))
+                            ->columnSpanFull()
+                            ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm()),
+
                         ColorPicker::make('theme_color')
                             ->label(__('filament-edit-profile::default.theme_color'))
                             ->rules(filament('filament-edit-profile')->getThemeColorRules())
                             ->hidden(! filament('filament-edit-profile')->getShouldShowThemeColorForm()),
+                        Select::make('locale')
+                            ->label(__('Språk'))
+                            ->columnSpan(3)
+                            ->options(filament('filament-edit-profile')->getOptionsLocaleForm())
+                            ->rules(filament('filament-edit-profile')->getLocaleRules())
+                            ->hidden(! filament('filament-edit-profile')->getShouldShowLocaleForm()),
+
                     ]),
             ])
             ->statePath('data');
@@ -155,7 +211,8 @@ class EditProfileForm extends BaseProfileForm
 
         cache()->put($verificationSignature, true, ttl: now()->addHour());
 
-        $user->notify(app(NoticeOfEmailChangeRequest::class, [/** @phpstan-ignore-line */
+        $user->notify(app(NoticeOfEmailChangeRequest::class, [
+            /** @phpstan-ignore-line */
             'blockVerificationUrl' => Filament::getBlockEmailChangeVerificationUrl($user, $newEmail, $verificationSignature),
             'newEmail' => $newEmail,
         ]));

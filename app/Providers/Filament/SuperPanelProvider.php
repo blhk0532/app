@@ -76,6 +76,7 @@ use WallaceMartinss\FilamentEvolution\FilamentEvolutionPlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
 
 // use MWGuerra\FileManager\Filament\Pages\FileManagerBase;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class SuperPanelProvider extends PanelProvider
 {
