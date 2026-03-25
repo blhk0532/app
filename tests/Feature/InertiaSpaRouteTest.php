@@ -29,7 +29,7 @@ test('authenticated spa routes render inertia pages', function (): void {
         ->assertInertia(fn (AssertableInertia $page) => $page->component('app'));
 
     $this->actingAs($user)
-        ->get(route('dashboard'))
+        ->get(route('spa.dashboard'))
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page->component('dashboard'));
 

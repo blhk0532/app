@@ -43,13 +43,10 @@
     },
     "autoload": {
         "psr-4": {
-            "AymanAlhattami\\FilamentContextMenu\\": "src/",
-            "AymanAlhattami\\FilamentContextMenu\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "AymanAlhattami\\FilamentContextMenu\\Tests\\": "tests/"
         }
     },
     "scripts": {

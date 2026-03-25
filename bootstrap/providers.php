@@ -27,7 +27,7 @@ use App\Providers\Filament\SuperPanelProvider;
 use App\Providers\Filament\SystemPanelProvider;
 use App\Providers\Filament\ToolsPanelProvider;
 use App\Providers\FortifyServiceProvider;
-use AymanAlhattami\FilamentPageWithSidebar\FilamentPageWithSidebarServiceProvider;
+use App\Providers\HorizonServiceProvider;
 use Cachet\CachetCoreServiceProvider;
 
 return [
@@ -38,7 +38,6 @@ return [
     AppPanelProvider::class,
     BookingPanelProvider::class,
     FortifyServiceProvider::class,
-    FilamentPageWithSidebarServiceProvider::class,
     ChatsPanelProvider::class,
     ChatPanelProvider::class,
     EmailPanelProvider::class,
@@ -60,4 +59,5 @@ return [
     SystemPanelProvider::class,
     CompanyPanelProvider::class,
     PrivatePanelProvider::class,
+    HorizonServiceProvider::class,
 ];

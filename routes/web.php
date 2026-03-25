@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\CalendarBookingController;
 use App\Http\Controllers\Api\CalendarDataController;
 use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\CalendarResourceController;
-use App\Http\Controllers\QueueController;
 use App\Http\Controllers\RingaDataOutcomeController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
@@ -26,7 +25,7 @@ Route::view('/home', 'welcome')->name('home');
 // Route::redirect('/', '/app')->name('app');
 Route::redirect('/login', '/app/login')->name('app.login');
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::view('dashboard', 'dashboard')->name('home.dashboard');
 });
 
 // Livewire routes - MUST be registered for Livewire to work
@@ -46,13 +45,6 @@ Route::get('/spa', function () {
 
 Route::prefix('api/calendar')->group(function (): void {
     Route::get('bookings/public', [CalendarBookingController::class, 'publicIndex']);
-});
-
-Route::middleware([HandleInertiaRequests::class, 'auth', 'verified'])->group(function (): void {
-    Route::get('spa/dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
-    Route::get('spa/app', fn () => Inertia::render('app'))->name('app');
-    Route::get('spa/bokningar', fn () => Inertia::render('bokningar'))->name('bokningar');
-    Route::get('spa/queue', QueueController::class)->name('queue');
 });
 
 Route::middleware([HandleInertiaRequests::class, 'auth', 'verified'])->group(function (): void {
@@ -100,13 +92,13 @@ Route::middleware([HandleInertiaRequests::class, 'auth'])->group(function (): vo
     Route::patch('spa/settings/profile', [UserProfileController::class, 'update'])->name('user-profile.update');
 
     // User Password...
-    Route::get('spa/settings/password', [UserPasswordController::class, 'edit'])->name('password.edit');
+    Route::get('spa/settings/password', [UserPasswordController::class, 'edit'])->name('settings.password.edit');
     Route::put('spa/settings/password', [UserPasswordController::class, 'update'])
         ->middleware('throttle:6,1')
-        ->name('password.update');
+        ->name('settings.password.update');
 
     // Appearance...
-    Route::get('spa/settings/appearance', fn () => Inertia::render('appearance/update'))->name('appearance.edit');
+    Route::get('spa/settings/appearance', fn () => Inertia::render('appearance/update'))->name('spa.appearance.edit');
 
     // User Two-Factor Authentication...
     Route::get('spa/settings/two-factor', [UserTwoFactorAuthenticationController::class, 'show'])->name('two-factor.show');
@@ -114,28 +106,28 @@ Route::middleware([HandleInertiaRequests::class, 'auth'])->group(function (): vo
 
 Route::middleware('guest')->group(function (): void {
     // User...
-    Route::get('spa/register', [UserController::class, 'create'])->name('register');
-    Route::post('spa/register', [UserController::class, 'store'])->name('register.store');
+    Route::get('spa/register', [UserController::class, 'create'])->name('spa.register');
+    Route::post('spa/register', [UserController::class, 'store'])->name('spa.register.store');
 
     // User Password...
-    Route::get('spa/reset-password/{token}', [UserPasswordController::class, 'create'])->name('password.reset');
+    Route::get('spa/reset-password/{token}', [UserPasswordController::class, 'create'])->name('spa.password.reset');
     Route::post('spa/reset-password', [UserPasswordController::class, 'store'])->name('password.store');
 
     // User Email Reset Notification...
-    Route::get('spa/forgot-password', [UserEmailResetNotification::class, 'create'])->name('password.request');
-    Route::post('spa/forgot-password', [UserEmailResetNotification::class, 'store'])->name('password.email');
+    Route::get('spa/forgot-password', [UserEmailResetNotification::class, 'create'])->name('spa.password.request');
+    Route::post('spa/forgot-password', [UserEmailResetNotification::class, 'store'])->name('spa.password.email');
 
     // Session...
-    Route::get('spa/login', [SessionController::class, 'create'])->name('login');
-    Route::post('spa/login', [SessionController::class, 'store'])->name('login.store');
+    Route::get('spa/login', [SessionController::class, 'create'])->name('spa.login');
+    Route::post('spa/login', [SessionController::class, 'store'])->name('spa.login.store');
 });
 
 Route::middleware('auth')->group(function (): void {
     // User Email Verification...
- //   Route::get('spa/verify-email', [UserEmailVerificationNotificationController::class, 'create'])->name('verification.notice');
+    //   Route::get('spa/verify-email', [UserEmailVerificationNotificationController::class, 'create'])->name('verification.notice');
     Route::post('spa/email/verification-notification', [UserEmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')
-        ->name('verification.send');
+        ->name('spa.verification.send');
 
     // User Email Verification... (handled by Fortify's Features::emailVerification())
     // Route::get('spa/verify-email/{id}/{hash}', [UserEmailVerificationNotificationController::class, 'update'])
@@ -143,7 +135,7 @@ Route::middleware('auth')->group(function (): void {
     //     ->name('verification.verify');
 
     // Session...
-    Route::post('spa/logout', [SessionController::class, 'destroy'])->name('logout');
+    Route::post('spa/logout', [SessionController::class, 'destroy'])->name('spa.logout');
 
     // Back-compat: provide named routes for the chat dashboard so Filament
     // navigation does not throw when a page is referenced but not registered.
@@ -151,13 +143,13 @@ Route::middleware('auth')->group(function (): void {
         // This is a safe fallback; when the actual chat dashboard page is available
         // Filament will provide the correct route and override this. For now we
         // redirect to the app dashboard to avoid exceptions in the sidebar.
-        return redirect()->route('dashboard');
+        return redirect()->route('home.dashboard');
     })->name('filament.app.pages.chat-dashboard');
 
     Route::get('filament/admin/chat-dashboard', function () {
         // Fallback for the admin panel chat dashboard nav item. Redirect to
         // the admin dashboard to keep navigation stable.
-        return redirect()->route('dashboard');
+        return redirect()->route('home.dashboard');
     })->name('filament.admin.pages.chat-dashboard');
 
     Route::get('spa/{tenant}/min-profile', function (string $tenant) {
@@ -177,4 +169,4 @@ Route::get('spa/admin/tenant/{tenant}/profile', function ($tenant) {
 
 Route::get('spa/app/app/team/{tenant}/profile', function ($tenant) {
     return redirect()->to(EditProfilePage::getUrl(parameters: ['tenant' => $tenant]));
-})->name('filament.app.tenant.profile');
+})->name('spa.filament.app.tenant.profile');

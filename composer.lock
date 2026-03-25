@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd4ca90dd11c3f90ea55bc0a0ca6c93e",
+    "content-hash": "440dfe59585d6b6232c8f62693ec76a7",
     "packages": [
         {
             "name": "achyutn/filament-log-viewer",
@@ -1039,6 +1039,80 @@
                 "issues": "https://github.com/awcodes/overlook/issues",
                 "source": "https://github.com/awcodes/overlook"
             },
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "aymanalhattami/filament-page-with-sidebar",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "plugins/aymanalhattami/filament-page-with-sidebar",
+                "reference": "2e8f82d925e632714945616df10feaf8010a1ce7"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "spatie/laravel-package-tools": "^1.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^8.0",
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-arch": "^4.0",
+                "pestphp/pest-plugin-laravel": "^4.0",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "AymanAlhattami\\FilamentPageWithSidebar\\FilamentPageWithSidebarServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AymanAlhattami\\FilamentPageWithSidebar\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "AymanAlhattami\\FilamentPageWithSidebar\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php ./vendor/bin/testbench package:discover --ansi"
+                ],
+                "analyse": [
+                    "vendor/bin/phpstan analyse"
+                ],
+                "test": [
+                    "vendor/bin/pest"
+                ],
+                "test-coverage": [
+                    "vendor/bin/pest --coverage"
+                ],
+                "format": [
+                    "vendor/bin/pint"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ayman Alhattami",
+                    "email": "ayman.m.alhattami@gmail.com"
+                }
+            ],
+            "description": "Organize resource pages in sidebar instead of putting all the buttons and links elsewhere in order to make navigation between pages more comfortable.",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -26601,6 +26675,7 @@
         "awcodes/filament-badgeable-column": 20,
         "awcodes/mason": 20,
         "awcodes/overlook": 20,
+        "aymanalhattami/filament-page-with-sidebar": 20,
         "bezhansalleh/filament-exceptions": 20,
         "bezhansalleh/filament-panel-switch": 20,
         "bezhansalleh/filament-plugin-essentials": 20,

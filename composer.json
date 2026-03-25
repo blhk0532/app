@@ -108,7 +108,8 @@
         "wallacemartinss/filament-whatsapp-conector": "@dev",
         "webbingbrasil/filament-copyactions": "@dev",
         "ysfkaya/filament-phone-input": "@dev",
-        "zvizvi/user-fields": "@dev"
+        "zvizvi/user-fields": "@dev",
+        "aymanalhattami/filament-page-with-sidebar": "@dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
@@ -261,13 +262,6 @@
         {
             "type": "path",
             "url": "plugins/alperenersoy/filament-export",
-            "options": {
-                "symlink": true
-            }
-        },
-        {
-            "type": "path",
-            "url": "plugins/aymanalhattami/filament-page-with-sidebar",
             "options": {
                 "symlink": true
             }
@@ -660,6 +654,13 @@
         {
             "type": "path",
             "url": "plugins/zap",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "plugins/aymanalhattami/filament-page-with-sidebar",
             "options": {
                 "symlink": true
             }
