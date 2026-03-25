@@ -37,3 +37,4 @@ rr
 .env.local
 .env.testing
 .env.production
+env.txt
