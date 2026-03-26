@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Pages;
 
 use App\Filament\Admin\Widgets\AccountInfoStackWidget;
 use App\Filament\Admin\Widgets\WorldClockWidget;
+// use App\Filament\Widgets\ControlPanelWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use MDDev\DynamicDashboard\Pages\DynamicDashboard;
 use Shreejan\DashArrange\Traits\HasDashArrange;
@@ -60,6 +61,14 @@ class Dashboard extends DynamicDashboard
         return [
             AccountInfoStackWidget::class,
             WorldClockWidget::class,
+        ];
+    }
+
+    public function getFooterWidgets(): array
+    {
+
+        return [
+     //       ControlPanelWidget::class,
         ];
     }
 }

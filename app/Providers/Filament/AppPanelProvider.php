@@ -92,6 +92,7 @@ use Muazzam\SlickScrollbar\SlickScrollbarPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\Enums\Tabler;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
+use YourVendor\FilamentNotificationBell\FilamentNotificationBellPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -435,6 +436,7 @@ class AppPanelProvider extends PanelProvider
                     ->emailVerification()
                     ->themeToggle()
             )
+            ->plugin(FilamentNotificationBellPlugin::make())
             ->plugins([
                 FilamentBookingPlugin::make(),
                 //   FilamentDialerPlugin::make(),

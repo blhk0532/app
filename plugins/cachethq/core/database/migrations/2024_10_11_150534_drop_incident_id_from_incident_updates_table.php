@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('incident_updates', function (Blueprint $table) {
-            $table->dropIndex('incident_updates_incident_id_index');
-            $table->dropColumn('incident_id');
-        });
+        if (Schema::hasTable('incident_updates')) {
+            Schema::table('incident_updates', function (Blueprint $table) {
+                if (Schema::hasColumn('incident_updates', 'incident_id')) {
+                    $table->dropIndex('incident_updates_incident_id_index');
+                    $table->dropColumn('incident_id');
+                }
+            });
+        }
     }
 };

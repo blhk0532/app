@@ -29,9 +29,9 @@ class UserResource extends Resource
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
-    protected static bool $isScopedToTenant = true;
+    protected static bool $isScopedToTenant = false;
 
-    protected static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static ?string $tenantOwnershipRelationshipName = null;
 
     protected static bool $shouldRegisterNavigation = false;
 

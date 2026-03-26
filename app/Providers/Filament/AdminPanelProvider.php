@@ -134,6 +134,7 @@ class AdminPanelProvider extends PanelProvider
                 //    AccountInfoStackWidget::class,
                 //    OverlookWidget::class,
                 //    LatestActivityWidget::class,
+                App\Filament\Widgets\ControlPanelWidget::class,
             ])
             ->resources([
                 //    BookingCalendarResource::class,

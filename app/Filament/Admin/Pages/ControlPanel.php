@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Pages;
 
 use App\Filament\Admin\Resources\Users\UserResource;
-use App\Filament\Admin\Widgets\CachetStatusWidget;
 use BackedEnum;
 use Harvirsidhu\FilamentCards\CardGroup;
 use Harvirsidhu\FilamentCards\CardItem;
@@ -32,21 +31,61 @@ class ControlPanel extends CardsPage
                         ->label('Skrapning Queue')
                         ->color('primary')
                         ->badge('12')
-                        ->badgeColor('info')
+                        ->extraAttributes([
+                            'style' => 'background:#18181b;padding-top:2rem;padding-bottom:2rem;',
+                        ])
+                        ->badgeColor('primary')
                         ->columnSpan('1/3'),
                     CardItem::make(SendWhatsapp::class)
                         ->description('Core application configuration')
                         ->icon('heroicon-o-chat-bubble-oval-left-ellipsis')
-                        ->color('primary')
+                        ->color('success')
                         ->badge('Beta')
                         ->badgeColor('success')
+                        ->extraAttributes([
+                            'style' => 'background:#18181b;padding-top:2rem;padding-bottom:2rem;',
+                        ])
                         ->columnSpan('1/3'),
                     CardItem::make(UserResource::class)
                         ->description('Core application configuration')
                         ->icon('heroicon-o-user-plus')
-                        ->color('secondary')
+                        ->color('danger')
                         ->badge('NEW')
-                        ->badgeColor('success')
+                        ->badgeColor('danger')
+                        ->extraAttributes([
+                            'style' => 'background:#18181b;padding-top:2rem;padding-bottom:2rem;',
+                        ])
+                        ->columnSpan('1/3'),
+                    CardItem::make(TaskBoard::class)
+                        ->description('Core application configuration')
+                        ->icon('heroicon-o-clipboard-document-list')
+                        ->label('Skrapning Queue')
+                        ->color('warning')
+                        ->badge('12')
+                        ->extraAttributes([
+                            'style' => 'background:#18181b;padding-top:2rem;padding-bottom:2rem;',
+                        ])
+                        ->badgeColor('warning')
+                        ->columnSpan('1/3'),
+                    CardItem::make(SendWhatsapp::class)
+                        ->description('Core application configuration')
+                        ->icon('heroicon-o-chat-bubble-oval-left-ellipsis')
+                        ->color('gray')
+                        ->badge('Beta')
+                        ->extraAttributes([
+                            'style' => 'background:#18181b;padding-top:2rem;padding-bottom:2rem;',
+                        ])
+                        ->badgeColor('gray')
+                        ->columnSpan('1/3'),
+                    CardItem::make(UserResource::class)
+                        ->description('Core application configuration')
+                        ->icon('heroicon-o-user-plus')
+                        ->color('info')
+                        ->badge('NEW')
+                        ->extraAttributes([
+                            'style' => 'background:#18181b;padding-top:2rem;padding-bottom:2rem;',
+                        ])
+                        ->badgeColor('info')
                         ->columnSpan('1/3'),
                 ]),
 
@@ -61,7 +100,7 @@ class ControlPanel extends CardsPage
     protected function getFooterWidgets(): array
     {
         return [
-            CachetStatusWidget::class,
+
         ];
     }
 }

@@ -8,6 +8,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 use Zvizvi\UserFields\Components\UserColumn;
 
 class UsersTable
@@ -28,19 +29,28 @@ class UsersTable
                     ->getStateUsing(function ($record) {
                         return $record; // Pass the user record itself
                     }),
-
                 TextColumn::make('active_status')
-                    ->badge()
                     ->label('Status')
+                    ->badge()
+                    ->getStateUsing(function ($record) {
+                        if (! $record->active_at) {
+                            return 'Offline';
+                        }
+
+                        return $record->active_at->gte(now()->subMinutes(5))
+                            ? 'Online'
+                            : 'Offline';
+                    })
+                    ->colors([
+                        'success' => 'Online',
+                        'gray' => 'Offline',
+                    ])
                     ->sortable(),
-
                 TextColumn::make('active_at')
-                    ->dateTime()
-                    ->since()
-                    ->label('Aktiv')
+                    ->label('Senast Aktiv')
                     ->sortable()
+                    ->state(fn ($record) => $record->id === auth()->id() ? 'Just nu' : ($record->active_at ? Carbon::parse($record->active_at)->diffForHumans() : 'N/A'))
                     ->toggleable(),
-
                 TextColumn::make('phone')
                     ->searchable()
                     ->sortable()

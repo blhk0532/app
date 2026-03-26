@@ -30,6 +30,12 @@
 @source '../../../../plugins/cachethq/core/resources/views';
 @import '../../../../plugins/cachethq/core/resources/css/cachet.css';
 
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+@source '../../../../vendor/laraveldaily/filawidgets/resources/views/**/*';
+
 ::-webkit-scrollbar {
     width: .56vw !important;
     height: 8px !important;
