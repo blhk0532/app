@@ -75,6 +75,7 @@ use WallaceMartinss\FilamentEvolution\FilamentEvolutionPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 // use Wallo\FilamentCompanies\Pages\User\Profile;
 // use Rupadana\ApiService\ApiServicePlugin;
+use Relaticle\Comments\CommentsPlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
