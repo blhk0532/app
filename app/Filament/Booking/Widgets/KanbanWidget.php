@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Widgets;
+namespace App\Filament\Booking\Widgets;
 
 use App\Filament\Admin\Pages\BookingsBoard;
 use App\Models\Booking\Booking;
@@ -33,8 +33,8 @@ class KanbanWidget extends Widget
             ->positionIdentifier('position') // Enable drag-and-drop with position field
             ->columns([
                 Column::make('booked')->label('Bokad')->color('gray'),
-                Column::make('confirmed')->label('Bekräftad')->color('info'),
-                Column::make('cancelled')->label('Avbokad')->color('warning'),
+                Column::make('confirmed')->label('Bekräftad')->color('primary'),
+                Column::make('cancelled')->label('Avbokad')->color('danger'),
                 Column::make('complete')->label('Genomförd')->color('success'),
 
             ]);

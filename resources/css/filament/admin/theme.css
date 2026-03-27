@@ -26,6 +26,7 @@
 
 @source '../../../../vendor/andrewdwallo/filament-companies/resources/views';
 @source "../../../../vendor/relaticle/flowforge/resources/views/**/*.blade.php";
+@source "../../../../vendor/relaticle/comments/resources/views/**/*.blade.php";
 
 @source '../../../../plugins/cachethq/core/resources/views';
 @import '../../../../plugins/cachethq/core/resources/css/cachet.css';
@@ -641,4 +642,8 @@ footer.fi-footer {
 
 .fi-ta-col-manager-actions-ctn{
     padding-top:2rem
+}
+
+footer{
+    background:#18181b;
 }

@@ -20,6 +20,7 @@ use App\Filament\Admin\Pages\Profile;
 use App\Filament\Admin\Widgets\AccountInfoStackWidget;
 use App\Filament\App\Pages\TeamInvitationAccept;
 use App\Filament\App\Resources\TeamUsers\TeamUserResource;
+use App\Filament\Widgets\ControlPanelWidget;
 use App\Http\Middleware\ApplyTenantScopes;
 use App\Http\Middleware\CurrentTenant;
 use App\Http\Middleware\FilamentPanelAccess;
@@ -27,8 +28,8 @@ use App\Http\Middleware\FilamentResourceAccess;
 use App\Models\Team;
 use App\Models\User;
 use Asmit\ResizedColumn\ResizedColumnPlugin;
-use Awcodes\Overlook\OverlookPlugin;
 // use Emuniq\FilamentCollapsibleSubnav\CollapsibleSubnavPlugin;
+use Awcodes\Overlook\OverlookPlugin;
 use Awcodes\Overlook\Widgets\OverlookWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
@@ -61,8 +62,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 // use TallCms\Cms\TallCmsPlugin;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 use JeffersonGoncalves\Filament\WhatsappWidget\WhatsappWidgetPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
@@ -72,9 +73,9 @@ use lockscreen\FilamentLockscreen\Lockscreen;
 use MmesDesign\FilamentFileManager\FileManagerPlugin;
 use WallaceMartinss\FilamentEvolution\FilamentEvolutionPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
-use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
 // use Wallo\FilamentCompanies\Pages\User\Profile;
 // use Rupadana\ApiService\ApiServicePlugin;
+use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class AdminPanelProvider extends PanelProvider
@@ -134,7 +135,7 @@ class AdminPanelProvider extends PanelProvider
                 //    AccountInfoStackWidget::class,
                 //    OverlookWidget::class,
                 //    LatestActivityWidget::class,
-                App\Filament\Widgets\ControlPanelWidget::class,
+                ControlPanelWidget::class,
             ])
             ->resources([
                 //    BookingCalendarResource::class,
@@ -269,6 +270,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentBookingPlugin::make(),
+            ])
+            ->plugins([
+                CommentsPlugin::make(),
             ])
             ->plugins([
                 TableLayoutTogglePlugin::make()

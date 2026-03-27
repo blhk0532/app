@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Booking\Pages;
 
 use App\Filament\Admin\Widgets\AccountInfoStackWidget;
+use App\Filament\Admin\Widgets\KanbanWidget;
 use App\Filament\Admin\Widgets\WorldClockWidget;
+use App\Filament\Booking\Widgets\LatestBookings;
 use BackedEnum;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -79,15 +81,17 @@ class BookingDashboard extends BaseDashboard
         return 'success';
     }
 
-public function getWidgets(): array
-{
-    return [];
-}
+    public function getWidgets(): array
+    {
+        return [KanbanWidget::class];
+    }
 
-public function getFooterWidgets(): array
-{
-    return [];
-}
+    public function getFooterWidgets(): array
+    {
+        return [
+
+        ];
+    }
 
     public function getHeaderWidgets(): array
     {
@@ -95,6 +99,17 @@ public function getFooterWidgets(): array
         return [
             AccountInfoStackWidget::class,
             WorldClockWidget::class,
+            LatestBookings::class,
         ];
+    }
+
+    public function getColumns(): int|array
+    {
+        return 1;
+    }
+
+    public function getWidgetsColumns(): int|array
+    {
+        return 1;
     }
 }

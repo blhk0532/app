@@ -126,7 +126,7 @@ class Team extends Model implements Commentable, HasAvatar, HasCurrentTenantLabe
 
     public function getFilamentName(): string
     {
-        return "{$this->name} @PATTAYA ";
+        return "{$this->name}";
     }
 
     public function getCurrentTenantLabel(): string

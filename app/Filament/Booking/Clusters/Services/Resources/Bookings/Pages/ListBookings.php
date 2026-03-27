@@ -23,9 +23,9 @@ class ListBookings extends ListRecords
             null => Tab::make('Show All'),
             'booked' => Tab::make()->query(fn ($query) => $query->where('status', BookingStatus::Booked->value)),
             'confirmed' => Tab::make()->query(fn ($query) => $query->where('status', BookingStatus::Confirmed->value)),
-            'processing' => Tab::make()->query(fn ($query) => $query->where('status', BookingStatus::Pending->value)),
+
             'cancelled' => Tab::make()->query(fn ($query) => $query->where('status', BookingStatus::Cancelled->value)),
-            'updated' => Tab::make()->query(fn ($query) => $query->where('status', BookingStatus::Updated->value)),
+
             'completed' => Tab::make()->query(fn ($query) => $query->where('status', BookingStatus::Complete->value)),
         ];
     }
@@ -40,5 +40,20 @@ class ListBookings extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return BookingResource::getWidgets();
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [];
+    }
+
+    public function getColumns(): int|array
+    {
+        return 1;
+    }
+
+    public function getHeaderWidgetsColumns(): int|array
+    {
+        return 1;
     }
 }

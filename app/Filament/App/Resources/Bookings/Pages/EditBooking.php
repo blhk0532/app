@@ -9,10 +9,18 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
+use Relaticle\Comments\Filament\Actions\CommentsAction;
 
 class EditBooking extends EditRecord
 {
     protected static string $resource = BookingResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            CommentsAction::make(),
+        ];
+    }
 
     protected function getActions(): array
     {

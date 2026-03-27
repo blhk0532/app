@@ -28,9 +28,9 @@ class BookingsBoard extends BoardPage
             ->positionIdentifier('position') // Enable drag-and-drop with position field
             ->columns([
                 Column::make('booked')->label('Bokad')->color('gray'),
-                Column::make('confirmed')->label('Bekräftad')->color('blue'),
-                Column::make('cancelled')->label('Avbokad')->color('red'),
-                Column::make('complete')->label('Genomförd')->color('green'),
+                Column::make('confirmed')->label('Bekräftad')->color('info'),
+                Column::make('cancelled')->label('Avbokad')->color('danger'),
+                Column::make('complete')->label('Genomförd')->color('success'),
 
             ]);
     }

@@ -114,8 +114,10 @@ use Illuminate\Database\Eloquent\Collection;
  *
  * @mixin \Eloquent
  */
-class Booking extends FilamentBooking
+class Booking extends FilamentBooking implements Commentable
 {
+    use HasComments;
+
     protected $table = 'booking_bookings';
 
     protected function casts(): array

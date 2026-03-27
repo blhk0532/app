@@ -9,12 +9,11 @@ use App\Filament\Admin\Widgets\WorldClockWidget;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\MultiCalendar2;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\MultiCalendar3;
 use App\Filament\App\Resources\Bookings\Widgets\BookingCalendar;
+use App\Filament\App\Widgets\ControlPanelCardsWidget;
 use App\Filament\App\Widgets\CustomersChart;
 use App\Filament\App\Widgets\OrdersChart;
 use App\Filament\App\Widgets\StatsOverviewWidget;
 use App\Filament\App\Widgets\TeamMembersWidget;
-use App\Filament\Widgets\CalendarWidget;
-use App\Filament\Widgets\MyRinglistaWidget;
 use App\Models\BookingCalendar as BookingCalendarModel;
 use Arshaviras\WeatherWidget\Widgets\WeatherWidget;
 use BackedEnum;
@@ -172,6 +171,7 @@ class AppDashboard extends BasePage
             AnnouncementWidget::class,
             TeamMembersWidget::class,
             AnnouncementEditorWidget::class,
+            //     ControlPanelCardsWidget::class,
         ];
     }
 
@@ -188,7 +188,7 @@ class AppDashboard extends BasePage
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [ControlPanelCardsWidget::class];
     }
 
     protected function getHeaderTitle(): string
