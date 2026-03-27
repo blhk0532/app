@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Models\Booking\Booking;
+use Carbon\Carbon;
 use LaravelDaily\FilaWidgets\Data\HeatmapCalendarWidgetData;
 use LaravelDaily\FilaWidgets\Widgets\HeatmapCalendarWidget;
 
 class RevenuePulseWidget extends HeatmapCalendarWidget
 {
-    protected ?string $widgetLabel = 'Daily Revenue';
+    protected ?string $widgetLabel = 'Bokningar';
 
     protected function getData(): HeatmapCalendarWidgetData
     {
-        $dateRange = DashboardDateRange::fromFilter($this->getRangeFilter());
-        [$start, $end] = $dateRange->currentPeriod();
 
-        $entries = Order::query()
-            ->where('status', OrderStatus::Completed)
+        [$start, $end] = [Carbon::now()->subMonths(3), Carbon::now()];
+
+        $entries = Booking::query()
+            ->where('is_active', true)
             ->whereBetween('created_at', [$start, $end])
-            ->selectRaw('DATE(created_at) as date, SUM(amount) as total')
+            ->selectRaw('DATE(created_at) as date, SUM(total_price) as total')
             ->groupBy('date')
             ->orderBy('date')
             ->pluck('total', 'date')
@@ -28,7 +30,7 @@ class RevenuePulseWidget extends HeatmapCalendarWidget
 
         return new HeatmapCalendarWidgetData(
             entries: $entries,  // ['2026-03-20' => 500.00, ...]
-            description: 'Daily revenue for '.strtolower($dateRange->label()),
+            description: 'Senaste ' . $this->getWeeksToShow().' veckorna',
         );
     }
 

@@ -28,10 +28,6 @@ class AdminInfolist
                             ->copyMessage('Email copied successfully!')
                             ->copyMessageDuration(1500),
                     ]),
-                AdditionalInformation::make([
-                    'created_at',
-                    'updated_at',
-                ]),
             ]);
     }
 }

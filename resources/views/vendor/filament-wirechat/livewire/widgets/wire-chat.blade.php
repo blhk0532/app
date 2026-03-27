@@ -175,7 +175,7 @@
             }
         </script>
     @endscript
-   
+
     <div
     x-data="{
         selectedConversationId: null,
@@ -189,9 +189,9 @@
     }"
      class ='w-full h-full bg-[var(--wc-light-primary)] dark:bg-[var(--wc-dark-primary)] border border-[var(--wc-light-secondary)] dark:border-[var(--wc-dark-secondary)] flex overflow-hidden rounded-lg wirechat-widget-container'
      >
-      <div 
-          :class="isInModal ? (chatIsOpen ? 'hidden' : 'flex') : (chatIsOpen ? 'hidden md:flex' : 'flex')" 
-          class="chats-list-container relative w-full h-full border-r border-[var(--wc-light-border)] dark:border-[var(--wc-dark-border)] md:w-[360px] lg:w-[400px] xl:w-[450px] shrink-0 overflow-y-auto flex-col"
+      <div
+          :class="isInModal ? (chatIsOpen ? 'hidden' : 'flex') : (chatIsOpen ? 'hidden md:flex' : 'flex')"
+          class="chats-list-container relative w-full h-full border-r border-[var(--wc-light-border)] dark:border-[var(--wc-dark-border)] md:w-[360px] lg:w-[400px] xl:w-[350px] shrink-0 overflow-y-auto flex-col"
           style="min-width: 0;"
       >
           <livewire:filament-wirechat.chats widget="true" :panel="$this->panelId()" />
@@ -209,20 +209,20 @@
       >
             <div
                 x-cloak
-                x-show="show && showActiveComponent" 
+                x-show="show && showActiveComponent"
                 x-transition:enter="ease-out duration-100"
-                x-transition:enter-start="opacity-0 -translate-x-full" 
+                x-transition:enter-start="opacity-0 -translate-x-full"
                 x-transition:enter-end="opacity-100 translate-x-0"
-                x-transition:leave="ease-in duration-100" 
+                x-transition:leave="ease-in duration-100"
                 x-transition:leave-start="opacity-100 translate-x-0"
                 x-transition:leave-end="opacity-0 -translate-x-full"
-                class="absolute inset-0 w-full h-full" 
+                class="absolute inset-0 w-full h-full"
                 id="chatwidget-container"
                 aria-modal="true"
                 style="min-width: 0;"
             >
                 @forelse($widgetComponents as $id => $component)
-                    <div 
+                    <div
                         x-show.immediate="activeWidgetComponent == @js($id)"
                         x-ref="@js($id)"
                         wire:key="key-{{$id }}"
@@ -236,8 +236,8 @@
                 @endforelse
             </div>
 
-            <div  
-                x-show="!show && !$root.chatIsOpen" 
+            <div
+                x-show="!show && !$root.chatIsOpen"
                 x-bind:class="$root.chatIsOpen && 'hidden'"
                 class="m-auto justify-center flex gap-3 flex-col items-center"
             >

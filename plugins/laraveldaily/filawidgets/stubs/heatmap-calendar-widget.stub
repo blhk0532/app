@@ -1,0 +1,18 @@
+<?php
+
+namespace {{ namespace }};
+
+use LaravelDaily\FilaWidgets\Data\HeatmapCalendarWidgetData;
+use LaravelDaily\FilaWidgets\Widgets\HeatmapCalendarWidget;
+
+class {{ class }} extends HeatmapCalendarWidget
+{
+    protected ?string $widgetLabel = '{{ label }}';
+
+    protected function getData(): HeatmapCalendarWidgetData
+    {
+        return new HeatmapCalendarWidgetData(
+            entries: [],
+        );
+    }
+}

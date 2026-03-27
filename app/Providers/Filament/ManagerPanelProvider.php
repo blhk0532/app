@@ -33,6 +33,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class ManagerPanelProvider extends PanelProvider
 {

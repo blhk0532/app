@@ -24,11 +24,7 @@ class TeamInfolist
                         TextEntry::make('name'),
                         IconEntry::make('personal_team')
                             ->boolean(),
-                    ]),
-                AdditionalInformation::make([
-                    'created_at',
-                    'updated_at',
-                ]),
+                    ])
             ]);
     }
 }

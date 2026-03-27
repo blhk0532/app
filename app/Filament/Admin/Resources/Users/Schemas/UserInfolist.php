@@ -28,20 +28,16 @@ class UserInfolist
                             ->boolean(),
                         TextInputEntry::make('name')
                             ->editable(true)
-                            ->size(TextSize::Large)
+
                             ->rules(['required', 'string', 'max:255'])
-                            ->border(true),
+                            ->border(false),
 
                         TextInputEntry::make('email')
                             ->editable(Auth::user()->can('update email'))
                             ->label('Email address')
                             ->rules(['required', 'email'])
-                            ->border(true),
-                    ]),
-                AdditionalInformation::make([
-                    'created_at',
-                    'updated_at',
-                ]),
+                            ->border(false),
+                    ])
             ]);
     }
 }

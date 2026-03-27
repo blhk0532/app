@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Enums\BookingStatus;
+use App\Filament\Admin\Support\DashboardDateRange;
+use App\Models\Booking;
 use LaravelDaily\FilaWidgets\Widgets\CompletionRateWidget;
 
 class FulfillmentRateWidget extends CompletionRateWidget
@@ -12,15 +15,18 @@ class FulfillmentRateWidget extends CompletionRateWidget
 
     protected function getCounts(): array
     {
-        $dateRange = DashboardDateRange::fromFilter($this->getRangeFilter());
-        [$start, $end] = $dateRange->currentPeriod();
+        $dateRange = DashboardDateRange::getDateRange(
+            now()->subMonths(3)->toDateString()
+        );
+        $start = $dateRange->start;
+        $end = $dateRange->end;
 
-        $completed = Order::query()
-            ->where('status', OrderStatus::Completed->value)
+        $completed = Booking::query()
+            ->where('status', BookingStatus::Booked->value)
             ->whereBetween('created_at', [$start, $end])
             ->count();
 
-        $total = Order::query()
+        $total = Booking::query()
             ->whereBetween('created_at', [$start, $end])
             ->count();
 

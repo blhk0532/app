@@ -78,7 +78,7 @@ class StatsService
 
         $payments = Payment::query()
             ->selectRaw('DATE(paid_at) as day, SUM(payment_amount) as total')
-            ->where('status', PaymentStatus::PAID->value)
+            ->where('status', )
             ->when($chartStart, fn (Builder $query) => $query->where('paid_at', '>=', $chartStart))
             ->when($chartEnd, fn (Builder $query) => $query->where('paid_at', '<=', $chartEnd))
             ->groupBy('day')

@@ -34,6 +34,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use NoteBrainsLab\FilamentEmailTemplates\FilamentEmailTemplatesPlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class EmailPanelProvider extends PanelProvider
 {

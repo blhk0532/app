@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TeamInvitations;
 
 use App\Filament\Admin\Resources\TeamInvitations\Pages\ManageTeamInvitations;
-use App\Filament\Schemas\Components\AdditionalInformation;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use BackedEnum;
@@ -115,10 +114,6 @@ class TeamInvitationResource extends Resource
                             ->label('Team'),
                         TextEntry::make('email'),
                     ]),
-                AdditionalInformation::make([
-                    'created_at',
-                    'updated_at',
-                ]),
             ]);
     }
 

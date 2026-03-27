@@ -129,14 +129,14 @@ class Team extends Model implements HasAvatar, HasCurrentTenantLabel, HasName
 
     public function getFilamentName(): string
     {
-        return "{$this->name} @PYX ";
+        return "{$this->name} @PATTAYA ";
     }
 
     public function getCurrentTenantLabel(): string
     {
              $usernames = Auth::user()->name_first . " " . Auth::user()->name_last;
         $username =  $usernames != " " ? $usernames : Auth::user()->name;
-        $tenantLabel = "Nordic Digital Marketing ⵌ TH ";
+        $tenantLabel = "Nordic Digital Marketing Co., Ltd";
         return $tenantLabel;
     }
 

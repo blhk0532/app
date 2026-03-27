@@ -1,0 +1,22 @@
+<?php
+
+namespace {{ namespace }};
+
+use LaravelDaily\FilaWidgets\Data\SparklineTableRowData;
+use LaravelDaily\FilaWidgets\Data\SparklineTableWidgetData;
+use LaravelDaily\FilaWidgets\Widgets\SparklineTableWidget;
+
+class {{ class }} extends SparklineTableWidget
+{
+    protected ?string $widgetLabel = '{{ label }}';
+
+    protected function getData(): SparklineTableWidgetData
+    {
+        return SparklineTableWidgetData::fromRows(
+            new SparklineTableRowData(
+                label: 'Metric',
+                value: 0,
+            ),
+        );
+    }
+}

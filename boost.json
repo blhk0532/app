@@ -19,6 +19,7 @@
     "sail": false,
     "skills": [
         "folio-routing",
+        "laravel-best-practices",
         "configuring-horizon",
         "passport-development",
         "pulse-development",

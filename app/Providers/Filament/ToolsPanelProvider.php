@@ -40,6 +40,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class ToolsPanelProvider extends PanelProvider
 {

@@ -7,6 +7,7 @@ namespace App\Filament\Admin\Resources\Users\Tables;
 use App\Delius\Patches\UserField\UserColumn;
 use App\Enums\AuthRole;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -18,6 +19,7 @@ use Filament\Tables\Table;
 use Guava\FilamentIconSelectColumn\Tables\Columns\IconSelectColumn;
 use Mokhosh\FilamentRating\Columns\RatingColumn;
 use STS\FilamentImpersonate\Actions\Impersonate;
+use Filament\Actions\DeleteBulkAction;
 
 class UsersTable
 {
@@ -80,6 +82,11 @@ class UsersTable
             ])
             ->filters([
                 //
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ])
             ->recordActions([
                 ViewAction::make(),

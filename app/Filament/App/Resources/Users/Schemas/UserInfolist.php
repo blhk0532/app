@@ -42,12 +42,6 @@ class UserInfolist
                             ->rules(['required', 'string', 'max:255'])
                             ->border(true),
                     ]),
-                AdditionalInformation::make([
-                    'created_at',
-                    'updated_at',
-                    'current_team_id',
-                    'actiive_at',
-                ]),
             ]);
     }
 }

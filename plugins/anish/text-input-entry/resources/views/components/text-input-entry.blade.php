@@ -56,7 +56,7 @@
             'block w-full min-w-0 rounded-lg border border-gray-300 bg-transparent pl-4 pr-4 py-3 {{ $textSizeClass }} {{ $textColorClasses }} {{ $defaultTextColor }} transition duration-75 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:border-gray-600 dark:focus:ring-primary-500 dark:focus:border-primary-500' :
             'block w-full min-w-0 rounded-lg border border-gray-200 bg-transparent pl-4 pr-4 py-3 {{ $textSizeClass }} {{ $textColorClasses }} {{ $defaultTextColor }} focus:outline-none dark:border-gray-600'"
         class="outline-none"
-        style="min-width: 0; width: 100%;"
+        style="min-width: 0; width: 100%;border:none;"
         />
     @else
         <div class="flex items-center gap-2 w-full min-w-0">
@@ -99,7 +99,7 @@
                 style="{{ $textColorStyles }}"
             @endif
             class="block flex-1 min-w-0 border-none bg-transparent p-0 {{ $textSizeClass }} {{ $textColorClasses }} {{ $defaultTextColor }} outline-none"
-            style="min-width: 0; width: 100%;"
+            style="min-width: 0; width: 100%;border:none;"
             />
             @if ($iconHtml && $iconPosition->value === 'after')
                 <div class="shrink-0">

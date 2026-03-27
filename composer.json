@@ -132,6 +132,13 @@
                 "symlink": true
             }
         },
+                {
+            "type": "path",
+            "url": "plugins/laraveldaily/filawidgets",
+            "options": {
+                "symlink": true
+            }
+        },
         {
             "type": "path",
             "url": "plugins/rarq/filament-whatsapp-message-preview",

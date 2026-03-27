@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ namespace }};
+
+use LaravelDaily\FilaWidgets\Widgets\ProgressWidget;
+
+class {{ class }} extends ProgressWidget
+{
+    protected ?string $widgetLabel = '{{ label }}';
+
+    protected float $goal = 10000;
+
+    protected int $goalRangeDays = 30;
+
+    protected function getCurrentValue(): float
+    {
+        return 0;
+    }
+}

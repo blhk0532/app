@@ -1,0 +1,18 @@
+<?php
+
+namespace {{ namespace }};
+
+use LaravelDaily\FilaWidgets\Widgets\CompletionRateWidget;
+
+class {{ class }} extends CompletionRateWidget
+{
+    protected ?string $widgetLabel = '{{ label }}';
+
+    /**
+     * @return array{completed: int, total: int}
+     */
+    protected function getCounts(): array
+    {
+        return ['completed' => 0, 'total' => 0];
+    }
+}

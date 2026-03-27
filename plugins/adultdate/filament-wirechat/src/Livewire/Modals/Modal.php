@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Reflector;
 use Livewire\Component;
+use Livewire\Finder\Finder;
 use ReflectionProperty;
 
 class Modal extends Component
@@ -53,7 +54,13 @@ class Modal extends Component
             }
         }
 
-        $componentClass = app(\Livewire\Finder\Finder::class)->resolveClassComponentClassName($component);
+        $componentClass = app(Finder::class)->resolveClassComponentClassName($component);
+
+        // Validate that we have a valid component class
+        if (! $componentClass || ! class_exists($componentClass)) {
+            throw new \InvalidArgumentException("Invalid component class: {$component}");
+        }
+
         $id = md5($component.serialize($arguments));
 
         $arguments = collect($arguments)
@@ -64,7 +71,7 @@ class Modal extends Component
             'name' => $component,
             'arguments' => $arguments,
             'modalAttributes' => array_merge(
-                $componentClass::modalAttributes(), // Fetch reusable modal attributes
+                method_exists($componentClass, 'modalAttributes') ? $componentClass::modalAttributes() : [], // Fetch reusable modal attributes
                 $modalAttributes // Allow custom overrides
             ),
         ];
@@ -79,6 +86,11 @@ class Modal extends Component
         return $this->getPublicPropertyTypes($component)
             ->intersectByKeys($attributes)
             ->map(function ($className, $propName) use ($attributes) {
+                // Validate class name before resolving parameter
+                if (! class_exists($className)) {
+                    return null;
+                }
+
                 $resolved = $this->resolveParameter($attributes, $propName, $className);
 
                 return $resolved;

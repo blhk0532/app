@@ -7,7 +7,7 @@
     <div class="w-full relative bottom-6" style="top:-24px;margin-bottom: -24px;">
         @if(count($announcements) > 0)
             @foreach($announcements as $announcement)
-             <section class="fi-section  announcement-widget-item" style="padding: 0px;" id="status-overview-widget-section">
+             <section class="fi-section  announcement-widget-item" style="padding: 0px;background:#18181b;" id="status-overview-widget-section">
                 <div class="bg-transparent p-6 rounded-md mt-6">
                     <div class="flex justify-between items-start relative">
 

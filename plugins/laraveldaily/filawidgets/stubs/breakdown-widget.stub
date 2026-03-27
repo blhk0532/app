@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ namespace }};
+
+use LaravelDaily\FilaWidgets\Data\BreakdownItemData;
+use LaravelDaily\FilaWidgets\Data\BreakdownWidgetData;
+use LaravelDaily\FilaWidgets\Widgets\BreakdownWidget;
+
+class {{ class }} extends BreakdownWidget
+{
+    protected ?string $widgetLabel = '{{ label }}';
+
+    protected function getData(): BreakdownWidgetData
+    {
+        return new BreakdownWidgetData(items: [
+            new BreakdownItemData('Item', 0),
+        ]);
+    }
+}

@@ -15,7 +15,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 
-use function Amp\now;
 use function filled;
 
 class UserForm
@@ -33,10 +32,7 @@ class UserForm
                             ->avatar()
                             ->imageEditor()
                             ->disk(config('filament-edit-profile.disk', 'public'))
-                            ->visibility(config('filament-edit-profile.visibility', 'public'))
-                            ->directory(filament('filament-edit-profile')->getAvatarDirectory())
-                            ->rules(filament('filament-edit-profile')->getAvatarRules())
-                            ->hidden(! filament('filament-edit-profile')->getShouldShowAvatarForm()),
+                            ->visibility(config('filament-edit-profile.visibility', 'public')),
                         Textarea::make('notes')
                             ->label('Anteckningar')
                             ->nullable()
@@ -79,8 +75,7 @@ class UserForm
                             ->email()
                             ->columnSpan(1),
                         DateTimePicker::make('email_verified_at')
-                            ->required()
-                            ->default(now()),
+                            ->required(),
                         TextInput::make('password')
                             ->password()
                             ->confirmed()

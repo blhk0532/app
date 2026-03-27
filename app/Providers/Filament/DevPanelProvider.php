@@ -39,6 +39,7 @@ use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 // use Lartisan\Architect\ArchitectPlugin;
 use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
 
 class DevPanelProvider extends PanelProvider
 {
