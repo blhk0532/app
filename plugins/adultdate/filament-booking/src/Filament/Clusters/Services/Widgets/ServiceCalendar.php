@@ -24,6 +24,7 @@ use Adultdate\FilamentBooking\Models\Booking\Service;
 use Adultdate\FilamentBooking\Models\BookingServicePeriod;
 use Adultdate\FilamentBooking\Models\CalendarSettings;
 use Adultdate\FilamentBooking\ValueObjects\FetchInfo;
+use App\Models\BookingCalendar;
 use App\Models\User;
 use App\UserRole;
 use Carbon\Carbon;
@@ -35,6 +36,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Notifications\Notification;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -86,7 +88,7 @@ class ServiceCalendar extends FullCalendarWidget implements HasCalendar
 
     public function getHeading(): string|Htmlable
     {
-        $calendar = $this->selectedCalendar ? \App\Models\BookingCalendar::find($this->selectedCalendar)?->name : 'All Calendars';
+        $calendar = $this->selectedCalendar ? BookingCalendar::find($this->selectedCalendar)?->name : 'All Calendars';
 
         return 'Calendar - '.$calendar;
     }
@@ -380,7 +382,7 @@ class ServiceCalendar extends FullCalendarWidget implements HasCalendar
                 $data['created_by'] = Auth::id();
                 DailyLocation::updateOrCreate(['date' => $data['date'], 'service_user_id' => $data['service_user_id']], $data);
                 $this->refreshRecords();
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Location saved successfully')
                     ->success()
                     ->send();
@@ -422,7 +424,7 @@ class ServiceCalendar extends FullCalendarWidget implements HasCalendar
                     $data
                 );
                 $this->refreshRecords();
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Period saved successfully')
                     ->success()
                     ->send();
@@ -467,7 +469,7 @@ class ServiceCalendar extends FullCalendarWidget implements HasCalendar
 
                 $booking->updateTotalPrice();
                 $this->refreshRecords();
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Booking created successfully')
                     ->success()
                     ->send();
@@ -504,7 +506,7 @@ class ServiceCalendar extends FullCalendarWidget implements HasCalendar
                     ->action(function () use ($widget) {
                         $widget->record->delete();
                         $widget->refreshRecords();
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->title('Service period deleted successfully')
                             ->success()
                             ->send();
@@ -1051,6 +1053,6 @@ class ServiceCalendar extends FullCalendarWidget implements HasCalendar
 
     protected function generateNumber(): string
     {
-        return 'BK-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+        return Str::upper(auth()->user()->name).'-'.Str::upper(filament()->getTenant()?->name).'-'.now()->timestamp;
     }
 }

@@ -17,6 +17,7 @@ use Exception;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasDefaultTenant;
+use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Auth\Authenticatable;
@@ -47,6 +48,9 @@ use Laravel\Passport\Token;
 use Laravel\Sanctum\HasApiTokens;
 use Leek\FilamentDiceBear\Concerns\HasDiceBearAvatar;
 use Leek\FilamentDiceBear\Enums\DiceBearStyle;
+use Relaticle\Comments\Concerns\CanComment;
+use Relaticle\Comments\Concerns\HasComments;
+use Relaticle\Comments\Contracts\Commentator;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -182,12 +186,14 @@ use Zap\Models\Schedule;
  * @mixin \Eloquent
  */
 #[ObservedBy(UserObserver::class)]
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasDefaultTenant, HasTenants, MustVerifyEmailContract, WirechatUser
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, Commentator, FilamentUser, HasAvatar, HasDefaultTenant, HasName, HasTenants, MustVerifyEmailContract, WirechatUser
 {
     use Authenticatable;
     use Authorizable;
+    use CanComment;
     use CanResetPassword;
     use HasApiTokens;
+    use HasComments;
     use HasDiceBearAvatar;
     use HasFactory;
     use HasRoles;
@@ -232,7 +238,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'whatsapp',
         'company_id',
         'current_schema_id',
-        "cutom_fields",
+        'cutom_fields',
+        'address',
+        'country',
+        'phone_private',
+        'bio',
     ];
 
     protected $hidden = [
@@ -273,7 +283,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function getFilamentName(): string
     {
-        return "{$this->first_name} {$this->last_name}";
+        return "{$this->name_first} {$this->name_last}";
     }
 
     public function getFilamentAvatarUrl(): ?string

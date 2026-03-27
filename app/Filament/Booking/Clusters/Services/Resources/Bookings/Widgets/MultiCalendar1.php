@@ -1876,7 +1876,7 @@ class MultiCalendar1 extends Widget implements HasCalendar, HasSchemas
 
     protected function generateNumber(): string
     {
-        return 'BK-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+        return Str::upper(auth()->user()->name).'-'.Str::upper(filament()->getTenant()?->name).'-'.now()->timestamp;
     }
 
     protected function getSelectedServiceUserId(): ?int

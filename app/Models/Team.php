@@ -17,12 +17,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Models\Activity;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Relaticle\Comments\Concerns\HasComments;
+use Relaticle\Comments\Contracts\Commentable;
+
 /**
  * @property int $id
  * @property string $ulid
@@ -59,12 +59,9 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 #[ObservedBy(TeamObserver::class)]
 #[UsePolicy(TeamPolicy::class)]
-class Team extends Model implements HasAvatar, HasCurrentTenantLabel, HasName
-
+class Team extends Model implements Commentable, HasAvatar, HasCurrentTenantLabel, HasName
 {
-
-
-
+    use HasComments;
 
     protected $fillable = [
         'user_id',
@@ -134,9 +131,10 @@ class Team extends Model implements HasAvatar, HasCurrentTenantLabel, HasName
 
     public function getCurrentTenantLabel(): string
     {
-             $usernames = Auth::user()->name_first . " " . Auth::user()->name_last;
-        $username =  $usernames != " " ? $usernames : Auth::user()->name;
-        $tenantLabel = "Nordic Digital Marketing Co., Ltd";
+        $usernames = Auth::user()->name_first.' '.Auth::user()->name_last;
+        $username = $usernames != ' ' ? $usernames : Auth::user()->name;
+        $tenantLabel = 'Nordic Digital Marketing';
+
         return $tenantLabel;
     }
 

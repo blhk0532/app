@@ -11,8 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('incident_components', function (Blueprint $table) {
-            $table->renameColumn('status', 'component_status');
+        Schema::table('comments', function (Blueprint $table) {
+            //
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('comments', function (Blueprint $table) {
+            //
         });
     }
 };

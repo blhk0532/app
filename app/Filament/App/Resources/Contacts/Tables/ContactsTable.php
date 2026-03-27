@@ -6,6 +6,7 @@ namespace App\Filament\App\Resources\Contacts\Tables;
 
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Relaticle\Comments\Filament\Actions\CommentsTableAction;
 
 class ContactsTable
 {
@@ -44,6 +45,9 @@ class ContactsTable
             ->defaultSort('created_at', 'desc')
             ->filters([
                 //
+            ])
+            ->actions([
+                CommentsTableAction::make(),
             ]);
     }
 }

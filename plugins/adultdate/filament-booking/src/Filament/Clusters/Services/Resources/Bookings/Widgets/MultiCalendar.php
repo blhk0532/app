@@ -17,6 +17,7 @@ use Adultdate\FilamentBooking\Filament\Widgets\Concerns\CanBeConfigured;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\InteractsWithEvents;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\InteractsWithRawJS;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\InteractsWithRecords;
+use Adultdate\FilamentBooking\Jobs\SyncBookingToGoogleCalendar;
 use Adultdate\FilamentBooking\Models\Booking\Booking;
 use Adultdate\FilamentBooking\Models\Booking\Client;
 use Adultdate\FilamentBooking\Models\Booking\DailyLocation;
@@ -25,6 +26,8 @@ use Adultdate\FilamentBooking\Models\BookingServicePeriod;
 use Adultdate\FilamentBooking\Models\CalendarSettings;
 use Adultdate\FilamentBooking\ValueObjects\EventResizeInfo;
 use Adultdate\FilamentBooking\ValueObjects\FetchInfo;
+use App\Models\Admin;
+use App\Models\BookingCalendar;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -47,6 +50,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Throwable;
@@ -104,7 +108,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
 
     public function getHeading(): string|Htmlable
     {
-        $technician = $this->selectedTechnician ? \App\Models\BookingCalendar::with('owner')->find($this->selectedTechnician)?->owner?->name : 'All Tekniker';
+        $technician = $this->selectedTechnician ? BookingCalendar::with('owner')->find($this->selectedTechnician)?->owner?->name : 'All Tekniker';
 
         return 'Calendar - '.$technician;
     }
@@ -369,7 +373,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
 
         $serviceUserId = $this->getSelectedServiceUserId();
         if ($resource && isset($resource['id'])) {
-            $calendar = \App\Models\BookingCalendar::find($resource['id']);
+            $calendar = BookingCalendar::find($resource['id']);
             $serviceUserId = $calendar?->owner_id ?? $serviceUserId;
         }
 
@@ -381,7 +385,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
             $bookingCalendarId = $selectedCalendarId;
         } elseif ($serviceUserId) {
             // Find calendar for this service user
-            $calendar = \App\Models\BookingCalendar::where('owner_id', $serviceUserId)->first();
+            $calendar = BookingCalendar::where('owner_id', $serviceUserId)->first();
             $bookingCalendarId = $calendar?->id;
         }
 
@@ -479,7 +483,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
                 $this->refreshRecords();
 
                 // Sync to Google Calendar and send WhatsApp
-                \Adultdate\FilamentBooking\Jobs\SyncBookingToGoogleCalendar::dispatch($record, sendWhatsapp: true);
+                SyncBookingToGoogleCalendar::dispatch($record, sendWhatsapp: true);
 
                 // Return false to avoid calling FullCalendar revert() in the
                 // bundle currently shipped with this plugin (which treats
@@ -1265,7 +1269,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
                         }
 
                         $canEdit = in_array($roleValue, ['admin', 'super', 'super_admin'], true);
-                        \Illuminate\Support\Facades\Log::info('BookingCalendarWidget: Location click', [
+                        Log::info('BookingCalendarWidget: Location click', [
                             'canEdit' => $canEdit,
                             'userRole' => $roleValue,
                             'recordId' => $recId,
@@ -1277,7 +1281,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
                             ]);
                         }
                     } catch (Exception $e) {
-                        \Illuminate\Support\Facades\Log::error('BookingCalendarWidget: Location error', [
+                        Log::error('BookingCalendarWidget: Location error', [
                             'error' => $e->getMessage(),
                             'recId' => $recId,
                         ]);
@@ -1346,7 +1350,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
                         }
 
                         $canEdit = $user->id === $booking->booking_user_id || in_array($roleValue, ['admin', 'super', 'super_admin'], true);
-                        \Illuminate\Support\Facades\Log::info('BookingCalendarWidget: Booking click', [
+                        Log::info('BookingCalendarWidget: Booking click', [
                             'canEdit' => $canEdit,
                             'isBookingOwner' => $user->id === $booking->booking_user_id,
                             'userRole' => $roleValue,
@@ -1360,7 +1364,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
                             ]);
                         }
                     } catch (Exception $e) {
-                        \Illuminate\Support\Facades\Log::error('BookingCalendarWidget: Booking error', [
+                        Log::error('BookingCalendarWidget: Booking error', [
                             'error' => $e->getMessage(),
                             'recId' => $recId,
                         ]);
@@ -1483,7 +1487,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
                     $this->dispatch('notify', 'success', 'Booking moved successfully.');
 
                     // Sync to Google Calendar and send WhatsApp
-                    \Adultdate\FilamentBooking\Jobs\SyncBookingToGoogleCalendar::dispatch($booking, sendWhatsapp: true);
+                    SyncBookingToGoogleCalendar::dispatch($booking, sendWhatsapp: true);
                 } else {
                     logger('BookingCalendarWidget: Booking not found', ['id' => $eventId]);
                 }
@@ -1649,7 +1653,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
 
         $serviceUserId = null;
         if ($selectedCalendarId) {
-            $calendar = \App\Models\BookingCalendar::find($selectedCalendarId);
+            $calendar = BookingCalendar::find($selectedCalendarId);
             $serviceUserId = $calendar?->owner_id;
         }
 
@@ -1793,7 +1797,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
     protected function isAdmin(Model|Authenticatable $user): bool
     {
         // If it's an Admin model, always return true
-        if ($user instanceof \App\Models\Admin) {
+        if ($user instanceof Admin) {
             return true;
         }
 
@@ -1871,7 +1875,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
 
     protected function generateNumber(): string
     {
-        return 'BK-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+        return Str::upper(auth()->user()->name).'-'.Str::upper(filament()->getTenant()?->name).'-'.now()->timestamp;
     }
 
     protected function getSelectedServiceUserId(): ?int
@@ -1880,7 +1884,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
         $selectedCalendarId = $filters['booking_calendars'] ?? null;
 
         if ($selectedCalendarId) {
-            $calendar = \App\Models\BookingCalendar::find($selectedCalendarId);
+            $calendar = BookingCalendar::find($selectedCalendarId);
 
             return $calendar?->owner_id;
         }
@@ -1905,7 +1909,7 @@ final class MultiCalendar extends BookingFullCalendarWidget implements HasCalend
         }
         logger()->info('GOOGLE CALENDAR', ['service_user_id' => $serviceUserId]);
         // Find a calendar owned by the selected service user
-        $calendar = \App\Models\BookingCalendar::where('owner_id', $serviceUserId)->first();
+        $calendar = BookingCalendar::where('owner_id', $serviceUserId)->first();
 
         return $calendar ? $calendar->id : null;
     }

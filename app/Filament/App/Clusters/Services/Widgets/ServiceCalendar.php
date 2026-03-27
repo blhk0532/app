@@ -1054,7 +1054,7 @@ class ServiceCalendar extends Widget implements HasCalendar
 
     protected function generateNumber(): string
     {
-        return 'BK-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+        return Str::upper(auth()->user()->name).'-'.Str::upper(filament()->getTenant()?->name).'-'.now()->timestamp;
     }
 
     private function getSelectedCalendarServiceUserId(): ?int

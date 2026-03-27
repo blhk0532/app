@@ -81,6 +81,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\View\View;
 use JeffersonGoncalves\Filament\RefreshSidebar\RefreshSidebarPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
@@ -89,10 +90,12 @@ use Leek\FilamentDiceBear\DiceBearPlugin;
 use Leek\FilamentDiceBear\DiceBearProvider;
 use Leek\FilamentDiceBear\Enums\DiceBearStyle;
 use Muazzam\SlickScrollbar\SlickScrollbarPlugin;
+use Relaticle\Comments\CommentsPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\Enums\Tabler;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
-use YourVendor\FilamentNotificationBell\FilamentNotificationBellPlugin;
+
+// / use YourVendor\FilamentNotificationBell\FilamentNotificationBellPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -171,7 +174,8 @@ class AppPanelProvider extends PanelProvider
                 NavigationGroup::make('Bokningar Admin')
                     ->collapsed()
                     ->icon('heroicon-o-document-text'),
-                NavigationGroup::make(filament()->getTenant()?->id ? filament()->getTenant()?->name : 'Admin')
+                NavigationGroup::make('Admin')
+                    ->label(fn () => filament()->getTenant()?->name ?? 'Admin')
                     ->collapsed()
                     ->icon(Tabler::UserSquareRounded),
                 NavigationGroup::make('Kalender')
@@ -231,6 +235,7 @@ class AppPanelProvider extends PanelProvider
             //     ->plugin(PinnableNavigationPlugin::make())
             ->plugins([
                 //    WeatherWidget::make(),
+                CommentsPlugin::make(),
                 SlickScrollbarPlugin::make(),
                 FilamentErrorPagesPlugin::make()
                     ->routes([
@@ -306,7 +311,7 @@ class AppPanelProvider extends PanelProvider
                 FilamentIconPickerPlugin::make(),
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
-                    ->setTitle(__('My Profile'))
+                    ->setTitle(__(' '))
                     ->setNavigationLabel(__('Inställningar'))
                     ->setNavigationGroup(__('Mina Sidor'))
                     ->setIcon('heroicon-o-user')
@@ -319,20 +324,21 @@ class AppPanelProvider extends PanelProvider
                         'th' => __('🇹🇭 ภาษาไทย'),
                     ])
                     ->shouldShowThemeColorForm(false)
-                    ->shouldShowSanctumTokens()
-                    ->shouldShowMultiFactorAuthentication()
+                    ->shouldShowSanctumTokens(false)
                     ->shouldShowBrowserSessionsForm()
+                    ->shouldShowMultiFactorAuthentication(false)
                     ->shouldShowAvatarForm(true, 'attachments')
                     ->customProfileComponents([
-                        CustomProfileComponent::class,
+                        //    CustomProfileComponent::class,
                     ]),
             ])
             ->userMenuItems([
                 'profile' => Action::make('profile')
                     ->url(fn () => EditProfilePage::getUrl())
+                    ->label('Inställningar')
                     ->icon('heroicon-o-user-circle'),
                 'wirechat' => Action::make('chats')
-                    ->label('Chat')
+                    ->label('Meddelade')
                     ->url(function (): string {
                         $panel = Filament::getCurrentOrDefaultPanel();
                         $tenant = filament()->getTenant();
@@ -386,7 +392,7 @@ class AppPanelProvider extends PanelProvider
                 //        ->visible(fn () => User::canManageTeam() !== false),
                 'profile' => fn (Action $action) => $action->label('Team Settings')
                     ->sort(-1)
-                    ->url(fn (): string => filament()->getTenant()->slug.'/profile')
+                    ->url(fn (): string => filament()->getTenant()?->slug ? filament()->getTenant()->slug.'/profile' : '')
                     ->visible(false),
                 'nummer.lista' => Action::make('nummer.lista')
                     ->label('Nummerlista')
@@ -436,7 +442,7 @@ class AppPanelProvider extends PanelProvider
                     ->emailVerification()
                     ->themeToggle()
             )
-            ->plugin(FilamentNotificationBellPlugin::make())
+        //    ->plugin(FilamentNotificationBellPlugin::make())
             ->plugins([
                 FilamentBookingPlugin::make(),
                 //   FilamentDialerPlugin::make(),
@@ -476,16 +482,17 @@ class AppPanelProvider extends PanelProvider
         //        PanelsRenderHook::TOPBAR_LOGO_AFTER,
         //        fn () => view('filament.app.user-notes-icon-topbar')
         //    );
-        //    FilamentView::registerRenderHook(
-        //        PanelsRenderHook::BODY_START,
-        //        fn () => view('filament.app.manus-modal-container')
-        //    );
-        //    FilamentView::registerRenderHook(
-        //        PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-        //        function (): \Illuminate\View\View {
-        //            return view('filament.app.global-ai-search-trigger');
-        //        }
-        //    );
+
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_START,
+            fn () => view('filament.app.manus-modal-container')
+        );
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
+            function (): View {
+                return view('filament.app.global-ai-search-trigger');
+            }
+        );
 
         //    FilamentView::registerRenderHook(
         //        PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
@@ -494,12 +501,12 @@ class AppPanelProvider extends PanelProvider
         //        }
         //    );
 
-        //    FilamentView::registerRenderHook(
-        //        PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-        //        function (): \Illuminate\View\View {
-        //            return view('filament.app.global-ringa-data-search-trigger');
-        //        }
-        //    );
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
+            function (): View {
+                return view('filament.app.global-ringa-data-search-trigger');
+            }
+        );
 
         //             FilamentView::registerRenderHook(
         //         PanelsRenderHook::CONTENT_BEFORE,

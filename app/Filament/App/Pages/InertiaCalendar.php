@@ -41,7 +41,7 @@ class InertiaCalendar extends Page
     protected static string|BackedEnum|null $activeNavigationIcon = Remix::RiCalendarScheduleFill;
 
     //  protected static string | UnitEnum | null $navigationGroup = 'Kalendrar';
-    protected static string|UnitEnum|null $navigationGroup = ' ';
+    // protected static string|UnitEnum|null $navigationGroup = ' ';
 
     public static function getNavigationBadge(): ?string
     {
@@ -70,7 +70,7 @@ class InertiaCalendar extends Page
 
     public static function shouldRegisterNavigation(): bool
     {
-
+        //  false;
         if (auth()->user()->role === 'admin' || auth()->user()->role === 'super' || auth()->user()->role === 'manager') {
             return true;
         }

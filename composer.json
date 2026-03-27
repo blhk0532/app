@@ -91,6 +91,7 @@
         "notebrainslab/filament-email-templates": "@dev",
         "pxlrbt/filament-excel": "@dev",
         "rarq/filament-whatsapp-message-preview": "@dev",
+        "relaticle/comments": "^1.0@alpha",
         "relaticle/flowforge": "@dev",
         "secondnetwork/blade-tabler-icons": "@dev",
         "shreejan/actionable-column": "@dev",

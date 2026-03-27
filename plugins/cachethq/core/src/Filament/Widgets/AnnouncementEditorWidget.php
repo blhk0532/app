@@ -18,9 +18,6 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-
 
 class AnnouncementEditorWidget extends Widget implements HasSchemas
 {
@@ -67,6 +64,7 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
         $this->form->fill([
             'priority' => 'low',
             'starts_at' => now()->format('Y-m-d H:i:s'),
+            'ends_at' => now()->addDay()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -81,15 +79,15 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     ->required()
                     ->maxLength(255)
                     ->autocomplete(false),
-DateTimePicker::make('starts_at')
-    ->label('Starts At')
-    ->required()
-    ->default(now()),
-DateTimePicker::make('ends_at')
-    ->label('Ends At')
-    ->required()
-    ->default(now())
-    ->nullable(),
+                DateTimePicker::make('starts_at')
+                    ->label('Starts At')
+                    ->required()
+                    ->default(now()),
+                DateTimePicker::make('ends_at')
+                    ->label('Ends At')
+                    ->required()
+                    ->default(now()->addDay()),
+
                 RichEditor::make('content')
                     ->label('Content')
                     ->required()

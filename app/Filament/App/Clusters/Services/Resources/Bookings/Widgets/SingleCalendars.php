@@ -1003,7 +1003,7 @@ final class SingleCalendars extends FullCalendarWidget implements HasCalendar
 
                 $services = array_values(array_unique(array_filter(array_map('trim', $services))));
 
-                return view('filament-booking.modal.booking-description', [
+                return view('adultdate/filament-booking::filament-booking.modal.booking-description', [
                     'client_name' => $clientName,
                     'phone' => $phone,
                     'street' => $street,
@@ -1902,7 +1902,7 @@ final class SingleCalendars extends FullCalendarWidget implements HasCalendar
             ])
             ->schema([
                 Select::make('booking_service_id')
-                    ->label('Service')
+                    ->label('Tjänst / Service')
                     ->options(Service::query()->pluck('name', 'id'))
                     ->required()
                     ->live()
@@ -1912,13 +1912,13 @@ final class SingleCalendars extends FullCalendarWidget implements HasCalendar
                     ->searchable(),
 
                 TextInput::make('qty')
-                    ->label('Quantity')
+                    ->label('Pax')
                     ->numeric()
                     ->default(1)
                     ->required(),
 
                 TextInput::make('unit_price')
-                    ->disabled()
+                    ->label('Pris')
                     ->dehydrated()
                     ->numeric()
                     ->required(),
@@ -1951,7 +1951,7 @@ final class SingleCalendars extends FullCalendarWidget implements HasCalendar
 
     protected function generateNumber(): string
     {
-        return 'BK-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+        return Str::upper(auth()->user()->name).'-'.Str::upper(filament()->getTenant()?->name).'-'.now()->timestamp;
     }
 
     protected function getSelectedServiceUserId(): ?int

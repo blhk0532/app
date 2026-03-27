@@ -12,6 +12,7 @@ use Filament\Actions\Action;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Support\Facades\Log;
+use Relaticle\Comments\Filament\Actions\CommentsTableAction;
 
 class TeamMembersWidget extends BaseWidget
 {
@@ -50,6 +51,7 @@ class TeamMembersWidget extends BaseWidget
                 return $query;
             })
             ->recordActions([
+                //    CommentsTableAction::make(),
                 Action::make('start_team_chat')
                     ->label('Chat')
                     ->icon('heroicon-o-chat-bubble-left-ellipsis')

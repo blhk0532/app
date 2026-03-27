@@ -91,8 +91,11 @@ class Dashboard extends BaseDashboard
             // AccountInfoStackWidget::class,
             // WorldClockWidget::class,
 
-            AccountWidget::class,
-            FilamentInfosWidget::class,
+            //    AccountWidget::class,
+            //    FilamentInfosWidget::class,
+
+            AccountInfoStackWidget::class,
+            WorldClockWidget::class,
 
             //    \App\Filament\App\Widgets\LatestOrders::class,
             //    \App\Filament\App\Widgets\StatsOverviewWidget::class,
@@ -106,17 +109,18 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            StatsOverviewWidget::class,
+            LatestOrders::class,
         ];
     }
 
     protected function getFooterWidgets(): array
     {
         return [
-            SingleCalendars::class,
-            LatestOrders::class,
+            //    SingleCalendars::class,
+
+            StatsOverviewWidget::class,
             // \App\Filament\Widgets\MyRinglistaWidget::class,
-            //    WeatherWidget::class,
+            WeatherWidget::class,
         ];
     }
 }

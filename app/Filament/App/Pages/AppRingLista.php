@@ -26,11 +26,11 @@ class AppRingLista extends Page
 
     protected string $view = 'filament.app.pages.ring-lista';
 
-    protected static string|UnitEnum|null $navigationGroup = '';
+    //  protected static string|UnitEnum|null $navigationGroup = '';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 10;
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 10;
 
     protected static string|BackedEnum|null $navigationIcon = Remix::RiTimerFlashLine;
 
@@ -47,7 +47,7 @@ class AppRingLista extends Page
 
     public static function getNavigationLabel(): string
     {
-        return 'Ringalistor';
+        return 'Ringlistor';
     }
 
     public static function getNavigationBadgeColor(): ?string

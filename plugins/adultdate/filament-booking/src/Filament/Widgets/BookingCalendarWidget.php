@@ -12,6 +12,7 @@ use Adultdate\FilamentBooking\Concerns\InteractsWithCalendar;
 use Adultdate\FilamentBooking\Concerns\InteractsWithEventRecord;
 use Adultdate\FilamentBooking\Contracts\HasCalendar;
 use Adultdate\FilamentBooking\Enums\BookingStatus;
+use Adultdate\FilamentBooking\Enums\Context;
 use Adultdate\FilamentBooking\Filament\Clusters\Services\Resources\Bookings\Schemas\BookingForm;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\CanBeConfigured;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\InteractsWithEvents;
@@ -27,9 +28,12 @@ use Adultdate\FilamentBooking\Models\CalendarSettings;
 use Adultdate\FilamentBooking\ValueObjects\DateClickInfo;
 use Adultdate\FilamentBooking\ValueObjects\DateSelectInfo;
 use Adultdate\FilamentBooking\ValueObjects\FetchInfo;
+use App\Models\Admin;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -38,12 +42,14 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Schema as FilamentSchema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Throwable;
@@ -452,7 +458,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
                 // Here you would implement the logic to block the period
                 // For example, create blocked bookings or mark dates as unavailable
                 // For now, just show a success message
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Period blocked successfully')
                     ->body("Blocked from {$data['start_date']} to {$data['end_date']}")
                     ->success()
@@ -527,11 +533,11 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
 
     public function bootedHasContextMenu(): void
     {
-        \Illuminate\Support\Facades\Log::info('bootedHasContextMenu called in BookingCalendarWidget');
+        Log::info('bootedHasContextMenu called in BookingCalendarWidget');
 
         $this->cacheContextMenuActions();
 
-        $this->setDateClickEnabled($this->hasContextMenu(\Adultdate\FilamentBooking\Enums\Context::DateClick));
+        $this->setDateClickEnabled($this->hasContextMenu(Context::DateClick));
     }
 
     protected function getEloquentQuery(): Builder
@@ -577,7 +583,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
 
     protected function generateNumber(): string
     {
-        return 'BK-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+        return Str::upper(auth()->user()->name).'-'.Str::upper(filament()->getTenant()?->name).'-'.now()->timestamp;
     }
 
     protected function getDefaultFormData(array $seed = []): array
@@ -603,15 +609,15 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
     {
         logger()->debug('booking.form.normalize.before', $data);
 
-        if (! empty($data['service_date']) && $data['service_date'] instanceof \Carbon\CarbonInterface) {
+        if (! empty($data['service_date']) && $data['service_date'] instanceof CarbonInterface) {
             $data['service_date'] = $data['service_date']->toDateString();
         }
 
-        if (! empty($data['start_time']) && $data['start_time'] instanceof \Carbon\CarbonInterface) {
+        if (! empty($data['start_time']) && $data['start_time'] instanceof CarbonInterface) {
             $data['start_time'] = $data['start_time']->format('H:i:s');
         }
 
-        if (! empty($data['end_time']) && $data['end_time'] instanceof \Carbon\CarbonInterface) {
+        if (! empty($data['end_time']) && $data['end_time'] instanceof CarbonInterface) {
             $data['end_time'] = $data['end_time']->format('H:i:s');
         }
 
@@ -669,7 +675,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
     protected function isAdmin(Model $user): bool
     {
         // Admin model is always treated as admin
-        if ($user instanceof \App\Models\Admin) {
+        if ($user instanceof Admin) {
             return true;
         }
 
@@ -692,7 +698,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
             return [];
         }
 
-        \Illuminate\Support\Facades\Log::info('getDateClickContextMenuActions called for admin user', ['user_id' => $user->id]);
+        Log::info('getDateClickContextMenuActions called for admin user', ['user_id' => $user->id]);
 
         return [
             $this->createAction(Booking::class, 'ctxCreateBooking')
@@ -834,7 +840,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
                             return $a;
                         }, $args);
 
-                        \Illuminate\Support\Facades\Log::info('BookingCalendar date-select mount args', ['args' => $debugArgs]);
+                        Log::info('BookingCalendar date-select mount args', ['args' => $debugArgs]);
                     } catch (Throwable $e) {
                         // ignore logging failures
                     }
@@ -1009,13 +1015,13 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
                     $record->update($data);
                     $this->syncBookingItems($record, $items);
                     $this->dispatch('refresh-calendar');
-                    \Filament\Notifications\Notification::make()
+                    Notification::make()
                         ->title('Booking updated successfully')
                         ->success()
                         ->send();
                 }),
 
-            \Filament\Actions\DeleteAction::make('delete')
+            DeleteAction::make('delete')
                 ->label('Delete')
                 ->icon('heroicon-o-trash')
                 ->color('danger')

@@ -6,7 +6,7 @@ $aSiderbar = $anderia === 'sidebar-no-topbar' ? true : false;
 @endphp
 <div class="fi-no-database" x-data>
 <div>
-<div class="fi-modal-trigger">
+<div class="fi-modal-trigger ml-3">
 <button
     color="gray"
     icon="heroicon-c-information-circle"

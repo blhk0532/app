@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Pages;
 
-use App\Filament\Admin\Widgets\AccountWidget;
-use App\Filament\Admin\Widgets\FilamentInfoWidget;
-use App\Filament\Admin\Widgets\WorldClockWidget;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
@@ -18,7 +15,6 @@ use App\Filament\Admin\Widgets\WorldClockWidget;
 use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
-use Filament\Widgets\Layout;
 
 class AdminDashboard extends BaseDashboard
 {
@@ -31,8 +27,6 @@ class AdminDashboard extends BaseDashboard
     protected static ?int $navigationSort = 0;
 
     protected static ?int $sort = 0;
-
-
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartPie;
 
@@ -86,16 +80,7 @@ class AdminDashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            // Left column: stacked
-            Grid::column([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-            ])
-                ->columnSpan(1), // occupies 1/2 of layout
 
-            // Right column: single
-            WorldClockWidget::class
-                ->columnSpan(1),
         ];
     }
 

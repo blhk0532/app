@@ -645,3 +645,97 @@ height:50px;
     height: 24px;
     margin-top: 10px;
 }
+
+        .panel-switch-modal .fi-modal {
+    right: auto !important;
+    left: 0 !important;
+    transform: translateX(-100%) !important;
+}
+
+.panel-switch-modal.fi-modal-open .fi-modal {
+    transform: translateX(0%) !important;
+}
+
+    </style>
+    <style>
+        /* Keep modal content centered */
+        .panel-switch-modal .fi-modal-content {
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Helper utility retained */
+        .fi-modal-slide-over-left {
+            --tw-translate-x: -100%;
+        }
+
+        /* Strong, RTL-safe left-origin override (catches utility/class and inline overrides) */
+        .panel-switch-modal .fi-modal,
+        .panel-switch-modal .fi-modal-content,
+        .panel-switch-modal .fi-modal-backdrop,
+        .fi-modal-window.fi-align-start {
+            right: auto !important;
+            left: 0 !important;
+            transform-origin: left center !important;
+            transition: transform .28s cubic-bezier(.2,.8,.2,1) !important;
+        }
+
+        /* Hidden/off-screen left */
+        .panel-switch-modal .fi-modal,
+        .fi-modal-window.fi-align-start {
+            transform: translateX(-100%) !important;
+        }
+
+        /* Visible/open state */
+        .panel-switch-modal.fi-modal-open .fi-modal,
+        .fi-modal-open .fi-modal-window.fi-align-start,
+        .fi-modal-window.fi-align-start[aria-hidden="false"] {
+            transform: translateX(0%) !important;
+            left: 0 !important;
+            right: auto !important;
+        }
+
+        /* Neutralize common right-placement utility classes */
+        .fi-modal-window.fi-align-start.right-0,
+        .fi-modal-window.fi-align-start.translate-x-full,
+        .fi-modal-window.fi-align-start.-translate-x-0,
+        .panel-switch-modal .fi-modal.right-0,
+        .panel-switch-modal .fi-modal.translate-x-full {
+            right: auto !important;
+            left: 0 !important;
+            transform: translateX(-100%) !important;
+        }
+
+        /* RTL safety: still prefer left for this specific modal */
+        [dir="rtl"] .panel-switch-modal .fi-modal,
+        [dir="rtl"] .fi-modal-window.fi-align-start {
+            left: 0 !important;
+            right: auto !important;
+            transform: translateX(-100%) !important;
+        }
+
+        /* Custom CSS for left-sliding phone dialer modal */
+
+.fi-modal.fi-modal-slide-over-left > .fi-modal-window-ctn > .fi-modal-window {
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+}
+
+.fi-modal.fi-modal-slide-over-left > .fi-modal-window-ctn > .fi-modal-window.fi-transition-enter-start,
+.fi-modal.fi-modal-slide-over-left > .fi-modal-window-ctn > .fi-modal-window.fi-transition-leave-end {
+    --tw-translate-x: -100%;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+}
+
+.fi-modal.fi-modal-slide-over-left > .fi-modal-window-ctn > .fi-modal-window.fi-transition-enter-end,
+.fi-modal.fi-modal-slide-over-left > .fi-modal-window-ctn > .fi-modal-window.fi-transition-leave-start {
+    --tw-translate-x: calc(var(--spacing) * 0);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+}
+
+/* RTL support for left-sliding modal */
+.fi-modal.fi-modal-slide-over-left > .fi-modal-window-ctn > .fi-modal-window.fi-transition-enter-start:where(:dir(rtl), [dir=rtl], [dir=rtl] *),
+.fi-modal.fi-modal-slide-over-left > .fi-modal-window-ctn > .fi-modal-window.fi-transition-leave-end:where(:dir(rtl), [dir=rtl], [dir=rtl] *) {
+    --tw-translate-x: 100%;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+}

@@ -20,10 +20,6 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-
-
-
-
     public function register(): void
     {
         $this->app->register(FilamentGoogleMapsServiceProvider::class);
@@ -40,9 +36,6 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }
-
-
-
 
         PanelSwitch::configureUsing(function (PanelSwitch $panelSwitch) {
 
@@ -114,34 +107,13 @@ class AppServiceProvider extends ServiceProvider
                 $panelSwitch
                     ->panels([
                         'app',
-                        'admin',
-                        'booking',
-                        'cachet',
-                        'calendar',
                         'chat',
-                        'company',
-                        'data',
-                        'dev',
                         'dialer',
                         'email',
-                        'finance',
-                        'geo',
-                        'manager',
-                        'notify',
-                        'partner',
-                        'private',
-                        'queue',
-                        'script',
-                        'sheets',
-                        'stats',
-                        'super',
-                        'system',
-                        'tools',
                     ])
                     ->iconSize(32)
                     ->modalWidth('sm')
-                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER)
-                    ->sort('asc');
+                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER);
             }
 
             if ($user?->role && $user?->role === 'manager') {
@@ -174,8 +146,7 @@ class AppServiceProvider extends ServiceProvider
                     ])
                     ->iconSize(32)
                     ->modalWidth('sm')
-                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER)
-                    ->sort('asc');
+                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER);
             }
             if ($user?->role && $user?->role === 'admin') {
                 $panelSwitch
@@ -207,8 +178,7 @@ class AppServiceProvider extends ServiceProvider
                     ])
                     ->iconSize(32)
                     ->modalWidth('sm')
-                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER)
-                    ->sort('asc');
+                    ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER);
             }
 
             if ($user?->role && $user?->role === 'super') {
@@ -257,13 +227,13 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Password::defaults(
-            fn(): ?Password => app()->isProduction()
+            fn (): ?Password => app()->isProduction()
                 ? Password::min(12)
-                ->mixedCase()
-                ->letters()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()
+                    ->mixedCase()
+                    ->letters()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised()
                 : null,
         );
     }

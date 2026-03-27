@@ -18,6 +18,8 @@ use App\Filament\Widgets\MyRinglistaWidget;
 use App\Models\BookingCalendar as BookingCalendarModel;
 use Arshaviras\WeatherWidget\Widgets\WeatherWidget;
 use BackedEnum;
+use Cachet\Filament\Widgets\AnnouncementEditorWidget;
+use Cachet\Filament\Widgets\AnnouncementWidget;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
@@ -49,11 +51,11 @@ class AppDashboard extends BasePage
 
     protected static ?string $navigationLabel = 'Team';
 
-      protected string $view = 'filament.app.dashboard';
+    protected string $view = 'filament.app.dashboard';
 
-    protected static ?int $navigationSort = -10;
+    protected static ?int $navigationSort = 3;
 
-    protected static ?int $sort = 10;
+    protected static ?int $sort = 3;
 
     //   protected static string | UnitEnum | null $navigationGroup = '';
 
@@ -163,11 +165,13 @@ class AppDashboard extends BasePage
 
         return [
             // \TomatoPHP\FilamentNotes\Filament\Widgets\NotesWidget::class,
-            AccountInfoStackWidget::class,
-            WorldClockWidget::class,
+            //    AccountInfoStackWidget::class,
+            //    WorldClockWidget::class,
             //    CalendarWidget::class,
             //    MyRinglistaWidget::class,
+            AnnouncementWidget::class,
             TeamMembersWidget::class,
+            AnnouncementEditorWidget::class,
         ];
     }
 
@@ -175,7 +179,7 @@ class AppDashboard extends BasePage
     {
 
         return [
-            WeatherWidget::class,
+            // WeatherWidget::class,
             //    MultiCalendar2::class,
             //    MultiCalendar3::class,
             //    \App\Filament\App\Widgets\LatestOrders::class,

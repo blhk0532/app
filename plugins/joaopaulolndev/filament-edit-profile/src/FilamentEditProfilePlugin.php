@@ -440,7 +440,7 @@ class FilamentEditProfilePlugin implements Plugin
         }
 
         if ($this->getShouldShowDeleteAccountForm()) {
-            $components->put('delete_account_form', DeleteAccountForm::class);
+            //    $components->put('delete_account_form', DeleteAccountForm::class);
         }
 
         if ($this->getShouldShowMultiFactorAuthentication()) {

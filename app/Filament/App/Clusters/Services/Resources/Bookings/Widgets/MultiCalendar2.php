@@ -1731,7 +1731,7 @@ class MultiCalendar2 extends FullCalendarWidget implements HasCalendar, HasSchem
 
     protected function generateNumber(): string
     {
-        return 'BK-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+        return Str::upper(auth()->user()->name).'-'.Str::upper(filament()->getTenant()?->name).'-'.now()->timestamp;
     }
 
     public function getEvents(FetchInfo $info): Collection|array|Builder

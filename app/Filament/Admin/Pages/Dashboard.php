@@ -6,12 +6,12 @@ namespace App\Filament\Admin\Pages;
 
 use App\Filament\Admin\Widgets\AccountInfoStackWidget;
 // use App\Filament\Admin\Widgets\ControlPanelWidget;
-// use App\Filament\Widgets\ControlPanelWidget;
 use App\Filament\Admin\Widgets\FulfillmentRateWidget;
 use App\Filament\Admin\Widgets\RevByRegionWidget;
 use App\Filament\Admin\Widgets\RevenueGoalWidget;
 use App\Filament\Admin\Widgets\RevenuePulseWidget;
 use App\Filament\Admin\Widgets\WorldClockWidget;
+use App\Filament\Admin\Widgets\KanbanWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use MDDev\DynamicDashboard\Pages\DynamicDashboard;
 use Shreejan\DashArrange\Traits\HasDashArrange;
@@ -58,8 +58,8 @@ class Dashboard extends DynamicDashboard
         return [
             RevenueGoalWidget::class,
             RevByRegionWidget::class,
-            FulfillmentRateWidget::class,
-   //         ControlPanelWidget::class,
+            RevenuePulseWidget::class,
+            //  FulfillmentRateWidget::class,
         ];
     }
 
@@ -74,9 +74,8 @@ class Dashboard extends DynamicDashboard
 
     public function getFooterWidgets(): array
     {
-
         return [
-            RevenuePulseWidget::class,
+            KanbanWidget::class,
         ];
     }
 }

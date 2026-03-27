@@ -1,6 +1,6 @@
 <div>
     <button
-        class="fi-icon-btn fi-size-md fi-topbar-database-notifications-btn"
+        class="fi-icon-btn fi-size-md fi-topbar-database-notifications-btn mr-1"
         tooltip="Ringa Data"
         color="gray"
         size="lg"

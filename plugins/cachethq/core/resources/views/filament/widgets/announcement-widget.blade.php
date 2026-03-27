@@ -1,12 +1,19 @@
+@php
+  //  $isAdmin = (auth()->user()->hasRole('admin') || auth()->user()->hasRole('super') || auth()->user()->hasRole('manager')) ? true : false;
+    $isRole = auth()->user()->role;
+    $isAdmin = ($isRole == 'admin' || $isRole == 'super' || $isRole == 'manager') ? true : false;
+@endphp
+
 <x-filament-widgets::widget
     class="overflow-hidden"
     id="announcement-widget"
     wire:poll.10s="refreshAnnouncements"
 >
-
+   @if(count($announcements) > 0)
     <div class="w-full relative bottom-6" style="top:-24px;margin-bottom: -24px;">
-        @if(count($announcements) > 0)
+
             @foreach($announcements as $announcement)
+            @if($announcement->starts_at < now() && $announcement->ends_at > now())
              <section class="fi-section  announcement-widget-item" style="padding: 0px;background:#18181b;" id="status-overview-widget-section">
                 <div class="bg-transparent p-6 rounded-md mt-6">
                     <div class="flex justify-between items-start relative">
@@ -21,7 +28,7 @@
 </div>
 
 
-<div class="announcement-dates grid gap-3" style="position: relative;right: 36px;">
+<div class="announcement-dates grid gap-3" style="position: relative;right: 0px;">
 <span class="fi-color fi-color-success fi-text-color-700 dark:fi-text-color-300 fi-badge fi-size-md">
     <span class="fi-badge-label-ctn">
         <span class="fi-badge-label">
@@ -34,31 +41,26 @@
     </span>
 </span>
 
-  @if($announcement->ends_at)
-<span class="fi-color fi-color-danger fi-text-color-700 dark:fi-text-color-300 fi-badge fi-size-md">
-    <span class="fi-badge-label-ctn">
-        <span class="fi-badge-label">
-
-
-
-
-                                <span class="font-semibold"></span>
-                                {{ \Carbon\Carbon::parse($announcement->ends_at)->format('D j M') }}
-
-
-        </span>
-    </span>
-</span>
-  @endif
 </div>
 
 
+      @if($isAdmin)
+
+                              @if($announcement->user)
+                        <div class="text-xs text-gray-500 mt-2 space-y-1 hidden"
+                        style="position: absolute;z-index: 0;right:6px;bottom:-10px;background:none;border:none;padding:0;"
+
+                        >
+                            <p
+                            ><span class="font-semibold"></span> {{ $announcement->user->name }}</p>
+                        </div>
+                        @endif
 
                       <button
                             wire:click="deleteAnnouncement(@js($announcement->id))"
                             type="button"
                             class="text-xs text-gray-500 hover:text-red-500 cursor-pointer"
-                            style="position: absolute;z-index: 100;right:1px;top:3px;background:none;border:none;padding:0;"
+                            style="z-index:0; position: absolute;z-index: 0;right:4px;top:32px;background:none;border:none;padding:0;"
                             title="Delete announcement"
                         >
 <x-filament::icon
@@ -70,8 +72,8 @@
                       <button
                             wire:click="editAnnouncement(@js($announcement->id))"
                             type="button"
-                            class="text-xs text-gray-500 hover:text-blue-500 cursor-pointer"
-                            style="position: absolute;z-index: 100;right:0px;top:40px;background:none;border:none;padding:0;"
+                            class="text-xs text-gray-500 hover:text-blue-500 cursor-pointer hidden"
+                            style="position: absolute;z-index: 0;right:28px;top:32px;background:none;border:none;padding:0;"
                             title="Edit announcement"
                         >
 <x-filament::icon
@@ -79,24 +81,22 @@
     class="w-4 h-4 opacity-60 hover:opacity-80 hover:text-blue-500 transition"
 />
                          </button>
-
+@endif
 
                     </div>
 
                     <div class="text-xs text-gray-500 mt-2 space-y-1">
-                        @if($announcement->user)
-                            <p><span class="font-semibold">Created by:</span> {{ $announcement->user->name }}</p>
-                        @endif
                         @if($announcement->tekniker)
-                            <p><span class="font-semibold">Technician:</span> {{ $announcement->tekniker->name }}</p>
+                            <p><span class="font-semibold">Tekniker:</span> {{ $announcement->tekniker->name }}</p>
                         @endif
                         @if($announcement->component)
-                            <p><span class="font-semibold">Component:</span> {{ $announcement->component->name }}</p>
+                            <p><span class="font-semibold">Tekniker:</span> {{ $announcement->component->name }}</p>
                         @endif
 
                     </div>
                 </div>
                  </section>
+                 @endif
             @endforeach
         @else
             <p class="text-gray-500">No announcements.</p>
@@ -104,3 +104,5 @@
     </div>
 
 </x-filament-widgets::widget>
+
+

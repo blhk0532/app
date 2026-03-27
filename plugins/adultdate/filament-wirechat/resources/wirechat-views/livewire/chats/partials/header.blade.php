@@ -91,7 +91,7 @@ div.w-full.h-full {
     {{-- Search input --}}
     @if ($chatsSearch)
         <section class="mt-4">
-            <div style="margin-top: -66px; margin-right: 66px;  margin-left: 12px;" class="px-2 py-3 rounded-lg dark:bg-[var(--wc-dark-secondary)]  bg-[var(--wc-light-secondary)]  grid grid-cols-12 items-center">
+            <div style="margin-top: -66px; margin-right: 120px;  margin-left: 12px;" class="px-2 py-3 rounded-lg dark:bg-[var(--wc-dark-secondary)]  bg-[var(--wc-light-secondary)]  grid grid-cols-12 items-center">
 
                 <label for="chats-search-field" class="col-span-1">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

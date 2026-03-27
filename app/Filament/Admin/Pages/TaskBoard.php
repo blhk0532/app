@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
-use App\Models\Task;
+use App\Models\Booking\Booking;
 use Illuminate\Database\Eloquent\Builder;
 use Relaticle\Flowforge\Board;
 use Relaticle\Flowforge\BoardPage;
@@ -13,11 +13,11 @@ class TaskBoard extends BoardPage
 {
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-view-columns';
 
-    protected static ?string $navigationLabel = 'Task Board';
+    protected static ?string $navigationLabel = 'Booking Board';
 
     protected static ?string $title = ' ';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Tasks Queue';
+    protected static string|UnitEnum|null $navigationGroup = 'Bookings';
 
     public function board(Board $board): Board
     {
@@ -25,22 +25,17 @@ class TaskBoard extends BoardPage
             ->query($this->getEloquentQuery())
             ->recordTitleAttribute('title')
             ->columnIdentifier('status')
-            ->positionIdentifier('position') // Enable drag-and-drop with position field
+            ->positionIdentifier('position')
             ->columns([
-                Column::make('todo')->label('To Do')->color('gray'),
-                Column::make('in_progress')->label('In Progress')->color('blue'),
-                Column::make('completed')->label('Completed')->color('green'),
-                Column::make('abc')->label('abc')->color('success'),
+                Column::make('booked')->label('Bokad')->color('gray'),
+                Column::make('confirmed')->label('Bekräftad')->color('blue'),
+                Column::make('cancelled')->label('Avbokad')->color('red'),
+                Column::make('complete')->label('Genomförd')->color('green'),
             ]);
     }
 
     public function getEloquentQuery(): Builder
     {
-        return Task::query();
-    }
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return false;
+        return Booking::query();
     }
 }

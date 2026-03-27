@@ -41,13 +41,13 @@ class SingleCalendar extends BaseDashboard
 
     protected static ?string $title = '';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
 
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 5;
 
     protected static string $routePath = 'single-calendar';
 
-    protected static string|UnitEnum|null $navigationGroup = ' ';
+    // protected static string|UnitEnum|null $navigationGroup = ' ';
 
     //   use HasFiltersForm;
     //  protected static ?string $slug = 'dashboard';

@@ -84,8 +84,8 @@ class FilamentEditProfileServiceProvider extends PackageServiceProvider
         Livewire::component('edit_password_form', EditPasswordForm::class);
         Livewire::component('delete_account_form', DeleteAccountForm::class);
         Livewire::component('multi_factor_authentication', MultiFactorAuthentication::class);
-        Livewire::component('sanctum_tokens', SanctumTokens::class);
         Livewire::component('browser_sessions_form', BrowserSessionsForm::class);
+        Livewire::component('sanctum_tokens', SanctumTokens::class);
 
         if (config('filament-edit-profile.show_custom_fields') && ! empty(config('filament-edit-profile.custom_fields'))) {
             Livewire::component('custom_fields_form', CustomFieldsForm::class);

@@ -35,7 +35,7 @@ class RingaListanResource extends Resource
 
     protected static ?string $navigationLabel = 'Ringlistor';
 
-    protected static UnitEnum|string|null $navigationGroup = '';
+    // protected static UnitEnum|string|null $navigationGroup = '';
 
     protected static ?string $slug = 'ringa/listor';
 

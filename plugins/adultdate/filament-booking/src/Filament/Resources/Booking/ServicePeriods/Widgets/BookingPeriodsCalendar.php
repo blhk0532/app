@@ -40,6 +40,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Notifications\Notification;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -317,7 +319,7 @@ class BookingPeriodsCalendar extends SimpleCalendarWidget implements HasCalendar
                 $data['created_by'] = Auth::id();
                 DailyLocation::updateOrCreate(['date' => $data['date'], 'service_user_id' => $data['service_user_id']], $data);
                 $this->refreshRecords();
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Location saved successfully')
                     ->success()
                     ->send();
@@ -359,7 +361,7 @@ class BookingPeriodsCalendar extends SimpleCalendarWidget implements HasCalendar
                     $data
                 );
                 $this->refreshRecords();
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Period saved successfully')
                     ->success()
                     ->send();
@@ -404,7 +406,7 @@ class BookingPeriodsCalendar extends SimpleCalendarWidget implements HasCalendar
 
                 $booking->updateTotalPrice();
                 $this->refreshRecords();
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Booking created successfully')
                     ->success()
                     ->send();
@@ -441,7 +443,7 @@ class BookingPeriodsCalendar extends SimpleCalendarWidget implements HasCalendar
                     ->action(function () use ($widget) {
                         $widget->record->delete();
                         $widget->refreshRecords();
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->title('Service period deleted successfully')
                             ->success()
                             ->send();
@@ -991,7 +993,7 @@ class BookingPeriodsCalendar extends SimpleCalendarWidget implements HasCalendar
         ];
     }
 
-    protected function isAdmin(\Illuminate\Contracts\Auth\Authenticatable $user): bool
+    protected function isAdmin(Authenticatable $user): bool
     {
         if ($user instanceof Admin) {
             return true; // Admins can perform admin actions
@@ -1026,7 +1028,7 @@ class BookingPeriodsCalendar extends SimpleCalendarWidget implements HasCalendar
 
     protected function generateNumber(): string
     {
-        return 'BK-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+        return Str::upper(auth()->user()->name).'-'.Str::upper(filament()->getTenant()?->name).'-'.now()->timestamp;
     }
 
     #[CalendarEventContent(model: Booking::class)]

@@ -318,8 +318,7 @@ class AdminPanelProvider extends PanelProvider
                     ->url(static fn () => Dashboard::getUrl(panel: FilamentCompanies::getCompanyPanel(), tenant: Auth::user()->personalCompany())),
             ])
             ->navigationItems([
-                NavigationItem::make()
-                    ->label('Access Tokens')
+                NavigationItem::make('Access Tokens')
                     ->icon('heroicon-o-finger-print')
                     ->badge(fn () => Auth::user()->tokens()->count())
                     ->url(static fn () => PersonalAccessTokens::getUrl()),

@@ -42,7 +42,7 @@ class QueueRingaData extends Page
 
     // protected static UnitEnum|string|null $navigationGroup = '';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     protected static ?int $sort = 2;
 

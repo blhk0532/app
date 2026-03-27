@@ -7,16 +7,13 @@ namespace Joaopaulolndev\FilamentEditProfile\Livewire;
 use Filament\Auth\Notifications\NoticeOfEmailChangeRequest;
 use Filament\Auth\Notifications\VerifyEmailChange;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification as FilamentNotification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
-use Filament\Support\Markdown;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
@@ -41,17 +38,33 @@ class EditProfileForm extends BaseProfileForm
 
         $this->userClass = get_class($this->user);
 
-        $fields = ['name', 'email'];
+        $fields = [
+            'name',
+            'email',
+            'phone',
+            'name_first',
+            'name_last',
+            'address',
+            'country',
+            'phone_private',
+            'whatsapp',
+            'bio',
+            'tax_id',
+            'nationality',
+            'company_id',
+            'current_schema_id',
+            'active_status',
+        ];
 
-        if (filament('filament-edit-profile')->getShouldShowAvatarForm()) {
+        if (config('filament-edit-profile.show_avatar_form', true)) {
             $fields[] = config('filament-edit-profile.avatar_column', 'avatar_url');
         }
 
-        if (filament('filament-edit-profile')->getShouldShowLocaleForm()) {
+        if (config('filament-edit-profile.show_locale_form', true)) {
             $fields[] = config('filament-edit-profile.locale_column', 'locale');
         }
 
-        if (filament('filament-edit-profile')->getShouldShowThemeColorForm()) {
+        if (config('filament-edit-profile.show_theme_color_form', true)) {
             $fields[] = config('filament-edit-profile.theme_color_column', 'theme_color');
         }
 
@@ -74,9 +87,8 @@ class EditProfileForm extends BaseProfileForm
                             ->columnSpan(6)
                             ->disk(config('filament-edit-profile.disk', 'public'))
                             ->visibility(config('filament-edit-profile.visibility', 'public'))
-                            ->directory(filament('filament-edit-profile')->getAvatarDirectory())
-                            ->rules(filament('filament-edit-profile')->getAvatarRules())
-                            ->hidden(! filament('filament-edit-profile')->getShouldShowAvatarForm()),
+                            ->directory(config('filament-edit-profile.avatar_directory', 'avatars'))
+                            ->hidden(! config('filament-edit-profile.show_avatar_form', true)),
                         Section::make()
                             ->columnSpan(6)
                             ->columns(6)
@@ -84,13 +96,12 @@ class EditProfileForm extends BaseProfileForm
                                 TextInput::make('name')
                                     ->label(__('Användarnamn'))
                                     ->columnSpan(6)
-                                    ->disabled()
-                                    ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm())
-                                    ->required(),
+                                //    ->disabled()
+                                    ->hidden(! config('filament-edit-profile.show_email_form', true)),
                                 TextInput::make('phone')
                                     ->label(__('Telefonnummer'))
-                                    ->disabled()
-                                    ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm())
+                                //    ->disabled()
+                                    ->hidden(! config('filament-edit-profile.show_email_form', true))
                                     ->columnSpan(6)
                                     ->unique($this->userClass, ignorable: $this->user),
 
@@ -98,55 +109,28 @@ class EditProfileForm extends BaseProfileForm
                         TextInput::make('name_first')
                             ->label(__('Förnamn'))
                             ->columnSpan(6)
-                            ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm())
-                            ->required(),
+                            ->hidden(! config('filament-edit-profile.show_email_form', true)),
                         TextInput::make('name_last')
-                            ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm())
+                            ->hidden(! config('filament-edit-profile.show_email_form', true))
                             ->label(__('Efternamn'))
-                            ->columnSpan(6)
-
-                            ->required(),
-
-
-                        TextInput::make('adress')
-                            ->label(__('Bostdsadress'))
-                            ->columnSpan(8)
-                            ->required(),
-                        TextInput::make('country')
-                            ->label(__('Land'))
-                            ->columnSpan(4)
-                            ->required(),
-
-
+                            ->columnSpan(6),
                         TextInput::make('email')
                             ->label(__('Epostaddress'))
-                            ->columnSpan(4)
-                            ->required(),
-                        TextInput::make('private_phone')
+                            ->columnSpan(6),
+                        TextInput::make('phone_private')
                             ->label(__('Mobilnummer'))
-                            ->columnSpan(4)
-                            ->required(),
+                            ->columnSpan(6),
                         TextInput::make('whatsapp')
+                            ->hidden()
                             ->label(__('WhatsApp'))
-                            ->columnSpan(4)
-                            ->required(),
-
+                            ->columnSpan(4),
+                        TextInput::make('address')
+                            ->label(__('Bostdsadress'))
+                            ->columnSpan(12),
                         MarkdownEditor::make('bio')
                             ->label(__('Noteringar'))
                             ->columnSpanFull()
-                            ->hidden(! filament('filament-edit-profile')->getShouldShowEmailForm()),
-
-                        ColorPicker::make('theme_color')
-                            ->label(__('filament-edit-profile::default.theme_color'))
-                            ->rules(filament('filament-edit-profile')->getThemeColorRules())
-                            ->hidden(! filament('filament-edit-profile')->getShouldShowThemeColorForm()),
-                        Select::make('locale')
-                            ->label(__('Språk'))
-                            ->columnSpan(3)
-                            ->options(filament('filament-edit-profile')->getOptionsLocaleForm())
-                            ->rules(filament('filament-edit-profile')->getLocaleRules())
-                            ->hidden(! filament('filament-edit-profile')->getShouldShowLocaleForm()),
-
+                            ->hidden(! config('filament-edit-profile.show_email_form', true)),
                     ]),
             ])
             ->statePath('data');
@@ -156,10 +140,10 @@ class EditProfileForm extends BaseProfileForm
     {
         $locale = null;
         $theme_color = null;
-        if (filament('filament-edit-profile')->getShouldShowLocaleForm()) {
+        if (config('filament-edit-profile.show_locale_form', true)) {
             $locale = $this->user->getAttributeValue('locale');
         }
-        if (filament('filament-edit-profile')->getShouldShowThemeColorForm()) {
+        if (config('filament-edit-profile.show_theme_color_form', true)) {
             $theme_color = $this->user->getAttributeValue('theme_color');
         }
 
@@ -172,7 +156,8 @@ class EditProfileForm extends BaseProfileForm
                 unset($data['email']);
             }
 
-            $this->user->update($data);
+            $this->user->fill($data);
+            $this->user->save();
 
             $this->dispatch('refresh-topbar');
         } catch (Halt $exception) {
@@ -184,14 +169,14 @@ class EditProfileForm extends BaseProfileForm
             ->title(__('filament-edit-profile::default.saved_successfully'))
             ->send();
 
-        if (filament('filament-edit-profile')->getShouldShowLocaleForm()) {
+        if (config('filament-edit-profile.show_locale_form', true)) {
             if ($locale !== $this->user->getAttributeValue('locale')) {
                 redirect(request()->header('referer'));
 
                 return;
             }
         }
-        if (filament('filament-edit-profile')->getShouldShowThemeColorForm()) {
+        if (config('filament-edit-profile.show_theme_color_form', true)) {
             if ($theme_color !== $this->user->getAttributeValue('theme_color')) {
                 redirect(request()->header('referer'));
             }

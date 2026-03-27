@@ -56,7 +56,7 @@ class ControlPanel extends CardsPage
                             'style' => 'background:#18181b;padding-top:2rem;padding-bottom:2rem;',
                         ])
                         ->columnSpan('1/3'),
-                    CardItem::make(TaskBoard::class)
+                    CardItem::make(BookingsBoard::class)
                         ->description('Core application configuration')
                         ->icon('heroicon-o-clipboard-document-list')
                         ->label('Skrapning Queue')

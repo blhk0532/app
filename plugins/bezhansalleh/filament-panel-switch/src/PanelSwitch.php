@@ -92,7 +92,7 @@ class PanelSwitch extends Component
     {
         $static = static::make();
 
-        if (auth()->user()?->role === 'super' || auth()->user()?->role === 'admin' || auth()->user()?->role === 'booking') {
+        if (auth()->user()?->role === 'super' || auth()->user()?->role === 'admin' || auth()->user()?->role === 'manager') {
 
             FilamentView::registerRenderHook(
                 name: PanelsRenderHook::TOPBAR_LOGO_AFTER,
@@ -141,6 +141,11 @@ class PanelSwitch extends Component
             );
 
             PanelSwitch::configureUsing(function (PanelSwitch $switch): void {});
+        } else {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::TOPBAR_LOGO_AFTER,
+                fn () => view('filament.app.user-notes-icon-topbar')
+            );
         }
 
     }

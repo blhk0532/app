@@ -55,7 +55,7 @@ class StatsOverviewWidget extends BaseWidget
                     ->orWhere('service_user_id', $userId);
             })
             ->where(function ($q) use ($today) {
-                $q->whereDate('service_date', $today->toDateString())
+                $q->whereDate('created_at', $today->toDateString())
                     ->orWhereDate('starts_at', $today->toDateString());
             })
             ->count() : 0;
@@ -66,7 +66,7 @@ class StatsOverviewWidget extends BaseWidget
                     ->orWhere('service_user_id', $userId);
             })
             ->where(function ($q) use ($weekStart, $weekEnd) {
-                $q->whereBetween('service_date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+                $q->whereBetween('created_at', [$weekStart->toDateString(), $weekEnd->toDateString()])
                     ->orWhereBetween('starts_at', [$weekStart->toDateString(), $weekEnd->toDateString()]);
             })
             ->count() : 0;
@@ -77,7 +77,7 @@ class StatsOverviewWidget extends BaseWidget
                     ->orWhere('service_user_id', $userId);
             })
             ->where(function ($q) use ($monthStart, $monthEnd) {
-                $q->whereBetween('service_date', [$monthStart->toDateString(), $monthEnd->toDateString()])
+                $q->whereBetween('created_at', [$monthStart->toDateString(), $monthEnd->toDateString()])
                     ->orWhereBetween('starts_at', [$monthStart->toDateString(), $monthEnd->toDateString()]);
             })
             ->count() : 0;
@@ -88,10 +88,10 @@ class StatsOverviewWidget extends BaseWidget
                     ->orWhere('service_user_id', $userId);
             })
             ->where(function ($q) use ($today) {
-                $q->whereDate('service_date', $today->toDateString())
-                    ->orWhereDate('starts_at', $today->toDateString());
+                $q->whereDate('created_at', $today->toDateString())
+                    ->orWhereDate('updated_at', $today->toDateString());
             })
-            ->where('status', 'completed')
+        //    ->where('status', 'completed')
             ->count() : 0;
 
         $completedThisWeek = $userId ? Booking::query()
@@ -100,10 +100,10 @@ class StatsOverviewWidget extends BaseWidget
                     ->orWhere('service_user_id', $userId);
             })
             ->where(function ($q) use ($weekStart, $weekEnd) {
-                $q->whereBetween('service_date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+                $q->whereBetween('created_at', [$weekStart->toDateString(), $weekEnd->toDateString()])
                     ->orWhereBetween('starts_at', [$weekStart->toDateString(), $weekEnd->toDateString()]);
             })
-            ->where('status', 'completed')
+            ->where('status', 'complete')
             ->count() : 0;
 
         $completedThisMonth = $userId ? Booking::query()
@@ -112,10 +112,10 @@ class StatsOverviewWidget extends BaseWidget
                     ->orWhere('service_user_id', $userId);
             })
             ->where(function ($q) use ($monthStart, $monthEnd) {
-                $q->whereBetween('service_date', [$monthStart->toDateString(), $monthEnd->toDateString()])
+                $q->whereBetween('created_at', [$monthStart->toDateString(), $monthEnd->toDateString()])
                     ->orWhereBetween('starts_at', [$monthStart->toDateString(), $monthEnd->toDateString()]);
             })
-            ->where('status', 'completed')
+            ->where('status', 'complete')
             ->count() : 0;
 
         $formatNumber = function (int $number): string {
@@ -131,23 +131,22 @@ class StatsOverviewWidget extends BaseWidget
         };
 
         return [
-            Stat::make('Bookings', (string) $formatNumber($bookingsToday))
-                ->description('Bookings today')
+            Stat::make('Bokningar', (string) $formatNumber($bookingsThisMonth))
+                ->description('Bokningar Månad')
                 ->descriptionIcon('heroicon-o-calendar-days')
                 ->chart([5, 5, 5, 5, 5, 5, 5])
-                ->color('success'),
-
-            Stat::make('Complete', $formatNumber($completedThisWeek))
-                ->description('Completed this week')
-                ->descriptionIcon('heroicon-o-check-badge')
-                ->chart([5, 5, 5, 5, 5, 5, 5])
                 ->color('primary'),
-
-            Stat::make('Success rate', $formatNumber($completedThisMonth > 0 && $bookingsThisMonth > 0 ? (int) round(($completedThisMonth / $bookingsThisMonth) * 100) : 0).'%')
-                ->description('Success rate this month')
+            Stat::make('Successrate', $formatNumber($completedThisMonth > 0 && $bookingsThisMonth > 0 ? (int) round(($completedThisMonth / $bookingsThisMonth) * 100) : 0).'%')
+                ->description('Success Rate')
                 ->descriptionIcon('heroicon-o-arrow-trending-up')
                 ->chart([5, 5, 5, 5, 5, 5, 5])
+                ->color('warning'),
+            Stat::make('Genomförda', $formatNumber($completedThisMonth))
+                ->description('Genomförda')
+                ->descriptionIcon('heroicon-o-check-badge')
+                ->chart([5, 5, 5, 5, 5, 5, 5])
                 ->color('success'),
+
         ];
     }
 }
