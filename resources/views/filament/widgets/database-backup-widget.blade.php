@@ -97,13 +97,6 @@
             </div>
         </div>
 
-        {{-- Handle file downloads --}}
-        <script>
-            document.addEventListener('livewire:init', () => {
-                Livewire.on('download-url', ({ url }) => {
-                    window.location.href = url;
-                });
-            });
-        </script>
+        {{-- File downloads handled directly by Livewire response --}}
     </x-filament::section>
 </x-filament-widgets::widget>

@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\MapPin;
 use EduardoRibeiroDev\FilamentLeaflet\Concerns\HasMapConfig;
 use EduardoRibeiroDev\FilamentLeaflet\Support\BaseLayer;
+use EduardoRibeiroDev\FilamentLeaflet\Support\Markers\Marker;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -36,6 +37,18 @@ class SwedenMapWidget extends Widget implements HasActions, HasSchemas
     public function refreshPins(): void
     {
         $this->refreshMap();
+    }
+
+    protected function getMarkers(): array
+    {
+        return MapPin::all()->map(function (MapPin $pin) {
+            return Marker::fromRecord(
+                record: $pin,
+                latColumn: $this->getLatitudeColumnName(),
+                lngColumn: $this->getLongitudeColumnName(),
+                titleColumn: 'name',
+            );
+        })->toArray();
     }
 
     // Configurações do widget

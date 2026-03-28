@@ -70,7 +70,7 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
         }
     }
 
-    public function backupDatabase(): void
+    public function backupDatabase()
     {
         try {
             $connection = config('database.connections.'.config('database.default'));
@@ -104,11 +104,10 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
             Notification::make()
                 ->success()
                 ->title('Backup Created')
-                ->body('Backup downloaded automatically.')
+                ->body('Download starting...')
                 ->send();
 
-            $downloadUrl = route('download.backup', ['filename' => $filename]);
-            $this->dispatch('download-url', url: $downloadUrl);
+            return $this->download($filepath, $filename);
         } catch (Exception $e) {
             Notification::make()->danger()->title('Backup Failed')->body($e->getMessage())->send();
         }
@@ -175,7 +174,7 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
         }
     }
 
-    public function exportTableData(): void
+    public function exportTableData()
     {
         try {
             if (! $this->exportTable) {
@@ -231,12 +230,12 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
             Notification::make()
                 ->success()
                 ->title('Export Created')
-                ->body("Table '{$this->exportTable}' exported successfully.")
+                ->body('Download starting...')
                 ->send();
 
-            $downloadUrl = route('download.backup', ['filename' => $filename]);
-            $this->dispatch('download-url', url: $downloadUrl);
             $this->exportTable = null;
+
+            return $this->download($filepath, $filename);
         } catch (Exception $e) {
             Notification::make()->danger()->title('Export Failed')->body($e->getMessage())->send();
         }
