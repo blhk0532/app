@@ -35,15 +35,15 @@ npm run build
 
 echo ""
 echo "🔄 Restarting Octane Roadrunner..."
-sudo pkill -9 -f "roadrunner-worker" || true
+sudo $PHP pkill -9 -f "roadrunner-worker" || true
 sleep 2
 php artisan octane:start --port=8000 > /tmp/octane.log 2>&1 &
 sleep 4
 
 echo ""
 echo "🔄 Restarting Horizon..."
-php artisan horizon:terminate
-php artisan horizon
+sudo $PHP artisan horizon:terminate
+$PHP artisan horizon
 
 echo ""
 echo "✅ Deployment Complete!"
