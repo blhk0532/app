@@ -320,7 +320,7 @@ class AppPanelProvider extends PanelProvider
                     ->slug('my-profile')
                     ->setTitle(__(' '))
                     ->setNavigationLabel(__('Inställningar'))
-                    ->setNavigationGroup(__('MINA SIDOR'))
+                    ->setNavigationGroup(fn () => auth()->user()->name ? auth()->user()->name . ' | ' . auth()->user()->getCompanyName() : 'Company')
                     ->setIcon('heroicon-o-user')
                     ->setSort(100)
                     ->shouldRegisterNavigation(false)

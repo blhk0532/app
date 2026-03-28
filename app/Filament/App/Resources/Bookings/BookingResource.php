@@ -48,7 +48,8 @@ class BookingResource extends Resource
     public static function getNavigationGroup(): string|UnitEnum|null
     {
       //  $name = auth()->user()->name ? auth()->user()->name . ' | ' . filament()->getTenant()?->name . ' | Team' : 'X';
-    $name = auth()->user()->name ? auth()->user()->name . ' | VVS Kontakt' : 'X';
+    $name = auth()->user()->name ? auth()->user()->name . ' | ' . auth()->user()->getCompanyName() : 'Company';
+        return $name;
 
 
       return $name;

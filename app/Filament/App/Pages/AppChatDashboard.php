@@ -62,9 +62,15 @@ class AppChatDashboard extends BasePage
 
     }
 
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        $name = auth()->user()->name ? auth()->user()->name . ' | ' . auth()->user()->getCompanyName() : 'Company';
+        return $name;
+    }
+
     public static function getNavigationLabel(): string
     {
-        return Auth::user()->getCompanyName() ? 'Meddelande' : 'X';
+        return 'Meddelande';
     }
 
     public static function getNavigationBadge(): ?string

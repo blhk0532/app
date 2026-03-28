@@ -53,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
                     'app' => Str::ucfirst(Str::limit($name, 10)),
                     'admin' => 'Admin',
                     'booking' => 'Bokning',
-                    'calendar' => 'Calender',
+                    'calendar' => 'Kalender',
                     'chat' => 'Chatt',
                     'data' => 'Data',
                     'email' => 'Email',
@@ -63,11 +63,11 @@ class AppServiceProvider extends ServiceProvider
                     'super' => 'Super',
                     'tools' => 'Tools',
                     'dev' => 'Content',
-                    'cachet' => 'Cache',
+                    'cachet' => 'Status',
                     'super' => 'System',
                     'dialer' => 'Dialer',
                     'finance' => 'Finance',
-                    'manager' => 'Manager',
+                    'manager' => 'Teams',
                     'partner' => 'Partner',
                     'script' => 'Script',
                     'sheets' => 'Sheets',
@@ -120,29 +120,13 @@ class AppServiceProvider extends ServiceProvider
                 $panelSwitch
                     ->panels([
                         'app',
+                        'chat',
+                        'dialer',
+                        'email',
+                        'manager',
                         'admin',
                         'booking',
                         'cachet',
-                        'calendar',
-                        'chat',
-                        'company',
-                        'data',
-                        'dev',
-                        'dialer',
-                        'email',
-                        'finance',
-                        'geo',
-                        'manager',
-                        'notify',
-                        'partner',
-                        'private',
-                        'queue',
-                        'script',
-                        'sheets',
-                        'stats',
-                        'super',
-                        'system',
-                        'tools',
                     ])
                     ->iconSize(32)
                     ->modalWidth('sm')
@@ -152,29 +136,21 @@ class AppServiceProvider extends ServiceProvider
                 $panelSwitch
                     ->panels([
                         'app',
+                        'chat',
+                        'dialer',
+                        'email',
+                        'manager',
                         'admin',
                         'booking',
                         'cachet',
-                        'calendar',
-                        'chat',
                         'company',
-                        'data',
-                        'dev',
-                        'dialer',
-                        'email',
-                        'finance',
                         'geo',
-                        'manager',
-                        'notify',
-                        'partner',
-                        'private',
-                        'queue',
-                        'script',
-                        'sheets',
+                        'calendar',
                         'stats',
-                        'super',
-                        'system',
-                        'tools',
+                        'finance',
+                        'queue',
+                        'notify',
+                        'sheets',
                     ])
                     ->iconSize(32)
                     ->modalWidth('sm')
@@ -184,28 +160,28 @@ class AppServiceProvider extends ServiceProvider
             if ($user?->role && $user?->role === 'super') {
                 $panelSwitch
                     ->panels([
-                        'app',
+                       'app',
+                        'chat',
+                        'dialer',
+                        'email',
+                        'manager',
                         'admin',
                         'booking',
                         'cachet',
-                        'calendar',
-                        'chat',
                         'company',
                         'data',
-                        'dev',
-                        'dialer',
-                        'email',
-                        'finance',
                         'geo',
-                        'manager',
+                        'calendar',
+                        'stats',
+                        'finance',
+                        'queue',
                         'notify',
+                        'sheets',
                         'partner',
                         'private',
-                        'queue',
                         'script',
-                        'sheets',
-                        'stats',
                         'super',
+                        'dev',
                         'system',
                         'tools',
                     ])->iconSize(20)
@@ -227,13 +203,13 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Password::defaults(
-            fn (): ?Password => app()->isProduction()
+            fn(): ?Password => app()->isProduction()
                 ? Password::min(12)
-                    ->mixedCase()
-                    ->letters()
-                    ->numbers()
-                    ->symbols()
-                    ->uncompromised()
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()
                 : null,
         );
     }

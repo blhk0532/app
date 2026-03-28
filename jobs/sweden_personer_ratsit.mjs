@@ -10,7 +10,7 @@ async function createDbConnection() {
 		host: '127.0.0.1',
 		port: '3306',
 		user: 'root',
-		password: '9JVQqZea1bWgqxbZuyZz',
+		password: 'bkkbkk',
 		database: 'app_new',
 		charset: 'utf8mb4',
 	});
