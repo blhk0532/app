@@ -113,8 +113,8 @@ class Dashboard extends BaseDashboard
     protected function getFooterWidgets(): array
     {
         return [
-            SingleCalendars::class,
-            LatestOrders::class,
+        //    SingleCalendars::class,
+        //    LatestOrders::class,
             // \App\Filament\Widgets\MyRinglistaWidget::class,
             //    WeatherWidget::class,
         ];

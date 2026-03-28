@@ -13,6 +13,7 @@ use App\Models\Booking\OrderAddress;
 use App\Models\Booking\Service;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
+use Relaticle\Comments\Contracts\Commentable;
 
 /**
  * @property int $id
@@ -116,8 +117,6 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class Booking extends FilamentBooking implements Commentable
 {
-    use HasComments;
-
     protected $table = 'booking_bookings';
 
     protected function casts(): array

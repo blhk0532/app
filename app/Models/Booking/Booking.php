@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Kirschbaum\Commentions\Contracts\Commentable;
-use Kirschbaum\Commentions\HasComments;
+use Relaticle\Comments\Concerns\HasComments;
+use Relaticle\Comments\Contracts\Commentable;
 
 /**
  * @property int $id

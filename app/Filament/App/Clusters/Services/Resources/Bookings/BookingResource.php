@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Filament\App\Clusters\Services\Resources\Bookings;
 
-use Adultdate\FilamentBooking\Models\Booking\Booking;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\EditBooking;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\ListBookings;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Schemas\BookingForm;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Tables\BookingsTable;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\BookingStats;
+use App\Models\Booking;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;

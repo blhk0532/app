@@ -65,7 +65,7 @@ class LatestOrders extends BaseWidget
             ])
             ->recordActions([
                 Action::make('open')
-                    ->url(fn (Booking $record): string => BookingResource::getUrl('edit', ['record' => $record])),
+                    ->url(fn (Booking $record): string => BookingResource::getUrl('edit', ['record' => $record], panel: 'app')),
             ]);
     }
 }

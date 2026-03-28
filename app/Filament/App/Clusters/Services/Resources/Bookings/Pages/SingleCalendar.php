@@ -96,7 +96,7 @@ class SingleCalendar extends BaseDashboard
         Carbon::setLocale('sv');
         $now = now()->timezone('Europe/Stockholm')->translatedFormat('l');
 
-        return Str::upper($now);
+        return Str::ucfirst($now);
     }
 
     public static function getNavigationBadgeColor(): ?string

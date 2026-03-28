@@ -99,7 +99,7 @@ class BookingDashboard extends BaseDashboard
         return [
             AccountInfoStackWidget::class,
             WorldClockWidget::class,
-            LatestBookings::class,
+        //   LatestBookings::class,
         ];
     }
 

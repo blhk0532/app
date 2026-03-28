@@ -49,7 +49,7 @@ class InertiaCalendar extends Page
         Carbon::setLocale('sv');
         $now = now()->timezone('Europe/Stockholm')->translatedFormat('d M');
 
-        return Str::upper($now);
+        return Str::ucwords($now);
     }
 
     protected Width|string|null $maxContentWidth = 'full';

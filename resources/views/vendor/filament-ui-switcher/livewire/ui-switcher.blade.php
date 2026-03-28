@@ -144,7 +144,7 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
                         wire:loading.class="opacity-50 cursor-wait"
                         wire:target="setLayout"
                         type="button"
-                        class="relative flex flex-col items-center justify-center p-2 max-h-[48px] rounded-lg border-2 transition-all hover:border-primary-400 hover:shadow-md {{ $layout === 'sidebar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 ring-2 ring-primary-200 dark:ring-primary-800' : 'border-gray-200 dark:border-gray-700' }}">
+                        class="relative flex flex-col items-center justify-center p-2 max-h-[112px] rounded-lg border-2 transition-all hover:border-primary-400 hover:shadow-md {{ $layout === 'sidebar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 ring-2 ring-primary-200 dark:ring-primary-800' : 'border-gray-200 dark:border-gray-700' }}">
                         <div class="flex flex-col gap-0.5">
                             <div class="w-14 h-1 rounded bg-gray-300 dark:bg-gray-700"></div>
                             <div class="flex gap-0.5">
@@ -158,7 +158,7 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
                     <button
                         wire:click="setLayout('sidebar-collapsed')"
                         type="button"
-                        class="relative flex flex-col items-center justify-center p-2 max-h-[48px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'sidebar-collapsed' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
+                        class="relative flex flex-col items-center justify-center p-2 max-h-[112px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'sidebar-collapsed' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
                         <div class="flex flex-col gap-0.5">
                             <div class="w-14 h-1 rounded bg-gray-300 dark:bg-gray-700"></div>
                             <div class="flex gap-0.5">
@@ -172,7 +172,7 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
                     <button
                         wire:click="setLayout('sidebar-no-topbar')"
                         type="button"
-                        class="relative flex flex-col items-center justify-center p-2 max-h-[48px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'sidebar-no-topbar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
+                        class="relative flex flex-col items-center justify-center p-2 max-h-[112px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'sidebar-no-topbar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
                         <div class="flex gap-0.5 mb-0">
                             <div class="w-3.5 h-8 rounded bg-gray-300 dark:bg-gray-700"></div>
                             <div class="w-10 h-8 rounded bg-gray-300 dark:bg-gray-600"></div>
@@ -183,7 +183,7 @@ $anderia = \Andreia\FilamentUiSwitcher\Support\UiPreferenceManager::get('ui.layo
                     <button
                         wire:click="setLayout('topbar')"
                         type="button"
-                        class="relative flex flex-col items-center justify-center p-2 max-h-[48px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'topbar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
+                        class="relative flex flex-col items-center justify-center p-2 max-h-[112px] rounded-lg border-2 transition-all hover:border-primary-400 {{ $layout === 'topbar' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700' }}">
                         <div class="flex flex-col gap-0.5">
                             <div class="w-13 h-2 rounded bg-gray-300 dark:bg-gray-700"></div>
                             <div class="w-13 h-6 rounded bg-gray-300 dark:bg-gray-600"></div>
