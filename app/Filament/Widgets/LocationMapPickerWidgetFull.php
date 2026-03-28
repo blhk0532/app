@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Widgets;
 
+use App\Models\MapPin;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
@@ -42,12 +44,13 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
     public function form(Schema $schema): Schema
     {
         return $schema
-        ->extraAttributes(['class' => 'pb-0 mb-0'])
+            ->extraAttributes(['class' => 'pb-0 mb-0'])
             ->schema([
                 Grid::make()
 
                     ->schema([
-                        Map::make(' ')
+                        Map::make('location')
+                            ->label('Map')
                             ->mapControls([
                                 'mapTypeControl' => true,
                                 'scaleControl' => true,
@@ -66,9 +69,9 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
                                 'city' => '%L',
                                 'state' => '%A1',
                                 'zip' => '%z',
-                                 'country' => '%c',
-                            //    'lat' => 'lat',
-                            //    'lng' => 'lng',
+                                'country' => '%c',
+                                //    'lat' => 'lat',
+                                //    'lng' => 'lng',
                             ])
                             ->debug(true)
                             ->defaultLocation([60.1282, 18.6435])
@@ -76,6 +79,10 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
                             ->clickable(true)
                             ->geolocate(true)
                             ->geolocateLabel('Get My Location')
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, $set) {
+                                // Optional: logic when map state changes
+                            })
                             ->required()
                             ->columnSpanFull(),
 
@@ -100,16 +107,16 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
                             ->maxLength(255)
                             ->columnSpan(1)
                             ->readOnly(),
-                    //    TextInput::make('latitude')
-                    //        ->label('...')
-                    //        ->maxLength(255)
-                    //        ->columnSpan(1)
-                    //        ->readOnly(),
-                    //    TextInput::make('longitude')
-                    //        ->label('...')
-                    //        ->maxLength(255)
-                    //        ->columnSpan(1)
-                    //        ->readOnly(),
+                        //    TextInput::make('latitude')
+                        //        ->label('...')
+                        //        ->maxLength(255)
+                        //        ->columnSpan(1)
+                        //        ->readOnly(),
+                        //    TextInput::make('longitude')
+                        //        ->label('...')
+                        //        ->maxLength(255)
+                        //        ->columnSpan(1)
+                        //        ->readOnly(),
                         TextInput::make('country')
                             ->label('...')
                             ->maxLength(255)
@@ -126,6 +133,39 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
 
             ])
             ->statePath('data');
+    }
+
+    public function savePin(): void
+    {
+        $payload = $this->form->getState();
+
+        $lat = data_get($payload, 'location.lat') ?? data_get($this->data, 'location.lat');
+        $lng = data_get($payload, 'location.lng') ?? data_get($this->data, 'location.lng');
+
+        if (! $lat || ! $lng) {
+            Notification::make()
+                ->title('Error')
+                ->body('Location coordinates are missing.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        MapPin::create([
+            'name' => data_get($payload, 'address_search') ?? 'Saved Location',
+            'latitude' => $lat,
+            'longitude' => $lng,
+            'data' => $payload,
+        ]);
+
+        Notification::make()
+            ->title('Success')
+            ->body('Location pinned successfully!')
+            ->success()
+            ->send();
+
+        $this->dispatch('refresh-pins');
     }
 
     public function submit(): void

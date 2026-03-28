@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\MapPin;
 use EduardoRibeiroDev\FilamentLeaflet\Concerns\HasMapConfig;
 use EduardoRibeiroDev\FilamentLeaflet\Support\BaseLayer;
 use Exception;
@@ -21,6 +22,7 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Attributes\On;
 
 class SwedenMapWidget extends Widget implements HasActions, HasSchemas
 {
@@ -30,13 +32,19 @@ class SwedenMapWidget extends Widget implements HasActions, HasSchemas
     use InteractsWithActions;
     use InteractsWithSchemas;
 
+    #[On('refresh-pins')]
+    public function refreshPins(): void
+    {
+        $this->refreshMap();
+    }
+
     // Configurações do widget
     protected string $view = 'filament-leaflet::widgets.map-widget';
 
-    protected ?string $heading = null;
+    protected ?string $heading = 'Sweden Map Pins';
 
     // Configurações dos marcadores
-    protected ?string $markerModel = null;
+    protected ?string $markerModel = MapPin::class;
 
     protected ?string $markerResource = null;
 

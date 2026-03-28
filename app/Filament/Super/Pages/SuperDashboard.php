@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Super\Pages;
 
+use App\Filament\Super\Widgets\DatabaseBackupWidget;
 use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
@@ -78,7 +79,7 @@ class SuperDashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-
+            DatabaseBackupWidget::class,
         ];
     }
 
@@ -89,6 +90,6 @@ class SuperDashboard extends BaseDashboard
 
     protected function getHeaderTitle(): string
     {
-        return false;
+        return '';
     }
 }
