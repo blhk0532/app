@@ -23,8 +23,8 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
+use App\Filament\Widgets\SwedenMapWidget;
+use App\Filament\Widgets\LocationMapPickerWidgetFull;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -69,8 +69,8 @@ class GeoPanelProvider extends PanelProvider
             ])
             //    ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-            //    FilamentInfoWidget::class,
+                SwedenMapWidget::class,
+                LocationMapPickerWidgetFull::class,
             ])
             ->middleware([
                 EncryptCookies::class,

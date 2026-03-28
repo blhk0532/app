@@ -93,7 +93,7 @@ class Dashboard extends BaseDashboard
 
             AccountWidget::class,
             FilamentInfosWidget::class,
-
+            StatsOverviewWidget::class,
             //    \App\Filament\App\Widgets\LatestOrders::class,
             //    \App\Filament\App\Widgets\StatsOverviewWidget::class,
 
@@ -103,12 +103,12 @@ class Dashboard extends BaseDashboard
         ];
     }
 
-    public function getWidgets(): array
-    {
-        return [
-            StatsOverviewWidget::class,
-        ];
-    }
+ //   public function getWidgets(): array
+ //   {
+ //       return [
+ //           StatsOverviewWidget::class,
+ //       ];
+ //   }
 
     protected function getFooterWidgets(): array
     {
