@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use MWGuerra\FileManager\Contracts\FileManagerAdapterInterface;
 use MWGuerra\FileManager\Contracts\FileManagerItemInterface;
 use MWGuerra\FileManager\Contracts\FileSystemItemInterface;
+use MWGuerra\FileManager\Services\FileUrlService;
 
 /**
  * Database adapter for file management.
@@ -375,7 +376,7 @@ class DatabaseAdapter implements FileManagerAdapterInterface
         }
 
         try {
-            $urlService = app(\MWGuerra\FileManager\Services\FileUrlService::class);
+            $urlService = app(FileUrlService::class);
             $expiration = config('filemanager.streaming.url_expiration', 60);
 
             return $urlService->getPreviewUrl(

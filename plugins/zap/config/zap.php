@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Carbon\CarbonInterface;
+use Zap\Enums\ScheduleTypes;
 
 return [
     /*
@@ -31,8 +32,8 @@ return [
             'enabled' => true,
             'applies_to' => [
                 // Which schedule types get this rule automatically
-                Zap\Enums\ScheduleTypes::APPOINTMENT,
-                Zap\Enums\ScheduleTypes::BLOCKED,
+                ScheduleTypes::APPOINTMENT,
+                ScheduleTypes::BLOCKED,
             ],
         ],
         'working_hours' => [

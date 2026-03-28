@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+use MWGuerra\WebTerminal\Connections\AbstractConnectionHandler;
 use MWGuerra\WebTerminal\Connections\LocalConnectionHandler;
 use MWGuerra\WebTerminal\Contracts\ConnectionHandlerInterface;
 use MWGuerra\WebTerminal\Data\CommandResult;
 use MWGuerra\WebTerminal\Data\ConnectionConfig;
 use MWGuerra\WebTerminal\Enums\ConnectionType;
 use MWGuerra\WebTerminal\Exceptions\ConnectionException;
+use MWGuerra\WebTerminal\Sessions\ProcessSessionManager;
 
 describe('LocalConnectionHandler', function () {
     beforeEach(function () {
@@ -19,7 +21,7 @@ describe('LocalConnectionHandler', function () {
     });
 
     it('extends AbstractConnectionHandler', function () {
-        expect($this->handler)->toBeInstanceOf(\MWGuerra\WebTerminal\Connections\AbstractConnectionHandler::class);
+        expect($this->handler)->toBeInstanceOf(AbstractConnectionHandler::class);
     });
 
     describe('connect', function () {
@@ -263,12 +265,12 @@ describe('LocalConnectionHandler', function () {
         beforeEach(function () {
             $this->handler->connect(ConnectionConfig::local());
             // Force ProcessSessionManager for these tests (FileSessionManager merges stderr via PTY)
-            $this->handler->setSessionManager(new \MWGuerra\WebTerminal\Sessions\ProcessSessionManager);
+            $this->handler->setSessionManager(new ProcessSessionManager);
         });
 
         afterEach(function () {
             // Clean up any sessions
-            \MWGuerra\WebTerminal\Sessions\ProcessSessionManager::clearAllSessions();
+            ProcessSessionManager::clearAllSessions();
         });
 
         it('supports interactive mode', function () {

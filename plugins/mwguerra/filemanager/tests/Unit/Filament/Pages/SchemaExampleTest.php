@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
 use MWGuerra\FileManager\Filament\Pages\SchemaExample;
 use MWGuerra\FileManager\Models\FileSystemItem;
 
@@ -77,22 +81,22 @@ describe('traits', function () {
     it('uses InteractsWithSchemas trait', function () {
         $traits = class_uses_recursive(SchemaExample::class);
 
-        expect($traits)->toContain(Filament\Schemas\Concerns\InteractsWithSchemas::class);
+        expect($traits)->toContain(InteractsWithSchemas::class);
     });
 
     it('uses InteractsWithActions trait', function () {
         $traits = class_uses_recursive(SchemaExample::class);
 
-        expect($traits)->toContain(Filament\Actions\Concerns\InteractsWithActions::class);
+        expect($traits)->toContain(InteractsWithActions::class);
     });
 });
 
 describe('interfaces', function () {
     it('implements HasSchemas', function () {
-        expect(is_a(SchemaExample::class, Filament\Schemas\Contracts\HasSchemas::class, true))->toBeTrue();
+        expect(is_a(SchemaExample::class, HasSchemas::class, true))->toBeTrue();
     });
 
     it('implements HasActions', function () {
-        expect(is_a(SchemaExample::class, Filament\Actions\Contracts\HasActions::class, true))->toBeTrue();
+        expect(is_a(SchemaExample::class, HasActions::class, true))->toBeTrue();
     });
 });

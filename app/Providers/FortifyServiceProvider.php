@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -38,6 +39,39 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::createUsersUsing(CreateNewUser::class);
+
+        Fortify::authenticateUsing(function ($request) {
+            $identifier = trim($request->input('email'));
+
+            if (empty($identifier)) {
+                return null;
+            }
+
+            // Normalize phone number: keep only digits and leading plus
+            $normalizedPhone = preg_replace('/[^0-9+]/', '', $identifier);
+
+            $user = User::where(function ($query) use ($identifier, $normalizedPhone) {
+                $query->where('email', $identifier)
+                    ->orWhere('name', $identifier)
+                    ->orWhere('phone', $identifier);
+
+                // If normalized phone differs from original, also search by normalized phone
+                if ($normalizedPhone !== $identifier) {
+                    $query->orWhere('phone', $normalizedPhone);
+                }
+
+                // Search phone column with any non-digit characters removed
+                $query->orWhere(DB::raw("REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '+', '')"),
+                    preg_replace('/[^0-9]/', '', $identifier));
+            })
+                ->first();
+
+            if ($user && Hash::check($request->input('password'), $user->password)) {
+                return $user;
+            }
+
+            return null;
+        });
     }
 
     /**

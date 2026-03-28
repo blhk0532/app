@@ -104,7 +104,7 @@
                  </section>
             @endforeach
         @else
-            <p class="text-gray-500">No announcements.</p>
+            <p class="text-gray-500 hidden">No announcements.</p>
         @endif
     </div>
 

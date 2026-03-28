@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Livewire\Finder;
 
 use Exception;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Finder
@@ -444,7 +445,7 @@ class Finder
         );
 
         $fullName = str(collect(explode('.', $class))
-            ->map(fn ($i) => \Illuminate\Support\Str::kebab($i))
+            ->map(fn ($i) => Str::kebab($i))
             ->implode('.'));
 
         if ($fullName->startsWith('.')) {
@@ -481,7 +482,7 @@ class Finder
             );
 
             $namespace = collect(explode('.', $namespace))
-                ->map(fn ($i) => \Illuminate\Support\Str::kebab($i))
+                ->map(fn ($i) => Str::kebab($i))
                 ->implode('.');
 
             if ($fullName->startsWith($namespace)) {

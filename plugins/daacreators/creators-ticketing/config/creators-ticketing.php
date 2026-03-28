@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use App\Models\User;
 
 return [
 
@@ -20,7 +21,7 @@ return [
     | User Model
     |--------------------------------------------------------------------------
     */
-    'user_model' => env('USER_MODEL', App\Models\User::class),
+    'user_model' => env('USER_MODEL', User::class),
 
     /*
     |--------------------------------------------------------------------------

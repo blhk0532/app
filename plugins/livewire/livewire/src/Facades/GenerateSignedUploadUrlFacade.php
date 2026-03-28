@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Livewire\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Livewire\Features\SupportFileUploads\GenerateSignedUploadUrl;
 
 /**
  * @internal
@@ -12,12 +13,12 @@ use Illuminate\Support\Facades\Facade;
  * @method static string forLocal()
  * @method static string forS3($file, $visibility = 'private')
  *
- * @see \Livewire\Features\SupportFileUploads\GenerateSignedUploadUrl
+ * @see GenerateSignedUploadUrl
  */
 class GenerateSignedUploadUrlFacade extends Facade
 {
     public static function getFacadeAccessor()
     {
-        return \Livewire\Features\SupportFileUploads\GenerateSignedUploadUrl::class;
+        return GenerateSignedUploadUrl::class;
     }
 }

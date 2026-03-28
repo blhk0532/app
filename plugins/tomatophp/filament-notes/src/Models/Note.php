@@ -3,6 +3,7 @@
 namespace TomatoPHP\FilamentNotes\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Note extends Model
 {
@@ -37,12 +38,12 @@ class Note extends Model
         'checklist' => 'json',
     ];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function user(): MorphTo
     {
         return $this->morphTo('user');
     }
 
-    public function model(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function model(): MorphTo
     {
         return $this->morphTo('model');
     }

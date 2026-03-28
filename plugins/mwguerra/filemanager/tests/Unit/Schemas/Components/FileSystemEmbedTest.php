@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Livewire;
 use MWGuerra\FileManager\Livewire\EmbeddedFileSystem;
 use MWGuerra\FileManager\Schemas\Components\FileSystemEmbed;
 
@@ -253,11 +255,11 @@ describe('component properties method', function () {
 
 describe('inheritance', function () {
     it('extends Filament Livewire component', function () {
-        expect(is_subclass_of(FileSystemEmbed::class, Filament\Schemas\Components\Livewire::class))->toBeTrue();
+        expect(is_subclass_of(FileSystemEmbed::class, Livewire::class))->toBeTrue();
     });
 
     it('is a Filament schema component', function () {
-        expect(is_subclass_of(FileSystemEmbed::class, Filament\Schemas\Components\Component::class))->toBeTrue();
+        expect(is_subclass_of(FileSystemEmbed::class, Component::class))->toBeTrue();
     });
 });
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Livewire\Features\SupportPageComponents;
 
 use Illuminate\View\AnonymousComponent;
+use Illuminate\View\Component;
 use Livewire\Mechanisms\HandleComponents\ViewContext;
 
 class PageComponentConfig
@@ -41,7 +42,7 @@ class PageComponentConfig
         $attributes = $params['attributes'] ?? [];
         unset($params['attributes']);
 
-        if (is_subclass_of($view, \Illuminate\View\Component::class)) {
+        if (is_subclass_of($view, Component::class)) {
             $layout = app()->makeWith($view, $params);
             $view = $layout->resolveView()->name();
             $params = array_merge($params, $layout->resolveView()->getData());

@@ -6,11 +6,17 @@ namespace Livewire\Mechanisms\ExtendBlade;
 
 use Closure;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\View\Engines\CompilerEngine;
+use Illuminate\View\Engines\PhpEngine;
+use Livewire\Exceptions\BypassViewHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 use function Livewire\trigger;
 
-class ExtendedCompilerEngine extends \Illuminate\View\Engines\CompilerEngine
+class ExtendedCompilerEngine extends CompilerEngine
 {
     public function get($path, array $data = [])
     {
@@ -31,13 +37,13 @@ class ExtendedCompilerEngine extends \Illuminate\View\Engines\CompilerEngine
 
         return
             // Don't wrap "abort(403)".
-            $e instanceof \Illuminate\Auth\Access\AuthorizationException
+            $e instanceof AuthorizationException
             // Don't wrap "abort(404)".
-            || $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+            || $e instanceof NotFoundHttpException
             // Don't wrap "abort(500)".
-            || $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException
+            || $e instanceof HttpException
             // Don't wrap most Livewire exceptions.
-            || isset($uses[\Livewire\Exceptions\BypassViewHandler::class]);
+            || isset($uses[BypassViewHandler::class]);
     }
 
     protected function evaluatePath($__path, $__data)
@@ -74,7 +80,7 @@ class ExtendedCompilerEngine extends \Illuminate\View\Engines\CompilerEngine
     {
         if ($this->shouldBypassExceptionForLivewire($e, $obLevel)) {
             // This is because there is no "parent::parent::".
-            \Illuminate\View\Engines\PhpEngine::handleViewException($e, $obLevel);
+            PhpEngine::handleViewException($e, $obLevel);
 
             return;
         }

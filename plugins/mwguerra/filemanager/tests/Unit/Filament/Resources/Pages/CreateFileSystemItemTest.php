@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Filament\Resources\Pages\CreateRecord;
 use MWGuerra\FileManager\Filament\Resources\FileSystemItemResource;
 use MWGuerra\FileManager\Filament\Resources\FileSystemItemResource\Pages\CreateFileSystemItem;
 use MWGuerra\FileManager\Models\FileSystemItem;
@@ -22,7 +23,7 @@ describe('page configuration', function () {
     });
 
     it('extends CreateRecord', function () {
-        expect(is_subclass_of(CreateFileSystemItem::class, Filament\Resources\Pages\CreateRecord::class))->toBeTrue();
+        expect(is_subclass_of(CreateFileSystemItem::class, CreateRecord::class))->toBeTrue();
     });
 
     it('can be instantiated', function () {
@@ -42,7 +43,7 @@ describe('inheritance', function () {
     it('inherits from Filament CreateRecord page', function () {
         $parents = class_parents(CreateFileSystemItem::class);
 
-        expect($parents)->toContain(Filament\Resources\Pages\CreateRecord::class);
+        expect($parents)->toContain(CreateRecord::class);
     });
 
     it('uses Filament page traits', function () {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace daacreators\CreatorsTicketing\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -30,7 +31,7 @@ class TicketReply extends Model
 
     public function user(): BelongsTo
     {
-        $userModel = config('creators-ticketing.user_model', \App\Models\User::class);
+        $userModel = config('creators-ticketing.user_model', User::class);
 
         return $this->belongsTo($userModel, 'user_id');
     }

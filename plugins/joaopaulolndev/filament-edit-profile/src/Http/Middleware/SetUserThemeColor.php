@@ -6,6 +6,7 @@ namespace Joaopaulolndev\FilamentEditProfile\Http\Middleware;
 
 use Closure;
 use Filament\Support\Facades\FilamentColor;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +14,7 @@ class SetUserThemeColor
 {
     public function handle(Request $request, Closure $next, ?string $guard = null)
     {
-        /** @var \Illuminate\Foundation\Auth\User $user */
+        /** @var User $user */
         $user = Auth::guard($guard)->user();
         $theme_color = config('filament-edit-profile.theme_color_column', 'theme_color');
 

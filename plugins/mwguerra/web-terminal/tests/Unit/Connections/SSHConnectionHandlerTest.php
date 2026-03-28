@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use MWGuerra\WebTerminal\Connections\AbstractConnectionHandler;
 use MWGuerra\WebTerminal\Connections\SSHConnectionHandler;
 use MWGuerra\WebTerminal\Contracts\ConnectionHandlerInterface;
 use MWGuerra\WebTerminal\Data\ConnectionConfig;
@@ -18,7 +19,7 @@ describe('SSHConnectionHandler', function () {
     });
 
     it('extends AbstractConnectionHandler', function () {
-        expect($this->handler)->toBeInstanceOf(\MWGuerra\WebTerminal\Connections\AbstractConnectionHandler::class);
+        expect($this->handler)->toBeInstanceOf(AbstractConnectionHandler::class);
     });
 
     describe('connect', function () {
@@ -258,17 +259,17 @@ describe('SSHConnectionHandler isConnectionError', function () {
     it('detects connection errors', function () {
         $handler = new class extends SSHConnectionHandler
         {
-            public function exposeIsConnectionError(\Throwable $e): bool
+            public function exposeIsConnectionError(Throwable $e): bool
             {
                 return $this->isConnectionError($e);
             }
         };
 
-        expect($handler->exposeIsConnectionError(new \Exception('Connection reset')))->toBeTrue();
-        expect($handler->exposeIsConnectionError(new \Exception('Socket error')))->toBeTrue();
-        expect($handler->exposeIsConnectionError(new \Exception('Broken pipe')))->toBeTrue();
-        expect($handler->exposeIsConnectionError(new \Exception('Reset by peer')))->toBeTrue();
-        expect($handler->exposeIsConnectionError(new \Exception('Command not found')))->toBeFalse();
-        expect($handler->exposeIsConnectionError(new \Exception('Permission denied')))->toBeFalse();
+        expect($handler->exposeIsConnectionError(new Exception('Connection reset')))->toBeTrue();
+        expect($handler->exposeIsConnectionError(new Exception('Socket error')))->toBeTrue();
+        expect($handler->exposeIsConnectionError(new Exception('Broken pipe')))->toBeTrue();
+        expect($handler->exposeIsConnectionError(new Exception('Reset by peer')))->toBeTrue();
+        expect($handler->exposeIsConnectionError(new Exception('Command not found')))->toBeFalse();
+        expect($handler->exposeIsConnectionError(new Exception('Permission denied')))->toBeFalse();
     });
 });

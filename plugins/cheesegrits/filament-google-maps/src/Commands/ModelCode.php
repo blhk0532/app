@@ -20,7 +20,7 @@ class ModelCode extends Command
         $modelName = $this->argument('model');
 
         if (! $modelName) {
-            $asking    = true;
+            $asking = true;
             $modelName = text(
                 label: 'Model (e.g. `Location` or `Maps/Dealership`)',
                 placeholder: 'Location',
@@ -37,7 +37,7 @@ class ModelCode extends Command
             ->replace('/', '\\');
 
         try {
-            $model = new ('\\App\\Models\\' . $modelName)();
+            $model = new ('\\App\\Models\\'.$modelName)();
         } catch (\Throwable) {
             try {
                 $model = new $modelName;
@@ -64,12 +64,12 @@ class ModelCode extends Command
         }
 
         $guardedStr = '';
-        $guarded    = $model->getGuarded();
+        $guarded = $model->getGuarded();
 
         if (in_array($locationField, $guarded)) {
             unset($guarded[array_search($locationField, $guarded)]);
             $guardedAttributes = implode(",\n        ", array_map(fn ($item) => "'{$item}'", $guarded));
-            $guardedStr        = <<<EOT
+            $guardedStr = <<<EOT
 
     protected \$guarded = [
         {$guardedAttributes},
@@ -78,12 +78,12 @@ EOT;
         }
 
         $fillableStr = '';
-        $fillable    = $model->getFillable();
+        $fillable = $model->getFillable();
 
         if (! in_array($locationField, $fillable)) {
-            $fillable[]         = $locationField;
+            $fillable[] = $locationField;
             $fillableAttributes = implode(",\n        ", array_map(fn ($item) => "'{$item}'", $fillable));
-            $fillableStr        = <<<EOT
+            $fillableStr = <<<EOT
 
     protected \$fillable = [
         {$fillableAttributes},
@@ -92,12 +92,12 @@ EOT;
         }
 
         $appendsStr = '';
-        $appends    = $model->getAppends();
+        $appends = $model->getAppends();
 
         if (! in_array($locationField, $appends)) {
-            $appends[]         = $locationField;
+            $appends[] = $locationField;
             $appendsAttributes = implode(",\n        ", array_map(fn ($item) => "'{$item}'", $appends));
-            $appendsStr        = <<<EOT
+            $appendsStr = <<<EOT
     protected \$appends = [
         {$appendsAttributes},
     ];
@@ -105,7 +105,7 @@ EOT;
         }
 
         $locationStr = Str::studly($locationField);
-        $modelCode   = '';
+        $modelCode = '';
 
         $cmd = sprintf(
             'php artisan fgm:model-code %s --lat=%s --lng=%s --location=%s',

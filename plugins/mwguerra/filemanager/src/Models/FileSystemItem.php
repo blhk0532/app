@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MWGuerra\FileManager\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,8 +31,8 @@ use MWGuerra\FileManager\Enums\FileType;
  * @property int|null $duration
  * @property string|null $thumbnail
  * @property string|null $storage_path
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class FileSystemItem extends Model implements FileSystemItemInterface
 {
@@ -111,7 +113,7 @@ class FileSystemItem extends Model implements FileSystemItemInterface
     /**
      * Get items in a folder (by parent_id).
      */
-    public static function getItemsInFolder(?int $parentId = null): \Illuminate\Database\Eloquent\Collection
+    public static function getItemsInFolder(?int $parentId = null): Collection
     {
         return self::where('parent_id', $parentId)
             ->orderByRaw("CASE WHEN type = '".FileSystemItemType::Folder->value."' THEN 0 ELSE 1 END")

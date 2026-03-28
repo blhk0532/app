@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MWGuerra\FileManager\Services;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Log;
 use MWGuerra\FileManager\Policies\FileSystemItemPolicy;
@@ -132,7 +133,7 @@ class AuthorizationService
     /**
      * Authorize an action, throwing an exception if not allowed.
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function authorize(string $ability, $item = null): void
     {
@@ -149,7 +150,7 @@ class AuthorizationService
         };
 
         if (! $allowed) {
-            throw new \Illuminate\Auth\Access\AuthorizationException(
+            throw new AuthorizationException(
                 "You are not authorized to {$ability} this resource."
             );
         }

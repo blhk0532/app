@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\WithFileUploads;
 use MWGuerra\FileManager\Adapters\AdapterFactory;
 use MWGuerra\FileManager\Contracts\FileManagerAdapterInterface;
@@ -18,13 +19,14 @@ use MWGuerra\FileManager\Contracts\FileTypeContract;
 use MWGuerra\FileManager\FileManagerPlugin;
 use MWGuerra\FileManager\FileTypeRegistry;
 use MWGuerra\FileManager\Services\AuthorizationService;
+use MWGuerra\FileManager\Services\FileSecurityService;
 
 class FileManagerBase extends Page
 {
     use WithFileUploads;
 
     // State properties - using string identifiers for flexibility
-    #[\Livewire\Attributes\Url(as: 'path')]
+    #[Url(as: 'path')]
     public ?string $currentPath = null;
 
     public string $viewMode = 'grid';
@@ -811,7 +813,7 @@ class FileManagerBase extends Page
             return;
         }
 
-        $security = app(\MWGuerra\FileManager\Services\FileSecurityService::class);
+        $security = app(FileSecurityService::class);
         $uploadCount = 0;
         $errors = [];
 

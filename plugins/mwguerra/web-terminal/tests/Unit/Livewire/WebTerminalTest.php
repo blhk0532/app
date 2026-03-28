@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Livewire\Livewire;
 use MWGuerra\WebTerminal\Data\CommandResult;
 use MWGuerra\WebTerminal\Data\ConnectionConfig;
+use MWGuerra\WebTerminal\Livewire\TerminalBuilder;
 use MWGuerra\WebTerminal\Livewire\WebTerminal;
 
 describe('WebTerminal Component', function () {
@@ -722,7 +723,7 @@ describe('TerminalBuilder', function () {
     it('creates a builder instance', function () {
         $builder = WebTerminal::make();
 
-        expect($builder)->toBeInstanceOf(\MWGuerra\WebTerminal\Livewire\TerminalBuilder::class);
+        expect($builder)->toBeInstanceOf(TerminalBuilder::class);
     });
 
     it('configures local connection', function () {

@@ -7,6 +7,8 @@ namespace Livewire\Features\SupportPageComponents;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\View;
+use Illuminate\View\ViewException;
+use Livewire\Component;
 use Livewire\ComponentHook;
 use Livewire\Drawer\ImplicitRouteBinding;
 use Livewire\Features\SupportRouting\LivewirePageController;
@@ -208,7 +210,7 @@ class SupportPageComponents extends ComponentHook
                 'layout' => $layoutConfig,
             ]);
 
-        } catch (\Illuminate\View\ViewException $e) {
+        } catch (ViewException $e) {
             $layout = $layoutConfig->view;
 
             if (str($e->getMessage())->startsWith('View ['.$layout.'] not found.')) {
@@ -263,7 +265,7 @@ class SupportPageComponents extends ComponentHook
             $method = str($uses)->after('@')->toString();
 
             // Case 1: Direct component class usage (Route::get('/path', Component::class))
-            if (is_subclass_of($class, \Livewire\Component::class) && $method === '__invoke') {
+            if (is_subclass_of($class, Component::class) && $method === '__invoke') {
                 return $class;
             }
 

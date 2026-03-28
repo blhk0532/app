@@ -6,6 +6,7 @@ namespace Livewire\Features\SupportFileUploads;
 
 use Illuminate\Http\UploadedFile;
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
+use Livewire\Wireable;
 
 class FileUploadSynth extends Synth
 {
@@ -52,7 +53,7 @@ class FileUploadSynth extends Synth
             }
         }
 
-        if ($value instanceof \Livewire\Wireable) {
+        if ($value instanceof Wireable) {
             $keys = array_keys(get_object_vars($value));
 
             foreach ($keys as $key) {

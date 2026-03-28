@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Livewire\Features\SupportTesting;
 
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Laravel\Dusk\Browser;
+use Laravel\Dusk\Console\DuskCommand;
+use Orchestra\Testbench\Dusk\Options;
 use PHPUnit\Framework\TestCase;
+use Psy\Shell;
 
 use function Livewire\invade;
 use function Livewire\on;
@@ -52,8 +56,8 @@ class DuskTestable
             static::$currentTestCase = null;
         });
 
-        if (isset($_SERVER['CI']) && class_exists(\Orchestra\Testbench\Dusk\Options::class)) {
-            \Orchestra\Testbench\Dusk\Options::withoutUI();
+        if (isset($_SERVER['CI']) && class_exists(Options::class)) {
+            Options::withoutUI();
         }
 
         Browser::mixin(new DuskBrowserMacros);
@@ -114,7 +118,7 @@ class DuskTestable
         return self::$browser = $testCase->newBrowser($testCase->createWebDriver());
     }
 
-    public static function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null)
+    public static function actingAs(Authenticatable $user, $driver = null)
     {
         //
     }
@@ -197,9 +201,9 @@ class DuskTestable
 
     public function breakIntoATinkerShell($browsers, $e)
     {
-        $sh = new \Psy\Shell;
+        $sh = new Shell;
 
-        $sh->add(new \Laravel\Dusk\Console\DuskCommand($this, $e));
+        $sh->add(new DuskCommand($this, $e));
 
         $sh->setScopeVariables([
             'browsers' => $browsers,

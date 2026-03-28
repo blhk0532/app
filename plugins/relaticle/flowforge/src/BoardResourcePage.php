@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Relaticle\Flowforge;
 
+use Filament\Actions\Action;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Exceptions\ActionNotResolvableException;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Resources\Pages\Page;
 use Relaticle\Flowforge\Concerns\BaseBoard;
@@ -37,9 +39,9 @@ abstract class BoardResourcePage extends Page implements HasActions, HasBoard, H
      * board action detection.
      *
      * @param  array<array<string, mixed>>  $actions
-     * @return array<\Filament\Actions\Action>
+     * @return array<Action>
      *
-     * @throws \Filament\Actions\Exceptions\ActionNotResolvableException
+     * @throws ActionNotResolvableException
      */
     protected function resolveActions(array $actions): array
     {
@@ -47,7 +49,7 @@ abstract class BoardResourcePage extends Page implements HasActions, HasBoard, H
 
         foreach ($actions as $actionNestingIndex => $action) {
             if (blank($action['name'] ?? null)) {
-                throw new \Filament\Actions\Exceptions\ActionNotResolvableException('An action tried to resolve without a name.');
+                throw new ActionNotResolvableException('An action tried to resolve without a name.');
             }
 
             // Check if this is a board CARD action (has recordKey in context)

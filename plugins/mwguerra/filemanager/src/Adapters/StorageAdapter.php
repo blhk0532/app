@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace MWGuerra\FileManager\Adapters;
 
 use Exception;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use MWGuerra\FileManager\Contracts\FileManagerAdapterInterface;
 use MWGuerra\FileManager\Contracts\FileManagerItemInterface;
+use MWGuerra\FileManager\Services\FileUrlService;
 use RuntimeException;
 
 /**
@@ -411,7 +413,7 @@ class StorageAdapter implements FileManagerAdapterInterface
                 return null;
             }
 
-            $urlService = app(\MWGuerra\FileManager\Services\FileUrlService::class);
+            $urlService = app(FileUrlService::class);
             $expiration = config('filemanager.streaming.url_expiration', 60);
 
             return $urlService->getPreviewUrl(
@@ -514,7 +516,7 @@ class StorageAdapter implements FileManagerAdapterInterface
     /**
      * Get the storage instance.
      */
-    private function storage(): \Illuminate\Contracts\Filesystem\Filesystem
+    private function storage(): Filesystem
     {
         return Storage::disk($this->disk);
     }

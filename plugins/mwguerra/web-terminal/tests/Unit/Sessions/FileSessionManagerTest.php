@@ -20,7 +20,7 @@ afterEach(function () {
     foreach ($this->startedSessions as $sessionId) {
         try {
             $this->manager->terminate($sessionId);
-        } catch (\Throwable) {
+        } catch (Throwable) {
             // Ignore errors during cleanup
         }
     }

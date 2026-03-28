@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Livewire\Mechanisms\HandleRequests;
 
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Foundation\Http\Middleware\TrimStrings;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Livewire\Exceptions\PayloadTooLargeException;
@@ -54,11 +56,11 @@ class HandleRequests extends Mechanism
 
     public function skipRequestPayloadTamperingMiddleware()
     {
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::skipWhen(function () {
+        ConvertEmptyStringsToNull::skipWhen(function () {
             return $this->isLivewireRequest();
         });
 
-        \Illuminate\Foundation\Http\Middleware\TrimStrings::skipWhen(function () {
+        TrimStrings::skipWhen(function () {
             return $this->isLivewireRequest();
         });
     }

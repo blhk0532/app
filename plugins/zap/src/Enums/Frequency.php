@@ -5,7 +5,15 @@ declare(strict_types=1);
 namespace Zap\Enums;
 
 use Carbon\CarbonInterface;
+use Zap\Data\AnnuallyFrequencyConfig;
+use Zap\Data\BiMonthlyFrequencyConfig;
+use Zap\Data\BiWeeklyFrequencyConfig;
+use Zap\Data\DailyFrequencyConfig;
 use Zap\Data\FrequencyConfig;
+use Zap\Data\MonthlyFrequencyConfig;
+use Zap\Data\QuarterlyFrequencyConfig;
+use Zap\Data\SemiAnnuallyFrequencyConfig;
+use Zap\Data\WeeklyFrequencyConfig;
 
 enum Frequency: string
 {
@@ -57,14 +65,14 @@ enum Frequency: string
     public function configClass(): string
     {
         return match ($this) {
-            self::DAILY => \Zap\Data\DailyFrequencyConfig::class,
-            self::WEEKLY => \Zap\Data\WeeklyFrequencyConfig::class,
-            self::BIWEEKLY => \Zap\Data\BiWeeklyFrequencyConfig::class,
-            self::MONTHLY => \Zap\Data\MonthlyFrequencyConfig::class,
-            self::BIMONTHLY => \Zap\Data\BiMonthlyFrequencyConfig::class,
-            self::QUARTERLY => \Zap\Data\QuarterlyFrequencyConfig::class,
-            self::SEMIANNUALLY => \Zap\Data\SemiAnnuallyFrequencyConfig::class,
-            self::ANNUALLY => \Zap\Data\AnnuallyFrequencyConfig::class,
+            self::DAILY => DailyFrequencyConfig::class,
+            self::WEEKLY => WeeklyFrequencyConfig::class,
+            self::BIWEEKLY => BiWeeklyFrequencyConfig::class,
+            self::MONTHLY => MonthlyFrequencyConfig::class,
+            self::BIMONTHLY => BiMonthlyFrequencyConfig::class,
+            self::QUARTERLY => QuarterlyFrequencyConfig::class,
+            self::SEMIANNUALLY => SemiAnnuallyFrequencyConfig::class,
+            self::ANNUALLY => AnnuallyFrequencyConfig::class,
         };
     }
 }

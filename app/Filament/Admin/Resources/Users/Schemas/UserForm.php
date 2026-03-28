@@ -35,7 +35,7 @@ class UserForm
                             ->disk(config('filament-edit-profile.disk', 'public'))
                             ->visibility(config('filament-edit-profile.visibility', 'public'))
                             ->directory(filament('filament-edit-profile')->getAvatarDirectory())
-                            ->rules(filament('filament-edit-profile')->getAvatarRules())
+                            ->rules(['image', 'max:5120'])
                             ->hidden(! filament('filament-edit-profile')->getShouldShowAvatarForm()),
                         Textarea::make('notes')
                             ->label('Anteckningar')
@@ -55,18 +55,16 @@ class UserForm
                         TextInput::make('role')
                             ->label('Behörighet')
                             ->hidden()
+                            ->visible(fn (?int $recordId) => Auth::user()?->role === 'super' ?? false)
                             ->required()
                             ->default('booking'),
                         TextInput::make('name_first')
                             ->label('Förnamn')
-                            ->required()
                             ->string(),
                         TextInput::make('name_last')
                             ->label('Efternamn')
-                            ->required()
                             ->string(),
                         TextInput::make('phone')
-                            ->required()
                             ->label('Telefonnummer'),
                         TextInput::make('email')
                             ->required()
@@ -87,6 +85,7 @@ class UserForm
                             ->default('user'),
                         DateTimePicker::make('email_verified_at')
                             ->required()
+                            ->visible(fn (?int $recordId) => Auth::user()?->role === 'super' ?? false)
                             ->default(now()),
                         TextInput::make('password')
                             ->password()

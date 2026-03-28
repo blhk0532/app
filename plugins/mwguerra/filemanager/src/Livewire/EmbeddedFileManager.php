@@ -16,6 +16,7 @@ use MWGuerra\FileManager\Contracts\FileManagerItemInterface;
 use MWGuerra\FileManager\Contracts\FileTypeContract;
 use MWGuerra\FileManager\FileTypeRegistry;
 use MWGuerra\FileManager\Services\AuthorizationService;
+use MWGuerra\FileManager\Services\FileSecurityService;
 
 /**
  * Embeddable File Manager Livewire component.
@@ -650,7 +651,7 @@ class EmbeddedFileManager extends Component
             return;
         }
 
-        $security = app(\MWGuerra\FileManager\Services\FileSecurityService::class);
+        $security = app(FileSecurityService::class);
         $uploadCount = 0;
         $errors = [];
         $parentPath = $this->currentPath;

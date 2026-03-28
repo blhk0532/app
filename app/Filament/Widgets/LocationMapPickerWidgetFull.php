@@ -78,6 +78,30 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
                             ->draggable(true)
                             ->clickable(true)
                             ->geolocate(true)
+                            ->geoJson(function () {
+                                $pins = MapPin::all();
+                                $features = $pins->map(function ($pin) {
+                                    $lat = (float) ($pin->latitude ?? $pin->data['lat'] ?? 0);
+                                    $lng = (float) ($pin->longitude ?? $pin->data['lng'] ?? 0);
+
+                                    return [
+                                        'type' => 'Feature',
+                                        'geometry' => [
+                                            'type' => 'Point',
+                                            'coordinates' => [$lng, $lat],
+                                        ],
+                                        'properties' => [
+                                            'name' => $pin->name ?? 'Untitled Pin',
+                                        ],
+                                    ];
+                                });
+
+                                return json_encode([
+                                    'type' => 'FeatureCollection',
+                                    'features' => $features,
+                                ]);
+                            })
+                            ->geoJsonVisible(true)
                             ->geolocateLabel('Get My Location')
                             ->reactive()
                             ->afterStateUpdated(function ($state, $set) {
@@ -128,6 +152,11 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
                             ->placeholder('Search by street, city, or postal code')
                             ->maxLength(255)
                             ->columnSpanFull(),
+
+                        TextInput::make('pin_name')
+                            ->label('Pin Name / Note')
+                            ->placeholder('Enter a name for this location')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
 
@@ -153,11 +182,14 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
         }
 
         MapPin::create([
-            'name' => data_get($payload, 'address_search') ?? 'Saved Location',
+            'name' => data_get($payload, 'pin_name') ?? data_get($payload, 'address_search') ?? 'Saved Location',
             'latitude' => $lat,
             'longitude' => $lng,
+            'description' => data_get($payload, 'address_search'),
             'data' => $payload,
         ]);
+
+        $this->form->fill();
 
         Notification::make()
             ->title('Success')
@@ -165,7 +197,9 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
             ->success()
             ->send();
 
+        \Log::info('LocationMapPickerWidgetFull: dispatching refresh-pins');
         $this->dispatch('refresh-pins');
+        $this->dispatch('refresh-maps');
     }
 
     public function submit(): void

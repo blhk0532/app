@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace daacreators\CreatorsTicketing\Filament\Resources\AutomationRules;
 
+use App\Models\User;
 use BackedEnum;
 use daacreators\CreatorsTicketing\Enums\TicketPriority;
 use daacreators\CreatorsTicketing\Filament\Resources\AutomationRules\RelationManagers\AutomationLogsRelationManager;
@@ -66,7 +67,7 @@ class AutomationRuleResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        $userModel = config('creators-ticketing.user_model', \App\Models\User::class);
+        $userModel = config('creators-ticketing.user_model', User::class);
         $allowedUserField = config('creators-ticketing.navigation_visibility.field');
         $allowedUserValues = config('creators-ticketing.navigation_visibility.allowed');
 

@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
+use Buildix\Timex\Models\Category;
+use Buildix\Timex\Models\Event;
+use Buildix\Timex\Pages\Timex;
+use Buildix\Timex\Resources\EventResource;
 use Carbon\Carbon;
 
 return [
@@ -63,7 +68,7 @@ return [
     */
 
     'pages' => [
-        'timex' => Buildix\Timex\Pages\Timex::class,
+        'timex' => Timex::class,
         'slug' => 'timex',
         'group' => 'timex',
         'sort' => 0,
@@ -147,7 +152,7 @@ return [
     ],
 
     'resources' => [
-        'event' => Buildix\Timex\Resources\EventResource::class,
+        'event' => EventResource::class,
         'sort' => 1,
         'icon' => 'heroicon-o-calendar',
         'slug' => 'timex-events',
@@ -155,9 +160,9 @@ return [
         'isStartEndHidden' => false,
     ],
     'models' => [
-        'event' => Buildix\Timex\Models\Event::class,
+        'event' => Event::class,
         'users' => [
-            'model' => App\Models\User::class,
+            'model' => User::class,
             'name' => 'name',
             'id' => 'id',
         ],
@@ -196,7 +201,7 @@ return [
     |
     */
         'model' => [
-            'class' => Buildix\Timex\Models\Category::class, // \App\Models\Category::class
+            'class' => Category::class, // \App\Models\Category::class
             'key' => 'id', // "id" is a DB column - you can change by any primary key
             'value' => 'value', // "value" is a DB column - it used for Select options and displays on Resource page
             'icon' => 'icon', // "icon" is a DB column - define here any heroicon- icon

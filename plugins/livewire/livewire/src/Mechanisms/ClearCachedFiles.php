@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Livewire\Mechanisms;
 
+use Illuminate\Console\Events\CommandFinished;
+
 class ClearCachedFiles extends Mechanism
 {
     public function boot()
@@ -15,7 +17,7 @@ class ClearCachedFiles extends Mechanism
         ];
 
         if (app()->runningInConsole()) {
-            app('events')->listen(\Illuminate\Console\Events\CommandFinished::class, function ($event) use ($eventCommands) {
+            app('events')->listen(CommandFinished::class, function ($event) use ($eventCommands) {
                 if (in_array($event->command, $eventCommands) && $event->exitCode === 0) {
                     app('livewire.compiler')->clearCompiled($event->output);
                 }

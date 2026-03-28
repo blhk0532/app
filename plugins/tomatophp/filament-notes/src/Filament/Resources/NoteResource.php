@@ -3,6 +3,8 @@
 namespace TomatoPHP\FilamentNotes\Filament\Resources;
 
 use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -141,7 +143,7 @@ class NoteResource extends Resource
             ->paginationPageOptions(['12', '24', '48'])
             ->defaultPaginationPageOption(12)
             ->actions([
-                \Filament\Actions\Action::make('edit')
+                Action::make('edit')
                     ->label('Edit')
                     ->icon('heroicon-o-pencil')
                     ->fillForm(fn ($record) => [
@@ -156,7 +158,7 @@ class NoteResource extends Resource
                     ->action(function (array $data, $record) {
                         $record->update($data);
                     }),
-                \Filament\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ]);
     }
 

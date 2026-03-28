@@ -14,9 +14,9 @@
 
 
             <div class="flex justify-end gap-2 relative top-2" style="top:0rem;">
-                <x-filament::button 
-                    wire:click="savePin" 
-                    color="success" 
+                <x-filament::button
+                    wire:click="savePin"
+                    color="success"
                     size="sm"
                     icon="heroicon-o-map-pin"
                 >

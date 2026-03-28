@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace daacreators\CreatorsTicketing\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -24,7 +25,7 @@ class Department extends Model
 
     public function agents(): BelongsToMany
     {
-        $userModel = config('creators-ticketing.user_model', \App\Models\User::class);
+        $userModel = config('creators-ticketing.user_model', User::class);
         $pivot = config('creators-ticketing.table_prefix').'department_users';
 
         $userInstance = new $userModel;

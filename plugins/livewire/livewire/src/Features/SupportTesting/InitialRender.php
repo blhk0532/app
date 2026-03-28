@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Livewire\Features\SupportTesting;
 
+use Illuminate\Routing\Route;
+use Illuminate\Routing\RouteCollection;
+use Illuminate\Support\Facades\Blade;
 use Livewire\Drawer\Utils;
 
 class InitialRender extends Render
@@ -24,7 +27,7 @@ class InitialRender extends Render
         $uri = '/livewire-unit-test-endpoint/'.str()->random(20);
 
         $this->registerRouteBeforeExistingRoutes($uri, function () use ($name, $params) {
-            return \Illuminate\Support\Facades\Blade::render('@livewire($name, $params)', [
+            return Blade::render('@livewire($name, $params)', [
                 'name' => $name,
                 'params' => $params,
             ]);
@@ -53,12 +56,12 @@ class InitialRender extends Render
     {
         // To prevent this route from overriding wildcard routes registered within the application,
         // We have to make sure that this route is registered before other existing routes.
-        $livewireTestingRoute = new \Illuminate\Routing\Route(['GET', 'HEAD'], $path, $closure);
+        $livewireTestingRoute = new Route(['GET', 'HEAD'], $path, $closure);
 
         $existingRoutes = app('router')->getRoutes();
 
         // Make an empty collection.
-        $runningCollection = new \Illuminate\Routing\RouteCollection;
+        $runningCollection = new RouteCollection;
 
         // Add this testing route as the first one.
         $runningCollection->add($livewireTestingRoute);

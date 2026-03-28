@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\Validation\ValidationException;
+use Livewire\Component;
 use Livewire\Drawer\Utils;
 use Livewire\Exceptions\MissingRulesException;
 use Livewire\Form;
@@ -394,7 +395,7 @@ trait HandlesValidation
     protected function isRootComponent()
     {
         // Because this trait is used for form objects as well...
-        return $this instanceof \Livewire\Component;
+        return $this instanceof Component;
     }
 
     protected function withFormObjectValidators($validator, $validateSelf, $validateForm)

@@ -10,6 +10,7 @@ use Filament\AdvancedExport\Concerns\HasExportNotifications;
 use Filament\AdvancedExport\Concerns\HasExportQuery;
 use Filament\AdvancedExport\Exports\AdvancedExport;
 use Filament\AdvancedExport\Exports\SimpleExport;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -71,7 +72,7 @@ trait HasAdvancedExport
     /**
      * Create the export configuration form.
      *
-     * @return array<\Filament\Forms\Components\Component>
+     * @return array<Component>
      */
     protected function getExportForm(): array
     {

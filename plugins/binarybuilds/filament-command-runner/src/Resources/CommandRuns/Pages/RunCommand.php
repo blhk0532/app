@@ -6,6 +6,7 @@ namespace BinaryBuilds\CommandRunner\Resources\CommandRuns\Pages;
 
 use BinaryBuilds\CommandRunner\Models\CommandRun;
 use BinaryBuilds\CommandRunner\Resources\CommandRuns\CommandRunResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
@@ -83,7 +84,7 @@ class RunCommand extends CreateRecord
         return __('Run Command');
     }
 
-    protected function getCreateFormAction(): \Filament\Actions\Action
+    protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
             ->label(__('Run Command'))

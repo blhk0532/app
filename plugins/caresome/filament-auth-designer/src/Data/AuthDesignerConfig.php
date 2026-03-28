@@ -6,6 +6,7 @@ namespace Caresome\FilamentAuthDesigner\Data;
 
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use Caresome\FilamentAuthDesigner\Support\MediaDetector;
+use Illuminate\Contracts\View\View;
 
 final readonly class AuthDesignerConfig
 {
@@ -113,7 +114,7 @@ final readonly class AuthDesignerConfig
         $output = '';
         foreach ($this->renderHooks[$name] as $hook) {
             $result = $hook();
-            $output .= $result instanceof \Illuminate\Contracts\View\View ? $result->render() : $result;
+            $output .= $result instanceof View ? $result->render() : $result;
         }
 
         return $output;

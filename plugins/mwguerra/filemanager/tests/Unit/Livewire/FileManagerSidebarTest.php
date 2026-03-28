@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
 use MWGuerra\FileManager\Livewire\FileManagerSidebar;
 use MWGuerra\FileManager\Models\FileSystemItem;
 
@@ -163,7 +164,7 @@ describe('config properties', function () {
 
 describe('inheritance', function () {
     it('extends Livewire Component', function () {
-        expect(is_subclass_of(FileManagerSidebar::class, Livewire\Component::class))->toBeTrue();
+        expect(is_subclass_of(FileManagerSidebar::class, Component::class))->toBeTrue();
     });
 });
 

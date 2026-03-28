@@ -6,6 +6,7 @@ namespace Buildix\Timex\Calendar;
 
 use Auth;
 use Buildix\Timex\Traits\TimexTrait;
+use Carbon\Carbon;
 use Livewire\Component;
 use Str;
 
@@ -58,7 +59,7 @@ class Event extends Component
             $this->color = config('timex.categories.colors.'.$this->color);
         }
 
-        $eventStart = \Carbon\Carbon::createFromTimestamp($this->start)->setHours(23);
+        $eventStart = Carbon::createFromTimestamp($this->start)->setHours(23);
         $this->isInPast = $eventStart->isPast();
 
     }

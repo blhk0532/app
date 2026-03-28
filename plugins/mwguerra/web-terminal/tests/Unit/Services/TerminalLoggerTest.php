@@ -9,7 +9,7 @@ beforeEach(function () {
     // Clean up any existing logs
     try {
         TerminalLog::query()->delete();
-    } catch (\Throwable) {
+    } catch (Throwable) {
         // Table may not exist in test environment
     }
 });

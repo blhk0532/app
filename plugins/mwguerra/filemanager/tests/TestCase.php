@@ -4,6 +4,7 @@ namespace MWGuerra\FileManager\Tests;
 
 use Filament\FilamentServiceProvider;
 use Filament\Support\SupportServiceProvider;
+use Illuminate\Support\ViewErrorBag;
 use Livewire\LivewireServiceProvider;
 use MWGuerra\FileManager\FileManagerServiceProvider;
 use MWGuerra\FileManager\Models\FileSystemItem;
@@ -19,7 +20,7 @@ class TestCase extends Orchestra
         $this->app['session']->start();
 
         // Share empty error bag with views for Livewire components
-        $this->app['view']->share('errors', new \Illuminate\Support\ViewErrorBag);
+        $this->app['view']->share('errors', new ViewErrorBag);
     }
 
     protected function getPackageProviders($app): array

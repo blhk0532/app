@@ -36,7 +36,7 @@ class PdfViewerEntry extends ViewEntry
         return $this->minHeight;
     }
 
-    public function disk(string|closure $disk): self
+    public function disk(string|Closure $disk): self
     {
         $this->disk = $disk;
 
@@ -97,7 +97,7 @@ class PdfViewerEntry extends ViewEntry
         return $storage->url($state);
     }
 
-    public function visibility(string|closure $visibility): self
+    public function visibility(string|Closure $visibility): self
     {
         $this->visibility = $visibility;
 

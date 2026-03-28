@@ -54,8 +54,8 @@ class RadiusFilter extends BaseFilter
             }
 
             $label = __('filament-google-maps::fgm.radius_filter.indicate', [
-                'radius'  => $state['radius'],
-                'units'   => $state['unit'],
+                'radius' => $state['radius'],
+                'units' => $state['unit'],
                 'address' => $state['geocomplete'],
             ]);
 
@@ -65,9 +65,9 @@ class RadiusFilter extends BaseFilter
 
     public function apply(Builder $query, array $data = []): Builder
     {
-        $latitude  = $data['latitude'] ?? null;
+        $latitude = $data['latitude'] ?? null;
         $longitude = $data['longitude'] ?? null;
-        $distance  = $data['radius'] ?? null;
+        $distance = $data['radius'] ?? null;
 
         if ($latitude && $longitude && $distance) {
             $kilometers = $this->getKilometers();
@@ -79,8 +79,8 @@ class RadiusFilter extends BaseFilter
             $latName = $this->getLatitude();
             $lngName = $this->getLongitude();
 
-            $sql = "((ACOS(SIN($latitude * PI() / 180) * SIN(" . $latName . " * PI() / 180) + COS($latitude * PI() / 180) * COS(" .
-                $latName . " * PI() / 180) * COS(($longitude - " . $lngName . ") * PI() / 180)) * 180 / PI()) * 60 * %f) < $distance";
+            $sql = "((ACOS(SIN($latitude * PI() / 180) * SIN(".$latName." * PI() / 180) + COS($latitude * PI() / 180) * COS(".
+                $latName." * PI() / 180) * COS(($longitude - ".$lngName.") * PI() / 180)) * 180 / PI()) * 60 * %f) < $distance";
 
             $sql = sprintf($sql, $kilometers ? (1.1515 * 1.609344) : 1.1515);
 

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Livewire\Features\SupportLazyLoading;
 
 use Illuminate\Routing\Route;
+use Livewire\Attributes\Defer;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 use Livewire\ComponentHook;
 use Livewire\Drawer\Utils;
@@ -91,8 +93,8 @@ class SupportLazyLoading extends ComponentHook
         }
 
         $reflectionClass = new ReflectionClass($this->component);
-        $lazyAttribute = $reflectionClass->getAttributes(\Livewire\Attributes\Lazy::class)[0] ?? null;
-        $deferAttribute = $reflectionClass->getAttributes(\Livewire\Attributes\Defer::class)[0] ?? null;
+        $lazyAttribute = $reflectionClass->getAttributes(Lazy::class)[0] ?? null;
+        $deferAttribute = $reflectionClass->getAttributes(Defer::class)[0] ?? null;
 
         // Apply attributes only if the corresponding param is not explicitly false...
         $lazyDisabled = isset($params['lazy']) && $params['lazy'] === false;

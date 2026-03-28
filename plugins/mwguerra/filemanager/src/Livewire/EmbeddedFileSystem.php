@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MWGuerra\FileManager\Livewire;
 
+use Illuminate\Contracts\View\View;
 use MWGuerra\FileManager\Adapters\AdapterFactory;
 use MWGuerra\FileManager\Contracts\FileManagerAdapterInterface;
 
@@ -45,7 +46,7 @@ class EmbeddedFileSystem extends EmbeddedFileManager
         return true;
     }
 
-    public function render(): \Illuminate\Contracts\View\View
+    public function render(): View
     {
         return view('filemanager::livewire.embedded-file-system');
     }

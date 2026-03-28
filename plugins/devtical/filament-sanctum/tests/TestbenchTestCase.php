@@ -2,6 +2,7 @@
 
 namespace Devtical\Sanctum\Tests;
 
+use Devtical\Sanctum\SanctumServiceProvider;
 use Orchestra\Testbench\TestCase as Testbench;
 
 abstract class TestbenchTestCase extends Testbench
@@ -19,7 +20,7 @@ abstract class TestbenchTestCase extends Testbench
     protected function getPackageProviders($app): array
     {
         return [
-            \Devtical\Sanctum\SanctumServiceProvider::class,
+            SanctumServiceProvider::class,
         ];
     }
 }

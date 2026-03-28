@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 
@@ -60,7 +61,7 @@ describe('stream endpoint', function () {
 
     it('returns 404 for nonexistent file', function () {
         // Create authenticated user
-        $user = new class extends Illuminate\Foundation\Auth\User
+        $user = new class extends User
         {
             protected $fillable = ['id'];
         };
@@ -79,7 +80,7 @@ describe('stream endpoint', function () {
 
     it('streams file for authenticated user with valid signed URL', function () {
         // Create authenticated user
-        $user = new class extends Illuminate\Foundation\Auth\User
+        $user = new class extends User
         {
             protected $fillable = ['id'];
         };
@@ -114,7 +115,7 @@ describe('stream endpoint', function () {
     });
 
     it('returns 403 for expired signed URL', function () {
-        $user = new class extends Illuminate\Foundation\Auth\User
+        $user = new class extends User
         {
             protected $fillable = ['id'];
         };
@@ -135,7 +136,7 @@ describe('stream endpoint', function () {
 
 describe('download endpoint', function () {
     it('sets Content-Disposition to attachment', function () {
-        $user = new class extends Illuminate\Foundation\Auth\User
+        $user = new class extends User
         {
             protected $fillable = ['id'];
         };
@@ -155,7 +156,7 @@ describe('download endpoint', function () {
     });
 
     it('uses custom filename when provided', function () {
-        $user = new class extends Illuminate\Foundation\Auth\User
+        $user = new class extends User
         {
             protected $fillable = ['id'];
         };
@@ -177,7 +178,7 @@ describe('download endpoint', function () {
 
 describe('security', function () {
     it('includes X-Content-Type-Options header for inline content', function () {
-        $user = new class extends Illuminate\Foundation\Auth\User
+        $user = new class extends User
         {
             protected $fillable = ['id'];
         };
@@ -197,7 +198,7 @@ describe('security', function () {
     it('sanitizes dangerous characters in filename', function () {
         Storage::disk('local')->put('test<script>.txt', 'content');
 
-        $user = new class extends Illuminate\Foundation\Auth\User
+        $user = new class extends User
         {
             protected $fillable = ['id'];
         };

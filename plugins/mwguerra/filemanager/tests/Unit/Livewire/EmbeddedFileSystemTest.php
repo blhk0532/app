@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Collection;
+use Livewire\Component;
+use MWGuerra\FileManager\Contracts\FileTypeContract;
+use MWGuerra\FileManager\Livewire\EmbeddedFileManager;
 use MWGuerra\FileManager\Livewire\EmbeddedFileSystem;
 use MWGuerra\FileManager\Models\FileSystemItem;
 
@@ -214,7 +218,7 @@ describe('items property', function () {
 
         $items = $component->items;
 
-        expect($items)->toBeInstanceOf(Illuminate\Support\Collection::class);
+        expect($items)->toBeInstanceOf(Collection::class);
         // Should contain: documents folder, images folder, readme.txt
         expect($items->count())->toBeGreaterThanOrEqual(3);
     });
@@ -226,7 +230,7 @@ describe('items property', function () {
 
         $items = $component->items;
 
-        expect($items)->toBeInstanceOf(Illuminate\Support\Collection::class);
+        expect($items)->toBeInstanceOf(Collection::class);
         // Should contain: contract.pdf
         expect($items->count())->toBeGreaterThanOrEqual(1);
     });
@@ -433,7 +437,7 @@ describe('all folders property', function () {
 
         $allFolders = $component->allFolders;
 
-        expect($allFolders)->toBeInstanceOf(Illuminate\Support\Collection::class);
+        expect($allFolders)->toBeInstanceOf(Collection::class);
         expect($allFolders->count())->toBeGreaterThanOrEqual(2);
     });
 });
@@ -569,7 +573,7 @@ describe('file type', function () {
         if ($file) {
             $fileType = $component->getFileTypeForItem($file);
 
-            expect($fileType)->toBeInstanceOf(MWGuerra\FileManager\Contracts\FileTypeContract::class);
+            expect($fileType)->toBeInstanceOf(FileTypeContract::class);
         }
     });
 });
@@ -582,7 +586,7 @@ describe('preview file type property', function () {
 
         $fileType = $component->previewFileType;
 
-        expect($fileType)->toBeInstanceOf(MWGuerra\FileManager\Contracts\FileTypeContract::class);
+        expect($fileType)->toBeInstanceOf(FileTypeContract::class);
         expect($fileType->identifier())->toBe('text');
     });
 
@@ -596,11 +600,11 @@ describe('preview file type property', function () {
 
 describe('inheritance', function () {
     it('extends EmbeddedFileManager', function () {
-        expect(is_subclass_of(EmbeddedFileSystem::class, MWGuerra\FileManager\Livewire\EmbeddedFileManager::class))->toBeTrue();
+        expect(is_subclass_of(EmbeddedFileSystem::class, EmbeddedFileManager::class))->toBeTrue();
     });
 
     it('is a Livewire component', function () {
-        expect(is_subclass_of(EmbeddedFileSystem::class, Livewire\Component::class))->toBeTrue();
+        expect(is_subclass_of(EmbeddedFileSystem::class, Component::class))->toBeTrue();
     });
 });
 

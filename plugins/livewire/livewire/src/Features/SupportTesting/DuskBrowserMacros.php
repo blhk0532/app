@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Livewire\Features\SupportTesting;
 
 use Facebook\WebDriver\WebDriverBy;
+use Laravel\Dusk\Browser;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 use function Livewire\str;
@@ -14,7 +15,7 @@ class DuskBrowserMacros
     public function assertAttributeMissing()
     {
         return function ($selector, $attribute) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             $actual = $this->resolver->findOrFail($selector)->getAttribute($attribute);
@@ -31,7 +32,7 @@ class DuskBrowserMacros
     public function assertNotVisible()
     {
         return function ($selector) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             PHPUnit::assertFalse(
@@ -46,7 +47,7 @@ class DuskBrowserMacros
     public function assertNotPresent()
     {
         return function ($selector) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             PHPUnit::assertTrue(
@@ -61,7 +62,7 @@ class DuskBrowserMacros
     public function assertHasClass()
     {
         return function ($selector, $className) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             PHPUnit::assertContains(
@@ -77,7 +78,7 @@ class DuskBrowserMacros
     public function assertScript()
     {
         return function ($js, $expects = true) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             PHPUnit::assertEquals($expects, head($this->script(
                 str($js)->start('return ')
             )));
@@ -89,7 +90,7 @@ class DuskBrowserMacros
     public function runScript()
     {
         return function ($js) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $this->script([$js]);
 
             return $this;
@@ -108,7 +109,7 @@ class DuskBrowserMacros
     public function assertNotInViewPort()
     {
         return function ($selector) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             return $this->assertInViewPort($selector, invert: true);
         };
     }
@@ -116,7 +117,7 @@ class DuskBrowserMacros
     public function assertInViewPort()
     {
         return function ($selector, $invert = false) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             $result = $this->script(
@@ -139,7 +140,7 @@ class DuskBrowserMacros
     public function assertClassMissing()
     {
         return function ($selector, $className) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             PHPUnit::assertNotContains(
@@ -155,7 +156,7 @@ class DuskBrowserMacros
     public function waitForLivewireToLoad()
     {
         return function () {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             return $this->waitUsing(6, 25, function () {
                 return $this->driver->executeScript('return !! window.Livewire.initialRenderIsFinished');
             });
@@ -165,7 +166,7 @@ class DuskBrowserMacros
     public function waitForLivewire()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -223,7 +224,7 @@ class DuskBrowserMacros
     public function waitForNoLivewire()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -281,7 +282,7 @@ class DuskBrowserMacros
     public function waitForNavigate()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -334,7 +335,7 @@ class DuskBrowserMacros
     public function waitForNavigateRequest()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -399,7 +400,7 @@ class DuskBrowserMacros
     public function waitForNoNavigateRequest()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -452,7 +453,7 @@ class DuskBrowserMacros
     public function waitForNavigatePrefetchRequest()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -506,7 +507,7 @@ class DuskBrowserMacros
     {
         // 60ms is the minimum delay for a hover event to trigger a prefetch plus a buffer...
         return function ($callback = null, $prefetchDelay = 70) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -565,7 +566,7 @@ class DuskBrowserMacros
     public function online()
     {
         return function () {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             return tap($this)->script("window.dispatchEvent(new Event('online'))");
         };
     }
@@ -573,7 +574,7 @@ class DuskBrowserMacros
     public function offline()
     {
         return function () {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             return tap($this)->script("window.dispatchEvent(new Event('offline'))");
         };
     }

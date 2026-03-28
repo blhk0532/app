@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use function Laravel\Prompts\confirm;
@@ -180,7 +181,7 @@ class SetupCommand extends Command
 
             $appServiceProvider = Stringer::for(app_path('Providers/AppServiceProvider.php'));
             if (
-                ! $appServiceProvider->containsChainedBlock('app('.\Spatie\Permission\PermissionRegistrar::class.'::class)
+                ! $appServiceProvider->containsChainedBlock('app('.PermissionRegistrar::class.'::class)
                         ->setPermissionClass(Permission::class)
                         ->setRoleClass(Role::class)')
             ) {
@@ -194,7 +195,7 @@ class SetupCommand extends Command
 
                 $appServiceProvider
                     ->appendBlock('public function boot()', '
-                            app('.\Spatie\Permission\PermissionRegistrar::class.'::class)
+                            app('.PermissionRegistrar::class.'::class)
                                 ->setPermissionClass(Permission::class)
                                 ->setRoleClass(Role::class);
                         ', true)

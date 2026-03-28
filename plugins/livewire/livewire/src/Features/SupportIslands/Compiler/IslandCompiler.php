@@ -7,6 +7,7 @@ namespace Livewire\Features\SupportIslands\Compiler;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class IslandCompiler
 {
@@ -128,7 +129,7 @@ class IslandCompiler
 
     public function getHackedBladeCompiler()
     {
-        $instance = new class(app('files'), storage_path('framework/views/livewire')) extends \Illuminate\View\Compilers\BladeCompiler
+        $instance = new class(app('files'), storage_path('framework/views/livewire')) extends BladeCompiler
         {
             /**
              * Make this method public...

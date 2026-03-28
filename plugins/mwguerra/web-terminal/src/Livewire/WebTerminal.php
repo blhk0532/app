@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace MWGuerra\WebTerminal\Livewire;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use MWGuerra\WebTerminal\Connections\ConnectionHandlerFactory;
+use MWGuerra\WebTerminal\Connections\LocalConnectionHandler;
+use MWGuerra\WebTerminal\Connections\SSHConnectionHandler;
 use MWGuerra\WebTerminal\Contracts\ConnectionHandlerInterface;
 use MWGuerra\WebTerminal\Data\CommandResult;
 use MWGuerra\WebTerminal\Data\ConnectionConfig;
@@ -482,7 +485,7 @@ class WebTerminal extends Component
         array $scripts = [],
     ): void {
         // Generate unique component ID for session-based config storage
-        $this->componentId = (string) \Illuminate\Support\Str::uuid();
+        $this->componentId = (string) Str::uuid();
 
         // Set connection config
         if ($connection instanceof ConnectionConfig) {
@@ -1371,7 +1374,7 @@ class WebTerminal extends Component
         }
 
         // Configure local connection handler
-        if ($handler instanceof \MWGuerra\WebTerminal\Connections\LocalConnectionHandler) {
+        if ($handler instanceof LocalConnectionHandler) {
             if (! empty($environment)) {
                 $handler->setEnvironment($environment);
             }
@@ -1382,7 +1385,7 @@ class WebTerminal extends Component
         }
 
         // Configure SSH connection handler
-        if ($handler instanceof \MWGuerra\WebTerminal\Connections\SSHConnectionHandler) {
+        if ($handler instanceof SSHConnectionHandler) {
             if (! empty($environment)) {
                 $handler->setEnvironment($environment);
             }
@@ -1814,7 +1817,7 @@ class WebTerminal extends Component
             $handler = $this->getConnectionHandler();
 
             // Send the key sequence directly (no newline appended for special keys)
-            if ($handler instanceof \MWGuerra\WebTerminal\Connections\LocalConnectionHandler) {
+            if ($handler instanceof LocalConnectionHandler) {
                 // Use raw input for special keys (no newline appended)
                 $handler->writeRawInput($this->activeSessionId, $sequence);
             } else {

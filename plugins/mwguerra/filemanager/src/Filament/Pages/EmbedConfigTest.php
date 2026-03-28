@@ -6,6 +6,7 @@ namespace MWGuerra\FileManager\Filament\Pages;
 
 use BackedEnum;
 use Filament\Pages\Page;
+use Filament\Panel;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -48,7 +49,7 @@ class EmbedConfigTest extends Page implements HasSchemas
         return 'Embed Config Test';
     }
 
-    public static function getSlug(?\Filament\Panel $panel = null): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return 'embed-config-test';
     }

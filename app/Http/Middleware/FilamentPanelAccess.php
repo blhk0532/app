@@ -48,10 +48,11 @@ final class FilamentPanelAccess
         }
 
         Notification::make()
-           ->title('ACCESS DENIED ( ˶°ㅁ°) !! การเข้าถึงถูกปฏิเสธ')
-            ->body('')
+           ->title('ACCESS DENIED ( ˶°ㅁ°)!!')
+            ->body('การเข้าถึงถูกปฏิเสธ')
             ->warning()
             ->send();
+
 
         $previousUrl = url()->previous();
 

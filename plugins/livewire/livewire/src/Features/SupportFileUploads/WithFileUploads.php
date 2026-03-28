@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Livewire\Features\SupportFileUploads;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Renderless;
 use Livewire\Facades\GenerateSignedUploadUrlFacade;
@@ -52,7 +53,7 @@ trait WithFileUploads
 
             if ($append) {
                 $existing = $this->getPropertyValue($name);
-                if ($existing instanceof \Illuminate\Support\Collection) {
+                if ($existing instanceof Collection) {
                     $file = $existing->merge($file);
                 } elseif (is_array($existing)) {
                     $file = array_merge($existing, $file);

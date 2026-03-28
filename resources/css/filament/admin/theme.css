@@ -647,3 +647,9 @@ footer.fi-footer {
 footer{
     background:#18181b;
 }
+
+.fi-main.fi-width-full{
+    width: 100%;
+    height: 100vh;
+    overflow-y:scroll;
+}

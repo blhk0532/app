@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace daacreators\CreatorsTicketing\Filament\Resources\Departments\RelationManagers;
 
+use App\Models\User;
 use daacreators\CreatorsTicketing\Support\UserNameResolver;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -32,7 +33,7 @@ class AgentsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        $userModel = config('creators-ticketing.user_model', \App\Models\User::class);
+        $userModel = config('creators-ticketing.user_model', User::class);
         $nameColumn = config('creators-ticketing.user_name_column', 'name');
 
         return $table
@@ -240,7 +241,7 @@ class AgentsRelationManager extends RelationManager
                     ])
                     ->action(function (array $data) {
                         $department = $this->getOwnerRecord();
-                        $userModel = config('creators-ticketing.user_model', \App\Models\User::class);
+                        $userModel = config('creators-ticketing.user_model', User::class);
                         $userInstance = new $userModel;
                         $userKey = $userInstance->getKeyName();
 

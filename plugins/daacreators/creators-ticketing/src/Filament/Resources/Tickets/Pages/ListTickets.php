@@ -12,8 +12,10 @@ use Filament\Actions\CreateAction;
 use Filament\Facades\Filament;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class ListTickets extends ListRecords
 {
@@ -37,7 +39,7 @@ class ListTickets extends ListRecords
         return $this->getAgentTabs($user, $permissions);
     }
 
-    public function table(\Filament\Tables\Table $table): \Filament\Tables\Table
+    public function table(Table $table): Table
     {
         return parent::table($table)
             ->recordClasses(fn (Model $record) => (method_exists($record, 'isUnseen') && $record->isUnseen())
@@ -257,7 +259,7 @@ class ListTickets extends ListRecords
         return $tabs;
     }
 
-    protected function getTableQuery(): Builder|\Illuminate\Database\Eloquent\Relations\Relation|null
+    protected function getTableQuery(): Builder|Relation|null
     {
         $user = Filament::auth()->user();
         $permissions = $this->getUserPermissions();

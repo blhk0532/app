@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
 use MWGuerra\FileManager\Filament\Resources\FileSystemItemResource;
 use MWGuerra\FileManager\Filament\Resources\FileSystemItemResource\Pages\ListFileSystemItems;
 use MWGuerra\FileManager\Models\FileSystemItem;
@@ -23,7 +24,7 @@ describe('page configuration', function () {
     });
 
     it('extends ListRecords', function () {
-        expect(is_subclass_of(ListFileSystemItems::class, Filament\Resources\Pages\ListRecords::class))->toBeTrue();
+        expect(is_subclass_of(ListFileSystemItems::class, ListRecords::class))->toBeTrue();
     });
 
     it('can be instantiated', function () {
@@ -72,7 +73,7 @@ describe('inheritance', function () {
     it('inherits from Filament ListRecords page', function () {
         $parents = class_parents(ListFileSystemItems::class);
 
-        expect($parents)->toContain(Filament\Resources\Pages\ListRecords::class);
+        expect($parents)->toContain(ListRecords::class);
     });
 
     it('uses Filament page traits', function () {

@@ -15,9 +15,9 @@ class Geocode extends Command
 
     public function handle()
     {
-        $array   = $this->option('array');
+        $array = $this->option('array');
         $command = $this->option('command');
-        $args    = $this->option('args');
+        $args = $this->option('args');
 
         $address = $this->option('address');
 
@@ -32,25 +32,25 @@ class Geocode extends Command
         $geocoder = new Geocoder;
 
         if ($response = $geocoder->geocode($address)) {
-            $this->line('lat: ' . $response['lat']);
-            $this->line('lng: ' . $response['lng']);
+            $this->line('lat: '.$response['lat']);
+            $this->line('lng: '.$response['lng']);
 
             if ($array) {
                 $this->newLine();
                 $this->line('[');
-                $this->line("    'lat' => " . $response['lat']);
-                $this->line("    'lng' => " . $response['lng']);
+                $this->line("    'lat' => ".$response['lat']);
+                $this->line("    'lng' => ".$response['lng']);
                 $this->line('[');
             }
 
             if ($args) {
                 $this->newLine();
-                $this->line('--lat=' . $response['lat'] . ' --lng=' . $response['lng']);
+                $this->line('--lat='.$response['lat'].' --lng='.$response['lng']);
             }
 
             if ($command) {
                 $this->newLine();
-                $this->line('php artisan filament-google-maps:reverse-geocode --lat=' . $response['lat'] . ' --lng=' . $response['lng']);
+                $this->line('php artisan filament-google-maps:reverse-geocode --lat='.$response['lat'].' --lng='.$response['lng']);
             }
         }
 

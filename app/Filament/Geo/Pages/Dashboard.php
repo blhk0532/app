@@ -12,8 +12,8 @@ use App\Filament\App\Widgets\AccountInfoStackWidget;
 use App\Filament\App\Widgets\AccountWidget;
 use App\Filament\App\Widgets\FilamentInfosWidget;
 use App\Filament\App\Widgets\LatestOrders;
-use App\Filament\App\Widgets\StatsOverviewWidget;
-use App\Filament\App\Widgets\WorldClockWidget;
+use App\Filament\Widgets\LocationMapPickerWidgetFull;
+use App\Filament\Geo\Widgets\GeoMapWidget;
 use Arshaviras\WeatherWidget\Widgets\WeatherWidget;
 use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -91,9 +91,10 @@ class Dashboard extends BaseDashboard
             // AccountInfoStackWidget::class,
             // WorldClockWidget::class,
 
-            AccountWidget::class,
-            FilamentInfosWidget::class,
-            StatsOverviewWidget::class,
+        //    AccountWidget::class,
+        //    FilamentInfosWidget::class,
+        //    StatsOverviewWidget::class,
+        //    GeoMapWidget::class,
             //    \App\Filament\App\Widgets\LatestOrders::class,
             //    \App\Filament\App\Widgets\StatsOverviewWidget::class,
 
@@ -103,20 +104,32 @@ class Dashboard extends BaseDashboard
         ];
     }
 
- //   public function getWidgets(): array
- //   {
- //       return [
- //           StatsOverviewWidget::class,
- //       ];
- //   }
+       public function getWidgets(): array
+       {
+           return [
+              LocationMapPickerWidgetFull::class,
+           ];
+       }
 
     protected function getFooterWidgets(): array
     {
         return [
-        //    SingleCalendars::class,
-        //    LatestOrders::class,
+            //    GeoMapWidget::class,
+            //    SingleCalendars::class,
+            //    LatestOrders::class,
             // \App\Filament\Widgets\MyRinglistaWidget::class,
             //    WeatherWidget::class,
+            GeoMapWidget::class,
         ];
+    }
+
+    public function getHeaderWidgetsColumns(): int|array
+    {
+        return 1;
+    }
+
+    public function getFooterWidgetsColumns(): int|array
+    {
+        return 1;
     }
 }

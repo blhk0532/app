@@ -6,14 +6,17 @@ use Adultdate\FilamentBooking\FilamentBookingPlugin;
 use AdultDate\FilamentWirechat\Filament\Resources\Conversations\ConversationResource;
 use AdultDate\FilamentWirechat\Filament\Resources\Messages\MessageResource;
 use AdultDate\FilamentWirechat\FilamentWirechatPlugin;
+use App\Filament\Geo\Pages\Dashboard;
+use App\Filament\Geo\Widgets\GeoMapWidget;
 use App\Filament\Pages\SwedenKommuner;
 use App\Filament\Pages\SwedenPostnummer;
 use App\Filament\Pages\SwedenPostorter;
+use App\Filament\Widgets\LocationMapPickerWidgetFull;
+use App\Filament\Widgets\SwedenMapWidget;
 use App\Http\Middleware\FilamentPanelAccess;
 use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
-use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -23,16 +26,12 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
-use App\Filament\Widgets\SwedenMapWidget;
-use App\Filament\Widgets\LocationMapPickerWidgetFull;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
-use App\Filament\Geo\Pages\Dashboard;
 
 class GeoPanelProvider extends PanelProvider
 {
@@ -69,7 +68,7 @@ class GeoPanelProvider extends PanelProvider
             ])
             //    ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                SwedenMapWidget::class,
+                GeoMapWidget::class,
                 LocationMapPickerWidgetFull::class,
             ])
             ->middleware([

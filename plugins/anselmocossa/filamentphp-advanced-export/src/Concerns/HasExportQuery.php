@@ -3,6 +3,7 @@
 namespace Filament\AdvancedExport\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Provides query building methods for export functionality.
@@ -62,7 +63,7 @@ trait HasExportQuery
      *
      * @return array<string, mixed>
      */
-    protected function getExportViewData(\Illuminate\Database\Eloquent\Collection $records, ?array $columnsConfig = null): array
+    protected function getExportViewData(Collection $records, ?array $columnsConfig = null): array
     {
         $modelClass = $this->getExportModel();
         $tableName = (new $modelClass)->getTable();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace daacreators\CreatorsTicketing\Models;
 
+use App\Models\User;
 use daacreators\CreatorsTicketing\Enums\TicketPriority;
 use DB;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -32,7 +33,7 @@ class Ticket extends Model
 
     public static function scopeForUser($query, $userId)
     {
-        $userModel = config('creators-ticketing.user_model', \App\Models\User::class);
+        $userModel = config('creators-ticketing.user_model', User::class);
         $user = $userModel::find($userId);
 
         if (! $user) {
@@ -73,14 +74,14 @@ class Ticket extends Model
 
     public function requester(): BelongsTo
     {
-        $userModel = config('creators-ticketing.user_model', \App\Models\User::class);
+        $userModel = config('creators-ticketing.user_model', User::class);
 
         return $this->belongsTo($userModel, 'user_id');
     }
 
     public function assignee(): BelongsTo
     {
-        $userModel = config('creators-ticketing.user_model', \App\Models\User::class);
+        $userModel = config('creators-ticketing.user_model', User::class);
 
         return $this->belongsTo($userModel, 'assignee_id');
     }

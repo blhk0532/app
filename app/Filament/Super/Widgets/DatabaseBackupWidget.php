@@ -6,14 +6,20 @@ namespace App\Filament\Super\Widgets;
 
 use DB;
 use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Widgets\Widget;
 
-class DatabaseBackupWidget extends Widget implements HasSchemas
+class DatabaseBackupWidget extends Widget implements HasActions, HasForms
 {
-    use InteractsWithSchemas;
+    use InteractsWithActions;
+    use InteractsWithForms;
 
     protected string $view = 'filament.widgets.database-backup-widget';
 
@@ -21,13 +27,7 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
 
     protected static bool $isDiscovered = false;
 
-    public ?string $importFile = null;
-
     public ?string $exportTable = null;
-
-    public ?string $importTableFile = null;
-
-    public ?string $importTableTarget = null;
 
     public bool $exportStructure = true;
 
@@ -88,7 +88,7 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
             }
 
             $command = sprintf(
-                'mysqldump -u%s -p%s %s > %s 2>&1',
+                'mysqldump -u%s -p%s %s > %s',
                 escapeshellarg($connection['username']),
                 escapeshellarg($connection['password']),
                 escapeshellarg($connection['database']),
@@ -101,77 +101,153 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
                 throw new Exception('Backup failed: '.implode("\n", $output ?? []));
             }
 
-            Notification::make()
-                ->success()
-                ->title('Backup Created')
-                ->body('Download starting...')
-                ->send();
-
-            return $this->download($filepath, $filename);
+            return response()->download($filepath, $filename);
         } catch (Exception $e) {
             Notification::make()->danger()->title('Backup Failed')->body($e->getMessage())->send();
         }
     }
 
-    public function importDatabase(): void
+    protected function getImportTableAction(): Action
+    {
+        return Action::make('importTable')
+            ->label('Import Table')
+            ->icon('heroicon-o-arrow-up-on-square')
+            ->color('success')
+            ->form([
+                Select::make('targetTable')
+                    ->label('Target Table')
+                    ->options(fn () => $this->getTables())
+                    ->placeholder('Auto-detect from file'),
+                FileUpload::make('file')
+                    ->label('SQL File')
+                    ->acceptedFileTypes(['application/sql', 'text/plain', '.sql'])
+                    ->storeFiles(false)
+                    ->required(),
+            ])
+            ->action(function (array $data): void {
+                $this->handleImport($data);
+            });
+    }
+
+    protected function handleImport(array $data): void
     {
         try {
-            if (! $this->importFile) {
-                throw new Exception('No file selected');
+            $files = $data['file'] ?? [];
+            $targetTable = $data['targetTable'] ?? null;
+
+            if (empty($files)) {
+                throw new Exception('No file uploaded');
             }
+
+            $filePath = is_array($files) ? ($files[0] ?? null) : $files;
+
+            if (! $filePath) {
+                throw new Exception('No file uploaded');
+            }
+
+            $fullPath = storage_path('app/public/'.$filePath);
+            if (! file_exists($fullPath)) {
+                $fullPath = storage_path('app/'.$filePath);
+            }
+
+            if (! file_exists($fullPath)) {
+                throw new Exception('File not found: '.$filePath);
+            }
+
+            $sqlContent = file_get_contents($fullPath);
+            if (! $sqlContent) {
+                throw new Exception('Could not read file');
+            }
+
+            $processedSql = $this->processSqlForSafeImport($sqlContent, $targetTable);
 
             $connection = config('database.connections.'.config('database.default'));
-            $filePath = storage_path('app/public/'.$this->importFile);
-
-            if (! file_exists($filePath)) {
-                $filePath = storage_path('app/'.$this->importFile);
-            }
-
-            if (! file_exists($filePath)) {
-                throw new Exception('File not found');
-            }
-
-            // Create pre-import backup
-            $backupFilename = "pre_import_backup_{$connection['database']}_".now()->format('Y-m-d_H-i-s').'.sql';
-            $backupPath = storage_path('app/backups');
-            if (! file_exists($backupPath)) {
-                mkdir($backupPath, 0755, true);
-            }
-
-            $backupCommand = sprintf(
-                'mysqldump -u%s -p%s %s > %s 2>&1',
-                escapeshellarg($connection['username']),
-                escapeshellarg($connection['password']),
-                escapeshellarg($connection['database']),
-                escapeshellarg("{$backupPath}/{$backupFilename}")
+            $pdo = new \PDO(
+                "mysql:host={$connection['host']};dbname={$connection['database']}",
+                $connection['username'],
+                $connection['password']
             );
-
-            exec($backupCommand, $backupOutput, $backupReturnVar);
-
-            $importCommand = sprintf(
-                'mysql -u%s -p%s %s < %s 2>&1',
-                escapeshellarg($connection['username']),
-                escapeshellarg($connection['password']),
-                escapeshellarg($connection['database']),
-                escapeshellarg($filePath)
-            );
-
-            exec($importCommand, $output, $returnVar);
-
-            if ($returnVar !== 0) {
-                throw new Exception('Import failed: '.implode("\n", $output ?? []));
-            }
+            $pdo->exec($processedSql);
 
             Notification::make()
                 ->success()
                 ->title('Import Successful')
-                ->body("Backup saved to: storage/app/backups/{$backupFilename}")
+                ->body('Table data imported safely.')
                 ->send();
-
-            $this->importFile = null;
         } catch (Exception $e) {
             Notification::make()->danger()->title('Import Failed')->body($e->getMessage())->send();
         }
+    }
+
+    protected function processSqlForSafeImport(string $sql, ?string $targetTable = null): string
+    {
+        $sql = preg_replace('/--.*$/m', '', $sql);
+        $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
+
+        $statements = [];
+        $current = '';
+        $inString = false;
+        $stringChar = '';
+
+        for ($i = 0, $len = strlen($sql); $i < $len; $i++) {
+            $char = $sql[$i];
+            $prev = $i > 0 ? $sql[$i - 1] : '';
+
+            if (($char === "'" || $char === '"') && $prev !== '\\') {
+                if (! $inString) {
+                    $inString = true;
+                    $stringChar = $char;
+                } elseif ($char === $stringChar) {
+                    $inString = false;
+                }
+            }
+
+            if ($char === ';' && ! $inString) {
+                $trimmed = trim($current);
+                if (! empty($trimmed)) {
+                    $statements[] = $trimmed;
+                }
+                $current = '';
+            } else {
+                $current .= $char;
+            }
+        }
+
+        $trimmed = trim($current);
+        if (! empty($trimmed)) {
+            $statements[] = $trimmed;
+        }
+
+        $processed = [];
+        foreach ($statements as $stmt) {
+            $upper = strtoupper(ltrim($stmt));
+
+            if (str_starts_with($upper, 'DROP TABLE') ||
+                str_starts_with($upper, 'TRUNCATE') ||
+                str_starts_with($upper, 'DELETE FROM')) {
+                continue;
+            }
+
+            if (preg_match('/^\s*INSERT\s+INTO/i', $stmt)) {
+                $stmt = preg_replace('/^\s*INSERT\s+INTO/i', 'INSERT IGNORE INTO', $stmt);
+            }
+
+            if (preg_match('/^\s*CREATE\s+TABLE/i', $stmt)) {
+                $stmt = preg_replace('/^\s*CREATE\s+TABLE/i', 'CREATE TABLE IF NOT EXISTS', $stmt);
+            }
+
+            if ($targetTable) {
+                $stmt = preg_replace(
+                    '/(INSERT\s+(?:IGNORE\s+)?INTO|CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?|ALTER\s+TABLE)\s+[`"\']?[^`"\s(]+[`"\']?/i',
+                    '$1 `'.$targetTable.'`',
+                    $stmt
+                );
+            }
+
+            $processed[] = $stmt;
+        }
+
+        return implode(";\n", $processed).";\n";
     }
 
     public function exportTableData()
@@ -227,74 +303,11 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
                 throw new Exception('Export failed: '.implode("\n", $output ?? []));
             }
 
-            Notification::make()
-                ->success()
-                ->title('Export Created')
-                ->body('Download starting...')
-                ->send();
-
             $this->exportTable = null;
 
-            return $this->download($filepath, $filename);
+            return response()->download($filepath, $filename);
         } catch (Exception $e) {
             Notification::make()->danger()->title('Export Failed')->body($e->getMessage())->send();
-        }
-    }
-
-    public function importTableData(): void
-    {
-        try {
-            if (! $this->importTableFile) {
-                throw new Exception('No file selected');
-            }
-
-            $filePath = storage_path('app/public/'.$this->importTableFile);
-            if (! file_exists($filePath)) {
-                $filePath = storage_path('app/'.$this->importTableFile);
-            }
-
-            if (! file_exists($filePath)) {
-                throw new Exception('File not found');
-            }
-
-            $sqlContent = file_get_contents($filePath);
-            if ($sqlContent === false) {
-                throw new Exception('Cannot read file');
-            }
-
-            $processedSql = $this->processSqlForSafeImport($sqlContent, $this->importTableTarget);
-
-            $tempFilePath = tempnam(sys_get_temp_dir(), 'import_');
-            file_put_contents($tempFilePath, $processedSql);
-
-            $connection = config('database.connections.'.config('database.default'));
-
-            $command = sprintf(
-                'mysql -u%s -p%s %s < %s 2>&1',
-                escapeshellarg($connection['username']),
-                escapeshellarg($connection['password']),
-                escapeshellarg($connection['database']),
-                escapeshellarg($tempFilePath)
-            );
-
-            exec($command, $output, $returnVar);
-
-            unlink($tempFilePath);
-
-            if ($returnVar !== 0) {
-                throw new Exception('Import failed: '.implode("\n", $output ?? []));
-            }
-
-            Notification::make()
-                ->success()
-                ->title('Table Import Successful')
-                ->body('Data imported safely. No existing data was lost.')
-                ->send();
-
-            $this->importTableFile = null;
-            $this->importTableTarget = null;
-        } catch (Exception $e) {
-            Notification::make()->danger()->title('Import Failed')->body($e->getMessage())->send();
         }
     }
 
@@ -321,89 +334,5 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
             ->body(implode("\n", array_column($info, 'display')))
             ->duration(15000)
             ->send();
-    }
-
-    protected function processSqlForSafeImport(string $sql, ?string $targetTable = null): string
-    {
-        $sql = preg_replace('/--.*$/m', '', $sql);
-        $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
-
-        $statements = [];
-        $current = '';
-        $inString = false;
-        $stringChar = '';
-
-        for ($i = 0, $len = strlen($sql); $i < $len; $i++) {
-            $char = $sql[$i];
-            $prev = $i > 0 ? $sql[$i - 1] : '';
-
-            if (($char === "'" || $char === '"') && $prev !== '\\') {
-                if (! $inString) {
-                    $inString = true;
-                    $stringChar = $char;
-                } elseif ($char === $stringChar) {
-                    $inString = false;
-                }
-            }
-
-            if ($char === ';' && ! $inString) {
-                $trimmed = trim($current);
-                if (! empty($trimmed)) {
-                    $statements[] = $trimmed;
-                }
-                $current = '';
-            } else {
-                $current .= $char;
-            }
-        }
-
-        $trimmed = trim($current);
-        if (! empty($trimmed)) {
-            $statements[] = $trimmed;
-        }
-
-        $processed = [];
-        foreach ($statements as $stmt) {
-            $upper = strtoupper(ltrim($stmt));
-
-            // Skip destructive statements
-            if (str_starts_with($upper, 'DROP TABLE') ||
-                str_starts_with($upper, 'TRUNCATE') ||
-                str_starts_with($upper, 'DELETE FROM')) {
-                continue;
-            }
-
-            // Convert INSERT to INSERT IGNORE
-            if (preg_match('/^\s*INSERT\s+INTO/i', $stmt)) {
-                $stmt = preg_replace('/^\s*INSERT\s+INTO/i', 'INSERT IGNORE INTO', $stmt);
-            }
-
-            // Convert CREATE TABLE to CREATE TABLE IF NOT EXISTS
-            if (preg_match('/^\s*CREATE\s+TABLE/i', $stmt)) {
-                $stmt = preg_replace('/^\s*CREATE\s+TABLE/i', 'CREATE TABLE IF NOT EXISTS', $stmt);
-            }
-
-            // Skip constraint additions
-            if (preg_match('/^\s*ALTER\s+TABLE/i', $stmt)) {
-                if (str_contains(strtolower($stmt), 'add constraint') ||
-                    str_contains(strtolower($stmt), 'add index') ||
-                    str_contains(strtolower($stmt), 'add unique')) {
-                    continue;
-                }
-            }
-
-            // Replace table name if specified
-            if ($targetTable) {
-                $stmt = preg_replace(
-                    '/(INSERT\s+(?:IGNORE\s+)?INTO|CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?|ALTER\s+TABLE)\s+[`"\']?[^`"\s(]+[`"\']?/i',
-                    '$1 `'.$targetTable.'`',
-                    $stmt
-                );
-            }
-
-            $processed[] = $stmt;
-        }
-
-        return implode(";\n", $processed).";\n";
     }
 }

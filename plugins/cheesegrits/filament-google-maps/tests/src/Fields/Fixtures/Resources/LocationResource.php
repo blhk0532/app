@@ -120,10 +120,10 @@ class LocationResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListLocations::route('/'),
+            'index' => Pages\ListLocations::route('/'),
             'create' => Pages\CreateLocation::route('/create'),
-            'view'   => Pages\ViewLocation::route('/{record}'),
-            'edit'   => Pages\EditLocation::route('/{record}/edit'),
+            'view' => Pages\ViewLocation::route('/{record}'),
+            'edit' => Pages\EditLocation::route('/{record}/edit'),
         ];
     }
 }

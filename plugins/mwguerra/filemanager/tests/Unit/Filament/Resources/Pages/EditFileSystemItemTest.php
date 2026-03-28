@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Filament\Actions\DeleteAction;
+use Filament\Resources\Pages\EditRecord;
 use MWGuerra\FileManager\Filament\Resources\FileSystemItemResource;
 use MWGuerra\FileManager\Filament\Resources\FileSystemItemResource\Pages\EditFileSystemItem;
 use MWGuerra\FileManager\Models\FileSystemItem;
@@ -23,7 +24,7 @@ describe('page configuration', function () {
     });
 
     it('extends EditRecord', function () {
-        expect(is_subclass_of(EditFileSystemItem::class, Filament\Resources\Pages\EditRecord::class))->toBeTrue();
+        expect(is_subclass_of(EditFileSystemItem::class, EditRecord::class))->toBeTrue();
     });
 
     it('can be instantiated', function () {
@@ -72,7 +73,7 @@ describe('inheritance', function () {
     it('inherits from Filament EditRecord page', function () {
         $parents = class_parents(EditFileSystemItem::class);
 
-        expect($parents)->toContain(Filament\Resources\Pages\EditRecord::class);
+        expect($parents)->toContain(EditRecord::class);
     });
 
     it('uses Filament page traits', function () {

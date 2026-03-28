@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Livewire\Features\SupportDisablingBackButtonCache;
 
+use Illuminate\Contracts\Http\Kernel;
 use Livewire\ComponentHook;
 
 use function Livewire\on;
@@ -18,7 +19,7 @@ class SupportDisablingBackButtonCache extends ComponentHook
             static::$disableBackButtonCache = false;
         });
 
-        $kernel = app()->make(\Illuminate\Contracts\Http\Kernel::class);
+        $kernel = app()->make(Kernel::class);
 
         if ($kernel->hasMiddleware(DisableBackButtonCacheMiddleware::class)) {
             return;

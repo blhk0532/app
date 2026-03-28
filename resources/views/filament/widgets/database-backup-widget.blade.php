@@ -12,16 +12,6 @@
                         <x-heroicon-o-arrow-down-tray class="w-5 h-5" />
                         Backup Database
                     </button>
-
-                    <div class="mt-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Import File</label>
-                        <input type="file" wire:model="importFile" accept=".sql" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 dark:file:bg-gray-700 dark:file:text-gray-300" />
-                        @error('importFile') <span class="text-danger-600 text-sm">{{ $message }}</span> @enderror
-                    </div>
-                    <button wire:click="importDatabase" wire:confirm="⚠️ WARNING: This will REPLACE ALL database data. Continue?" class="fi-btn fi-btn-primary fi-color-warning gap-1.5 inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium outline-none transition duration-75 focus:ring-2 disabled:pointer-events-none disabled:opacity-75 bg-warning-600 text-white shadow-sm hover:bg-warning-500 focus:ring-warning-500">
-                        <x-heroicon-o-arrow-up-tray class="w-5 h-5" />
-                        Import Database
-                    </button>
                 </div>
             </div>
 
@@ -65,23 +55,9 @@
             <div class="p-4 bg-green-50 rounded-lg dark:bg-green-900/20">
                 <h4 class="text-sm font-medium text-green-700 dark:text-green-300 mb-3">Import Table (Safe)</h4>
                 <div class="flex flex-col gap-2">
-                    <select wire:model="importTableTarget" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <option value="">Auto-detect from file</option>
-                        @foreach($this->getTables() as $table)
-                            <option value="{{ $table }}">{{ $table }}</option>
-                        @endforeach
-                    </select>
+                    <p class="text-xs text-green-600 dark:text-green-400 mb-2">Uses INSERT IGNORE - no data loss!</p>
 
-                    <div>
-                        <input type="file" wire:model="importTableFile" accept=".sql" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200" />
-                    </div>
-
-                    <p class="text-xs text-green-600 dark:text-green-400">Uses INSERT IGNORE - no data loss!</p>
-
-                    <button wire:click="importTableData" wire:confirm="Import table data safely? No existing data will be lost." class="fi-btn fi-btn-primary fi-color-success gap-1.5 inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium outline-none transition duration-75 focus:ring-2 disabled:pointer-events-none disabled:opacity-75 bg-success-600 text-white shadow-sm hover:bg-success-500 focus:ring-success-500">
-                        <x-heroicon-o-arrow-up-on-square class="w-5 h-5" />
-                        Import Table
-                    </button>
+                    {{ $this->getImportTableAction() }}
                 </div>
             </div>
 
@@ -96,7 +72,5 @@
                 </div>
             </div>
         </div>
-
-        {{-- File downloads handled directly by Livewire response --}}
     </x-filament::section>
 </x-filament-widgets::widget>

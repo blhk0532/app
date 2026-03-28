@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace daacreators\CreatorsTicketing\Filament\Resources\Tickets\Pages;
 
 use App\Models\User;
+use Carbon\Carbon;
 use daacreators\CreatorsTicketing\Enums\TicketPriority;
 use daacreators\CreatorsTicketing\Events\InternalNoteAdded;
 use daacreators\CreatorsTicketing\Events\TicketReplyAdded;
@@ -799,7 +800,7 @@ class ViewTicket extends ViewRecord
 
         if ($field->type === 'date' || $field->type === 'datetime') {
             try {
-                $date = \Carbon\Carbon::parse($value);
+                $date = Carbon::parse($value);
 
                 return $field->type === 'datetime'
                     ? $date->format('M d, Y H:i:s')

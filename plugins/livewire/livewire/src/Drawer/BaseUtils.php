@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Livewire\Drawer;
 
+use Livewire\Component;
 use ReflectionObject;
 
 class BaseUtils
@@ -32,7 +33,7 @@ class BaseUtils
 
         if (! isset(self::$reflectionCache[$class])) {
             self::$reflectionCache[$class] = self::reflectAndCachePropertyMetadata($target, function ($property) {
-                return $property->getDeclaringClass()->getName() !== \Livewire\Component::class
+                return $property->getDeclaringClass()->getName() !== Component::class
                     && $property->getDeclaringClass()->getName() !== \Livewire\Volt\Component::class;
             });
         }
@@ -67,7 +68,7 @@ class BaseUtils
     public static function getPublicMethodsDefinedBySubClass($target)
     {
         $methods = array_filter((new ReflectionObject($target))->getMethods(), function ($method) {
-            $isInBaseComponentClass = $method->getDeclaringClass()->getName() === \Livewire\Component::class || $method->getDeclaringClass()->getName() === \Livewire\Volt\Component::class;
+            $isInBaseComponentClass = $method->getDeclaringClass()->getName() === Component::class || $method->getDeclaringClass()->getName() === \Livewire\Volt\Component::class;
 
             return $method->isPublic()
                 && ! $method->isStatic()

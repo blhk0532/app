@@ -94,5 +94,5 @@ describe('allowInteractiveMode', function () {
 
         // Value should remain false (Livewire throws on locked property tampering)
         // The set() call above should throw, but if it doesn't, the value stays false
-    })->throws(\Exception::class);
+    })->throws(Exception::class);
 });

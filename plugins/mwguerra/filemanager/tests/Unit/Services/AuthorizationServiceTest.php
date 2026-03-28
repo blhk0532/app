@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Log;
+use MWGuerra\FileManager\Policies\FileSystemItemPolicy;
 use MWGuerra\FileManager\Services\AuthorizationService;
 
 beforeEach(function () {
@@ -248,7 +249,7 @@ describe('authorize', function () {
 
 describe('custom policy', function () {
     it('uses custom policy class from config', function () {
-        config()->set('filemanager.authorization.policy', MWGuerra\FileManager\Policies\FileSystemItemPolicy::class);
+        config()->set('filemanager.authorization.policy', FileSystemItemPolicy::class);
 
         $service = new AuthorizationService;
 

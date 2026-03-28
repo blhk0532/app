@@ -6,6 +6,6 @@ use Webbingbrasil\FilamentCopyActions\Actions\CopyAction as BaseAction;
 
 /**
  * @deprecated Use \Webbingbrasil\FilamentCopyActions\Actions\CopyAction instead.
- * @see \Webbingbrasil\FilamentCopyActions\Actions\CopyAction
+ * @see BaseAction
  */
 class CopyAction extends BaseAction {}

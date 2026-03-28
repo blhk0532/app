@@ -1,11 +1,14 @@
 <?php
 
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Livewire;
 use MWGuerra\WebTerminal\Livewire\WebTerminal as WebTerminalComponent;
 use MWGuerra\WebTerminal\Schemas\Components\WebTerminal;
+use MWGuerra\WebTerminal\Schemas\Components\WebTerminalEmbed;
 
 // Skip all tests if Filament is not installed
 beforeEach(function () {
-    if (! class_exists(\Filament\Schemas\Components\Livewire::class)) {
+    if (! class_exists(Livewire::class)) {
         $this->markTestSkipped('Filament is not installed. These tests require filament/filament package.');
     }
 });
@@ -341,11 +344,11 @@ test-key
 
 describe('inheritance', function () {
     it('extends Filament Livewire component', function () {
-        expect(is_subclass_of(WebTerminal::class, \Filament\Schemas\Components\Livewire::class))->toBeTrue();
+        expect(is_subclass_of(WebTerminal::class, Livewire::class))->toBeTrue();
     });
 
     it('is a Filament schema component', function () {
-        expect(is_subclass_of(WebTerminal::class, \Filament\Schemas\Components\Component::class))->toBeTrue();
+        expect(is_subclass_of(WebTerminal::class, Component::class))->toBeTrue();
     });
 });
 
@@ -555,6 +558,6 @@ describe('allowAllShellOperators', function () {
 
 describe('backward compatibility', function () {
     it('WebTerminalEmbed alias exists', function () {
-        expect(class_exists(\MWGuerra\WebTerminal\Schemas\Components\WebTerminalEmbed::class))->toBeTrue();
+        expect(class_exists(WebTerminalEmbed::class))->toBeTrue();
     });
 });

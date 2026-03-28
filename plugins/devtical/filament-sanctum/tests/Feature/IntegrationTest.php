@@ -23,7 +23,7 @@ class IntegrationTest extends TestbenchTestCase
     {
         $plugin = $this->app->make(SanctumPlugin::class);
 
-        $panel = \Mockery::mock('Filament\Panel');
+        $panel = Mockery::mock('Filament\Panel');
         $panel->shouldReceive('pages')
             ->once()
             ->with([Sanctum::class])
@@ -43,7 +43,7 @@ class IntegrationTest extends TestbenchTestCase
 
         $plugin = $this->app->make(SanctumPlugin::class);
 
-        $panel = \Mockery::mock('Filament\Panel');
+        $panel = Mockery::mock('Filament\Panel');
         $panel->shouldReceive('getPath')
             ->once()
             ->andReturn('/admin');
@@ -56,7 +56,7 @@ class IntegrationTest extends TestbenchTestCase
         // Test user menu when disabled
         Config::set('filament-sanctum.navigation.user_menu.enabled', false);
 
-        $panel2 = \Mockery::mock('Filament\Panel');
+        $panel2 = Mockery::mock('Filament\Panel');
         $panel2->shouldNotReceive('userMenuItems');
 
         $plugin->boot($panel2);

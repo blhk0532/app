@@ -33,8 +33,9 @@ use App\Filament\App\Resources\RingaData\RingaDataResource;
 use App\Filament\App\Resources\RingaDatas\Pages\QueueRingaData;
 use App\Filament\App\Resources\TeamUsers\TeamUserResource;
 use App\Filament\App\Resources\Users\UserResource;
-use App\Filament\Pages\FlowForge\FlowForgePage;
+use App\Filament\Pages\AuthLogin;
 // use App\Http\Middleware\EnforceUserResourceNavigation;
+use App\Filament\Pages\FlowForge\FlowForgePage;
 use App\Filament\Widgets\RatsitDataStatsWidget;
 use App\Http\Middleware\ApplyTenantScopes;
 use App\Http\Middleware\CurrentTenant;
@@ -436,6 +437,7 @@ class AppPanelProvider extends PanelProvider
                     ->login(
                         fn ($config) => $config
                             ->media(asset('video/853789-hd_1920_1080_25fps.mp4'))
+                            ->usingPage(AuthLogin::class)
                     )
                     ->registration()
                     ->passwordReset()

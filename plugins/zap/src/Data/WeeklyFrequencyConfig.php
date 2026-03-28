@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zap\Data;
 
+use Carbon\CarbonInterface;
 use InvalidArgumentException;
 use Zap\Models\Schedule;
 
@@ -27,17 +28,17 @@ class WeeklyFrequencyConfig extends FrequencyConfig
         );
     }
 
-    public function getNextRecurrence(\Carbon\CarbonInterface $current): \Carbon\CarbonInterface
+    public function getNextRecurrence(CarbonInterface $current): CarbonInterface
     {
         return $this->getNextWeeklyOccurrence($current, $this->days);
     }
 
-    public function shouldCreateInstance(\Carbon\CarbonInterface $date): bool
+    public function shouldCreateInstance(CarbonInterface $date): bool
     {
         return empty($this->days) || in_array(mb_strtolower($date->format('l')), $this->days);
     }
 
-    public function shouldCreateRecurringInstance(Schedule $schedule, \Carbon\CarbonInterface $date): bool
+    public function shouldCreateRecurringInstance(Schedule $schedule, CarbonInterface $date): bool
     {
         $allowedDays = ! empty($this->days) ? $this->days : ['monday'];
         $allowedDayNumbers = array_map(function ($day) {
@@ -56,7 +57,7 @@ class WeeklyFrequencyConfig extends FrequencyConfig
         return in_array($date->dayOfWeek, $allowedDayNumbers);
     }
 
-    protected function getNextWeeklyOccurrence(\Carbon\CarbonInterface $current, array $allowedDays): \Carbon\CarbonInterface
+    protected function getNextWeeklyOccurrence(CarbonInterface $current, array $allowedDays): CarbonInterface
     {
         $next = $current->copy()->addDay();
 

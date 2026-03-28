@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Joaopaulolndev\FilamentEditProfile\Http\Middleware;
 
 use Closure;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ class SetUserLocale
 {
     public function handle(Request $request, Closure $next, ?string $guard = null)
     {
-        /** @var \Illuminate\Foundation\Auth\User $user */
+        /** @var User $user */
         $user = Auth::guard($guard)->user();
         $locale = config('filament-edit-profile.locale_column', 'locale');
 

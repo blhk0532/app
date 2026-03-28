@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MWGuerra\FileManager\Filament\Pages;
 
 use BackedEnum;
+use Filament\Panel;
 use Illuminate\Contracts\Support\Htmlable;
 use MWGuerra\FileManager\Adapters\AdapterFactory;
 use MWGuerra\FileManager\Contracts\FileManagerAdapterInterface;
@@ -47,7 +48,7 @@ class FileSystem extends FileManagerBase
             ?? config('filemanager.file_manager.navigation.group', 'FileManager');
     }
 
-    public static function getSlug(?\Filament\Panel $panel = null): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return 'file-system';
     }

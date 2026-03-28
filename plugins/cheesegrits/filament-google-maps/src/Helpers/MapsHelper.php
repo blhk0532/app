@@ -69,23 +69,23 @@ class MapsHelper
             )
         ));
 
-        $gmaps = (config('filament-google-maps.force-https') ? 'https' : Request::getScheme() ?? 'https') . '://maps.googleapis.com/maps/api/js'
-            . '?key=' . self::mapsKey($server)
-            . '&libraries=' . $libraries
-            . '&v=weekly';
+        $gmaps = (config('filament-google-maps.force-https') ? 'https' : Request::getScheme() ?? 'https').'://maps.googleapis.com/maps/api/js'
+            .'?key='.self::mapsKey($server)
+            .'&libraries='.$libraries
+            .'&v=weekly';
 
         /**
          * https://developers.google.com/maps/faq#languagesupport
          */
         if ($language = self::mapsLanguage($server)) {
-            $gmaps .= '&language=' . $language;
+            $gmaps .= '&language='.$language;
         }
 
         /**
          * https://developers.google.com/maps/coverage
          */
         if ($region = self::mapsRegion()) {
-            $gmaps .= '&region=' . $region;
+            $gmaps .= '&region='.$region;
         }
 
         return $gmaps;
@@ -104,7 +104,7 @@ class MapsHelper
     public static function getCountyFromAddress(string $address): string
     {
         $geocoder = new Geocoder;
-        $result   = $geocoder->geocodeQuery($address)->first();
+        $result = $geocoder->geocodeQuery($address)->first();
 
         if ($result) {
             return $geocoder->formatter->format($result, '%A2');
@@ -116,7 +116,7 @@ class MapsHelper
     public static function getCountyFromLatLng(array|string $lat, ?string $lng = null): string
     {
         $geocoder = new Geocoder;
-        $result   = $geocoder->reverseQuery(self::getLatLng($lat, $lng))->first();
+        $result = $geocoder->reverseQuery(self::getLatLng($lat, $lng))->first();
 
         if ($result) {
             return $geocoder->formatter->format($result, '%A2');

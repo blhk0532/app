@@ -14,6 +14,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -222,13 +223,13 @@ class ProcessExportJob implements ShouldQueue
     protected function resolveColumnName(string $table, string $filterName): ?string
     {
         // First check if the filter name is a direct column
-        if (\Illuminate\Support\Facades\Schema::hasColumn($table, $filterName)) {
+        if (Schema::hasColumn($table, $filterName)) {
             return $filterName;
         }
 
         // Check if it's a relationship filter (filterName + '_id')
         $relationshipColumn = $filterName.'_id';
-        if (\Illuminate\Support\Facades\Schema::hasColumn($table, $relationshipColumn)) {
+        if (Schema::hasColumn($table, $relationshipColumn)) {
             return $relationshipColumn;
         }
 

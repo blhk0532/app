@@ -50,26 +50,26 @@ class MapWidget extends Widgets\Widget implements HasActions, HasForms
     protected string $view = 'filament-google-maps::widgets.filament-google-maps-widget';
 
     public array $controls = [
-        'mapTypeControl'    => true,
-        'scaleControl'      => true,
+        'mapTypeControl' => true,
+        'scaleControl' => true,
         'streetViewControl' => true,
-        'rotateControl'     => true,
+        'rotateControl' => true,
         'fullscreenControl' => true,
-        'searchBoxControl'  => false,
-        'zoomControl'       => true,
+        'searchBoxControl' => false,
+        'zoomControl' => true,
     ];
 
     protected array $mapConfig = [
         'draggable' => false,
-        'center'    => [
+        'center' => [
             'lat' => 15.3419776,
             'lng' => 44.2171392,
         ],
-        'zoom'       => 8,
-        'fit'        => true,
-        'gmaps'      => '',
+        'zoom' => 8,
+        'fit' => true,
+        'gmaps' => '',
         'clustering' => true,
-        'mapConfig'  => [],
+        'mapConfig' => [],
     ];
 
     public function mount()
@@ -155,14 +155,14 @@ class MapWidget extends Widgets\Widget implements HasActions, HasForms
     public function getConfig(): array
     {
         return [
-            'clustering'   => self::getClustering(),
-            'layers'       => $this->getLayers(),
-            'zoom'         => $this->getZoom(),
-            'controls'     => $this->controls,
-            'fit'          => $this->getFitToBounds(),
+            'clustering' => self::getClustering(),
+            'layers' => $this->getLayers(),
+            'zoom' => $this->getZoom(),
+            'controls' => $this->controls,
+            'fit' => $this->getFitToBounds(),
             'markerAction' => $this->getMarkerAction(),
-            'gmaps'        => MapsHelper::mapsUrl(),
-            'mapConfig'    => [],
+            'gmaps' => MapsHelper::mapsUrl(),
+            'mapConfig' => [],
         ];
     }
 
@@ -218,7 +218,7 @@ class MapWidget extends Widgets\Widget implements HasActions, HasForms
 
     public function jsUrl(): string
     {
-        $manifest = json_decode(file_get_contents(__DIR__ . '/../../dist/mix-manifest.json'), true);
+        $manifest = json_decode(file_get_contents(__DIR__.'/../../dist/mix-manifest.json'), true);
 
         return url($manifest['/cheesegrits/filament-google-maps/filament-google-maps-widget.js']);
     }
@@ -230,7 +230,7 @@ class MapWidget extends Widgets\Widget implements HasActions, HasForms
 
     public function cssUrl(): string
     {
-        $manifest = json_decode(file_get_contents(__DIR__ . '/../../dist/mix-manifest.json'), true);
+        $manifest = json_decode(file_get_contents(__DIR__.'/../../dist/mix-manifest.json'), true);
 
         return url($manifest['/cheesegrits/filament-google-maps/filament-google-maps-widget.css']);
     }

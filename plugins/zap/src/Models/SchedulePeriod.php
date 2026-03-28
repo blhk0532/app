@@ -7,6 +7,7 @@ namespace Zap\Models;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Date;
@@ -133,7 +134,7 @@ class SchedulePeriod extends Model
     /**
      * Scope a query to only include available periods.
      */
-    public function scopeAvailable(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    public function scopeAvailable(Builder $query): Builder
     {
         return $query->where('is_available', true);
     }
@@ -141,7 +142,7 @@ class SchedulePeriod extends Model
     /**
      * Scope a query to only include periods for a specific date.
      */
-    public function scopeForDate(\Illuminate\Database\Eloquent\Builder $query, string $date): \Illuminate\Database\Eloquent\Builder
+    public function scopeForDate(Builder $query, string $date): Builder
     {
         return $query->where('date', Carbon::parse($date));
     }
@@ -149,7 +150,7 @@ class SchedulePeriod extends Model
     /**
      * Scope a query to only include periods within a time range.
      */
-    public function scopeForTimeRange(\Illuminate\Database\Eloquent\Builder $query, string $startTime, string $endTime): \Illuminate\Database\Eloquent\Builder
+    public function scopeForTimeRange(Builder $query, string $startTime, string $endTime): Builder
     {
         return $query->where('start_time', '>=', $startTime)
             ->where('end_time', '<=', $endTime);
@@ -158,7 +159,7 @@ class SchedulePeriod extends Model
     /**
      * Scope a query to find overlapping periods.
      */
-    public function scopeOverlapping(\Illuminate\Database\Eloquent\Builder $query, string $date, string $startTime, string $endTime, ?CarbonInterface $endDate = null): \Illuminate\Database\Eloquent\Builder
+    public function scopeOverlapping(Builder $query, string $date, string $startTime, string $endTime, ?CarbonInterface $endDate = null): Builder
     {
         // Normalize input times to HH:MM format
         $startTime = mb_str_pad($startTime, 5, '0', STR_PAD_LEFT);

@@ -50,7 +50,7 @@ class PdfViewerField extends ViewField
         return $this;
     }
 
-    public function disk(string|closure $disk): self
+    public function disk(string|Closure $disk): self
     {
         $this->disk = $disk;
 

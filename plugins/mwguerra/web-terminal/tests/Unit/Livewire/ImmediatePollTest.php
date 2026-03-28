@@ -96,7 +96,7 @@ describe('Immediate Poll Behavior', function () {
         $handler = new LocalConnectionHandler;
         $handler->connect(ConnectionConfig::local());
         // Force ProcessSessionManager — FileSessionManager merges stderr into stdout via PTY
-        $handler->setSessionManager(new \MWGuerra\WebTerminal\Sessions\ProcessSessionManager);
+        $handler->setSessionManager(new ProcessSessionManager);
 
         // Start a command that produces stderr
         $sessionId = $handler->startInteractive('ls /nonexistent_directory_xyz');

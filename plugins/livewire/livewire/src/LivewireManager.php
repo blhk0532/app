@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Livewire;
 
 use Closure;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Livewire\Features\SupportAutoInjectedAssets\SupportAutoInjectedAssets;
 use Livewire\Features\SupportLazyLoading\SupportLazyLoading;
 use Livewire\Features\SupportTesting\DuskTestable;
@@ -15,6 +16,7 @@ use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Livewire\Mechanisms\HandleComponents\HandleComponents;
 use Livewire\Mechanisms\HandleRequests\HandleRequests;
 use Livewire\Mechanisms\PersistentMiddleware\PersistentMiddleware;
+use Pest\Browser\Api\Livewire;
 
 class LivewireManager
 {
@@ -250,14 +252,14 @@ class LivewireManager
 
     public function visit($name, $args = [])
     {
-        if (class_exists(\Pest\Browser\Api\Livewire::class)) {
-            return \Pest\Browser\Api\Livewire::test($name, $args);
+        if (class_exists(Livewire::class)) {
+            return Livewire::test($name, $args);
         }
 
         return DuskTestable::create($name, $params = [], $this->queryParamsForTesting);
     }
 
-    public function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null)
+    public function actingAs(Authenticatable $user, $driver = null)
     {
         Testable::actingAs($user, $driver);
 

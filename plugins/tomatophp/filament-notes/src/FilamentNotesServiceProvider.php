@@ -4,6 +4,7 @@ namespace TomatoPHP\FilamentNotes;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use TomatoPHP\FilamentNotes\Console\FilamentNotesInstall;
 use TomatoPHP\FilamentNotes\Livewire\NoteAction;
 
 class FilamentNotesServiceProvider extends ServiceProvider
@@ -12,7 +13,7 @@ class FilamentNotesServiceProvider extends ServiceProvider
     {
         // Register generate command
         $this->commands([
-            \TomatoPHP\FilamentNotes\Console\FilamentNotesInstall::class,
+            FilamentNotesInstall::class,
         ]);
 
         // Register Config file

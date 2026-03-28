@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use MWGuerra\FileManager\Filament\Pages\FileManager;
 use MWGuerra\FileManager\Models\FileSystemItem;
@@ -404,7 +405,7 @@ describe('computed properties', function () {
         $page = new FileManager;
         $page->mount();
 
-        expect($page->items)->toBeInstanceOf(Illuminate\Support\Collection::class);
+        expect($page->items)->toBeInstanceOf(Collection::class);
         expect($page->items)->toHaveCount(2);
     });
 
@@ -430,7 +431,7 @@ describe('computed properties', function () {
         $page = new FileManager;
         $page->mount();
 
-        expect($page->allFolders)->toBeInstanceOf(Illuminate\Support\Collection::class);
+        expect($page->allFolders)->toBeInstanceOf(Collection::class);
     });
 
     it('returns root file count', function () {

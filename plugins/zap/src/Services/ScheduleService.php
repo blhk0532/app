@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Zap\Services;
 
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -179,8 +182,8 @@ class ScheduleService
             E_USER_DEPRECATED
         );
         if (method_exists($schedulable, 'isBookableAt')) {
-            $durationMinutes = \Carbon\Carbon::parse($date.' '.$endTime)
-                ->diffInMinutes(\Carbon\Carbon::parse($date.' '.$startTime));
+            $durationMinutes = Carbon::parse($date.' '.$endTime)
+                ->diffInMinutes(Carbon::parse($date.' '.$startTime));
 
             return $schedulable->isBookableAt($date, $durationMinutes);
         }
@@ -199,12 +202,12 @@ class ScheduleService
         Model $schedulable,
         string $startDate,
         string $endDate
-    ): \Illuminate\Database\Eloquent\Collection {
+    ): Collection {
         if (method_exists($schedulable, 'schedulesForDateRange')) {
             return $schedulable->schedulesForDateRange($startDate, $endDate)->get();
         }
 
-        return new \Illuminate\Database\Eloquent\Collection;
+        return new Collection;
     }
 
     /**
@@ -220,8 +223,8 @@ class ScheduleService
         }
 
         $instances = [];
-        $current = \Carbon\Carbon::parse($startDate);
-        $end = \Carbon\Carbon::parse($endDate);
+        $current = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
 
         while ($current->lte($end)) {
             if ($this->shouldCreateInstance($schedule, $current)) {
@@ -240,7 +243,7 @@ class ScheduleService
     /**
      * Check if a recurring instance should be created for the given date.
      */
-    private function shouldCreateInstance(Schedule $schedule, \Carbon\CarbonInterface $date): bool
+    private function shouldCreateInstance(Schedule $schedule, CarbonInterface $date): bool
     {
         $frequency = $schedule->frequency;
         $config = $schedule->frequency_config ?? [];
@@ -255,7 +258,7 @@ class ScheduleService
     /**
      * Get the next recurrence date.
      */
-    private function getNextRecurrence(Schedule $schedule, \Carbon\CarbonInterface $current): \Carbon\CarbonInterface
+    private function getNextRecurrence(Schedule $schedule, CarbonInterface $current): CarbonInterface
     {
         $frequency = $schedule->frequency;
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MWGuerra\FileManager\Adapters;
 
 use Exception;
+use Illuminate\Support\Facades\Storage;
 use MWGuerra\FileManager\Contracts\FileManagerItemInterface;
 
 /**
@@ -69,7 +70,7 @@ class StorageItem implements FileManagerItemInterface
      */
     public static function fromPath(string $path, string $disk = 'public', bool $isDirectory = false): static
     {
-        $storage = \Illuminate\Support\Facades\Storage::disk($disk);
+        $storage = Storage::disk($disk);
         $name = basename($path) ?: '/';
 
         if ($isDirectory) {

@@ -32,14 +32,20 @@ final class FilamentResourceAccess
             return $next($request);
         }
 
-        Notification::make()
-           ->title('Unauthorized 🛇o(≧o≦)o🛇 การเข้าถึงถูกปฏิเสธ')
-            ->body('Oops, you do not have sufficient permissions
-            Can\'t manage the resource ⊹ ACCESS DENIED
-            System is currently in development and some
-            Features are restricted due to maintenances.
-            If you believe this is a mistake, contact admin')
-            ->warning()
+    //    Notification::make()
+    //       ->title('Unauthorized 🛇o(≧o≦)o🛇 การเข้าถึงถูกปฏิเสธ')
+    //        ->body('Oops, you do not have sufficient permissions
+    //        Can\'t manage the resource ⊹ ACCESS DENIED
+    //        System is currently in development and some
+    //        Features are restricted due to maintenances.
+    //        If you believe this is a mistake, contact admin')
+    //        ->warning()
+    //        ->send();
+
+Notification::make()
+           ->title('Access Deinied o(≧o≦)🛇')
+            ->body('การเข้าถึงถูกปฏิเสธ')
+            ->danger()
             ->send();
 
         $previousUrl = url()->previous();

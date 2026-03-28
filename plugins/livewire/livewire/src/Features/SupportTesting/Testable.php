@@ -5,16 +5,23 @@ declare(strict_types=1);
 namespace Livewire\Features\SupportTesting;
 
 use BackedEnum;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Traits\Macroable;
+use Illuminate\Testing\TestResponse;
+use Illuminate\Validation\ValidationException;
+use Livewire\Component;
 use Livewire\Features\SupportEvents\TestsEvents;
 use Livewire\Features\SupportFileDownloads\TestsFileDownloads;
+use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
+use Livewire\Features\SupportFileUploads\FileUploadController;
 use Livewire\Features\SupportRedirects\TestsRedirects;
 use Livewire\Features\SupportValidation\TestsValidation;
 
 /**
  * @template TComponent of \Livewire\Component
  *
- * @mixin \Illuminate\Testing\TestResponse
+ * @mixin TestResponse
  */
 class Testable
 {
@@ -86,7 +93,7 @@ class Testable
     }
 
     /**
-     * @param  class-string<TComponent>|TComponent|string|array<array-key, \Livewire\Component>  $name
+     * @param  class-string<TComponent>|TComponent|string|array<array-key, Component>  $name
      * @param  array  $params
      * @param  array  $fromQueryString
      * @param  array  $cookies
@@ -147,7 +154,7 @@ class Testable
      * @param  ?string  $driver
      * @return void
      */
-    public static function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null)
+    public static function actingAs(Authenticatable $user, $driver = null)
     {
         if (isset($user->wasRecentlyCreated) && $user->wasRecentlyCreated) {
             $user->wasRecentlyCreated = false;
@@ -234,10 +241,10 @@ class Testable
      */
     public function setProperty($name, $value)
     {
-        if ($value instanceof \Illuminate\Http\UploadedFile) {
+        if ($value instanceof UploadedFile) {
             return $this->upload($name, [$value]);
         }
-        if (is_array($value) && isset($value[0]) && $value[0] instanceof \Illuminate\Http\UploadedFile) {
+        if (is_array($value) && isset($value[0]) && $value[0] instanceof UploadedFile) {
             return $this->upload($name, $value, $isMultiple = true);
         }
         if ($value instanceof BackedEnum) {
@@ -343,10 +350,10 @@ class Testable
         // This is where either the pre-signed S3 url or the regular Livewire signed
         // upload url would do its thing and return a hashed version of the uploaded
         // file in a tmp directory.
-        $storage = \Livewire\Features\SupportFileUploads\FileUploadConfiguration::storage();
+        $storage = FileUploadConfiguration::storage();
         try {
-            $fileHashes = (new \Livewire\Features\SupportFileUploads\FileUploadController)->validateAndStore($files, \Livewire\Features\SupportFileUploads\FileUploadConfiguration::disk());
-        } catch (\Illuminate\Validation\ValidationException $e) {
+            $fileHashes = (new FileUploadController)->validateAndStore($files, FileUploadConfiguration::disk());
+        } catch (ValidationException $e) {
             $this->call('_uploadErrored', $name, json_encode(['errors' => $e->errors()]), $isMultiple);
 
             return $this;
@@ -379,7 +386,7 @@ class Testable
     }
 
     /**
-     * @return \Livewire\Component
+     * @return Component
      */
     public function invade()
     {

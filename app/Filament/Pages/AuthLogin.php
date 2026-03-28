@@ -141,7 +141,7 @@ class AuthLogin extends Login
     {
         return $schema->components([
             TextInput::make('login')
-                ->label('Email or Username')
+                ->label('Email, Name, or Phone')
                 ->required()
                 ->autofocus()
                 ->autocomplete('username'),
@@ -350,6 +350,16 @@ class AuthLogin extends Login
             ];
         }
 
+        // Check if login is a phone number (contains only digits, optional leading +)
+        $normalizedPhone = preg_replace('/[^0-9+]/', '', $login);
+        if (preg_match('/^\+?[0-9]+$/', $normalizedPhone)) {
+            return [
+                'phone' => $login,
+                'password' => $data['password'],
+            ];
+        }
+
+        // Default to name
         return [
             'name' => $login,
             'password' => $data['password'],

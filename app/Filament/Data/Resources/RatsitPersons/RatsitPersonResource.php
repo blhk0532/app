@@ -36,6 +36,8 @@ class RatsitPersonResource extends Resource
 
     protected static ?string $slug = 'databaser/ratsit-persons';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function getNavigationBadge(): ?string
     {
         return (string) self::getModel()::count();

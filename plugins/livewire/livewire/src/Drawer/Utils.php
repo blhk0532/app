@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Livewire\Drawer;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\View\Component;
 use Livewire\Exceptions\RootTagMissingFromViewException;
 use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
 
@@ -137,7 +141,7 @@ class Utils extends BaseUtils
             return tap($subject)->with($data);
         }
 
-        $component = new class($subject) extends \Illuminate\View\Component
+        $component = new class($subject) extends Component
         {
             protected $template;
 
@@ -159,14 +163,14 @@ class Utils extends BaseUtils
 
     public static function applyMiddleware(Request $request, $middleware = [])
     {
-        $response = (new \Illuminate\Pipeline\Pipeline(app()))
+        $response = (new Pipeline(app()))
             ->send($request)
             ->through($middleware)
             ->then(function () {
-                return new \Illuminate\Http\Response;
+                return new Response;
             });
 
-        if ($response instanceof \Illuminate\Http\RedirectResponse) {
+        if ($response instanceof RedirectResponse) {
             abort($response);
         }
 

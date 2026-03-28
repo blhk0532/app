@@ -23,7 +23,7 @@
         {{ $lastMessage->body != '' ? $lastMessage->body : ($lastMessage->isAttachment() ? '📎 '.__('filament-wirechat::chats.labels.attachment') : '') }}
     </p>
 
-    <span class="font-medium px-1 text-xs shrink-0 text-gray-800 dark:text-gray-50">
+    <span class="font-medium px-1 text-xs shrink-0 text-gray-600 dark:text-gray-50">
         @if ($lastMessage->created_at->diffInMinutes(now()) < 1)
           @lang('filament-wirechat::chats.labels.now')
         @else

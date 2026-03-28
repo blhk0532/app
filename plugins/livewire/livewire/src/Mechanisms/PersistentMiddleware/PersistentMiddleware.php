@@ -4,8 +4,15 @@ declare(strict_types=1);
 
 namespace Livewire\Mechanisms\PersistentMiddleware;
 
+use App\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Str;
+use Laravel\Jetstream\Http\Middleware\AuthenticateSession;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Livewire\Drawer\Utils;
 use Livewire\Mechanisms\HandleRequests\HandleRequests;
 use Livewire\Mechanisms\Mechanism;
@@ -16,13 +23,13 @@ use function Livewire\on;
 class PersistentMiddleware extends Mechanism
 {
     protected static $persistentMiddleware = [
-        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        \Laravel\Jetstream\Http\Middleware\AuthenticateSession::class,
-        \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        \App\Http\Middleware\RedirectIfAuthenticated::class,
-        \Illuminate\Auth\Middleware\Authenticate::class,
-        \Illuminate\Auth\Middleware\Authorize::class,
+        EnsureFrontendRequestsAreStateful::class,
+        AuthenticateSession::class,
+        AuthenticateWithBasicAuth::class,
+        SubstituteBindings::class,
+        RedirectIfAuthenticated::class,
+        Authenticate::class,
+        Authorize::class,
         \App\Http\Middleware\Authenticate::class,
     ];
 

@@ -5,7 +5,7 @@ use Cheesegrits\FilamentGoogleMaps\Tests\Commands\TestCase;
 uses(TestCase::class);
 
 it('makes a widget with the artisan make-widget command', function () {
-    expect(app_path('Filament/Widgets/') . 'LocationMap.php')->not->toBeFile();
+    expect(app_path('Filament/Widgets/').'LocationMap.php')->not->toBeFile();
 
     $this->artisan('make:filament-google-maps-widget')
         ->expectsQuestion(
@@ -25,7 +25,7 @@ it('makes a widget with the artisan make-widget command', function () {
             ''
         );
 
-    expect(app_path('Filament/Widgets/') . 'LocationMap.php')->toBeFile();
+    expect(app_path('Filament/Widgets/').'LocationMap.php')->toBeFile();
 });
 
 function convertNewlines($text)

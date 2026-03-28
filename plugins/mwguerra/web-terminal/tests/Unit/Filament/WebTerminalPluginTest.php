@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
+use Filament\Contracts\Plugin;
 use MWGuerra\WebTerminal\WebTerminalPlugin;
 
 // Skip all tests if Filament is not installed
 beforeEach(function () {
-    if (! interface_exists(\Filament\Contracts\Plugin::class)) {
+    if (! interface_exists(Plugin::class)) {
         $this->markTestSkipped('Filament is not installed. These tests require filament/filament package.');
     }
 });

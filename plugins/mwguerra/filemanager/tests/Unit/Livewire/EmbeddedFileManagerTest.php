@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use MWGuerra\FileManager\Contracts\FileTypeContract;
 use MWGuerra\FileManager\Livewire\EmbeddedFileManager;
 use MWGuerra\FileManager\Models\FileSystemItem;
 
@@ -287,7 +291,7 @@ describe('items property', function () {
 
         $items = $component->items;
 
-        expect($items)->toBeInstanceOf(Illuminate\Support\Collection::class);
+        expect($items)->toBeInstanceOf(Collection::class);
         expect($items->count())->toBe(3);
     });
 
@@ -494,7 +498,7 @@ describe('all folders property', function () {
 
         $allFolders = $component->allFolders;
 
-        expect($allFolders)->toBeInstanceOf(Illuminate\Support\Collection::class);
+        expect($allFolders)->toBeInstanceOf(Collection::class);
         expect($allFolders->count())->toBe(3);
     });
 });
@@ -601,7 +605,7 @@ describe('file type', function () {
 
         $fileType = $component->getFileTypeForItem($item);
 
-        expect($fileType)->toBeInstanceOf(MWGuerra\FileManager\Contracts\FileTypeContract::class);
+        expect($fileType)->toBeInstanceOf(FileTypeContract::class);
     });
 });
 
@@ -615,7 +619,7 @@ describe('preview file type property', function () {
 
         $fileType = $component->previewFileType;
 
-        expect($fileType)->toBeInstanceOf(MWGuerra\FileManager\Contracts\FileTypeContract::class);
+        expect($fileType)->toBeInstanceOf(FileTypeContract::class);
         expect($fileType->identifier())->toBe('text');
     });
 
@@ -662,12 +666,12 @@ describe('refresh', function () {
 
 describe('inheritance', function () {
     it('extends Livewire Component', function () {
-        expect(is_subclass_of(EmbeddedFileManager::class, Livewire\Component::class))->toBeTrue();
+        expect(is_subclass_of(EmbeddedFileManager::class, Component::class))->toBeTrue();
     });
 
     it('uses WithFileUploads trait', function () {
         $traits = class_uses_recursive(EmbeddedFileManager::class);
 
-        expect($traits)->toContain(Livewire\WithFileUploads::class);
+        expect($traits)->toContain(WithFileUploads::class);
     });
 });

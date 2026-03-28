@@ -6,12 +6,13 @@ namespace Livewire;
 
 use Composer\InstalledVersions;
 use Illuminate\Foundation\Console\AboutCommand;
+use Illuminate\Support\ServiceProvider;
 use Livewire\Compiler\CacheManager;
 use Livewire\Compiler\Compiler;
 use Livewire\Factory\Factory;
 use Livewire\Finder\Finder;
 
-class LivewireServiceProvider extends \Illuminate\Support\ServiceProvider
+class LivewireServiceProvider extends ServiceProvider
 {
     public function register()
     {
