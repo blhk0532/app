@@ -111,6 +111,7 @@
         "usamamuneerchaudhary/filament-notifier": "@dev",
         "wallacemartinss/filament-icon-picker": "@dev",
         "wallacemartinss/filament-whatsapp-conector": "@dev",
+        "weave-php/blocknote-filament": "@dev",
         "webbingbrasil/filament-copyactions": "@dev",
         "ysfkaya/filament-phone-input": "@dev",
         "zvizvi/user-fields": "@dev"

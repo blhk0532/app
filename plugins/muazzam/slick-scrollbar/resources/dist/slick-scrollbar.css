@@ -50,5 +50,7 @@ body::-webkit-scrollbar-thumb:hover,
 .fi-modal-window .fi-modal-content,
 .fi-table .fi-table-container,
 .fi-section-content{
-  scrollbar-width: thin !important;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "00e89d1cd90d6d6d9b8a089ee2b176d1",
+    "content-hash": "30dc4eeec959173e6e9aca49fc909c4d",
     "packages": [
         {
             "name": "achyutn/filament-log-viewer",
@@ -23584,6 +23584,66 @@
             }
         },
         {
+            "name": "weave-php/blocknote-filament",
+            "version": "0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/weave-php/weave-blocknote-filament.git",
+                "reference": "f59c2bb4f4658a62ff0130b686c73b603bb61e14"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/weave-php/weave-blocknote-filament/zipball/f59c2bb4f4658a62ff0130b686c73b603bb61e14",
+                "reference": "f59c2bb4f4658a62ff0130b686c73b603bb61e14",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0 || ^4.0 || ^5.0",
+                "php": "^8.3",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^9.0|^10.0|^11.0",
+                "phpunit/phpunit": "^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Weave\\BlockNote\\BlockNoteServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Weave\\BlockNote\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Weave PHP",
+                    "email": "hello@weave-php.dev"
+                }
+            ],
+            "description": "Weave BlockNote rich-text editor as a Filament form field for Laravel.",
+            "keywords": [
+                "blocknote",
+                "editor",
+                "filament",
+                "laravel",
+                "weave"
+            ],
+            "support": {
+                "issues": "https://github.com/weave-php/weave-blocknote-filament/issues",
+                "source": "https://github.com/weave-php/weave-blocknote-filament/tree/0.0.2"
+            },
+            "time": "2026-03-27T11:09:19+00:00"
+        },
+        {
             "name": "webbingbrasil/filament-copyactions",
             "version": "dev-main",
             "dist": {
@@ -27147,6 +27207,7 @@
         "usamamuneerchaudhary/filament-notifier": 20,
         "wallacemartinss/filament-icon-picker": 20,
         "wallacemartinss/filament-whatsapp-conector": 20,
+        "weave-php/blocknote-filament": 20,
         "webbingbrasil/filament-copyactions": 20,
         "ysfkaya/filament-phone-input": 20,
         "zvizvi/user-fields": 20
