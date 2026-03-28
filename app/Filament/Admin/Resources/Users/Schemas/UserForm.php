@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
 use App\Enums\AuthRole;
-use App\Models\Team;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -48,9 +47,17 @@ class UserForm
                             ->string(),
                         Select::make('current_team_id')
                             ->label('Team')
-                            ->options(fn () => Team::query()->pluck('name', 'id')->toArray())
+                            ->relationship('currentTeam', 'name')
+                            ->preload()
                             ->required(fn (string $context): bool => $context === 'create')
                             ->searchable()
+                            ->columnSpan(1),
+                        Select::make('company_id')
+                            ->label('Company')
+                            ->relationship('company', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->nullable()
                             ->columnSpan(1),
                         TextInput::make('role')
                             ->label('Behörighet')
@@ -66,6 +73,15 @@ class UserForm
                             ->string(),
                         TextInput::make('phone')
                             ->label('Telefonnummer'),
+                        TextInput::make('address')
+                            ->label('Address')
+                            ->maxLength(255),
+                        TextInput::make('country')
+                            ->label('Country')
+                            ->maxLength(255),
+                        TextInput::make('whatsapp')
+                            ->label('Whatsapp')
+                            ->maxLength(255),
                         TextInput::make('email')
                             ->required()
                             ->label('E-postadress')
@@ -76,6 +92,10 @@ class UserForm
                             ])
                             ->email()
                             ->columnSpan(1),
+                        Textarea::make('bio')
+                            ->label('Bio')
+                            ->rows(3)
+                            ->columnSpanFull(),
                         Select::make('role')
                             ->label('Role')
                             ->options(collect(AuthRole::cases())->mapWithKeys(fn (AuthRole $role) => [

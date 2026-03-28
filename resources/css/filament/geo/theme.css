@@ -15,3 +15,15 @@
 .fi-main.fi-width-full{
     min-height:555vh!important;
 }
+
+.filament-google-maps-widget-table .fi-section-content{
+    padding:0px!important;
+}
+
+.fi-fo-field-label-content{
+    display:none!important;
+}
+
+.fi-fo-field-label-col{
+    display:none!important;
+}

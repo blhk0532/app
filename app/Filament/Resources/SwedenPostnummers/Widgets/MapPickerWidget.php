@@ -503,8 +503,8 @@ class MapPickerWidget extends MapTableWidget
             ]),
             Action::make('importFromFile')
                 ->label('Import')
-                ->icon('heroicon-o-document-arrow-up')
-                ->color('warning')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('success')
                 ->schema([
                     FileUpload::make('import_file')
                         ->label('CSV or XLSX file')
@@ -541,8 +541,8 @@ class MapPickerWidget extends MapTableWidget
                 }),
             Action::make('importFromGoogleSheets')
                 ->label('Import')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->color('info')
+                ->icon('heroicon-o-arrow-down-on-square')
+                ->color('warning')
                 ->requiresConfirmation()
                 ->modalHeading('Import people from Google Sheets')
                 ->modalDescription('Reads rows from the sheet and upserts into personer using personnummer or name+address+postnummer.')
@@ -581,7 +581,8 @@ class MapPickerWidget extends MapTableWidget
             ExportAction::make()
                 ->label('Export')
                 ->exporter(PeopleExporter::class)
-                ->icon('heroicon-o-arrow-up-tray'),
+                ->icon('heroicon-o-arrow-up-tray')
+                ->color('danger'),
 
         ];
     }

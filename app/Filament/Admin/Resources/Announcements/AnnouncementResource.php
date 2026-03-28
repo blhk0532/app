@@ -11,6 +11,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class AnnouncementResource extends Resource
 {
@@ -19,6 +20,10 @@ class AnnouncementResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $tenantOwnershipRelationshipName = 'team';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Användare';
+
+    protected static ?string $navigationLabel = 'Nyheter';
 
     public static function table(Table $table): Table
     {

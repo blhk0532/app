@@ -65,6 +65,16 @@ class UsersTable
                     ->sortable()
                     ->toggleable()
                     ->wrap(),
+                TextColumn::make('company.name')
+                    ->label('Company')
+                    ->badge()
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('currentTeam.name')
+                    ->label('Current Team')
+                    ->badge()
+                    ->searchable()
+                    ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->dateTime()

@@ -9,6 +9,7 @@ use App\Enums\AuthRole;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
@@ -19,7 +20,6 @@ use Filament\Tables\Table;
 use Guava\FilamentIconSelectColumn\Tables\Columns\IconSelectColumn;
 use Mokhosh\FilamentRating\Columns\RatingColumn;
 use STS\FilamentImpersonate\Actions\Impersonate;
-use Filament\Actions\DeleteBulkAction;
 
 class UsersTable
 {
@@ -62,6 +62,18 @@ class UsersTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('phone')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('company.name')
+                    ->label('Company')
+                    ->badge()
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('currentTeam.name')
+                    ->label('Current Team')
+                    ->badge()
                     ->searchable()
                     ->sortable()
                     ->toggleable(),

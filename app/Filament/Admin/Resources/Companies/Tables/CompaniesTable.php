@@ -1,43 +1,47 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Filament\Admin\Resources\Companies\Tables;
 
-namespace App\Filament\User\Resources\Teams\Tables;
-
-use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class TeamsTable
+class CompaniesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('owner.name')
-                    ->label(__('Owner'))
+                    ->label('Main Owner')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('company.name')
-                    ->label(__('Company'))
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('owners.name')
+                    ->label('Owners')
+                    ->badge()
+                    ->separator(', ')
+                    ->toggleable(),
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('email')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('website')
+                    ->url(fn ($record) => $record->website)
+                    ->openUrlInNewTab()
                     ->searchable()
                     ->toggleable(),
-                TextColumn::make('phone')
-                    ->searchable()
-                    ->toggleable(),
+                TextColumn::make('teams_count')
+                    ->counts('teams')
+                    ->label('Teams')
+                    ->sortable(),
                 TextColumn::make('users_count')
                     ->counts('users')
-                    ->label(__('Users'))
+                    ->label('Users')
                     ->sortable(),
-                IconColumn::make('personal_team')
+                IconColumn::make('personal_company')
+                    ->label('Personal')
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -52,9 +56,12 @@ class TeamsTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 }

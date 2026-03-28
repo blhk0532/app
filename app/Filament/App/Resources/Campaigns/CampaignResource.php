@@ -18,9 +18,9 @@ class CampaignResource extends FilamentResource
 {
     protected static ?string $model = Campaign::class;
 
-    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-star';
 
-    // protected static UnitEnum|string|null $navigationGroup = 'Administration';
+     protected static UnitEnum|string|null $navigationGroup = 'Användare';
 
     protected static ?string $navigationLabel = 'Kampanjer';
 
@@ -47,7 +47,7 @@ class CampaignResource extends FilamentResource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Kalendrar';
+        return 'Administration | TEAM';
         // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 

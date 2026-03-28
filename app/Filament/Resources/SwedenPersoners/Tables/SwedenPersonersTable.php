@@ -18,8 +18,11 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Filament\Actions\CraeteAction;
 
 class SwedenPersonersTable
 {
@@ -27,15 +30,6 @@ class SwedenPersonersTable
     {
         return $table
             ->headerActions([
-                ExcelImportAction::make()
-                    ->color('primary'),
-                static::importSqlAction(),
-                ExportAction::make()
-                    ->label('Export CSV')
-                    ->exporter(SwedenPersonerExporter::class)
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->color('success'),
-                static::exportSqlAction(),
             ])
             ->columns([
                 TextColumn::make('personnamn')
@@ -136,16 +130,31 @@ class SwedenPersonersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+                Action::make('create')
+                    ->label('Skapa Ny Person')
+                    ->color('')
+                    ->icon('heroicon-o-user-plus'),
+                            ExcelImportAction::make()
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->label('CSV'),
+                static::importSqlAction(),
+                ExportAction::make()
+                    ->label('CSV')
+                    ->exporter(SwedenPersonerExporter::class)
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('danger'),
+                static::exportSqlAction(),
             ]);
     }
 
     private static function importSqlAction(): Action
     {
         return Action::make('importSql')
-            ->label('Import SQL')
-            ->icon('heroicon-o-arrow-up-on-square')
+            ->label('SQL')
+            ->icon('heroicon-o-arrow-down-on-square')
             ->color('success')
-            ->form([
+            ->schema([
                 FileUpload::make('file')
                     ->label('SQL File')
                     ->acceptedFileTypes(['application/sql', 'text/plain', '.sql'])
@@ -269,9 +278,9 @@ class SwedenPersonersTable
     private static function exportSqlAction(): Action
     {
         return Action::make('exportSql')
-            ->label('Export SQL')
-            ->icon('heroicon-o-arrow-down-on-square')
-            ->color('warning')
+            ->label('SQL')
+            ->icon('heroicon-o-arrow-up-on-square')
+            ->color('danger')
             ->action(function () {
                 return self::handleSqlExport();
             });

@@ -41,7 +41,7 @@ class AppDataHistory extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return auth()->user()->name ? auth()->user()->name : 'Mina Sidor';
+        return auth()->user()->name ? auth()->user()->name : 'MINA SIDOR';
     }
 
     public static function getNavigationLabel(): string

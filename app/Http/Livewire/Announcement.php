@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Announcement;
 use Livewire\Component;
 
 class Announcement extends Component
@@ -14,7 +13,7 @@ class Announcement extends Component
 
     public function render()
     {
-        $announcements = Announcement::where('is_active', true)
+        $announcements = AnnouncementModel::where('is_active', true)
             ->where(function ($query) {
                 $query->whereNull('starts_at')
                     ->orWhere('starts_at', '<=', now());

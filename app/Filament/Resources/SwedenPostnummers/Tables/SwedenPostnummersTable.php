@@ -221,8 +221,8 @@ class SwedenPostnummersTable
                 ]),
                 Action::make('importFromFile')
                     ->label('Import')
-                    ->icon('heroicon-o-document-arrow-up')
-                    ->color('warning')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
                     ->schema([
                         FileUpload::make('import_file')
                             ->label('CSV or XLSX file')
@@ -260,7 +260,7 @@ class SwedenPostnummersTable
                 Action::make('importFromGoogleSheets')
                     ->label('Import')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->color('info')
+                    ->color('warning')
                     ->requiresConfirmation()
                     ->modalHeading('Import people from Google Sheets')
                     ->modalDescription('Reads rows from the sheet and upserts into personer using personnummer or name+address+postnummer.')
@@ -299,7 +299,8 @@ class SwedenPostnummersTable
                 ExportAction::make()
                     ->label('Export')
                     ->exporter(PeopleExporter::class)
-                    ->icon('heroicon-o-arrow-up-tray'),
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('danger'),
                     BulkAction::make('runScript')
                         ->label('Run Queue Script')
                         ->icon('heroicon-o-command-line')

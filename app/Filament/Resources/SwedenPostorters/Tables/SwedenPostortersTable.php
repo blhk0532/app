@@ -8,7 +8,11 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-
+use App\Exports\SwedenPostorterExporter;
+use EightyNine\ExcelImport\ExcelImportAction;
+use Filament\Actions\Action;
+use Filament\Actions\ExportAction;
+use Illuminate\Support\Facades\DB;
 class SwedenPostortersTable
 {
     public static function configure(Table $table): Table
@@ -49,10 +53,23 @@ class SwedenPostortersTable
                 ViewAction::make(),
                 EditAction::make(),
             ])
-            ->toolbarActions([
+             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+                Action::make('create')
+                    ->label('Skapa Ny Postort')
+                    ->color('')
+                    ->icon('heroicon-o-plus-circle'),
+                ExcelImportAction::make()
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->label('CSV'),
+                ExportAction::make()
+                    ->label('CSV')
+                    ->exporter(SwedenPostorterExporter::class)
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('danger'),
             ]);
     }
 }

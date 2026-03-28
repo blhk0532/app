@@ -59,7 +59,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Zap\Models\Concerns\HasSchedules;
 use Zap\Models\Schedule;
-
+use App\Models\Company;
 /**
  * @property int $id
  * @property int|null $author_id
@@ -349,6 +349,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany(Team::class);
     }
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function ownedCompanies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'company_owners')
+            ->withTimestamps();
+    }
+
     public function teams(): BelongsToMany
     {
         return $this->belongsToMany(Team::class, 'membership')
@@ -541,7 +552,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'ui_preferences' => 'array',
             'active_status' => UserActiveStatus::class,
             'active_at' => 'datetime',
+            'current_company_id' => 'integer',
         ];
+    }
+
+    public function getCompanyName(): ?string
+    {
+        $company = Company::find($this->current_company_id);
+        return $company ? $company->name : null;
     }
 
     protected function canManageTeam(): bool

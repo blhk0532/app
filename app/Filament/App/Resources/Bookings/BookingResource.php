@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
+use function Laravel\Folio\name;
+
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
@@ -31,7 +33,7 @@ class BookingResource extends Resource
 
     protected static ?string $navigationLabel = 'Bokningar';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Mina Sidor';
+    // protected static string|UnitEnum|null $navigationGroup = 'MINA SIDOR';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-check-circle';
 
@@ -42,6 +44,15 @@ class BookingResource extends Resource
      * requiring a `team` relationship on the Booking model.
      */
     protected static bool $isScopedToTenant = false;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+      //  $name = auth()->user()->name ? auth()->user()->name . ' | ' . filament()->getTenant()?->name . ' | Team' : 'X';
+    $name = auth()->user()->name ? auth()->user()->name . ' | VVS Kontakt' : 'X';
+
+
+      return $name;
+    }
 
     public static function form(Schema $schema): Schema
     {

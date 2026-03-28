@@ -7,6 +7,7 @@ namespace App\Filament\Resources\SwedenPersoners\Pages;
 use App\Filament\Resources\SwedenPersoners\SwedenPersonerResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListSwedenPersoners extends ListRecords
 {
@@ -15,7 +16,16 @@ class ListSwedenPersoners extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+
         ];
+    }
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return  [];
     }
 }

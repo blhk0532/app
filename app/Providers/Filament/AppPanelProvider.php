@@ -162,13 +162,19 @@ class AppPanelProvider extends PanelProvider
                     ->collapsed()
                     ->label('Team Admin')
                     ->icon(Tabler::ShieldCheckF),
-                NavigationGroup::make('Mina Sidor')
+                NavigationGroup::make('MINA SIDOR')
                     ->extraSidebarAttributes(['class' => 'featured-sidebar-group'])
                     ->collapsed()
                     ->icon(Tabler::UserSquareRounded),
-                NavigationGroup::make('Kalendrar')
+                NavigationGroup::make('Administration')
                     ->collapsed()
-                    ->icon('heroicon-c-squares-plus'),
+                    ->icon('heroicon-o-shield-check'),
+                NavigationGroup::make(fn () => auth()->user()?->name ? auth()->user()?->name : 'X')
+                    ->collapsed()
+                    ->icon(Tabler::UserSquareRounded),
+     NavigationGroup::make('Administration | TEAM')
+                    ->collapsed()
+                    ->icon('heroicon-o-shield-check'),
                 NavigationGroup::make('Samtalslistor')
                     ->collapsed()
                     ->icon('heroicon-o-queue-list'),
@@ -178,12 +184,12 @@ class AppPanelProvider extends PanelProvider
                 NavigationGroup::make('Admin')
                     ->label(fn () => filament()->getTenant()?->name ?? 'Admin')
                     ->collapsed()
-                    ->icon(Tabler::UserSquareRounded),
-                NavigationGroup::make('Kalender')
+                    ->icon('heroicon-o-user-square-rounded'),
+                NavigationGroup::make('Calendar')
                     ->extraSidebarAttributes(['class' => 'featured-sidebar-group'])
                     ->icon('heroicon-o-calendar-days')
                     ->collapsed()
-                    ->icon(Tabler::UserSquareRounded),
+                    ->icon('heroicon-o-shield-check'),
 
             ])
             ->pages([
@@ -314,7 +320,7 @@ class AppPanelProvider extends PanelProvider
                     ->slug('my-profile')
                     ->setTitle(__(' '))
                     ->setNavigationLabel(__('Inställningar'))
-                    ->setNavigationGroup(__('Mina Sidor'))
+                    ->setNavigationGroup(__('MINA SIDOR'))
                     ->setIcon('heroicon-o-user')
                     ->setSort(100)
                     ->shouldRegisterNavigation(false)

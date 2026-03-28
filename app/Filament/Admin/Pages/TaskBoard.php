@@ -13,11 +13,26 @@ class TaskBoard extends BoardPage
 {
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-view-columns';
 
-    protected static ?string $navigationLabel = 'Booking Board';
+    protected static ?string $navigationLabel = 'Booking';
 
     protected static ?string $title = ' ';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Bookings';
+    protected static string|UnitEnum|null $navigationGroup = 'Användare';
+
+     protected static ?int $navigationSort = 4;
+
+     protected static ?string $tenantOwnershipRelationshipName = 'team';
+
+     public static function shouldRegisterNavigation(): bool
+     {
+         $teneant = filament()->getTenant();
+
+         if (filament()->getTenant()->getAttribute('is_admin') !== true) {
+             return false;
+         }
+
+         return true;
+     }
 
     public function board(Board $board): Board
     {

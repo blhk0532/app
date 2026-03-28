@@ -12,7 +12,8 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Icons\Heroicon;
 use UnitEnum;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
@@ -32,7 +33,7 @@ class AppChatDashboard extends BasePage
 
     protected static ?string $navigationLabel = 'Meddelande';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Mina Sidor';
+  //  protected static string|UnitEnum|null $navigationGroup = '';
 
     protected static ?int $navigationSort = 20;
 
@@ -57,13 +58,13 @@ class AppChatDashboard extends BasePage
         //        return true;
         //    }
 
-        return false;
+        return true;
 
     }
 
     public static function getNavigationLabel(): string
     {
-        return 'Meddelande';
+        return Auth::user()->getCompanyName() ? 'Meddelande' : 'X';
     }
 
     public static function getNavigationBadge(): ?string

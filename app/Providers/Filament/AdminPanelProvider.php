@@ -120,7 +120,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             //    ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
-            ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
+            //->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             // ->discoverResources(in: app_path('../plugins/adultdate/filament-booking/src/Filament/Resources'), for: 'Adultdate\\FilamentBooking\\Filament\\Resources')
 
             ->pages([
@@ -207,22 +207,22 @@ class AdminPanelProvider extends PanelProvider
                 //        ->pluralLabel('Logs')
                 //        ->navigationGroup('System'),
             ])
-            ->plugins([
-                EasyFooterPlugin::make()
-                    ->hiddenFromPagesEnabled()
-                    ->hiddenFromPages(['sample-page', 'another-page', 'admin/login', 'admin/forgot-password', 'admin/register'])
-                    ->withBorder()
-                    ->withLoadTime()
-                    ->withLogo(
-                        'https://static.cdnlogo.com/logos/l/23/laravel.svg', // Path to logo
-                        null,                                                // No link
-                        null,                                                // No text
-                        24                                                   // Logo height in pixels
-                    )
-                    ->withLinks([
-                        ['title' => 'ndsth.com', 'url' => 'https://ndsth.com', 'target' => '_blank'],
-                    ]),
-            ])
+        //    ->plugins([
+        //        EasyFooterPlugin::make()
+        //            ->hiddenFromPagesEnabled()
+        //            ->hiddenFromPages(['sample-page', 'another-page', 'admin/login', 'admin/forgot-password', 'admin/register'])
+        //            ->withBorder()
+        //            ->withLoadTime()
+        //            ->withLogo(
+        //                'https://static.cdnlogo.com/logos/l/23/laravel.svg', // Path to logo
+        //                null,                                                // No link
+        //                null,                                                // No text
+        //                24                                                   // Logo height in pixels
+        //            )
+        //            ->withLinks([
+        //                ['title' => 'ndsth.com', 'url' => 'https://ndsth.com', 'target' => '_blank'],
+        //            ]),
+        //    ])
             ->plugin(
                 AuthDesignerPlugin::make()
                     ->defaults(

@@ -33,7 +33,7 @@ class GoogleCalendar extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Kalendrar';
+        return 'Administration | TEAM';
         // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 

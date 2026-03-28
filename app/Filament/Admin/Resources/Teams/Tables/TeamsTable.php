@@ -19,10 +19,28 @@ class TeamsTable
             ->columns([
                 TextColumn::make('owner.name')
                     ->label(__('Owner'))
-                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('company.name')
+                    ->label(__('Company'))
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('email')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('phone')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('website')
+                    ->url(fn ($record) => $record->website)
+                    ->openUrlInNewTab()
+                    ->toggleable(),
+                TextColumn::make('users_count')
+                    ->counts('users')
+                    ->label(__('Users'))
+                    ->sortable(),
                 ToggleColumn::make('personal_team'),
                 TextColumn::make('created_at')
                     ->dateTime()

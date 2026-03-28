@@ -50,15 +50,15 @@ class Dashboard extends DynamicDashboard
 
     public function getTitle(): string|Htmlable
     {
-        return '';
+        return ' ';
     }
 
     public function getWidgets(): array
     {
         return [
-            RevenueGoalWidget::class,
-            RevByRegionWidget::class,
-            RevenuePulseWidget::class,
+        //    RevenueGoalWidget::class,
+        //    RevByRegionWidget::class,
+        //    RevenuePulseWidget::class,
             //  FulfillmentRateWidget::class,
         ];
     }
@@ -67,15 +67,17 @@ class Dashboard extends DynamicDashboard
     {
 
         return [
-            AccountInfoStackWidget::class,
-            WorldClockWidget::class,
+        //
+        //    AccountInfoStackWidget::class,
+        //
+        //    WorldClockWidget::class,
         ];
     }
 
     public function getFooterWidgets(): array
     {
         return [
-            KanbanWidget::class,
+        //    KanbanWidget::class,
         ];
     }
 }

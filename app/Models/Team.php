@@ -27,13 +27,22 @@ use Relaticle\Comments\Contracts\Commentable;
  * @property int $id
  * @property string $ulid
  * @property int $user_id
+ * @property int|null $company_id
  * @property int $is_active
  * @property string $name
+ * @property string|null $phone
+ * @property string|null $email
+ * @property string|null $website
+ * @property string|null $address
+ * @property string|null $city
+ * @property string|null $country
+ * @property string|null $description
  * @property string|null $slug
  * @property bool $personal_team
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property string|null $avatar
+ * @property-read Company|null $company
  * @property-read User|null $owner
  * @property-read Collection<int, TeamInvitation> $teamInvitations
  * @property-read int|null $team_invitations_count
@@ -65,7 +74,15 @@ class Team extends Model implements Commentable, HasAvatar, HasCurrentTenantLabe
 
     protected $fillable = [
         'user_id',
+        'company_id',
         'name',
+        'phone',
+        'email',
+        'website',
+        'address',
+        'city',
+        'country',
+        'description',
         'slug',
         'personal_team',
         'ulid',
@@ -76,6 +93,11 @@ class Team extends Model implements Commentable, HasAvatar, HasCurrentTenantLabe
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function hasUser($user): bool
@@ -126,14 +148,14 @@ class Team extends Model implements Commentable, HasAvatar, HasCurrentTenantLabe
 
     public function getFilamentName(): string
     {
-        return "{$this->name}";
+        return "{$this->name}".' | TEAM';
     }
 
     public function getCurrentTenantLabel(): string
     {
         $usernames = Auth::user()->name_first.' '.Auth::user()->name_last;
         $username = $usernames != ' ' ? $usernames : Auth::user()->name;
-        $tenantLabel = 'Nordic Digital Marketing';
+        $tenantLabel = 'Nordic Digital Marketing Co Limited';
 
         return $tenantLabel;
     }

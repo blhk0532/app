@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\SwedenAdressers\Tables;
 
+use App\Exports\SwedenAdresserExporter;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -15,6 +16,7 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\ExportAction;
 use Illuminate\Support\Facades\DB;
 
 class SwedenAdressersTable
@@ -23,9 +25,6 @@ class SwedenAdressersTable
     {
         return $table
             ->headerActions([
-                ExcelImportAction::make()
-                    ->color('primary'),
-                static::importSqlAction(),
             ])
             ->columns([
                 TextColumn::make('id')
@@ -94,16 +93,101 @@ class SwedenAdressersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+                                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+                Action::make('create')
+                    ->label('Skapa Ny Adress')
+                    ->color('')
+                    ->icon('heroicon-o-plus-circle'),
+                ExcelImportAction::make()
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->label('CSV'),
+                static::importSqlAction(),
+                ExportAction::make()
+                    ->label('CSV')
+                    ->exporter(SwedenAdresserExporter::class)
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('danger'),
+                static::exportSqlAction(),
             ]);
+    }
+
+    private static function exportSqlAction(): Action
+    {
+        return Action::make('exportSql')
+            ->label('SQL')
+            ->icon('heroicon-o-arrow-up-on-square')
+            ->color('danger')
+            ->action(function () {
+                return self::handleSqlExport();
+            });
+    }
+
+    private static function handleSqlExport()
+    {
+        try {
+            $tableName = 'sweden_adresser';
+            $rows = DB::table($tableName)->get();
+
+            if ($rows->isEmpty()) {
+                Notification::make()
+                    ->warning()
+                    ->title('Export Failed')
+                    ->body('No data to export.')
+                    ->send();
+
+                return null;
+            }
+
+            $columns = array_keys((array) $rows->first());
+
+            $sql = "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES \n";
+
+            $values = [];
+            foreach ($rows as $row) {
+                $rowValues = [];
+                foreach ($columns as $column) {
+                    $value = $row->{$column} ?? null;
+                    if ($value === null) {
+                        $rowValues[] = 'NULL';
+                    } elseif (is_numeric($value)) {
+                        $rowValues[] = $value;
+                    } else {
+                        $rowValues[] = "'".addslashes($value)."'";
+                    }
+                }
+                $values[] = '    ('.implode(', ', $rowValues).')';
+            }
+
+            $sql .= implode(",\n", $values).";\n";
+
+            $filename = "{$tableName}_export_".now()->format('Y-m-d_H-i-s').'.sql';
+            $filepath = storage_path('app/'.$filename);
+
+            file_put_contents($filepath, $sql);
+
+            return response()->download($filepath, $filename)->deleteFileAfterSend(true);
+
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Export Failed')
+                ->body($e->getMessage())
+                ->send();
+
+            return null;
+        }
     }
 
     private static function importSqlAction(): Action
     {
         return Action::make('importSql')
-            ->label('Import SQL')
-            ->icon('heroicon-o-arrow-up-on-square')
+            ->label('SQL')
+            ->icon('heroicon-o-arrow-down-on-square')
             ->color('success')
-            ->form([
+            ->schema([
                 FileUpload::make('file')
                     ->label('SQL File')
                     ->acceptedFileTypes(['application/sql', 'text/plain', '.sql'])

@@ -744,3 +744,8 @@ height:50px;
     height: 100vh;
     overflow:auto;
 }
+
+
+.fi-auth-layout.has-media.media-cover .fi-simple-header-subheading{
+    display:none!important;
+}

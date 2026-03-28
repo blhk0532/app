@@ -375,3 +375,6 @@ main {
     scrollbar-width: none;
 }
 
+.filament-google-maps-widget-table .fi-section-content{
+    padding:0px!important;
+}

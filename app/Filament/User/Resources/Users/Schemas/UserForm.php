@@ -42,6 +42,24 @@ class UserForm
                             ->columnSpan(1),
                         TextInput::make('phone')
                             ->tel(),
+                        Select::make('current_team_id')
+                            ->label('Current Team')
+                            ->relationship('currentTeam', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->nullable(),
+                        Select::make('company_id')
+                            ->label('Company')
+                            ->relationship('company', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->nullable(),
+                        TextInput::make('address')
+                            ->maxLength(255),
+                        TextInput::make('country')
+                            ->maxLength(255),
+                        TextInput::make('whatsapp')
+                            ->maxLength(255),
 
                         TextInput::make('password')
                             ->password()
