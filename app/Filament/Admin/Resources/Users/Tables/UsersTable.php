@@ -78,6 +78,7 @@ class UsersTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('teams.name')
+                    ->hidden()
                     ->label('Team Name')
                     ->badge()
                     ->searchable()

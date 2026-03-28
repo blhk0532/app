@@ -42,7 +42,7 @@ sleep 4
 
 echo ""
 echo "🔄 Restarting Horizon..."
-sudo $PHP artisan horizon:terminate
+$PHP artisan horizon:terminate
 $PHP artisan horizon
 
 echo ""

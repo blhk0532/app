@@ -243,16 +243,16 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
-                    ->setTitle(__('My Profile'))
-                    ->setNavigationLabel(__('My Profile'))
-                    ->setNavigationGroup(__('Group Profile'))
+                    ->setTitle(__(' '))
+                    ->setNavigationLabel(__(' '))
+                    ->setNavigationGroup(__(' '))
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldRegisterNavigation(false)
                     ->shouldShowEmailForm()
                     ->shouldShowLocaleForm(options: [
                         'en' => __('🇺🇸 English'),
-                        'es' => __('🇪🇸 Spanish'),
+                        'es' => __('🇪🇸 Svenska'),
                     ])
                     ->shouldShowThemeColorForm()
                     ->shouldShowSanctumTokens()
