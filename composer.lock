@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "80b2b762b474a85137d538101c611080",
+    "content-hash": "00e89d1cd90d6d6d9b8a089ee2b176d1",
     "packages": [
         {
             "name": "achyutn/filament-log-viewer",
@@ -2885,6 +2885,77 @@
                 "symlink": true,
                 "relative": true
             }
+        },
+        {
+            "name": "codewithdennis/filament-select-tree",
+            "version": "v4.0.18",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CodeWithDennis/filament-select-tree.git",
+                "reference": "609e407e1ab87bf8af418af53a79859350fa7949"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CodeWithDennis/filament-select-tree/zipball/609e407e1ab87bf8af418af53a79859350fa7949",
+                "reference": "609e407e1ab87bf8af418af53a79859350fa7949",
+                "shasum": ""
+            },
+            "require": {
+                "filament/forms": "^4.0|^5.0",
+                "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^7.9||^8.0",
+                "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
+                "pestphp/pest": "^2.0|^3.7|^4.4",
+                "pestphp/pest-plugin-arch": "^2.0|^3.0|^4.0",
+                "pestphp/pest-plugin-laravel": "^2.0|^3.1|^4.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "CodeWithDennis\\FilamentSelectTree\\FilamentSelectTreeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "CodeWithDennis\\FilamentSelectTree\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CodeWithDennis",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The multi-level select field enables you to make single selections from a predefined list of options that are organized into multiple levels or depths.",
+            "homepage": "https://github.com/codewithdennis/filament-select-tree",
+            "keywords": [
+                "CodeWithDennis",
+                "filament",
+                "filament-select-tree",
+                "laravel",
+                "tree"
+            ],
+            "support": {
+                "issues": "https://github.com/codewithdennis/filament-select-tree/issues",
+                "source": "https://github.com/codewithdennis/filament-select-tree"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/CodeWithDennis",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-07T16:33:30+00:00"
         },
         {
             "name": "composer/pcre",
@@ -7015,6 +7086,79 @@
                 }
             ],
             "time": "2026-02-19T15:32:30+00:00"
+        },
+        {
+            "name": "hugomyb/filament-media-action",
+            "version": "v5.0.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hugomyb/filament-media-action.git",
+                "reference": "a23ea3c583d2a3149c749b6096f68cd3ace51956"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hugomyb/filament-media-action/zipball/a23ea3c583d2a3149c749b6096f68cd3ace51956",
+                "reference": "a23ea3c583d2a3149c749b6096f68cd3ace51956",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^4.0|^5.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.92.4"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^8.0",
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-arch": "^4.0",
+                "pestphp/pest-plugin-laravel": "^4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentMediaAction": "Hugomyb\\FilamentMediaAction\\Facades\\FilamentMediaAction"
+                    },
+                    "providers": [
+                        "Hugomyb\\FilamentMediaAction\\FilamentMediaActionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hugomyb\\FilamentMediaAction\\": "src/",
+                    "Hugomyb\\FilamentMediaAction\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mayonobe Hugo",
+                    "email": "hugomayonobe@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Automatically display your media (video, audio, document, image, ...) with an action",
+            "homepage": "https://github.com/hugomyb/filament-media-action",
+            "keywords": [
+                "filament-media-action",
+                "hugomyb",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/hugomyb/filament-media-action/issues",
+                "source": "https://github.com/hugomyb/filament-media-action"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/hugomyb",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-01-26T10:12:52+00:00"
         },
         {
             "name": "hydrat/filament-table-layout-toggle",
@@ -17142,6 +17286,80 @@
             }
         },
         {
+            "name": "slimani/filament-media-manager",
+            "version": "v0.9.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/slimani-dev/filament-media-manager.git",
+                "reference": "4af584584574450e3941606bfeb765045c14b656"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/slimani-dev/filament-media-manager/zipball/4af584584574450e3941606bfeb765045c14b656",
+                "reference": "4af584584574450e3941606bfeb765045c14b656",
+                "shasum": ""
+            },
+            "require": {
+                "codewithdennis/filament-select-tree": "^4.0",
+                "filament/filament": "^4.0|^5.0",
+                "filament/spatie-laravel-media-library-plugin": "^4.0|^5.0",
+                "hugomyb/filament-media-action": "^4.0|^5.0",
+                "laravel/framework": "^12.0|^13.0",
+                "spatie/laravel-medialibrary": "^11.0",
+                "spatie/laravel-package-tools": "^1.93"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^10.0|^11.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-laravel": "^4.0",
+                "pestphp/pest-plugin-livewire": "^4.0",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Slimani\\MediaManager\\MediaManagerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Slimani\\MediaManager\\": "src/",
+                    "Slimani\\MediaManager\\Database\\Seeders\\": "database/seeders/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mohamed Slimani",
+                    "email": "mohamed@slimani.dev",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A media manager plugin for Filament.",
+            "homepage": "https://github.com/slimani-dev/filament-media-manager",
+            "keywords": [
+                "filament",
+                "laravel",
+                "media-library",
+                "media-manager"
+            ],
+            "support": {
+                "issues": "https://github.com/slimani-dev/filament-media-manager/issues",
+                "source": "https://github.com/slimani-dev/filament-media-manager"
+            },
+            "time": "2026-03-21T17:44:11+00:00"
+        },
+        {
             "name": "solution-forest/tab-layout-plugin",
             "version": "4.0.0",
             "source": {
@@ -26902,7 +27120,6 @@
         "livewire/volt": 20,
         "marjose123/filament-lockscreen": 20,
         "mddev31/filament-dynamic-dashboard": 20,
-        "mmes-design/filament-file-manager": 20,
         "mokhosh/filament-rating": 20,
         "mradder/filament-logger": 20,
         "muazzam/slick-scrollbar": 20,
@@ -26917,6 +27134,7 @@
         "secondnetwork/blade-tabler-icons": 20,
         "shreejan/actionable-column": 20,
         "shreejan/dash-arrange": 20,
+        "slimani/filament-media-manager": 20,
         "solution-forest/tab-layout-plugin": 20,
         "spatie/laravel-activitylog": 20,
         "spatie/laravel-data": 20,
