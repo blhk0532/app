@@ -599,21 +599,21 @@
         },
         {
             "name": "anourvalar/eloquent-serialize",
-            "version": "1.3.6",
+            "version": "1.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AnourValar/eloquent-serialize.git",
-                "reference": "42645e5515d6105c0e6db202f93cab3d36cdce74"
+                "reference": "b6b16ab61316fb9885dff1ede29e72441c7098c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AnourValar/eloquent-serialize/zipball/42645e5515d6105c0e6db202f93cab3d36cdce74",
-                "reference": "42645e5515d6105c0e6db202f93cab3d36cdce74",
+                "url": "https://api.github.com/repos/AnourValar/eloquent-serialize/zipball/b6b16ab61316fb9885dff1ede29e72441c7098c0",
+                "reference": "b6b16ab61316fb9885dff1ede29e72441c7098c0",
                 "shasum": ""
             },
             "require": {
                 "laravel/framework": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "php": "^7.4|^8.0"
+                "php": "^8.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.26",
@@ -658,9 +658,9 @@
             ],
             "support": {
                 "issues": "https://github.com/AnourValar/eloquent-serialize/issues",
-                "source": "https://github.com/AnourValar/eloquent-serialize/tree/1.3.6"
+                "source": "https://github.com/AnourValar/eloquent-serialize/tree/1.3.7"
             },
-            "time": "2026-03-18T15:36:03+00:00"
+            "time": "2026-03-27T16:21:06+00:00"
         },
         {
             "name": "arshaviras/weather-widget",
@@ -5667,16 +5667,16 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v7.0.3",
+            "version": "v7.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "28aa0694bcfdfa5e2959c394d5a1ee7a5083629e"
+                "reference": "e41f1bd7dbe3c5455c3f72d4338cfeb083b71931"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/28aa0694bcfdfa5e2959c394d5a1ee7a5083629e",
-                "reference": "28aa0694bcfdfa5e2959c394d5a1ee7a5083629e",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/e41f1bd7dbe3c5455c3f72d4338cfeb083b71931",
+                "reference": "e41f1bd7dbe3c5455c3f72d4338cfeb083b71931",
                 "shasum": ""
             },
             "require": {
@@ -5684,6 +5684,7 @@
             },
             "require-dev": {
                 "guzzlehttp/guzzle": "^7.4",
+                "phpfastcache/phpfastcache": "^9.2",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpunit/phpunit": "^9.5",
                 "psr/cache": "^2.0||^3.0",
@@ -5724,9 +5725,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v7.0.3"
+                "source": "https://github.com/firebase/php-jwt/tree/v7.0.4"
             },
-            "time": "2026-02-25T22:16:40+00:00"
+            "time": "2026-03-27T21:17:19+00:00"
         },
         {
             "name": "flowframe/laravel-trend",
@@ -6072,16 +6073,16 @@
         },
         {
             "name": "google/apiclient",
-            "version": "v2.19.0",
+            "version": "v2.19.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "b18fa8aed7b2b2dd4bcce74e2c7d267e16007ea9"
+                "reference": "5f6a31e9b987e09008bb9ff7882c4c4426a3bea9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/b18fa8aed7b2b2dd4bcce74e2c7d267e16007ea9",
-                "reference": "b18fa8aed7b2b2dd4bcce74e2c7d267e16007ea9",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/5f6a31e9b987e09008bb9ff7882c4c4426a3bea9",
+                "reference": "5f6a31e9b987e09008bb9ff7882c4c4426a3bea9",
                 "shasum": ""
             },
             "require": {
@@ -6092,11 +6093,11 @@
                 "guzzlehttp/psr7": "^2.6",
                 "monolog/monolog": "^2.9||^3.0",
                 "php": "^8.1",
-                "phpseclib/phpseclib": "^3.0.36"
+                "phpseclib/phpseclib": "^3.0.50"
             },
             "require-dev": {
                 "cache/filesystem-adapter": "^1.1",
-                "composer/composer": "^1.10.23",
+                "composer/composer": "^2.9",
                 "phpcompatibility/php-compatibility": "^9.2",
                 "phpspec/prophecy-phpunit": "^2.1",
                 "phpunit/phpunit": "^9.6",
@@ -6135,9 +6136,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
-                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.19.0"
+                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.19.1"
             },
-            "time": "2026-01-09T19:59:47+00:00"
+            "time": "2026-03-27T20:48:44+00:00"
         },
         {
             "name": "google/apiclient-services",
@@ -7391,23 +7392,23 @@
         },
         {
             "name": "jaybizzle/crawler-detect",
-            "version": "v1.3.7",
+            "version": "v1.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-                "reference": "7f7a45b5d5df9c95ba6b2008544e6cf8e66de6f5"
+                "reference": "1882af9b76cb1dbfba3256de2562c3cd383f9b8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/7f7a45b5d5df9c95ba6b2008544e6cf8e66de6f5",
-                "reference": "7f7a45b5d5df9c95ba6b2008544e6cf8e66de6f5",
+                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/1882af9b76cb1dbfba3256de2562c3cd383f9b8f",
+                "reference": "1882af9b76cb1dbfba3256de2562c3cd383f9b8f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8|^5.5|^6.5|^7.5|^8.5|^9.4"
+                "phpunit/phpunit": "^4.8|^5.5|^6.5|^7.5|^8.5.52|^9.4"
             },
             "type": "library",
             "autoload": {
@@ -7437,9 +7438,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JayBizzle/Crawler-Detect/issues",
-                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.3.7"
+                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.3.8"
             },
-            "time": "2026-02-02T19:15:54+00:00"
+            "time": "2026-03-26T23:01:33+00:00"
         },
         {
             "name": "jeffersongoncalves/filament-ace-editor-field",
@@ -11051,16 +11052,16 @@
         },
         {
             "name": "livewire/blaze",
-            "version": "v1.0.10",
+            "version": "v1.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/blaze.git",
-                "reference": "4cafa5e52687e0040111f09048252c013a0cf5d5"
+                "reference": "e5984922e09ffb2b1da28e255715630ca67c81e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/blaze/zipball/4cafa5e52687e0040111f09048252c013a0cf5d5",
-                "reference": "4cafa5e52687e0040111f09048252c013a0cf5d5",
+                "url": "https://api.github.com/repos/livewire/blaze/zipball/e5984922e09ffb2b1da28e255715630ca67c81e2",
+                "reference": "e5984922e09ffb2b1da28e255715630ca67c81e2",
                 "shasum": ""
             },
             "require": {
@@ -11103,9 +11104,9 @@
             "description": "A tool for optimizing Blade component performance by folding them into parent templates",
             "support": {
                 "issues": "https://github.com/livewire/blaze/issues",
-                "source": "https://github.com/livewire/blaze/tree/v1.0.10"
+                "source": "https://github.com/livewire/blaze/tree/v1.0.11"
             },
-            "time": "2026-03-17T16:28:47+00:00"
+            "time": "2026-03-27T21:23:05+00:00"
         },
         {
             "name": "livewire/flux",
@@ -11889,16 +11890,16 @@
         },
         {
             "name": "mmes-design/filament-file-manager",
-            "version": "v1.2.1",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/marcomessa/filament-file-manager.git",
-                "reference": "9cad05258fb428fce08ee548d88dec1eed8af11f"
+                "reference": "6cc8aa9ff99aad31dcf9bf346f2b5de8bbb6c2e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/marcomessa/filament-file-manager/zipball/9cad05258fb428fce08ee548d88dec1eed8af11f",
-                "reference": "9cad05258fb428fce08ee548d88dec1eed8af11f",
+                "url": "https://api.github.com/repos/marcomessa/filament-file-manager/zipball/6cc8aa9ff99aad31dcf9bf346f2b5de8bbb6c2e0",
+                "reference": "6cc8aa9ff99aad31dcf9bf346f2b5de8bbb6c2e0",
                 "shasum": ""
             },
             "require": {
@@ -11939,9 +11940,9 @@
             ],
             "support": {
                 "issues": "https://github.com/marcomessa/filament-file-manager/issues",
-                "source": "https://github.com/marcomessa/filament-file-manager/tree/v1.2.1"
+                "source": "https://github.com/marcomessa/filament-file-manager/tree/v1.4.1"
             },
-            "time": "2026-03-21T08:51:40+00:00"
+            "time": "2026-03-27T22:17:47+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -12189,16 +12190,16 @@
         },
         {
             "name": "mradder/filament-logger",
-            "version": "v1.2.1",
+            "version": "v1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MrAdder/filament-logger.git",
-                "reference": "02d226ae78bd72d714dc93075672a87bf9384ec2"
+                "reference": "20e8e41feb6fbaca57d918ec471c3de391a4033e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MrAdder/filament-logger/zipball/02d226ae78bd72d714dc93075672a87bf9384ec2",
-                "reference": "02d226ae78bd72d714dc93075672a87bf9384ec2",
+                "url": "https://api.github.com/repos/MrAdder/filament-logger/zipball/20e8e41feb6fbaca57d918ec471c3de391a4033e",
+                "reference": "20e8e41feb6fbaca57d918ec471c3de391a4033e",
                 "shasum": ""
             },
             "require": {
@@ -12276,7 +12277,7 @@
                 "issues": "https://github.com/MrAdder/filament-logger/issues",
                 "source": "https://github.com/MrAdder/filament-logger"
             },
-            "time": "2026-03-23T05:46:02+00:00"
+            "time": "2026-03-27T16:55:27+00:00"
         },
         {
             "name": "muazzam/slick-scrollbar",
@@ -16525,16 +16526,16 @@
         },
         {
             "name": "relaticle/comments",
-            "version": "v1.0.0-alpha.2",
+            "version": "v1.0.0-alpha.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/relaticle/comments.git",
-                "reference": "35571760d67cc5eba32c0cd50f3a8a1d81b40c81"
+                "reference": "6a26396f0de2a977adb9928731cc9c3bb1b39e83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/relaticle/comments/zipball/35571760d67cc5eba32c0cd50f3a8a1d81b40c81",
-                "reference": "35571760d67cc5eba32c0cd50f3a8a1d81b40c81",
+                "url": "https://api.github.com/repos/relaticle/comments/zipball/6a26396f0de2a977adb9928731cc9c3bb1b39e83",
+                "reference": "6a26396f0de2a977adb9928731cc9c3bb1b39e83",
                 "shasum": ""
             },
             "require": {
@@ -16576,7 +16577,7 @@
             "description": "A full-featured commenting system for Filament panels",
             "support": {
                 "issues": "https://github.com/relaticle/comments/issues",
-                "source": "https://github.com/relaticle/comments/tree/v1.0.0-alpha.2"
+                "source": "https://github.com/relaticle/comments/tree/v1.0.0-alpha.3"
             },
             "funding": [
                 {
@@ -16584,7 +16585,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-27T12:02:17+00:00"
+            "time": "2026-03-27T17:32:05+00:00"
         },
         {
             "name": "relaticle/flowforge",

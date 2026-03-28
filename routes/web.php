@@ -178,3 +178,14 @@ Route::get('spa/admin/tenant/{tenant}/profile', function ($tenant) {
 Route::get('spa/app/app/team/{tenant}/profile', function ($tenant) {
     return redirect()->to(EditProfilePage::getUrl(parameters: ['tenant' => $tenant]));
 })->name('spa.filament.app.tenant.profile');
+
+// Download backup files
+Route::get('download/backup/{filename}', function (string $filename) {
+    $filepath = storage_path('app/backups/'.$filename);
+
+    if (! file_exists($filepath)) {
+        abort(404, 'File not found');
+    }
+
+    return response()->download($filepath)->deleteFileAfterSend(true);
+})->name('download.backup')->middleware(['auth', 'verified']);

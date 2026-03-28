@@ -104,10 +104,11 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
             Notification::make()
                 ->success()
                 ->title('Backup Created')
-                ->body("Saved to: storage/app/backups/{$filename}")
+                ->body('Backup downloaded automatically.')
                 ->send();
 
-            $this->dispatch('download-file', path: $filepath, name: $filename);
+            $downloadUrl = route('download.backup', ['filename' => $filename]);
+            $this->dispatch('download-url', url: $downloadUrl);
         } catch (Exception $e) {
             Notification::make()->danger()->title('Backup Failed')->body($e->getMessage())->send();
         }
@@ -230,10 +231,11 @@ class DatabaseBackupWidget extends Widget implements HasSchemas
             Notification::make()
                 ->success()
                 ->title('Export Created')
-                ->body("Table '{$this->exportTable}' exported to: storage/app/backups/{$filename}")
+                ->body("Table '{$this->exportTable}' exported successfully.")
                 ->send();
 
-            $this->dispatch('download-file', path: $filepath, name: $filename);
+            $downloadUrl = route('download.backup', ['filename' => $filename]);
+            $this->dispatch('download-url', url: $downloadUrl);
             $this->exportTable = null;
         } catch (Exception $e) {
             Notification::make()->danger()->title('Export Failed')->body($e->getMessage())->send();

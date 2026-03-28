@@ -100,13 +100,8 @@
         {{-- Handle file downloads --}}
         <script>
             document.addEventListener('livewire:init', () => {
-                Livewire.on('download-file', ({ path, name }) => {
-                    const link = document.createElement('a');
-                    link.href = path;
-                    link.download = name;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                Livewire.on('download-url', ({ url }) => {
+                    window.location.href = url;
                 });
             });
         </script>
