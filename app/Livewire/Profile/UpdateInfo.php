@@ -67,6 +67,7 @@ class UpdateInfo extends Component implements HasForms
                 ->directory('avatars')
                 ->visibility('public')
                 ->maxSize(1024)
+                ->acceptedTypes('image/svg+xml')
                 ->deleteUploadedFileUsing(function ($file) {
 
                     Storage::disk('public')->delete($file);

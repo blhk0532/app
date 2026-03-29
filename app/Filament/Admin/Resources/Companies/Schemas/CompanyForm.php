@@ -33,7 +33,8 @@ class CompanyForm
                         TextInput::make('org_number')
                             ->label(__('Org. Number'))
                             ->maxLength(255),
-                        Toggle::make('personal_company'),
+                        Toggle::make('personal_company')
+                        ->label('Personsal'),
                     ]),
                 Section::make(__('Contact Information'))
                     ->columns(2)

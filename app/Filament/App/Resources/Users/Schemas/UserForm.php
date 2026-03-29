@@ -32,7 +32,8 @@ class UserForm
                             ->avatar()
                             ->imageEditor()
                             ->disk(config('filament-edit-profile.disk', 'public'))
-                            ->visibility(config('filament-edit-profile.visibility', 'public')),
+                            ->visibility(config('filament-edit-profile.visibility', 'public'))
+                            ->rules(['image', 'mimes:svg', 'max:5120']),
                         Textarea::make('notes')
                             ->label('Anteckningar')
                             ->nullable()

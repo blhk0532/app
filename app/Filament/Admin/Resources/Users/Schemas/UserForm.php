@@ -34,7 +34,7 @@ class UserForm
                             ->disk(config('filament-edit-profile.disk', 'public'))
                             ->visibility(config('filament-edit-profile.visibility', 'public'))
                             ->directory(filament('filament-edit-profile')->getAvatarDirectory())
-                            ->rules(['image', 'max:5120'])
+                            ->rules(['image', 'mimes:svg', 'max:5120'])
                             ->hidden(! filament('filament-edit-profile')->getShouldShowAvatarForm()),
                         Textarea::make('notes')
                             ->label('Anteckningar')

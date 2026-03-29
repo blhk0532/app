@@ -19,6 +19,8 @@ class CompanyResource extends Resource
 {
     protected static ?string $model = Company::class;
 
+    protected static ?string $navigationBadge = '=)';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 
     protected static bool $isScopedToTenant = false;
@@ -36,12 +38,16 @@ class CompanyResource extends Resource
     {
         return CompaniesTable::configure($table);
     }
-
     public static function getRelations(): array
     {
         return [
             //
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Company::query()->count();
     }
 
     public static function getPages(): array
