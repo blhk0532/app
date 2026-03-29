@@ -49,10 +49,20 @@ export default defineConfig(({ mode }) => ({
         },
     },
     server: {
-        cors: true,
+        host: '0.0.0.0',
+        cors: {
+            origin: '*',
+            methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+            credentials: true,
+        },
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
+        hmr: {
+            host: 'localhost',
+            protocol: 'ws',
+        },
+        allowedHosts: ['localhost', '127.0.0.1'],
     },
     build: {
         rollupOptions: {

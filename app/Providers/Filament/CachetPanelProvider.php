@@ -14,6 +14,7 @@ use App\Http\Middleware\CurrentTenant;
 use App\Http\Middleware\FilamentResourceAccess;
 use App\Models\Team;
 use App\Models\User;
+use App\Support\Filament\AppPanelRedirect;
 use Cachet\Cachet;
 use Cachet\Filament\Pages\EditProfile;
 use Cachet\Filament\Pages\TenantProfile;
@@ -43,6 +44,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -67,6 +69,7 @@ class CachetPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile(EditProfile::class)
             ->tenantProfile(EditTeamProfile::class)
+            ->homeUrl(fn () => AppPanelRedirect::urlFor(Auth::user()))
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->brandLogoHeight('2rem')
             ->brandName('Noridic Digital')
@@ -133,7 +136,7 @@ class CachetPanelProvider extends PanelProvider
             ->tenantMenuItems([
                 'profile' => fn (Action $action) => $action->label('Team Settings')
                     ->sort(-1)
-                    ->visible(fn () => User::canManageTeam() !== false),
+                    ->visible(fn () => User::canManageTeam() !== false && filament()->getTenant()),
             ])
        //      ->plugin(PinnableNavigationPlugin::make())
             ->plugin(

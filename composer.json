@@ -104,6 +104,7 @@
         "spatie/laravel-model-states": "@dev",
         "spatie/laravel-permission": "@dev",
         "spatie/laravel-query-builder": "@dev",
+        "spiral/roadrunner": "^2025.1",
         "spiral/roadrunner-cli": "^2.6.0",
         "spiral/roadrunner-http": "^3.3.0",
         "stechstudio/filament-impersonate": "@dev",
