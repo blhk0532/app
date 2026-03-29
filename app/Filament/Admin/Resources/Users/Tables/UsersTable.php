@@ -55,6 +55,7 @@ class UsersTable
                     ->falseIcon('heroicon-o-x-circle')
                     ->sortable(),
                 BadgeableColumn::make('name')
+                    ->hidden()
                     ->separator(':'),
                 TextColumn::make('email')
                     ->searchable()
@@ -105,6 +106,7 @@ class UsersTable
                 EditAction::make()
                     ->visible(fn ($record) => Filament::auth()->user()->hasRole('super') || ! $record->hasRole('super_admin')),
                 Impersonate::make()
+                ->color('success')
                 ->label('Login')
                 ->visible(fn ($record) => Filament::auth()->user()->hasRole('super') || ! $record->hasRole('super_admin')),
                 DeleteAction::make()
