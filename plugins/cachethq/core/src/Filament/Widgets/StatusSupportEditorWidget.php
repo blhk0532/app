@@ -21,6 +21,19 @@ class StatusSupportEditorWidget extends Widget implements HasForms
 {
     use InteractsWithForms;
 
+    /**
+     * Avoid dynamic property creation on the widget instance (deprecated in PHP 8.4+).
+     * These are populated via the form state.
+     *
+     * @var string|null
+     */
+    public ?string $name = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $about = null;
+
     protected int|string|array $columnSpan = 'full';
 
     protected static bool $isDiscovered = true;

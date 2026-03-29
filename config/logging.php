@@ -123,6 +123,14 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        // A dedicated channel for deprecation warnings. Some environments
+        // may set LOG_DEPRECATIONS_CHANNEL to 'deprecations' — ensure
+        // the channel exists to avoid "Log [deprecations] is not defined." errors.
+        'deprecations' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],

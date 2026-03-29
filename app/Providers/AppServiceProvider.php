@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use App\Http\Middleware\DebugRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->register(FilamentGoogleMapsServiceProvider::class);
         $this->app->register(FilamentUiSwitcherServiceProvider::class);
+        // Ensure the container can resolve the DebugRequest middleware
+        // when referenced by the short name 'DebugRequest' (some
+        // configurations or cached middleware may reference it that way).
+        $this->app->alias(DebugRequest::class, 'DebugRequest');
     }
 
     /**
@@ -119,14 +124,15 @@ class AppServiceProvider extends ServiceProvider
             if ($user?->role && $user?->role === 'manager') {
                 $panelSwitch
                     ->panels([
-                        'app',
+                         'app',
                         'chat',
                         'dialer',
                         'email',
-                        'manager',
+
                         'admin',
                         'booking',
                         'cachet',
+                        'manager',
                     ])
                     ->iconSize(32)
                     ->modalWidth('sm')
@@ -135,22 +141,25 @@ class AppServiceProvider extends ServiceProvider
             if ($user?->role && $user?->role === 'admin') {
                 $panelSwitch
                     ->panels([
-                        'app',
+                         'app',
                         'chat',
                         'dialer',
                         'email',
-                        'manager',
+
                         'admin',
                         'booking',
                         'cachet',
-                        'company',
+                        'manager',
+
                         'geo',
+                        'company',
                         'calendar',
-                        'stats',
                         'finance',
+
                         'queue',
                         'notify',
-                        'sheets',
+                        'stats',
+                        'data',
                     ])
                     ->iconSize(32)
                     ->modalWidth('sm')
@@ -164,22 +173,28 @@ class AppServiceProvider extends ServiceProvider
                         'chat',
                         'dialer',
                         'email',
-                        'manager',
+
                         'admin',
                         'booking',
                         'cachet',
-                        'company',
-                        'data',
+                        'manager',
+
                         'geo',
+                        'company',
                         'calendar',
-                        'stats',
                         'finance',
+
                         'queue',
                         'notify',
+                        'stats',
+                        'data',
+
+
                         'sheets',
                         'partner',
-                        'private',
                         'script',
+                        'private',
+
                         'super',
                         'dev',
                         'system',
