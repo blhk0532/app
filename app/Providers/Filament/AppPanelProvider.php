@@ -84,17 +84,18 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\View\View;
 use JeffersonGoncalves\Filament\RefreshSidebar\RefreshSidebarPlugin;
-use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
-use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use Leek\FilamentDiceBear\DiceBearPlugin;
 use Leek\FilamentDiceBear\DiceBearProvider;
 use Leek\FilamentDiceBear\Enums\DiceBearStyle;
 use Muazzam\SlickScrollbar\SlickScrollbarPlugin;
 use Relaticle\Comments\CommentsPlugin;
+use Illuminate\Support\Str;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\Enums\Tabler;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 
 // / use YourVendor\FilamentNotificationBell\FilamentNotificationBellPlugin;
 
@@ -340,9 +341,27 @@ class AppPanelProvider extends PanelProvider
                     ]),
             ])
             ->userMenuItems([
-                'profile' => Action::make('profile')
-                    ->url(fn () => EditProfilePage::getUrl())
-                    ->label('Inställningar')
+                  'profile' => Action::make('profile')
+                    ->label(fn () => Str::ucfirst(Auth::user()->getNdsUserName()))
+                    ->url(function (): string {
+                        $panel = Filament::getCurrentOrDefaultPanel();
+                        $tenant = filament()->getTenant();
+
+                        if (! $tenant) {
+                            $user = Filament::auth()->user();
+
+                            if ($user && method_exists($user, 'getDefaultTenant')) {
+                                $tenant = $user->getDefaultTenant($panel);
+                            }
+
+                        }
+
+                        if ($tenant) {
+                            return EditProfilePage::getUrl(tenant: $tenant);
+                        }
+
+                        return $panel?->getUrl() ?? url('/');
+                    })
                     ->icon('heroicon-o-user-circle'),
                 'wirechat' => Action::make('chats')
                     ->label('Meddelade')

@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 namespace App\Filament\Admin\Resources\Users\Tables;
 
 use App\Delius\Patches\UserField\UserColumn;
@@ -104,10 +103,12 @@ class UsersTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make()
-                    ->visible(fn ($record) => Filament::auth()->user()->hasRole('super_admin') || ! $record->hasRole('super_admin')),
-                Impersonate::make(),
+                    ->visible(fn ($record) => Filament::auth()->user()->hasRole('super') || ! $record->hasRole('super_admin')),
+                Impersonate::make()
+                ->label('Login')
+                ->visible(fn ($record) => Filament::auth()->user()->hasRole('super') || ! $record->hasRole('super_admin')),
                 DeleteAction::make()
-                    ->visible(fn ($record) => Filament::auth()->user()->hasRole('super_admin') || ! $record->hasRole('super_admin')),
+                    ->visible(fn ($record) => Filament::auth()->user()->hasRole('super') || ! $record->hasRole('super_admin')),
             ]);
     }
 }
