@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Pages\Page;
 use UnitEnum;
 
-class OutgoingConfirmationPage extends Page
+class OutgoingConfirmPage extends Page
 {
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-view-columns';
 
