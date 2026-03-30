@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\HittaDatas\Tables;
 
+use App\Actions\TransferHittaDataToRingaDataAction;
 use App\Filament\Exports\HittaDataExporter;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -19,6 +22,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class HittaDatasTable
 {
@@ -142,7 +146,8 @@ class HittaDatasTable
                     ->label('I Ratsit'),
 
                 TernaryFilter::make('is_hus')
-                    ->label('Är Hus'),
+                    ->label('Är Hus')
+                    ->default(true),
 
                 SelectFilter::make('kon')
                     ->label('Kön')
@@ -189,6 +194,22 @@ class HittaDatasTable
                     ExportBulkAction::make()
                         ->exporter(HittaDataExporter::class),
                     DeleteBulkAction::make(),
+                    BulkAction::make('transferToRingaData')
+                        ->label('Transfer to Ringa Data')
+                        ->icon('heroicon-o-arrow-right')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records, array $data): void {
+                            $action = new TransferHittaDataToRingaDataAction;
+                            $action->handle($records, $data);
+
+                            Notification::make()
+                                ->title('Success')
+                                ->body(count($records).' records transferred to Ringa Data')
+                                ->success()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ])
             ->defaultSort('created_at', 'desc')

@@ -2,12 +2,8 @@
 
 namespace App\Models;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Team;
-use App\Models\User;
-use App\Models\Company;
 
 class OutgoingSms extends Model
 {
@@ -16,6 +12,7 @@ class OutgoingSms extends Model
     protected $fillable = [
         'phone',
         'message',
+        'api_message',
         'table',
         'record_id',
         'user_id',
@@ -35,6 +32,7 @@ class OutgoingSms extends Model
         'company_id' => 'integer',
         'is_active' => 'boolean',
         'is_success' => 'boolean',
+        'api_message' => 'string',
     ];
 
     public function team(): BelongsTo

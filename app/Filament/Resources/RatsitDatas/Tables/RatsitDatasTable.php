@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Resources\RatsitDatas\Tables;
 
 use App\Actions\TransferRatsitDataToRingaDataAction;
-use App\Filament\Exports\RatsitDataExporter;
 use App\Models\RatsitData;
+use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -22,11 +22,11 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class RatsitDatasTable
 {
-     public static function configure(Table $table): Table
+    public static function configure(Table $table): Table
     {
         return $table
             ->columns([
@@ -241,6 +241,86 @@ class RatsitDatasTable
                         }),
                     DeleteBulkAction::make(),
                 ]),
+                static::exportSqlAction(),
             ]);
+    }
+
+    private static function exportSqlAction(): Action
+    {
+        return Action::make('exportSql')
+            ->label('SQL')
+            ->icon('heroicon-o-arrow-up-on-square')
+            ->color('danger')
+            ->action(function () {
+                return self::handleSqlExport();
+            });
+    }
+
+    private static function handleSqlExport()
+    {
+        try {
+            $tableName = 'ratsit_data';
+            $rows = DB::table($tableName)->get();
+
+            if ($rows->isEmpty()) {
+                Notification::make()
+                    ->warning()
+                    ->title('Export Failed')
+                    ->body('No data to export.')
+                    ->send();
+
+                return null;
+            }
+
+            // Exclude 'id' column if present
+            $allColumns = array_keys((array) $rows->first());
+            $columns = array_filter($allColumns, fn ($col) => $col !== 'id');
+
+            $batchSize = 500;
+            $sql = '';
+            $values = [];
+            $rowCount = 0;
+            foreach ($rows as $row) {
+                $rowValues = [];
+                foreach ($columns as $column) {
+                    $value = $row->{$column} ?? null;
+                    if ($value === null) {
+                        $rowValues[] = 'NULL';
+                    } elseif (is_numeric($value)) {
+                        $rowValues[] = $value;
+                    } else {
+                        $rowValues[] = "'".addslashes($value)."'";
+                    }
+                }
+                $values[] = '    ('.implode(', ', $rowValues).')';
+                $rowCount++;
+                if ($rowCount % $batchSize === 0) {
+                    $sql .= "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES\n";
+                    $sql .= implode(",\n", $values).";\n";
+                    $values = [];
+                }
+            }
+            // Write remaining values
+            if (! empty($values)) {
+                $sql .= "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES\n";
+                $sql .= implode(",\n", $values).";\n";
+            }
+
+            $filename = "{$tableName}_export_".now()->format('Y-m-d_H-i-s').'.sql';
+            $filepath = storage_path('app/'.$filename);
+
+            file_put_contents($filepath, $sql);
+
+            return response()->download($filepath, $filename)->deleteFileAfterSend(true);
+
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Export Failed')
+                ->body($e->getMessage())
+                ->send();
+
+            return null;
+        }
     }
 }

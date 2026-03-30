@@ -1775,11 +1775,16 @@ final class RingaDataCalendar extends FullCalendarWidget implements HasCalendar
         if (isset($this->record) && $this->record instanceof RingaData) {
             $clientDefaults = [
                 'name' => mb_trim(($this->record->fornamn ?? '').' '.($this->record->efternamn ?? '')) ?: $this->record->personnamn,
-                'phone' => $this->record->telefon,
+                'location' => mb_trim(($this->record->gatuadress ?? '').', '.($this->record->postnummer ?? '').' '.($this->record->postort ?? '')) ?: null,
+                'title' => mb_trim(($this->record->fornamn ?? '').' '.($this->record->efternamn ?? '').' '.($this->record->gatuadress ?? '').' '.($this->record->postort ?? '')) ?: $this->record->personnamn,
+                'phone' => $this->record->telefonnummer ?? $this->record->telefon,
                 'email' => is_array($this->record->epost_adress) ? ($this->record->epost_adress[0] ?? null) : $this->record->epost_adress,
+                'personal_id' => $this->record->personnummer ?? '',
                 'street' => $this->record->gatuadress,
                 'zip' => $this->record->postnummer,
                 'city' => $this->record->postort,
+                'longitude' => $this->record->longitude ?? null,
+                'latitude' => $this->record->latitude ?? null,
             ];
         }
 

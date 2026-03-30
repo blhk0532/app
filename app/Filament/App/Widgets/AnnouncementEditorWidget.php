@@ -18,6 +18,7 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Team;
 
 class AnnouncementEditorWidget extends Widget implements HasSchemas
 {
@@ -49,7 +50,7 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
         if ($this->editingId) {
             $announcement = Announcement::find($this->editingId);
             if ($announcement) {
-                $this->form->fill([
+                $this->data = [
                     'title' => $announcement->title,
                     'content' => $announcement->content,
                     'priority' => $announcement->priority,
@@ -57,22 +58,28 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     'component_id' => $announcement->component_id,
                     'starts_at' => $announcement->starts_at?->format('Y-m-d H:i:s'),
                     'ends_at' => $announcement->ends_at?->format('Y-m-d H:i:s'),
-                ]);
-
+                ];
                 return;
             }
         }
 
-        $this->form->fill([
+        $this->data = [
             'priority' => 'low',
-            'starts_at' => now()->format('Y-m-d H:i:s'),
-            'ends_at' => now()->addDay()->format('Y-m-d H:i:s'),
-        ]);
+            'starts_at' => now()->toDateString(),
+            'ends_at' => now()->addDay()->toDateString(),
+        ];
     }
 
     public function form(Schema $schema): Schema
     {
-        $teamId = Auth::user()?->current_team_id;
+        $user = Auth::user();
+        // Get all teams where user is a member and is_admin = 0
+        $teams = $user->teams()->pluck('name', 'teams.id');
+        // Default to first such team if exists
+        $defaultTeamId = $teams->keys()->first() ?? null;
+
+        // Get the selected team_id from form state if available, otherwise use default
+        $selectedTeamId = $this->data['team_id'] ?? $defaultTeamId;
 
         return $schema
             ->schema([
@@ -80,15 +87,24 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     ->label('Title')
                     ->required()
                     ->maxLength(255)
+                    ->columnSpan(6)
                     ->autocomplete(false),
-                DateTimePicker::make('starts_at')
+                Select::make('team_id')
+                    ->label('Teams')
+                    ->required()
+                    ->columnSpan(2)
+                    ->options($teams)
+                    ->default($defaultTeamId),
+                \Filament\Forms\Components\DatePicker::make('starts_at')
                     ->label('Starts At')
+                    ->columnSpan(2)
                     ->required()
-                    ->default(now()),
-                DateTimePicker::make('ends_at')
+                    ->default(fn () => now()->toDateString()),
+                \Filament\Forms\Components\DatePicker::make('ends_at')
                     ->label('Ends At')
+                    ->columnSpan(2)
                     ->required()
-                    ->default(now()->addDay())
+                    ->default(fn () => now()->addDay()->toDateString())
                     ->nullable(),
                 RichEditor::make('content')
                     ->label('Content')
@@ -111,7 +127,7 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     ->hidden()
                     ->label('Component')
                     ->options(
-                        Component::where('team_id', $teamId)
+                        Component::where('team_id', $selectedTeamId)
                             ->pluck('name', 'id')
                     )
                     ->nullable()
@@ -121,19 +137,19 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
                     ->hidden()
                     ->label('Tekniker')
                     ->options(
-                        User::where('current_team_id', $teamId)
+                        User::where('current_team_id', $selectedTeamId)
                             ->pluck('name', 'id')
                     )
                     ->nullable()
                     ->placeholder('None'),
             ])
-            ->columns(3)
+            ->columns(12)
             ->statePath('data');
     }
 
     public function save(): void
     {
-        $data = $this->form->getState();
+        $data = $this->data;
 
         $isUpdate = $this->editingId !== null;
 
@@ -141,8 +157,8 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
             'title' => $data['title'],
             'content' => $data['content'] ?? '',
             'priority' => $data['priority'] ?? 'low',
-            'starts_at' => isset($data['starts_at']) ? Carbon::parse($data['starts_at']) : now(),
-            'ends_at' => isset($data['ends_at']) ? Carbon::parse($data['ends_at']) : now()->addDay(),
+            'starts_at' => isset($data['starts_at']) ? Carbon::parse($data['starts_at'] . ' 00:00:00') : now()->startOfDay(),
+            'ends_at' => isset($data['ends_at']) ? Carbon::parse($data['ends_at'] . ' 00:00:00') : now()->addDay()->startOfDay(),
             'tekniker_id' => $data['tekniker_id'] ?? null,
             'component_id' => $data['component_id'] ?? null,
             'is_active' => true,
@@ -183,7 +199,7 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
     public function resetForm(): void
     {
         $this->editingId = null;
-        $this->form->fill([
+        $this->data = [
             'priority' => 'low',
             'starts_at' => now()->format('Y-m-d H:i:s'),
             'title' => null,
@@ -191,6 +207,6 @@ class AnnouncementEditorWidget extends Widget implements HasSchemas
             'tekniker_id' => null,
             'component_id' => null,
             'ends_at' => null,
-        ]);
+        ];
     }
 }

@@ -8,13 +8,13 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Actions\ExportAction;
 use Illuminate\Support\Facades\DB;
 
 class SwedenGatorsTable
@@ -102,10 +102,13 @@ class SwedenGatorsTable
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),
                 static::exportSqlAction(),
-            ]);
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->paginated([10, 25, 50, 100, 200, 500])
+            ->defaultPaginationPageOption(25);
     }
 
-        private static function exportSqlAction(): Action
+    private static function exportSqlAction(): Action
     {
         return Action::make('exportSql')
             ->label('SQL')
@@ -183,6 +186,7 @@ class SwedenGatorsTable
                     ->label('SQL File')
                     ->acceptedFileTypes(['application/sql', 'text/plain', '.sql'])
                     ->storeFiles(false)
+                    ->maxSize(1048576)
                     ->required(),
             ])
             ->action(function (array $data): void {

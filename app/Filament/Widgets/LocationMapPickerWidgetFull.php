@@ -9,6 +9,7 @@ use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
@@ -20,7 +21,7 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
 
     public ?array $data = [];
 
-    protected string $view = 'filament.queue.widgets.location-map-picker-widget';
+    protected string $view = 'filament.queue.widgets.location-map-picker-widget-full';
 
     protected int|string|array $columnSpan = 'full';
 
@@ -46,8 +47,9 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
         return $schema
             ->extraAttributes(['class' => 'pb-0 mb-0'])
             ->schema([
-                Grid::make()
-
+                Grid::make(4)
+                    ->gridContainer()
+                    ->extraAttributes(['class' => 'gap-4'])
                     ->schema([
                         Map::make('location')
                             ->label('Map')
@@ -109,25 +111,24 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
                             })
                             ->required()
                             ->columnSpanFull(),
-
                         TextInput::make('street')
-                            ->label('...')
+                            ->label(' ')
                             ->hidden()
                             ->maxLength(255)
                             ->columnSpan(1)
                             ->readOnly(),
                         TextInput::make('zip')
-                            ->label('...')
+                            ->label(' ')
                             ->columnSpan(1)
                             ->maxLength(50)
                             ->readOnly(),
                         TextInput::make('city')
-                            ->label('...')
+                            ->label(' ')
                             ->maxLength(255)
                             ->columnSpan(1)
                             ->readOnly(),
                         TextInput::make('state')
-                            ->label('...')
+                            ->label(' ')
                             ->maxLength(255)
                             ->columnSpan(1)
                             ->readOnly(),
@@ -142,23 +143,27 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
                         //        ->columnSpan(1)
                         //        ->readOnly(),
                         TextInput::make('country')
-                            ->label('...')
+                            ->label(' ')
                             ->maxLength(255)
                             ->columnSpan(1)
                             ->readOnly(),
                         TextInput::make('address_search')
-                            ->label('Sök adress')
+                            ->label('Sök address eller område')
                             ->extraAttributes(['class' => 'sok-adress'])
                             ->placeholder('Search by street, city, or postal code')
                             ->maxLength(255)
-                            ->columnSpanFull(),
+                            ->columnSpan(2),
 
                         TextInput::make('pin_name')
                             ->label('Pin Name / Note')
                             ->placeholder('Enter a name for this location')
-                            ->columnSpanFull(),
+                            ->columnSpan(1),
+                        ColorPicker::make('pin_color')
+                            ->label('Pin Color')
+                            ->placeholder('Enter a color for this pin')
+                            ->columnSpan(1),
                     ])
-                    ->columns(2),
+                    ->columns(4),
 
             ])
             ->statePath('data');
@@ -186,6 +191,7 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
             'latitude' => $lat,
             'longitude' => $lng,
             'description' => data_get($payload, 'address_search'),
+            'color' => data_get($payload, 'pin_color'),
             'data' => $payload,
         ]);
 

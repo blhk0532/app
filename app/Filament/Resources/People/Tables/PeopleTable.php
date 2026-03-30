@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\People\Tables;
 
+use App\Actions\TransferPeopleToRingaDataAction;
 use App\Exports\PeopleExporter;
 use App\Models\Person;
 use App\Services\GoogleSheets\PeopleSheetsSyncService;
@@ -111,7 +112,7 @@ class PeopleTable
                     ->sortable(),
                 TextColumn::make('sources')
                     ->label('Sources')
-                    ->formatStateUsing(fn(mixed $state): string => is_array($state) ? implode(', ', array_filter($state)) : (string) ($state ?? ''))
+                    ->formatStateUsing(fn (mixed $state): string => is_array($state) ? implode(', ', array_filter($state)) : (string) ($state ?? ''))
                     ->badge()
                     ->toggleable()
                     ->sortable(),
@@ -129,12 +130,12 @@ class PeopleTable
             ->filters([
                 Filter::make('has_personnummer')
                     ->label('Has personnummer')
-                    ->query(fn(Builder $query): Builder => $query
+                    ->query(fn (Builder $query): Builder => $query
                         ->whereNotNull('personnummer')
                         ->where('personnummer', '<>', '')),
                 Filter::make('has_telefonnummer')
                     ->label('Has phone')
-                    ->query(fn(Builder $query): Builder => $query
+                    ->query(fn (Builder $query): Builder => $query
                         ->whereNotNull('telefonnummer')
                         ->whereRaw('JSON_LENGTH(telefonnummer) > 0')),
                 SelectFilter::make('kommun')
@@ -142,7 +143,7 @@ class PeopleTable
                     ->searchable()
                     ->multiple()
                     ->preload()
-                    ->options(fn(): array => Person::query()
+                    ->options(fn (): array => Person::query()
                         ->whereNotNull('kommun')
                         ->where('kommun', '<>', '')
                         ->orderBy('kommun')
@@ -153,7 +154,7 @@ class PeopleTable
                     ->searchable()
                     ->multiple()
                     ->preload()
-                    ->options(fn(): array => Person::query()
+                    ->options(fn (): array => Person::query()
                         ->whereNotNull('postort')
                         ->where('postort', '<>', '')
                         ->orderBy('postort')
@@ -163,7 +164,7 @@ class PeopleTable
                     ->label('Bostadstyp')
                     ->searchable()
                     ->multiple()
-                    ->options(fn(): array => Person::query()
+                    ->options(fn (): array => Person::query()
                         ->whereNotNull('bostadstyp')
                         ->where('bostadstyp', '<>', '')
                         ->orderBy('bostadstyp')
@@ -177,8 +178,8 @@ class PeopleTable
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['created_from'] ?? null, fn(Builder $query, string $date): Builder => $query->whereDate('created_at', '>=', $date))
-                            ->when($data['created_until'] ?? null, fn(Builder $query, string $date): Builder => $query->whereDate('created_at', '<=', $date));
+                            ->when($data['created_from'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('created_at', '>=', $date))
+                            ->when($data['created_until'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('created_at', '<=', $date));
                     }),
             ])
             ->defaultSort('created_at', 'desc')
@@ -190,14 +191,30 @@ class PeopleTable
                     Action::make('openMap')
                         ->label('Open map')
                         ->icon('heroicon-o-map')
-                        ->url(fn(Person $record): string => "https://www.google.com/maps?q={$record->latitud},{$record->longitude}")
+                        ->url(fn (Person $record): string => "https://www.google.com/maps?q={$record->latitud},{$record->longitude}")
                         ->openUrlInNewTab()
-                        ->visible(fn(Person $record): bool => filled($record->latitud) && filled($record->longitude)),
+                        ->visible(fn (Person $record): bool => filled($record->latitud) && filled($record->longitude)),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    BulkAction::make('transferToRingaData')
+                        ->label('Transfer to Ringa Data')
+                        ->icon('heroicon-o-arrow-right')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records, array $data): void {
+                            $action = new TransferPeopleToRingaDataAction;
+                            $action->handle($records, $data);
+
+                            Notification::make()
+                                ->title('Success')
+                                ->body(count($records).' records transferred to Ringa Data')
+                                ->success()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
                     BulkAction::make('syncToGoogleSheets')
                         ->label('Sync to Sheets')
                         ->icon('heroicon-o-table-cells')
@@ -245,7 +262,7 @@ class PeopleTable
                         ->color('info')
                         ->action(function (Collection $records): void {
                             $total = $records->count();
-                            $withPin = $records->filter(fn(Person $record): bool => filled($record->personnummer))->count();
+                            $withPin = $records->filter(fn (Person $record): bool => filled($record->personnummer))->count();
                             $withPhone = $records->filter(function (Person $record): bool {
                                 $phones = $record->telefonnummer;
 

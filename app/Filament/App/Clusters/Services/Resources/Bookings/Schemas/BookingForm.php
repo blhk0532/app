@@ -9,6 +9,7 @@ use Adultdate\FilamentBooking\Models\Booking\Booking;
 use Adultdate\FilamentBooking\Models\Booking\Client;
 use Adultdate\FilamentBooking\Models\Booking\Service;
 use App\Models\User;
+use Dom\Text;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
@@ -32,6 +33,7 @@ class BookingForm
         return $schema
             ->components([
                 Group::make()
+                    ->extraAttributes(['class' => 'booking-group-grid'])
                     ->schema([
                         Section::make()
                             ->schema(self::getDetailsComponents())
@@ -105,31 +107,44 @@ class BookingForm
                 ->searchable()
                 ->hidden(),
 
-            DatePicker::make('service_date')
-                ->label('Datum')
-                ->required()
-                ->columnSpan(1),
-
             Group::make()
                 ->schema([
-                    TimePicker::make('start_time')
+            TimePicker::make('start_time')
                         ->label('Starttid')
                         ->seconds(false)
+                        ->prefix('Från:')
+                        ->suffixIcon(Heroicon::OutlinedClock)
                         ->displayFormat('H:i')
                         ->native(false)
                         ->required(),
-
-                    TimePicker::make('end_time')
+            TimePicker::make('end_time')
                         ->label('Sluttid')
                         ->seconds(false)
+                        ->prefix('Till:')
+                        ->suffixIcon(Heroicon::OutlinedClock)
                         ->displayFormat('H:i')
                         ->native(false)
                         ->required(),
                 ])
                 ->columns(2)
                 ->columnSpan(1),
+            Group::make()
+                ->schema([
+                DatePicker::make('service_date')
+                ->label('Datum')
+                ->required()
+                ->columnSpan(1),
+                              Select::make('service_user_id')
+                ->label('Service Tekniker')
+                ->options(User::where('role', 'service')->pluck('name', 'id'))
+                ->searchable()
+                ->required(),
+                ])
+                ->columns(2)
+                ->columnSpan(1),
             Select::make('booking_client_id')
                 ->label('Fastighetsägare')
+                ->prefixIcon(Heroicon::UserCircle)
                 ->relationship('client', 'name')
                 ->searchable()
                 ->required()
@@ -139,6 +154,10 @@ class BookingForm
                         ->schema([
                             TextInput::make('name')
                                 ->default($clientDefaults['name'] ?? null)
+                                ->required()
+                                ->maxLength(255),
+                            TextInput::make('personnummer')
+                                ->default($clientDefaults['personal_id'] ?? null)
                                 ->required()
                                 ->maxLength(255),
                             TextInput::make('email')
@@ -194,23 +213,37 @@ class BookingForm
 
                     return $client->id;
                 }),
-            Select::make('service_user_id')
-                ->label('Service Tekniker')
-                ->options(User::where('role', 'service')->pluck('name', 'id'))
-                ->searchable()
-                ->required(),
-
+            Group::make()
+                ->schema([
+            TextInput::make('phone')
+                ->label('Telefonnummer')
+                ->placeholder('Telefon bokning')
+                ->suffixAction(\Filament\Actions\Action::make('fillFromCookie')
+                    ->icon('heroicon-o-device-phone-mobile')
+                    ->label('Fyll från samtal')
+                    ->action(fn ($livewire) => $livewire->dispatch('fill-phone-from-cookie'))
+                )
+                ->extraAttributes([
+                    'x-data' => '{}',
+                    'x-on:fill-phone-from-cookie.window' => 'let m = document.cookie.match(/booking_phone=([^;]+)/); if(m){ $el.value = decodeURIComponent(m[1]); $el.dispatchEvent(new Event("input")); }',
+                ])
+                ->maxLength(12)
+                ->columnSpan(1),
             TextInput::make('personnummer')
                 ->label('Personnummer')
-                ->prefix('Pnr: ')
-                ->prefixIcon(Heroicon::UserCircle)
+                ->default($clientDefaults['personal_id'] ?? null)
                 ->placeholder('YYYYMMDDXXXX'),
-
+                ])
+                ->columns(2)
+                ->columnSpan(1),
             TextInput::make('fastighetsbeteckning')
                 ->label('Fastighetsbeteckning')
+                ->suffixAction(Action::make('search_property')
+                    ->icon(Heroicon::MagnifyingGlass)
+                    ->url('https://minkarta.lantmateriet.se/')
+                    ->openUrlInNewTab())
                 ->prefixIcon(Heroicon::Home)
                 ->placeholder('-- https://minkarta.lantmateriet.se --'),
-
             TextInput::make('booking_user_id')
                 ->hidden()
                 ->dehydrated(),
@@ -220,9 +253,9 @@ class BookingForm
                 ->dehydrated(),
             RichEditor::make('notes')
                 ->label('Anteckningar')
+                ->extraAttributes(['class' => 'booking-notes-rich-editor'])
                 ->toolbarButtons([
                     'bold',
-
                     'italic',
                     'underline',
                     'bulletList',
@@ -240,6 +273,7 @@ class BookingForm
         return [
             ToggleButtons::make('status')
                 ->inline()
+                ->hidden()
                 ->options(BookingStatus::class)
                 ->required()
                 ->columnSpan('full'),
@@ -251,6 +285,7 @@ class BookingForm
     {
         return Repeater::make('items')
             ->label('Tjänst')
+            ->extraAttributes(['class' => 'booking-items-repeater'])
             ->relationship()
             ->schema([
                 Select::make('booking_service_id')
@@ -260,20 +295,16 @@ class BookingForm
                     ->live()
                     ->afterStateUpdated(fn ($state, Set $set) => $set('unit_price', Service::find($state)?->price ?? 0))
                     ->distinct()
-                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->searchable()
                     ->columnSpan(2),
-
                 TextInput::make('qty')
                     ->label('Antal')
                     ->numeric()
                     ->default(1)
                     ->required()
                     ->columnSpan(1),
-
                 TextInput::make('unit_price')
                     ->label('Pris')
-                    ->disabled()
                     ->dehydrated()
                     ->numeric()
                     ->required()
@@ -284,4 +315,5 @@ class BookingForm
             ->defaultItems(1)
             ->hiddenLabel();
     }
+
 }

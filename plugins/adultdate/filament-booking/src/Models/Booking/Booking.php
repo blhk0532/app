@@ -51,6 +51,11 @@ class Booking extends Model
         'schedulable_id',
         'personnummer',
         'fastighetsbeteckning',
+        'title',
+        'description',
+        'location',
+        'color',
+        'phone',
     ];
 
     protected $casts = [
@@ -65,6 +70,11 @@ class Booking extends Model
         'start_time' => 'datetime',
         'end_time' => 'datetime',
         'state' => \Adultdate\FilamentBooking\Enums\BookingState::class,
+        'title',
+        'description',
+        'location',
+        'color',
+        'phone',
     ];
 
     protected $attributes = [

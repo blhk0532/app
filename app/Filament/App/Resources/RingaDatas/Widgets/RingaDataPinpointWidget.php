@@ -99,11 +99,13 @@ class RingaDataPinpointWidget extends Widget implements HasForms
                     ->addressField('address')
                     ->searchable(false)
                     ->defaultLocation($lat, $lng)
-                    ->defaultZoom(8 ?? 13)
-                    ->height(420 ?? 400)
+                    ->defaultZoom(18)
+                    ->height(420)
                     ->columnSpanFull(),
             ])
-            ->statePath('data');
+            ->statePath('data')
+            ->extraAttributes(['class' => 'filament-pinpoint-widget']);
+
     }
 
     public function save(): void

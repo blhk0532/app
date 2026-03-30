@@ -13,6 +13,7 @@ use App\Models\RingaData;
 use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
+use Crumbls\Layup\View\Section;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Faker\Factory as Faker;
 use Filament\Actions\Action;
@@ -35,18 +36,25 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Laravel\Prompts\Grid;
 use Shreejan\ActionableColumn\Tables\Columns\ActionableColumn;
 use Webbingbrasil\FilamentCopyActions\Tables\CopyableTextColumn;
 use Zvizvi\UserFields\Components\UserColumn;
+use Filament\Schemas\Components\Grid as FilamentGrid;
+use Filament\Schemas\Components\Section as FilamentSection;
+use Filament\AdvancedExport\Traits\HasAdvancedExport;
+use Asmit\ResizedColumn\HasResizableColumn;
 
 final class RingaDataTable
 {
+
+    use HasAdvancedExport;
+    use HasResizableColumn;
+
     public static function configure(Table $table): Table
     {
         return $table
             ->headerActions([
-                ExcelImportAction::make()
-                    ->color('primary'),
             ])
             ->columns([
 
@@ -78,11 +86,11 @@ final class RingaDataTable
 
                 TextColumn::make('bostadstyp')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('byggar')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('adressandring')
                     ->searchable()
@@ -90,29 +98,8 @@ final class RingaDataTable
                     ->sortable(),
                 TextColumn::make('agandeform')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
-
-                CopyableTextColumn::make('telefon')
-                    ->state(function ($record) {
-                        $telefon = $record->telefon;
-                        if (is_array($telefon)) {
-                            $telefon = $telefon[0] ?? '';
-                        }
-                        if (is_string($telefon) && str_contains($telefon, ',')) {
-                            $telefon = explode(',', $telefon)[0];
-                        }
-                        // Remove [, ], ", - characters and replace +46 with 0
-                        $telefon = preg_replace('/[\[\]\"\-]/', '', $telefon);
-                        $telefon = preg_replace('/^\+46/', '0', $telefon);
-
-                        return $telefon;
-                    })
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false)
-                    ->sortable(),
-                UserColumn::make('user')
-                    ->label('Användare'),
                 ActionableColumn::make('outcome_category')
                     ->badge()
                     ->sortable()
@@ -153,7 +140,26 @@ final class RingaDataTable
                                 $record->update($data);
                             })
                     ),
+                CopyableTextColumn::make('telefon')
+                    ->state(function ($record) {
+                        $telefon = $record->telefon;
+                        if (is_array($telefon)) {
+                            $telefon = $telefon[0] ?? '';
+                        }
+                        if (is_string($telefon) && str_contains($telefon, ',')) {
+                            $telefon = explode(',', $telefon)[0];
+                        }
+                        // Remove [, ], ", - characters and replace +46 with 0
+                        $telefon = preg_replace('/[\[\]\"\-]/', '', $telefon);
+                        $telefon = preg_replace('/^\+46/', '0', $telefon);
 
+                        return $telefon;
+                    })
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->sortable(),
+                UserColumn::make('user')
+                    ->label('Användare'),
                 TextColumn::make('attempts')
                     ->label('Försök')
                     ->sortable()
@@ -254,6 +260,10 @@ final class RingaDataTable
                         };
                     })
                     ->searchable(),
+                SelectFilter::make('max_age')
+                    ->label('Under 75år')
+                    ->options(fn () => [
+                ]),
                 Filter::make('fodelsedag_min')
                     ->schema([
                         DatePicker::make('fodelsedag_min')
@@ -302,8 +312,14 @@ final class RingaDataTable
                         return Campaign::where('team_id', $tenantId)
                             ->pluck('title', 'id')
                             ->toArray();
-                    })
-                    ->searchable(),
+                }),
+                SelectFilter::make('team_id')
+                    ->label('Team')
+                    ->options(Team::pluck('name', 'id')->toArray()),
+                SelectFilter::make('user_id')
+                    ->label('User')
+                    ->options(User::pluck('name', 'id')->toArray())
+                ->searchable(),
 
             ], layout: FiltersLayout::Modal)
             ->filtersFormColumns(3)
@@ -334,6 +350,7 @@ final class RingaDataTable
                     BulkAction::make('transferCampaign')
                         ->label('Kampanjöverföring')
                         ->icon('heroicon-o-arrow-path')
+                        ->hidden()
                         ->color('info')
                         ->schema([
                             Select::make('campaign_id')
@@ -394,6 +411,7 @@ final class RingaDataTable
                         ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
                     BulkAction::make('selectTeam')
                         ->label('Välj Arbetsgrupp')
+                        ->hidden()
                         ->icon('heroicon-o-user-group')
                         ->color('primary')
                         ->schema([
@@ -423,6 +441,8 @@ final class RingaDataTable
                         ->color('gray')
                         ->icon('heroicon-o-users')
                         ->schema([
+                            FilamentGrid::make()
+                                ->schema([
                             Select::make('users')
                                 ->label('Välj användare')
                                 ->multiple()
@@ -488,6 +508,10 @@ final class RingaDataTable
                                 ->validationMessages([
                                     'required' => 'Detta fält är obligatoriskt.',
                                 ]),
+                            DatePicker::make('available_at')
+                                ->default(Carbon::yesterday())
+                                ->hidden()
+                                ->label('Available At'),
                             DatePicker::make('started_at')
                                 ->default(today())
                                 ->label('Startdatum')
@@ -501,7 +525,8 @@ final class RingaDataTable
                                 ->required()
                                 ->validationMessages([
                                     'required' => 'Detta fält är obligatoriskt.',
-                                ]),
+                                ])
+                            ])
                         ])
                         ->action(function (Collection $records, array $data): void {
                             $userIds = $data['users'];
@@ -516,6 +541,7 @@ final class RingaDataTable
                                 $updateData = [
                                     'user_id' => $singleUserId,
                                     'calendar_id' => $data['calendar_id'],
+                                    'available_at' => $data['available_at'],
                                     'started_at' => $data['started_at'],
                                     'expires_at' => $data['expires_at'],
                                     'attempts' => 0,
@@ -543,6 +569,8 @@ final class RingaDataTable
                         })
                         ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
                 ]),
+                                ExcelImportAction::make()
+                    ->color('primary'),
             ]);
     }
 

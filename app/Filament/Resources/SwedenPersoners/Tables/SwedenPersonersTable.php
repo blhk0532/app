@@ -13,19 +13,79 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
-use GuzzleHttp\Promise\Create;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Filament\Actions\CraeteAction;
+use Illuminate\Support\Facades\Http;
 
 class SwedenPersonersTable
 {
+    private static function transferToRingaDataBulkAction(): Action
+    {
+        return Action::make('transferToRingaData')
+            ->label('Transfer to Ringa Data')
+            ->icon('heroicon-o-arrow-up-right')
+            ->color('warning')
+            ->requiresConfirmation()
+            ->deselectRecordsAfterCompletion()
+            ->accessSelectedRecords()
+            ->modalHeading('Transfer selected to Ringa Data')
+            ->modalSubmitActionLabel('Transfer')
+            ->form([
+                TextInput::make('url')
+                    ->label('Ringa Data API URL')
+                    ->required()
+                    ->url()
+                    ->default('https://ringa-data.example.com/api/import')
+                    ->placeholder('https://ringa-data.example.com/api/import'),
+            ])
+            ->action(function (array $data, $records) {
+                $url = $data['url'] ?? null;
+                if (! $url) {
+                    Notification::make()
+                        ->danger()
+                        ->title('No URL specified')
+                        ->body('You must provide a valid Ringa Data API URL.')
+                        ->send();
+
+                    return;
+                }
+
+                $payload = $records->map->toArray()->values()->all();
+
+                try {
+                    $response = Http::post($url, [
+                        'records' => $payload,
+                    ]);
+
+                    if ($response->successful()) {
+                        Notification::make()
+                            ->success()
+                            ->title('Transfer successful')
+                            ->body('Data was sent to Ringa Data API.')
+                            ->send();
+                    } else {
+                        Notification::make()
+                            ->danger()
+                            ->title('Transfer failed')
+                            ->body('API response: '.$response->body())
+                            ->send();
+                    }
+                } catch (\Exception $e) {
+                    Notification::make()
+                        ->danger()
+                        ->title('Transfer failed')
+                        ->body('Error: '.$e->getMessage())
+                        ->send();
+                }
+            });
+    }
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -129,12 +189,14 @@ class SwedenPersonersTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    static::exportToApiBulkAction(),
+                    static::transferToRingaDataBulkAction(),
                 ]),
                 Action::make('create')
                     ->label('Skapa Ny Person')
                     ->color('')
                     ->icon('heroicon-o-user-plus'),
-                            ExcelImportAction::make()
+                ExcelImportAction::make()
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
                     ->label('CSV'),
@@ -145,7 +207,70 @@ class SwedenPersonersTable
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),
                 static::exportSqlAction(),
-            ]);
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->paginated([10, 25, 50, 100, 200, 500])
+            ->defaultPaginationPageOption(25);
+    }
+
+    private static function exportToApiBulkAction(): Action
+    {
+        return Action::make('exportToApi')
+            ->label('Exportera till API')
+            ->icon('heroicon-o-cloud-arrow-up')
+            ->color('primary')
+            ->requiresConfirmation()
+            ->deselectRecordsAfterCompletion()
+            ->accessSelectedRecords()
+            ->modalHeading('Exportera markerade till API')
+            ->modalSubmitActionLabel('Exportera')
+            ->schema([
+                TextInput::make('url')
+                    ->label('API URL')
+                    ->required()
+                    ->url()
+                    ->placeholder('http://localhost:8000/api/sweden-personer/import-json'),
+            ])
+            ->action(function (array $data, $records) {
+                $url = $data['url'] ?? null;
+                if (! $url) {
+                    Notification::make()
+                        ->danger()
+                        ->title('Ingen URL angiven')
+                        ->body('Du måste ange en giltig API-URL.')
+                        ->send();
+
+                    return;
+                }
+
+                $payload = $records->map->toArray()->values()->all();
+
+                try {
+                    $response = Http::post($url, [
+                        'records' => $payload,
+                    ]);
+
+                    if ($response->successful()) {
+                        Notification::make()
+                            ->success()
+                            ->title('Export lyckades')
+                            ->body('Data skickades till API:et.')
+                            ->send();
+                    } else {
+                        Notification::make()
+                            ->danger()
+                            ->title('Export misslyckades')
+                            ->body('API-svaret: '.$response->body())
+                            ->send();
+                    }
+                } catch (\Exception $e) {
+                    Notification::make()
+                        ->danger()
+                        ->title('Export misslyckades')
+                        ->body('Fel: '.$e->getMessage())
+                        ->send();
+                }
+            });
     }
 
     private static function importSqlAction(): Action
@@ -157,6 +282,7 @@ class SwedenPersonersTable
             ->schema([
                 FileUpload::make('file')
                     ->label('SQL File')
+                    ->maxSize(1048576)
                     ->acceptedFileTypes(['application/sql', 'text/plain', '.sql'])
                     ->storeFiles(false)
                     ->required(),
@@ -302,11 +428,14 @@ class SwedenPersonersTable
                 return null;
             }
 
-            $columns = array_keys((array) $rows->first());
+            // Exclude 'id' column if present
+            $allColumns = array_keys((array) $rows->first());
+            $columns = array_filter($allColumns, fn ($col) => $col !== 'id');
 
-            $sql = "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES \n";
-
+            $batchSize = 500;
+            $sql = '';
             $values = [];
+            $rowCount = 0;
             foreach ($rows as $row) {
                 $rowValues = [];
                 foreach ($columns as $column) {
@@ -320,9 +449,18 @@ class SwedenPersonersTable
                     }
                 }
                 $values[] = '    ('.implode(', ', $rowValues).')';
+                $rowCount++;
+                if ($rowCount % $batchSize === 0) {
+                    $sql .= "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES\n";
+                    $sql .= implode(",\n", $values).";\n";
+                    $values = [];
+                }
             }
-
-            $sql .= implode(",\n", $values).";\n";
+            // Write remaining values
+            if (! empty($values)) {
+                $sql .= "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES\n";
+                $sql .= implode(",\n", $values).";\n";
+            }
 
             $filename = "{$tableName}_export_".now()->format('Y-m-d_H-i-s').'.sql';
             $filepath = storage_path('app/'.$filename);

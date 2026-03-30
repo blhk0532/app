@@ -8,6 +8,7 @@ use App\Filament\Resources\MerinfoDatas\MerinfoDataResource;
 use App\Filament\Widgets\MerinfoDataStatsWidget;
 use App\Jobs\BackupMerinfoData;
 use App\Jobs\ImportMerinfoData;
+use App\Models\User;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -72,7 +73,7 @@ class ListMerinfoDatas extends ListRecords
                         ->maxSize(function (Get $get) {
                             return match ($get('file_type')) {
                                 'sqlite' => 51200, // 50MB for SQLite
-                                default => 10240, // 10MB for others
+                                default => 102400, // 10MB for others
                             };
                         })
                         ->helperText(function (Get $get) {
@@ -123,7 +124,7 @@ class ListMerinfoDatas extends ListRecords
     protected function handleImport(array $files, string $fileType): void
     {
         $filePath = $files[0]; // FileUpload returns array
-        /** @var \App\Models\User|null $authUser */
+        /** @var User|null $authUser */
         $authUser = auth()->user();
         $userId = $authUser?->id;
 

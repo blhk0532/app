@@ -23,7 +23,6 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
-use Novius\LaravelFilamentActionPreview\Filament\Actions\PreviewAction;
 use UnitEnum;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 
@@ -43,7 +42,7 @@ class RingaDataResource extends Resource
 
     protected static ?string $slug = 'nummer/lista';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = -1;
 
     // Make this resource global (not tenant-scoped) since Ringa data is public information
     protected static ?string $tenantOwnershipRelationshipName = null;
@@ -52,22 +51,22 @@ class RingaDataResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Team Admin';
+        return 'Administration | TEAM';
         // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        //  $teneant = filament()->getTenant();
-        //  if (filament()->getTenant()->getAttribute('is_admin') !== true) {
-        //      return true;
-        //  }
-        //   if (auth()->user()->role === 'admin' || auth()->user()->role === 'super' || auth()->user()->role === 'manager') {
-        //       return true;
-        //   }
+
+        if (filament()->getTenant()->getAttribute('is_admin') === true) {
+        if (auth()->user()->role === 'admin' || auth()->user()->role === 'super' || auth()->user()->role === 'manager') {
+            return true;
+        }
+        }
 
         return false;
     }
+
 
     public static function form(Schema $schema): Schema
     {
@@ -105,8 +104,6 @@ class RingaDataResource extends Resource
             Action::make('view')
                 ->icon('heroicon-m-eye')
                 ->url(fn (RingaData $record) => RingaListanResource::getUrl('view', ['record' => $record])),
-            PreviewAction::make()
-                ->label('Edit'),
             Action::make('ring')
                 ->label('Ring')
                 ->icon('heroicon-m-phone-arrow-up-right')
@@ -135,7 +132,7 @@ class RingaDataResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
 
-        if ($user && in_array($user->role, ['super'])) {
+        if ($user && in_array($user->role, ['super', 'admin'])) {
             return $query;
         }
 

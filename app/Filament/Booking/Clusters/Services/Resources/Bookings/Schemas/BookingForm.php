@@ -159,7 +159,6 @@ class BookingForm
                                 ->email()
                                 ->maxLength(255)
                                 ->unique(),
-
                             TextInput::make('street')
                                 ->label('Street address')
                                 ->default($clientDefaults['street'] ?? null)
@@ -257,7 +256,6 @@ class BookingForm
 
                 TextInput::make('unit_price')
                     ->label('Pris')
-                    ->disabled()
                     ->dehydrated()
                     ->numeric()
                     ->required()

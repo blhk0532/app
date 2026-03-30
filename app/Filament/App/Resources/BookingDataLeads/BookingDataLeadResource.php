@@ -26,7 +26,7 @@ class BookingDataLeadResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
 
-    protected static ?string $navigationLabel = 'Samtalskö';
+    protected static ?string $navigationLabel = 'Samtal';
 
     protected static bool $isScopedToTenant = false;
 

@@ -10,13 +10,13 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Actions\ExportAction;
 use Illuminate\Support\Facades\DB;
 
 class SwedenAdressersTable
@@ -93,7 +93,7 @@ class SwedenAdressersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-                                BulkActionGroup::make([
+                BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
                 Action::make('create')
@@ -111,7 +111,10 @@ class SwedenAdressersTable
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),
                 static::exportSqlAction(),
-            ]);
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->paginated([10, 25, 50, 100, 200, 500])
+            ->defaultPaginationPageOption(25);
     }
 
     private static function exportSqlAction(): Action
@@ -141,11 +144,14 @@ class SwedenAdressersTable
                 return null;
             }
 
-            $columns = array_keys((array) $rows->first());
+            // Exclude 'id' column if present
+            $allColumns = array_keys((array) $rows->first());
+            $columns = array_filter($allColumns, fn ($col) => $col !== 'id');
 
-            $sql = "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES \n";
-
+            $batchSize = 500;
+            $sql = '';
             $values = [];
+            $rowCount = 0;
             foreach ($rows as $row) {
                 $rowValues = [];
                 foreach ($columns as $column) {
@@ -159,9 +165,18 @@ class SwedenAdressersTable
                     }
                 }
                 $values[] = '    ('.implode(', ', $rowValues).')';
+                $rowCount++;
+                if ($rowCount % $batchSize === 0) {
+                    $sql .= "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES\n";
+                    $sql .= implode(",\n", $values).";\n";
+                    $values = [];
+                }
             }
-
-            $sql .= implode(",\n", $values).";\n";
+            // Write remaining values
+            if (! empty($values)) {
+                $sql .= "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES\n";
+                $sql .= implode(",\n", $values).";\n";
+            }
 
             $filename = "{$tableName}_export_".now()->format('Y-m-d_H-i-s').'.sql';
             $filepath = storage_path('app/'.$filename);
@@ -190,6 +205,7 @@ class SwedenAdressersTable
             ->schema([
                 FileUpload::make('file')
                     ->label('SQL File')
+                    ->maxSize(1048576)
                     ->acceptedFileTypes(['application/sql', 'text/plain', '.sql'])
                     ->storeFiles(false)
                     ->required(),

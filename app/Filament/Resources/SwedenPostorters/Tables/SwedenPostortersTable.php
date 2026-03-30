@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\SwedenPostorters\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use App\Exports\SwedenPostorterExporter;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
-use Illuminate\Support\Facades\DB;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
 class SwedenPostortersTable
 {
     public static function configure(Table $table): Table
@@ -26,10 +26,10 @@ class SwedenPostortersTable
                 TextColumn::make('lan')
                     ->searchable(),
                 TextColumn::make('latitude')
-                  ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 TextColumn::make('longitude')
-                  ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 TextColumn::make('personer')
                     ->numeric()
@@ -53,7 +53,7 @@ class SwedenPostortersTable
                 ViewAction::make(),
                 EditAction::make(),
             ])
-             ->toolbarActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
@@ -70,6 +70,9 @@ class SwedenPostortersTable
                     ->exporter(SwedenPostorterExporter::class)
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),
-            ]);
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->paginated([10, 25, 50, 100, 200, 500])
+            ->defaultPaginationPageOption(25);
     }
 }

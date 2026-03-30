@@ -171,6 +171,13 @@ Route::middleware('auth')->group(function (): void {
         ->name('ringa-data.outcome.store');
 });
 
+// Filament admin SMS send route
+use App\Http\Controllers\Filament\OutgoingSmsController;
+
+Route::post('filament/admin/outgoing-sms/send', [OutgoingSmsController::class, 'store'])
+    ->name('filament.admin.outgoing-sms.send')
+    ->middleware(['auth']);
+
 Route::get('spa/admin/tenant/{tenant}/profile', function ($tenant) {
     return redirect()->to(EditProfilePage::getUrl(parameters: ['tenant' => $tenant]));
 })->name('filament.admin.tenant.profile');

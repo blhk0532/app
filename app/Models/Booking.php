@@ -161,5 +161,10 @@ class Booking extends FilamentBooking implements Commentable
         'color',
         'personnummer',
         'fastighetsbeteckning',
+       'title',
+        'description',
+        'location',
+        'color',
+        'phone',
     ];
 }

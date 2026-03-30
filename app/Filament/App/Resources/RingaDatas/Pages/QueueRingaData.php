@@ -18,8 +18,10 @@ use Filament\Resources\Pages\Page;
 use Filament\Support\Assets\Css;
 use Filament\Support\Enums\Width;
 use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use UnitEnum;
 use Wallacemartinss\FilamentIconPicker\Enums\Tabler;
@@ -68,6 +70,24 @@ class QueueRingaData extends Page
             $first = $this->getQuery()->first();
             $this->selectedRecordId = $first?->id;
 
+            // Temporary debug logging to diagnose empty queue issues
+            try {
+                logger()->info('QueueRingaData debug', [
+                    'tenant_id' => filament()->getTenant()?->id,
+                    'auth_id' => Auth::id(),
+                    'pending_count' => $pendingCount,
+                    'total_ringa_count' => DB::table('ringa_data')->count(),
+                    'sample_rows' => DB::table('ringa_data')
+                        ->select('id', 'team_id', 'user_id', 'is_active', 'started_at', 'available_at', 'outcome', 'outcome_category', 'attempts')
+                        ->orderBy('id')
+                        ->limit(5)
+                        ->get()
+                        ->map(fn ($r) => (array) $r)
+                        ->toArray(),
+                ]);
+            } catch (\Throwable $t) {
+                logger()->warning('QueueRingaData debug logging failed: '.$t->getMessage());
+            }
             if (! $first) {
                 $tenant = filament()->getTenant();
                 $this->redirect(route('filament.app.pages.dashboard', ['tenant' => $tenant]), navigate: true);
@@ -198,5 +218,15 @@ class QueueRingaData extends Page
             RingaDatasQueueTableWidget::class,
 
         ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
+    }
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
     }
 }

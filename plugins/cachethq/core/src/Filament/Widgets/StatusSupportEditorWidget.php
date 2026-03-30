@@ -30,9 +30,9 @@ class StatusSupportEditorWidget extends Widget implements HasForms
     public ?string $name = null;
 
     /**
-     * @var string|null
+     * @var string|array|null
      */
-    public ?string $about = null;
+    public $about = null;
 
     protected int|string|array $columnSpan = 'full';
 

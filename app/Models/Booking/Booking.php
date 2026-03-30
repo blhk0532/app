@@ -160,6 +160,11 @@ class Booking extends Model implements Commentable
         'schedulable_id',
         'personnummer',
         'fastighetsbeteckning',
+        'title',
+        'description',
+        'location',
+        'color',
+        'phone',
     ];
 
     protected $casts = [
@@ -173,6 +178,11 @@ class Booking extends Model implements Commentable
         'ends_at' => 'datetime',
         'start_time',
         'end_time',
+        'title',
+        'description',
+        'location',
+        'color',
+        'phone',
     ];
 
     protected $attributes = [

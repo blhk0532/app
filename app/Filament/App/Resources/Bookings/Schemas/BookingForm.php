@@ -266,7 +266,6 @@ class BookingForm
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->searchable()
                     ->columnSpan(2),
-
                 TextInput::make('qty')
                     ->label('Antal')
                     ->numeric()
@@ -276,7 +275,6 @@ class BookingForm
 
                 TextInput::make('unit_price')
                     ->label('Pris')
-                    ->disabled()
                     ->dehydrated()
                     ->numeric()
                     ->required()

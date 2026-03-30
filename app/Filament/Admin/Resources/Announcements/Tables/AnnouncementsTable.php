@@ -24,9 +24,8 @@ class AnnouncementsTable
                     ->dateTime()
                     ->sortable(),
                 IconColumn::make('is_active')
+                    ->state(fn ($record) => $record->starts_at <= now() && $record->ends_at >= now())
                     ->boolean(),
-                TextColumn::make('priority')
-                    ->badge(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -36,6 +35,7 @@ class AnnouncementsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('updated_at', 'desc')
             ->filters([
                 //
             ])

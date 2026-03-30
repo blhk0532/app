@@ -11,13 +11,15 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
 use UnitEnum;
+use App\Filament\Admin\Resources\Announcements\Schemas\AnnouncementForm;
 
 class AnnouncementResource extends Resource
 {
     protected static ?string $model = Announcement::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleOvalLeft;
 
     protected static ?string $tenantOwnershipRelationshipName = 'team';
 
@@ -35,6 +37,11 @@ class AnnouncementResource extends Resource
         return [
             //
         ];
+    }
+
+        public static function form(Schema $schema): Schema
+    {
+        return AnnouncementForm::configure($schema);
     }
 
     public static function getPages(): array

@@ -60,6 +60,7 @@
                                         tag="a"
                                         href="tel:{{ $dialable }}"
                                         color="gray"
+                                        x-on:click="document.cookie = 'booking_phone=' + encodeURIComponent('{{ $phone }}') + '; path=/; max-age=600'"
                                         size="sm"
                                         class="w-full justify-start shadow-sm hover:bg-success-50 dark:hover:bg-gray-500/50 group transition-colors"
                                     >

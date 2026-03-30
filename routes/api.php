@@ -61,6 +61,12 @@ Route::get('/ratsit-data/bulk', [RatsitDataController::class, 'bulk']);
 Route::apiResource('data-private', DataPrivateController::class);
 Route::post('/data-private/bulk', [DataPrivateController::class, 'bulkStore']);
 
+// SwedenPersoner bulk import endpoints
+use App\Http\Controllers\Api\SwedenPersonerImportController;
+
+Route::post('/sweden-personer/import-json', [SwedenPersonerImportController::class, 'importJson']);
+Route::post('/sweden-personer/import-file', [SwedenPersonerImportController::class, 'importFile']);
+
 // Public API routes (no authentication required)
 // Use only the manual POST/GET routes for custom batch/bulk handlers
 // apiResource would create redundant routes:

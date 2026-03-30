@@ -47,10 +47,10 @@ class AppChatDashboard extends BasePage
 
     public static function shouldRegisterNavigation(): bool
     {
-        //    $teneant = filament()->getTenant();
-        //    if (filament()->getTenant()->getAttribute('is_admin') !== true) {
-        //        return true;
-        //    }
+            $teneant = filament()->getTenant();
+            if (filament()->getTenant()->getAttribute('is_admin') !== true) {
+                return true;
+            }
         //    if (filament()->getTenant()->getAttribute('is_admin') === true) {
         //        return false;
         //    }
@@ -58,7 +58,7 @@ class AppChatDashboard extends BasePage
         //        return true;
         //    }
 
-        return true;
+        return false;
 
     }
 

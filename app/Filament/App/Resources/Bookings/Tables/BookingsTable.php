@@ -26,34 +26,42 @@ class BookingsTable
             ->query(fn () => Booking::query()->with(['client', 'serviceUser'])->where('booking_user_id', Auth::id()))
             ->extraAttributes(['class' => 'my-booking-table min-h-[400px]'])
             ->columns([
-                TextColumn::make('number')
-                    ->label('Bokningsnummer')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('serviceUser.name')
-                    ->label('Tekniker')
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('client.name')
-                    ->label('Kund')
+                    ->label('Fastighetsägare')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('client.address')
+                TextColumn::make('client.street')
                     ->label('Adress')
                     ->searchable()
-                    ->toggleable()
-                    ->sortable(),
-                TextColumn::make('client.phone')
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('client.city')
+                    ->label('Postort')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('phone')
                     ->label('Telefon')
                     ->searchable()
                     ->toggleable()
                     ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Bokningsdatum')
+                TextColumn::make('starts_at')
+                    ->label('Datum')
                     ->date()
+                    ->searchable()
+                    ->sortable()
                     ->toggleable(),
+                TextColumn::make('serviceUser.name')
+                    ->label('Tekniker')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('number')
+                    ->label('Bokningsnummer')
+                    ->limit(24)
+                    ->hidden()
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('status')
                     ->badge()
                     ->color(static fn ($state) => $state instanceof BookingStatus

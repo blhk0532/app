@@ -1,3 +1,13 @@
 .fi-header.fi-header.fi-header-has-breadcrumbs {
     display: none!important;
 }
+/*
+div.fi-sc.fi-sc-has-gap.fi-grid{
+    gap: 0px!important;
+}
+*/
+
+div.fi-input-wrp.fi-fo-rich-editor.booking-notes-rich-editor{
+    margin-bottom:-4rem;
+    max-height: 140px;
+}

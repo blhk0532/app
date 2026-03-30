@@ -54,9 +54,7 @@ class ListRingaData extends ListRecords
     {
         return parent::table($table)
             ->headerActions([
-                $this->getAdvancedExportHeaderAction(),
-                ExcelImportAction::make()
-                    ->color('primary'),
+
             ]);
     }
 

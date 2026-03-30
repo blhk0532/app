@@ -57,7 +57,7 @@
             </div>
         @else
             <div class="p-4 text-center text-gray-500 flex-grow flex items-center justify-center">
-                ( -_•)╦̵̵̿╤─
+
             </div>
         @endif
     </div>

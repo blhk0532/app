@@ -69,6 +69,7 @@ class RingaDatasResource extends Resource
     {
         $query = parent::getEloquentQuery();
 
+        return $query;
         $user = auth()->user();
 
         if (! $user) {

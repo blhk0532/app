@@ -6,6 +6,9 @@ namespace App\Models;
 
 use App\Casts\SwedishDateCast;
 use App\Enums\Outcomes;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
+use Database\Factories\RatsitDataFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +27,7 @@ use Illuminate\Support\Facades\Auth;
  * @property string|null $adressandring
  * @property array<array-key, mixed>|null $telfonnummer
  * @property string|null $stjarntacken
- * @property \Carbon\Carbon|null $fodelsedag
+ * @property Carbon|null $fodelsedag
  * @property string|null $personnummer
  * @property string|null $alder
  * @property string|null $kon
@@ -55,28 +58,28 @@ use Illuminate\Support\Facades\Auth;
  * @property bool $is_telefon
  * @property bool $is_queued
  * @property string|null $status
- * @property \App\Enums\Outcomes|null $outcome
+ * @property Outcomes|null $outcome
  * @property string|null $outcome_category
  * @property bool $is_outcome
  * @property int $attempts
  * @property int|null $booking_id
  * @property int|null $calendar_id
- * @property \Carbon\CarbonImmutable|null $booked_at
- * @property \Carbon\CarbonImmutable|null $aterkom_at
- * @property \Carbon\CarbonImmutable $available_at
+ * @property CarbonImmutable|null $booked_at
+ * @property CarbonImmutable|null $aterkom_at
+ * @property CarbonImmutable $available_at
  * @property string|null $user_notes
  * @property array<array-key, mixed>|null $user_id
  * @property string|null $service_user_id
  * @property string $started_at
  * @property string $expires_at
- * @property \Carbon\CarbonImmutable $created_at
- * @property \Carbon\CarbonImmutable $updated_at
+ * @property CarbonImmutable $created_at
+ * @property CarbonImmutable $updated_at
  * @property array<array-key, mixed>|null $team_id
  * @property int $retry_count
- * @property-read \App\Models\Booking|null $booking
- * @property-read \App\Models\BookingCalendar|null $calendar
- * @property-read \App\Models\Team|null $team
- * @property-read \App\Models\User|null $user
+ * @property-read Booking|null $booking
+ * @property-read BookingCalendar|null $calendar
+ * @property-read Team|null $team
+ * @property-read User|null $user
  *
  * @method static Builder<static>|RingaData active()
  * @method static Builder<static>|RingaData newModelQuery()
@@ -147,7 +150,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class RingaData extends Model
 {
-    /** @use HasFactory<\Database\Factories\RatsitDataFactory> */
+    /** @use HasFactory<RatsitDataFactory> */
     use HasFactory;
 
     protected $table = 'ringa_data';
@@ -346,10 +349,15 @@ class RingaData extends Model
         $userIdString = (string) $userId;
 
         $query = self::query()
-            ->where('team_id', $tenantId)
+            ->where(function (Builder $q) use ($tenantId) {
+                $q->where('team_id', $tenantId)
+                    ->orWhereRaw('FIND_IN_SET(?, team_id)', [$tenantId])
+                    ->orWhereJsonContains('team_id', $tenantId);
+            })
             ->where(function (Builder $query) use ($userIdString) {
                 $query->where('user_id', $userIdString)
-                    ->orWhereRaw('FIND_IN_SET(?, user_id)', [$userIdString]);
+                    ->orWhereRaw('FIND_IN_SET(?, user_id)', [$userIdString])
+                    ->orWhereJsonContains('user_id', $userIdString);
             })
 
             ->where('is_active', true)

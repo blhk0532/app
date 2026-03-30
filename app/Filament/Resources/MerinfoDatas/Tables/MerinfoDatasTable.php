@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\MerinfoDatas\Tables;
 
-use App\Filament\Exports\MerinfoDataExporter;
+use App\Actions\TransferMerinfoDataToRingaDataAction;
+use App\Exports\MerinfoDataExporter;
 use App\Models\MerinfoData;
+use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -22,6 +24,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class MerinfoDatasTable
 {
@@ -29,9 +32,9 @@ class MerinfoDatasTable
     {
         return $table
             ->columns([
-                                TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('ID')
-                                        ->sortable()
+                    ->sortable()
                     ->weight('bold'),
                 TextColumn::make('personnamn')
                     ->label('Name')
@@ -177,12 +180,14 @@ class MerinfoDatasTable
 
                 TernaryFilter::make('is_telefon')
                     ->label('Telefon')
+                    ->default(true)
                     ->placeholder('All records')
                     ->trueLabel('With phone')
                     ->falseLabel('Without phone'),
 
                 TernaryFilter::make('is_hus')
                     ->label('Hus')
+                    ->default(true)
                     ->placeholder('All records')
                     ->trueLabel('Is Hus')
                     ->falseLabel('Not Hus'),
@@ -227,6 +232,21 @@ class MerinfoDatasTable
                     ExportBulkAction::make()
                         ->exporter(MerinfoDataExporter::class),
                     DeleteBulkAction::make(),
+                    BulkAction::make('transferToRingaData')
+                        ->label('Transfer to Ringa Data')
+                        ->icon('heroicon-o-arrow-right')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records, array $data): void {
+                            $action = new TransferMerinfoDataToRingaDataAction;
+                            $action->handle($records, $data);
+
+                            Notification::make()
+                                ->title('Success')
+                                ->body(count($records).' records transferred to Ringa Data')
+                                ->success()
+                                ->send();
+                        }),
                     BulkAction::make('merinfoCount')
                         ->label('Merinfo Count')
                         ->icon('heroicon-o-calculator')
@@ -272,14 +292,94 @@ class MerinfoDatasTable
                         })
                         ->deselectRecordsAfterCompletion(),
                 ]),
+                static::exportSqlAction(),
             ])
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(50)
-            ->paginated([10, 25, 50, 100, 200, 500, 1000])
+            ->paginated([10, 25, 50, 100, 200, 500])
             ->striped()
             ->persistSearchInSession()
             ->persistColumnSearchesInSession()
             ->persistFiltersInSession()
             ->persistSortInSession();
+    }
+
+    private static function exportSqlAction(): Action
+    {
+        return Action::make('exportSql')
+            ->label('SQL')
+            ->icon('heroicon-o-arrow-up-on-square')
+            ->color('danger')
+            ->action(function () {
+                return self::handleSqlExport();
+            });
+    }
+
+    private static function handleSqlExport()
+    {
+        try {
+            $tableName = 'ratsit_data';
+            $rows = DB::table($tableName)->get();
+
+            if ($rows->isEmpty()) {
+                Notification::make()
+                    ->warning()
+                    ->title('Export Failed')
+                    ->body('No data to export.')
+                    ->send();
+
+                return null;
+            }
+
+            // Exclude 'id' column if present
+            $allColumns = array_keys((array) $rows->first());
+            $columns = array_filter($allColumns, fn ($col) => $col !== 'id');
+
+            $batchSize = 500;
+            $sql = '';
+            $values = [];
+            $rowCount = 0;
+            foreach ($rows as $row) {
+                $rowValues = [];
+                foreach ($columns as $column) {
+                    $value = $row->{$column} ?? null;
+                    if ($value === null) {
+                        $rowValues[] = 'NULL';
+                    } elseif (is_numeric($value)) {
+                        $rowValues[] = $value;
+                    } else {
+                        $rowValues[] = "'".addslashes($value)."'";
+                    }
+                }
+                $values[] = '    ('.implode(', ', $rowValues).')';
+                $rowCount++;
+                if ($rowCount % $batchSize === 0) {
+                    $sql .= "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES\n";
+                    $sql .= implode(",\n", $values).";\n";
+                    $values = [];
+                }
+            }
+            // Write remaining values
+            if (! empty($values)) {
+                $sql .= "INSERT IGNORE INTO `{$tableName}` (`".implode('`, `', $columns)."`) VALUES\n";
+                $sql .= implode(",\n", $values).";\n";
+            }
+
+            $filename = "{$tableName}_export_".now()->format('Y-m-d_H-i-s').'.sql';
+            $filepath = storage_path('app/'.$filename);
+
+            file_put_contents($filepath, $sql);
+
+            return response()->download($filepath, $filename)->deleteFileAfterSend(true);
+
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Export Failed')
+                ->body($e->getMessage())
+                ->send();
+
+            return null;
+        }
     }
 }
