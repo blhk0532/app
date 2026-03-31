@@ -50,7 +50,7 @@ class Color
 
     public const Neutral = [
         50 => 'oklch(0.985 0 0)',
-        100 => 'oklch(0.97 0 0)',
+        100 => 'oklch(0.577 0.245 27.325)',
         200 => 'oklch(0.922 0 0)',
         300 => 'oklch(0.87 0 0)',
         400 => 'oklch(0.708 0 0)',
