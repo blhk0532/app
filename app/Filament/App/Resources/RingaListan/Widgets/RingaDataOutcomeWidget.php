@@ -70,7 +70,7 @@ class RingaDataOutcomeWidget extends Widget implements HasForms
         $affectedRecords = $this->updateSameAddressRecords($outcome);
 
         Notification::make()
-            ->title('Utfall registrerat')
+            ->title('Ok')
             ->body("➤ {$outcome->getLabel()}".($affectedRecords > 0 ? " ({$affectedRecords} andra med samma adress uppdaterade)" : ''))
             ->icon($outcome->getIcon())
             ->color($outcome->getColor())

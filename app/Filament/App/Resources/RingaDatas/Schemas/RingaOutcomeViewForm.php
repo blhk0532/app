@@ -50,7 +50,7 @@ class RingaOutcomeViewForm
                                                 ]);
 
                                                 Notification::make()
-                                                    ->title('Utfall registrerat')
+                                                    ->title('Ok')
                                                     ->body("➤ {$outcome->getLabel()}")
                                                     ->icon($outcome->getIcon())
                                                     ->color($outcome->getColor())
@@ -93,7 +93,7 @@ class RingaOutcomeViewForm
                                                 ]);
 
                                                 Notification::make()
-                                                    ->title('Utfall registrerat')
+                                                    ->title('Ok')
                                                     ->body("➤ {$outcome->getLabel()}")
                                                     ->icon($outcome->getIcon())
                                                     ->color($outcome->getColor())
@@ -136,7 +136,7 @@ class RingaOutcomeViewForm
                                                 ]);
 
                                                 Notification::make()
-                                                    ->title('Utfall registrerat')
+                                                    ->title('Ok')
                                                     ->body("➤ {$outcome->getLabel()}")
                                                     ->icon($outcome->getIcon())
                                                     ->color($outcome->getColor())

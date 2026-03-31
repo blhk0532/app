@@ -248,7 +248,7 @@ class RingaDataInfolistOutcomes
                                     }
 
                                     Notification::make()
-                                        ->title('Utfall registrerat')
+                                        ->title('Ok')
                                         ->body("➤ {$notificationLabel}")
                                         ->color($color)
                                         ->success()

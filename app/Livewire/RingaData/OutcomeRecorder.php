@@ -557,7 +557,7 @@ class OutcomeRecorder extends Component implements HasActions, HasForms, HasSche
                 ]);
 
                 Notification::make()
-                    ->title('Utfall registrerat')
+                    ->title('Ok')
                     ->body("{$outcomeEnum->getLabel()} Ting Tillbaka {$scheduledAt->format('Y-m-d H:i')}")
                     ->success()
                     ->send();
@@ -622,7 +622,7 @@ class OutcomeRecorder extends Component implements HasActions, HasForms, HasSche
 
             Notification::make()
                 ->title($outcomeEnum->getLabel())
-                ->body('Utfall registrerat')
+                ->body('Ok')
                 ->success()
                 ->send();
 
