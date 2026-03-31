@@ -45,7 +45,31 @@
 
                     <!-- Call Actions -->
                     @php
-                        $phoneNumbers = $this->record->telfonnummer ?? [];
+                        $telfonnummer = $this->record->telfonnummer ?? [];
+                        $telefon = $this->record->telefon;
+                        
+                        // Build phone numbers array from both fields
+                        $phoneNumbers = [];
+                        
+                        // Handle telfonnummer if it's an array
+                        if (is_array($telfonnummer) && !empty($telfonnummer)) {
+                            $phoneNumbers = $telfonnummer;
+                        }
+                        
+                        // Handle telefon field if it exists and is not already in telfonnummer
+                        if ($telefon) {
+                            if (is_array($telefon)) {
+                                foreach ($telefon as $phone) {
+                                    if (!in_array($phone, $phoneNumbers)) {
+                                        $phoneNumbers[] = $phone;
+                                    }
+                                }
+                            } elseif (is_string($telefon) && $telefon !== '') {
+                                if (!in_array($telefon, $phoneNumbers)) {
+                                    $phoneNumbers[] = $telefon;
+                                }
+                            }
+                        }
                     @endphp
 
                     @if (!empty($phoneNumbers))

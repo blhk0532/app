@@ -351,13 +351,11 @@ class RingaData extends Model
         $query = self::query()
             ->where(function (Builder $q) use ($tenantId) {
                 $q->where('team_id', $tenantId)
-                    ->orWhereRaw('FIND_IN_SET(?, team_id)', [$tenantId])
-                    ->orWhereJsonContains('team_id', $tenantId);
+                    ->orWhereRaw('FIND_IN_SET(?, team_id)', [$tenantId]);
             })
             ->where(function (Builder $query) use ($userIdString) {
                 $query->where('user_id', $userIdString)
-                    ->orWhereRaw('FIND_IN_SET(?, user_id)', [$userIdString])
-                    ->orWhereJsonContains('user_id', $userIdString);
+                    ->orWhereRaw('FIND_IN_SET(?, user_id)', [$userIdString]);
             })
 
             ->where('is_active', true)

@@ -105,6 +105,9 @@ final class RingaDataTable
                         if (is_string($telefon) && str_contains($telefon, ',')) {
                             $telefon = explode(',', $telefon)[0];
                         }
+                        if ($telefon === null || $telefon === '') {
+                            return $telefon;
+                        }
                         // Remove [, ], ", - characters and replace +46 with 0
                         $telefon = preg_replace('/[\[\]\"\-]/', '', $telefon);
                         $telefon = preg_replace('/^\+46/', '0', $telefon);
@@ -325,248 +328,248 @@ final class RingaDataTable
             ->defaultPaginationPageOption(10)
             ->recordAction('view')
             ->recordActions([
-                    EditAction::make()
-                        ->iconButton(),
-                    ViewAction::make('view')
-                        ->iconButton()
-                        ->icon('heroicon-o-eye')
-                        ->iconButton()
-                        ->modalHeading('Info')
-                        ->modalWidth('xl'),
-                    Action::make('view_details')
-                        ->iconButton()
-                        ->icon('heroicon-o-phone-arrow-up-right')
-                        ->color('success')
-                        ->url(fn (RingaData $record) => 'tel:'.$record->telefon),
+                EditAction::make()
+                    ->iconButton(),
+                ViewAction::make('view')
+                    ->iconButton()
+                    ->icon('heroicon-o-eye')
+                    ->iconButton()
+                    ->modalHeading('Info')
+                    ->modalWidth('xl'),
+                Action::make('view_details')
+                    ->iconButton()
+                    ->icon('heroicon-o-phone-arrow-up-right')
+                    ->color('success')
+                    ->url(fn (RingaData $record) => 'tel:'.$record->telefon),
 
             ])
             ->toolbarActions([
-                    BulkActionGroup::make([
-                        DeleteBulkAction::make()
-                            ->label('Radera Uppgifterna'),
-                        BulkAction::make('transferCampaign')
-                            ->label('Kampanjöverföring')
-                            ->icon('heroicon-o-arrow-path')
-                            ->hidden()
-                            ->color('info')
-                            ->schema([
-                                Select::make('campaign_id')
-                                    ->label('Välj Kampanj')
-                                    ->searchable()
-                                    ->options(function () {
-                                        $tenantId = filament()->getTenant()?->id;
-                                        if (! $tenantId) {
-                                            return [];
-                                        }
-
-                                        return Campaign::where('title', '!=', 'Unassigned')
-                                            ->pluck('title', 'id')
-                                            ->toArray();
-                                    })
-                                    ->required()
-                                    ->validationMessages([
-                                        'required' => 'Please select a campaign.',
-                                    ]),
-                            ])
-                            ->action(function (Collection $records, array $data): void {
-                                $records->each(function ($record) use ($data) {
-                                    $record->update(['campaign_id' => $data['campaign_id']]);
-                                });
-
-                                Notification::make()
-                                    ->title('Campaign transferred successfully')
-                                    ->success()
-                                    ->body(count($records).' record(s) transferred.')
-                                    ->send();
-                            })
-                            ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
-                        BulkAction::make('resetResults')
-                            ->label('Nollställ Resultat')
-                            ->icon('heroicon-o-arrow-path-rounded-square')
-                            ->color('warning')
-                            ->requiresConfirmation()
-                            ->modalHeading('Nollställ Resultaten')
-                            ->modalDescription('Detta kommer att återställa user_id, outcome och attempts för de valda posterna.')
-                            ->modalSubmitActionLabel('Nollställ')
-                            ->action(function (Collection $records): void {
-                                $records->each(function ($record) {
-                                    $record->update([
-                                        'user_id' => null,
-                                        'outcome' => null,
-                                        'outcome_category' => null,
-                                        'attempts' => 0,
-                                        'is_active' => false,
-                                    ]);
-                                });
-
-                                Notification::make()
-                                    ->title('Resultat nollställda')
-                                    ->success()
-                                    ->body(count($records).' post(er) har nollställts.')
-                                    ->send();
-                            })
-                            ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
-                        BulkAction::make('selectTeam')
-                            ->label('Välj Arbetsgrupp')
-                            ->hidden()
-                            ->icon('heroicon-o-user-group')
-                            ->color('primary')
-                            ->schema([
-                                Select::make('team_id')
-                                    ->label('Välj Arbetsgrupp')
-                                    ->searchable()
-                                    ->options(Team::pluck('name', 'id')->toArray())
-                                    ->required()
-                                    ->validationMessages([
-                                        'required' => 'Vänligen välj en arbetsgrupp.',
-                                    ]),
-                            ])
-                            ->action(function (Collection $records, array $data): void {
-                                $records->each(function ($record) use ($data) {
-                                    $record->update(['team_id' => $data['team_id']]);
-                                });
-
-                                Notification::make()
-                                    ->title('Arbetsgrupp tilldelad')
-                                    ->success()
-                                    ->body(count($records).' post(er) har tilldelats en arbetsgrupp.')
-                                    ->send();
-                            })
-                            ->visible(fn () => in_array(auth()->user()->role, ['super', 'super_admin', 'superadmin'])),
-                        BulkAction::make('assignToUsers')
-                            ->label('Tilldela användare')
-                            ->color('gray')
-                            ->icon('heroicon-o-users')
-                            ->schema([
-                                FilamentGrid::make()
-                                    ->schema([
-                                        Select::make('users')
-                                            ->label('Välj användare')
-                                            ->multiple()
-                                            ->searchable()
-                                            ->options(function () {
-                                                $tenantId = filament()->getTenant()?->id
-                                                    ?? auth()->user()?->current_team_id;
-
-                                                if (! $tenantId) {
-                                                    return [];
-                                                }
-
-                                                return DB::table('users')
-                                                    ->where(function ($query) use ($tenantId) {
-                                                        $query->where('current_team_id', $tenantId)
-                                                            ->orWhereExists(function ($sub) use ($tenantId) {
-                                                                $sub->selectRaw(1)
-                                                                    ->from('membership')
-                                                                    ->whereColumn('membership.user_id', 'users.id')
-                                                                    ->where('membership.team_id', $tenantId);
-                                                            })
-                                                            ->orWhereExists(function ($sub) use ($tenantId) {
-                                                                $sub->selectRaw(1)
-                                                                    ->from('teams')
-                                                                    ->whereColumn('teams.user_id', 'users.id')
-                                                                    ->where('teams.id', $tenantId);
-                                                            });
-                                                    })
-                                                    ->orderBy('name')
-                                                    ->pluck('name', 'id')
-                                                    ->toArray();
-                                            })
-                                            ->required()
-                                            ->validationMessages([
-                                                'required' => 'Detta fält är obligatoriskt.',
-                                            ]),
-                                        Select::make('teams')
-                                            ->label('Välj Arbetsgrupp')
-                                            ->multiple()
-                                            ->searchable()
-                                            ->options(Team::pluck('name', 'id')->toArray()),
-                                        Select::make('campaign_id')
-                                            ->label('Välj Kampanj')
-                                            ->searchable()
-                                            ->options(function () {
-                                                $tenantId = filament()->getTenant()?->id
-                                                    ?? auth()->user()?->current_team_id;
-
-                                                if (! $tenantId) {
-                                                    return Campaign::pluck('title', 'id')->toArray();
-                                                }
-
-                                                return Campaign::where('team_id', $tenantId)
-                                                    ->orderBy('title')
-                                                    ->pluck('title', 'id')
-                                                    ->toArray();
-                                            }),
-                                        Select::make('calendar_id')
-                                            ->label('Välj kalender')
-                                            ->searchable()
-                                            ->options(BookingCalendar::all()->pluck('name', 'id'))
-                                            ->required()
-                                            ->validationMessages([
-                                                'required' => 'Detta fält är obligatoriskt.',
-                                            ]),
-                                        DatePicker::make('available_at')
-                                            ->default(Carbon::yesterday())
-                                            ->label('Available At'),
-                                        DatePicker::make('started_at')
-                                            ->default(today())
-                                            ->label('Startdatum')
-                                            ->required()
-                                            ->validationMessages([
-                                                'required' => 'Detta fält är obligatoriskt.',
-                                            ]),
-                                        DatePicker::make('expires_at')
-                                            ->default(today()->addMonth())
-                                            ->label('Slutdatum')
-                                            ->required()
-                                            ->validationMessages([
-                                                'required' => 'Detta fält är obligatoriskt.',
-                                            ]),
-                                    ]),
-                            ])
-                            ->action(function (Collection $records, array $data): void {
-                                $userIds = $data['users'];
-                                $teamIds = $data['teams'] ?? null;
-
-                                // Only assign the first user ID (or null)
-                                $singleUserId = is_array($userIds) ? ($userIds[0] ?? null) : $userIds;
-                                // Only assign the first team ID (or null)
-                                $singleTeamId = is_array($teamIds) ? ($teamIds[0] ?? null) : $teamIds;
-
-                                foreach ($records as $record) {
-                                    $updateData = [
-                                        'user_id' => $singleUserId,
-                                        'calendar_id' => $data['calendar_id'],
-                                        'available_at' => $data['available_at'],
-                                        'started_at' => $data['started_at'],
-                                        'expires_at' => $data['expires_at'],
-                                        'attempts' => 0,
-                                        'outcome' => null,
-                                        'outcome_category' => null,
-                                        'is_active' => true,
-                                    ];
-
-                                    if ($singleTeamId) {
-                                        $updateData['team_id'] = $singleTeamId;
+                BulkActionGroup::make([
+                    DeleteBulkAction::make()
+                        ->label('Radera Uppgifterna'),
+                    BulkAction::make('transferCampaign')
+                        ->label('Kampanjöverföring')
+                        ->icon('heroicon-o-arrow-path')
+                        ->hidden()
+                        ->color('info')
+                        ->schema([
+                            Select::make('campaign_id')
+                                ->label('Välj Kampanj')
+                                ->searchable()
+                                ->options(function () {
+                                    $tenantId = filament()->getTenant()?->id;
+                                    if (! $tenantId) {
+                                        return [];
                                     }
 
-                                    if (isset($data['campaign_id'])) {
-                                        $updateData['campaign_id'] = $data['campaign_id'];
-                                    }
+                                    return Campaign::where('title', '!=', 'Unassigned')
+                                        ->pluck('title', 'id')
+                                        ->toArray();
+                                })
+                                ->required()
+                                ->validationMessages([
+                                    'required' => 'Please select a campaign.',
+                                ]),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $records->each(function ($record) use ($data) {
+                                $record->update(['campaign_id' => $data['campaign_id']]);
+                            });
 
-                                    $record->update($updateData);
+                            Notification::make()
+                                ->title('Campaign transferred successfully')
+                                ->success()
+                                ->body(count($records).' record(s) transferred.')
+                                ->send();
+                        })
+                        ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
+                    BulkAction::make('resetResults')
+                        ->label('Nollställ Resultat')
+                        ->icon('heroicon-o-arrow-path-rounded-square')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Nollställ Resultaten')
+                        ->modalDescription('Detta kommer att återställa user_id, outcome och attempts för de valda posterna.')
+                        ->modalSubmitActionLabel('Nollställ')
+                        ->action(function (Collection $records): void {
+                            $records->each(function ($record) {
+                                $record->update([
+                                    'user_id' => null,
+                                    'outcome' => null,
+                                    'outcome_category' => null,
+                                    'attempts' => 0,
+                                    'is_active' => false,
+                                ]);
+                            });
+
+                            Notification::make()
+                                ->title('Resultat nollställda')
+                                ->success()
+                                ->body(count($records).' post(er) har nollställts.')
+                                ->send();
+                        })
+                        ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
+                    BulkAction::make('selectTeam')
+                        ->label('Välj Arbetsgrupp')
+                        ->hidden()
+                        ->icon('heroicon-o-user-group')
+                        ->color('primary')
+                        ->schema([
+                            Select::make('team_id')
+                                ->label('Välj Arbetsgrupp')
+                                ->searchable()
+                                ->options(Team::pluck('name', 'id')->toArray())
+                                ->required()
+                                ->validationMessages([
+                                    'required' => 'Vänligen välj en arbetsgrupp.',
+                                ]),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $records->each(function ($record) use ($data) {
+                                $record->update(['team_id' => $data['team_id']]);
+                            });
+
+                            Notification::make()
+                                ->title('Arbetsgrupp tilldelad')
+                                ->success()
+                                ->body(count($records).' post(er) har tilldelats en arbetsgrupp.')
+                                ->send();
+                        })
+                        ->visible(fn () => in_array(auth()->user()->role, ['super', 'super_admin', 'superadmin'])),
+                    BulkAction::make('assignToUsers')
+                        ->label('Tilldela användare')
+                        ->color('gray')
+                        ->icon('heroicon-o-users')
+                        ->schema([
+                            FilamentGrid::make()
+                                ->schema([
+                                    Select::make('users')
+                                        ->label('Välj användare')
+                                        ->multiple()
+                                        ->searchable()
+                                        ->options(function () {
+                                            $tenantId = filament()->getTenant()?->id
+                                                ?? auth()->user()?->current_team_id;
+
+                                            if (! $tenantId) {
+                                                return [];
+                                            }
+
+                                            return DB::table('users')
+                                                ->where(function ($query) use ($tenantId) {
+                                                    $query->where('current_team_id', $tenantId)
+                                                        ->orWhereExists(function ($sub) use ($tenantId) {
+                                                            $sub->selectRaw(1)
+                                                                ->from('membership')
+                                                                ->whereColumn('membership.user_id', 'users.id')
+                                                                ->where('membership.team_id', $tenantId);
+                                                        })
+                                                        ->orWhereExists(function ($sub) use ($tenantId) {
+                                                            $sub->selectRaw(1)
+                                                                ->from('teams')
+                                                                ->whereColumn('teams.user_id', 'users.id')
+                                                                ->where('teams.id', $tenantId);
+                                                        });
+                                                })
+                                                ->orderBy('name')
+                                                ->pluck('name', 'id')
+                                                ->toArray();
+                                        })
+                                        ->required()
+                                        ->validationMessages([
+                                            'required' => 'Detta fält är obligatoriskt.',
+                                        ]),
+                                    Select::make('teams')
+                                        ->label('Välj Arbetsgrupp')
+                                        ->multiple()
+                                        ->searchable()
+                                        ->options(Team::pluck('name', 'id')->toArray()),
+                                    Select::make('campaign_id')
+                                        ->label('Välj Kampanj')
+                                        ->searchable()
+                                        ->options(function () {
+                                            $tenantId = filament()->getTenant()?->id
+                                                ?? auth()->user()?->current_team_id;
+
+                                            if (! $tenantId) {
+                                                return Campaign::pluck('title', 'id')->toArray();
+                                            }
+
+                                            return Campaign::where('team_id', $tenantId)
+                                                ->orderBy('title')
+                                                ->pluck('title', 'id')
+                                                ->toArray();
+                                        }),
+                                    Select::make('calendar_id')
+                                        ->label('Välj kalender')
+                                        ->searchable()
+                                        ->options(BookingCalendar::all()->pluck('name', 'id'))
+                                        ->required()
+                                        ->validationMessages([
+                                            'required' => 'Detta fält är obligatoriskt.',
+                                        ]),
+                                    DatePicker::make('available_at')
+                                        ->default(Carbon::yesterday())
+                                        ->label('Available At'),
+                                    DatePicker::make('started_at')
+                                        ->default(today())
+                                        ->label('Startdatum')
+                                        ->required()
+                                        ->validationMessages([
+                                            'required' => 'Detta fält är obligatoriskt.',
+                                        ]),
+                                    DatePicker::make('expires_at')
+                                        ->default(today()->addMonth())
+                                        ->label('Slutdatum')
+                                        ->required()
+                                        ->validationMessages([
+                                            'required' => 'Detta fält är obligatoriskt.',
+                                        ]),
+                                ]),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $userIds = $data['users'];
+                            $teamIds = $data['teams'] ?? null;
+
+                            // Only assign the first user ID (or null)
+                            $singleUserId = is_array($userIds) ? ($userIds[0] ?? null) : $userIds;
+                            // Only assign the first team ID (or null)
+                            $singleTeamId = is_array($teamIds) ? ($teamIds[0] ?? null) : $teamIds;
+
+                            foreach ($records as $record) {
+                                $updateData = [
+                                    'user_id' => $singleUserId,
+                                    'calendar_id' => $data['calendar_id'],
+                                    'available_at' => $data['available_at'],
+                                    'started_at' => $data['started_at'],
+                                    'expires_at' => $data['expires_at'],
+                                    'attempts' => 0,
+                                    'outcome' => null,
+                                    'outcome_category' => null,
+                                    'is_active' => true,
+                                ];
+
+                                if ($singleTeamId) {
+                                    $updateData['team_id'] = $singleTeamId;
                                 }
 
-                                Notification::make()
-                                    ->title('Användare tilldelade')
-                                    ->success()
-                                    ->body(count($records).' post(er) uppdaterade.')
-                                    ->send();
-                            })
-                            ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
-                    ]),
-                    ExcelImportAction::make()
-                        ->color('primary'),
+                                if (isset($data['campaign_id'])) {
+                                    $updateData['campaign_id'] = $data['campaign_id'];
+                                }
+
+                                $record->update($updateData);
+                            }
+
+                            Notification::make()
+                                ->title('Användare tilldelade')
+                                ->success()
+                                ->body(count($records).' post(er) uppdaterade.')
+                                ->send();
+                        })
+                        ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
+                ]),
+                ExcelImportAction::make()
+                    ->color('primary'),
             ]);
     }
 
