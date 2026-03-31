@@ -507,7 +507,6 @@ final class RingaDataTable
                                             ]),
                                         DatePicker::make('available_at')
                                             ->default(Carbon::yesterday())
-                                            ->hidden()
                                             ->label('Available At'),
                                         DatePicker::make('started_at')
                                             ->default(today())
