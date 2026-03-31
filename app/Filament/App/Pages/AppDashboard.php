@@ -153,7 +153,6 @@ class AppDashboard extends BasePage
             StatsOverviewWidget::class,
             //  \TomatoPHP\FilamentNotes\Filament\Widgets\NotesWidget::class,
 
-
             OrdersChart::class,
             CustomersChart::class,
             //     \App\Filament\App\Widgets\BookingStats::class,
@@ -172,7 +171,7 @@ class AppDashboard extends BasePage
             AnnouncementWidget::class,
             TeamMembersWidget::class,
             AnnouncementEditorWidget::class,
-            //     ControlPanelCardsWidget::class,
+            // ControlPanelCardsWidget::class, // Disabled - needs to be fixed (uses CardsPage methods but extends Widget)
         ];
     }
 
@@ -185,11 +184,6 @@ class AppDashboard extends BasePage
             //    MultiCalendar3::class,
             //    \App\Filament\App\Widgets\LatestOrders::class,
         ];
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [ControlPanelCardsWidget::class];
     }
 
     protected function getHeaderTitle(): string
