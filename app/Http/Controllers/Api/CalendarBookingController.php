@@ -503,7 +503,7 @@ class CalendarBookingController extends Controller
         return match ($periodType) {
             'unavailable' => '#ede9fe', // light purple
             'available' => '#ecfeff', // light cyan
-            'blocked' => '#fffbeb', // light amber
+            'blocked' => '#ecfeff', // light cyan
             default => '#f9fafb', // light gray
         };
     }
@@ -513,7 +513,7 @@ class CalendarBookingController extends Controller
         return match ($periodType) {
             'unavailable' => '#ddd6fe', // light purple border
             'available' => '#cffafe', // light cyan border
-            'blocked' => '#fef3c7', // light amber border
+            'blocked' => '#cffafe', // light cyan border
             default => '#f3f4f6', // light gray border
         };
     }

@@ -7,6 +7,8 @@ namespace Adultdate\FilamentBooking\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BookingServicePeriod extends Model
 {
@@ -51,7 +53,7 @@ class BookingServicePeriod extends Model
     /**
      * The user this service period belongs to.
      */
-    public function serviceUser(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function serviceUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'service_user_id')
             ->where('role', 'service');
@@ -60,7 +62,7 @@ class BookingServicePeriod extends Model
     /**
      * The user who created this period.
      */
-    public function creator(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
@@ -68,7 +70,7 @@ class BookingServicePeriod extends Model
     /**
      * The bookings for this period.
      */
-    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function items(): HasMany
     {
         return $this->hasMany(Booking\Booking::class, 'service_user_id', 'service_user_id')
             ->where('service_date', $this->service_date);
@@ -109,13 +111,13 @@ class BookingServicePeriod extends Model
             'backgroundColor' => match ($this->period_type) {
                 'unavailable' => '#ede9fe', // light purple
                 'available' => '#ecfeff', // light cyan
-                'blocked' => '#fffbeb', // light amber
+                'blocked' => '#ecfeff', // light cyan
                 default => '#f9fafb', // light gray
             },
             'borderColor' => match ($this->period_type) {
                 'unavailable' => '#ddd6fe',
                 'available' => '#cffafe',
-                'blocked' => '#fef3c7',
+                'blocked' => '#cffafe',
                 default => '#f3f4f6',
             },
             'textColor' => '#1f2937',
