@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\App\Clusters\Services\Resources\Bookings\Schemas;
+namespace App\Filament\Admin\Resources\Bookings\Schemas;
 
 use Adultdate\FilamentBooking\Enums\BookingStatus;
 use Adultdate\FilamentBooking\Models\Booking\Booking;
@@ -22,7 +22,6 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 
 class BookingForm
@@ -32,7 +31,6 @@ class BookingForm
         return $schema
             ->components([
                 Group::make()
-                    ->extraAttributes(['class' => 'booking-group-grid'])
                     ->schema([
                         Section::make()
                             ->schema(self::getDetailsComponents())
@@ -46,7 +44,6 @@ class BookingForm
                             ]),
 
                     ])
-
                     ->columnSpan(['lg' => 3]),
 
                 // Removed created_at / updated_at display section — not needed in modal
@@ -66,11 +63,9 @@ class BookingForm
         }
 
         if (is_object($user) && method_exists($user, 'hasRole')) {
-            if (
-                call_user_func([$user, 'hasRole'], 'admin') ||
+            if (call_user_func([$user, 'hasRole'], 'admin') ||
                 call_user_func([$user, 'hasRole'], 'super') ||
-                call_user_func([$user, 'hasRole'], 'manager')
-            ) {
+                call_user_func([$user, 'hasRole'], 'manager')) {
                 return true;
             }
         }
@@ -85,117 +80,106 @@ class BookingForm
     /** @return array<Component> */
     public static function getClientComponents(): array
     {
-        return [];
+        return [
+
+        ];
     }
 
     /** @return array<Component> */
     public static function getDetailsComponents(array $clientDefaults = []): array
     {
         return [
-
-            TextInput::make('number')
-                ->default('OR-'.random_int(100000, 999999))
-                ->disabled()
-                ->dehydrated()
+            DatePicker::make('service_date')
+                ->label('Arbetsdag')
                 ->required()
-                ->hidden()
-                ->maxLength(32)
-                ->unique(Booking::class, 'number', ignoreRecord: true),
-            Select::make('service_id')
-                ->relationship('service', 'name')
-                ->searchable()
-                ->hidden(),
+                ->columnSpan(1),
 
             Group::make()
                 ->schema([
                     TimePicker::make('start_time')
                         ->label('Starttid')
                         ->seconds(false)
-                        ->prefix('Från:')
-                        ->suffixIcon(Heroicon::OutlinedClock)
                         ->displayFormat('H:i')
+                        ->default('08:00')
+
                         ->native(false)
                         ->required(),
+
                     TimePicker::make('end_time')
                         ->label('Sluttid')
                         ->seconds(false)
-                        ->prefix('Till:')
-                        ->suffixIcon(Heroicon::OutlinedClock)
                         ->displayFormat('H:i')
+                        ->default(fn (callable $get) => $get('start_time') ? now()->setTimeFromTimeString($get('start_time'))->addHour()->addHour()->format('H:i') : null)
                         ->native(false)
-                        ->required(),
-                ])
-                ->columns(2)
-                ->columnSpan(1),
-            Group::make()
-                ->schema([
-                    DatePicker::make('service_date')
-                        ->label('Datum')
-                        ->required()
-                        ->columnSpan(1),
-                    Select::make('service_user_id')
-                        ->label('Service Tekniker')
-                        ->options(User::where('role', 'service')->pluck('name', 'id'))
-                        ->searchable()
                         ->required(),
                 ])
                 ->columns(2)
                 ->columnSpan(1),
             Select::make('booking_client_id')
                 ->label('Fastighetsägare')
-                ->prefixIcon(Heroicon::UserCircle)
                 ->relationship('client', 'name')
                 ->searchable()
                 ->required()
                 ->createOptionForm([
                     Group::make()
-                        ->columns(2)
+                        ->columns(12)
                         ->schema([
                             TextInput::make('name')
+                                ->label('Fulständigt namn')
                                 ->default($clientDefaults['name'] ?? null)
                                 ->required()
+                                ->columnSpan(6)
                                 ->maxLength(255),
+
                             TextInput::make('personnummer')
-                                ->default($clientDefaults['personal_id'] ?? null)
-                                ->required()
-                                ->maxLength(255),
-                            TextInput::make('email')
-                                ->label('Email address')
-                                ->default($clientDefaults['email'] ?? null)
-                                ->email()
+                                ->label('Personnummer')
+                                ->columnSpan(3)
+                                ->default('')
                                 ->maxLength(255)
-                                ->unique(),
+                                ->placeholder('Sweden'),
                             TextInput::make('phone')
+                                ->label('Telefonnummer')
                                 ->default($clientDefaults['phone'] ?? null)
+                                ->columnSpan(3)
                                 ->maxLength(255)
                                 ->required(),
-
                             TextInput::make('street')
-                                ->label('Street address')
+                                ->label('Gatuadress')
                                 ->default($clientDefaults['street'] ?? null)
                                 ->maxLength(255)
+                                ->columnSpan(4)
                                 ->required(),
-
                             TextInput::make('zip')
-                                ->label('Postal code')
+                                ->label('Postnr')
                                 ->default($clientDefaults['zip'] ?? null)
                                 ->maxLength(20)
+                                ->columnSpan(2)
                                 ->required(),
-
                             TextInput::make('city')
+                                ->label('Posrort')
                                 ->default($clientDefaults['city'] ?? null)
                                 ->maxLength(255)
+                                ->columnSpan(3)
                                 ->required(),
 
-                            TextInput::make('country')
-                                ->hidden()
+                            TextInput::make('email')
+                                ->label('E-postadress')
+                                ->default($clientDefaults['email'] ?? null)
+                                ->email()
+                                ->columnSpan(3)
+                                ->maxLength(255)
+                                ->unique(),
+                            TextInput::make('fastighetsbeteckning')
+                                ->label('Fastighetsbeteckning')
+                                ->columnSpan(6)
+                                ->maxLength(255)
                                 ->placeholder('Sweden'),
                         ]),
                 ])
                 ->createOptionAction(function (Action $action) {
                     return $action
-                        ->modalHeading('Create client')
-                        ->modalSubmitActionLabel('Create client')
+                        ->modalHeading('Skapa Kund')
+                        ->modalSubmitActionLabel('Skapa Kund')
                         ->modalWidth('lg');
                 })
                 ->createOptionUsing(function (array $data) {
@@ -212,40 +196,23 @@ class BookingForm
 
                     return $client->id;
                 }),
-            Group::make()
-                ->schema([
-                    TextInput::make('phone')
-                        ->label('Telefonnummer')
-                        ->placeholder('Telefon bokning')
-                        ->extraAlpineAttributes(['x-data' => '{}'])
-                        ->extraAttributes(['class' => 'booking-phone-input'])
-                        ->extraInputAttributes(['x-data' => '{}'])
-                        ->suffixAction(
-                            Action::make('fillFromQueue')
-                                ->icon('heroicon-o-device-phone-mobile')
-                                ->label('Fyll från kö')
-                                ->extraAttributes([
-                                    'x-data' => '{}',
-                                    'x-on:click' => 'fetch("/api/booking-outcall-queue/latest-phone").then(r=>r.json()).then(d=>{if(d.phone){$el.closest("div").querySelector("input").value=d.phone;$el.closest("div").querySelector("input").dispatchEvent(new Event("input"));}});',
-                                ])
-                        )
-                        ->maxLength(12)
-                        ->columnSpan(1),
-                    TextInput::make('personnummer')
-                        ->label('Personnummer')
-                        ->default($clientDefaults['personal_id'] ?? null)
-                        ->placeholder('YYYYMMDDXXXX'),
-                ])
-                ->columns(2)
-                ->columnSpan(1),
-            TextInput::make('fastighetsbeteckning')
-                ->label('Fastighetsbeteckning')
-                ->suffixAction(Action::make('search_property')
-                    ->icon(Heroicon::MagnifyingGlass)
-                    ->url('https://minkarta.lantmateriet.se/')
-                    ->openUrlInNewTab())
-                ->prefixIcon(Heroicon::Home)
-                ->placeholder('-- https://minkarta.lantmateriet.se --'),
+            TextInput::make('number')
+                ->default('OR-'.random_int(100000, 999999))
+                ->disabled()
+                ->dehydrated()
+                ->required()
+                ->hidden()
+                ->maxLength(32)
+                ->unique(Booking::class, 'number', ignoreRecord: true),
+            Select::make('service_id')
+                ->relationship('service', 'name')
+                ->searchable()
+                ->hidden(),
+            Select::make('service_user_id')
+                ->label('Tekniker')
+                ->options(User::where('role', 'service')->pluck('name', 'id'))
+                ->searchable()
+                ->required(),
             TextInput::make('booking_user_id')
                 ->hidden()
                 ->dehydrated(),
@@ -253,9 +220,23 @@ class BookingForm
             TextInput::make('admin_id')
                 ->hidden()
                 ->dehydrated(),
+
+        ];
+    }
+
+    /** @return array<Component> */
+    public static function getDetailsComponents2(array $clientDefaults = []): array
+    {
+        return [
+            ToggleButtons::make('status')
+                ->options(BookingStatus::class)
+                ->label('Status')
+                ->inline()
+                ->required()
+                ->hidden()
+                ->columnSpan('full'),
             RichEditor::make('notes')
                 ->label('Anteckningar')
-                ->extraAttributes(['class' => 'booking-notes-rich-editor'])
                 ->toolbarButtons([
                     'bold',
                     'italic',
@@ -269,25 +250,10 @@ class BookingForm
         ];
     }
 
-    /** @return array<Component> */
-    public static function getDetailsComponents2(array $clientDefaults = []): array
-    {
-        return [
-            ToggleButtons::make('status')
-                ->inline()
-                ->hidden()
-                ->options(BookingStatus::class)
-                ->required()
-                ->columnSpan('full'),
-        ];
-    }
-
-    /** @return array<Component> */
     public static function getItemsRepeater(): Repeater
     {
         return Repeater::make('items')
             ->label('Tjänst')
-            ->extraAttributes(['class' => 'booking-items-repeater'])
             ->relationship()
             ->schema([
                 Select::make('booking_service_id')
@@ -297,6 +263,7 @@ class BookingForm
                     ->live()
                     ->afterStateUpdated(fn ($state, Set $set) => $set('unit_price', Service::find($state)?->price ?? 0))
                     ->distinct()
+                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->searchable()
                     ->columnSpan(2),
                 TextInput::make('qty')
@@ -305,6 +272,7 @@ class BookingForm
                     ->default(1)
                     ->required()
                     ->columnSpan(1),
+
                 TextInput::make('unit_price')
                     ->label('Pris')
                     ->dehydrated()
