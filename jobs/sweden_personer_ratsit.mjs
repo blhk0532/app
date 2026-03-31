@@ -36,6 +36,7 @@ function parseCliFilters(argv) {
 	let postnummer = null;
 	let kommun = null;
 	let lan = null;
+    let order = null;
 
 	for (let i = 0; i < args.length; i++) {
 		const arg = args[i];
@@ -84,9 +85,19 @@ function parseCliFilters(argv) {
 			lan = String(args[i + 1]).trim() || null;
 			i++;
 		}
+
+		if (arg.startsWith('--order=')) {
+		   order = arg.slice('--order='.length).trim().toLowerCase() || null;
+		   continue;
+	   }
+
+	   if (arg === '--order' && args[i + 1]) {
+		   order = String(args[i + 1]).trim().toLowerCase() || null;
+		   i++;
+	   }
 	}
 
-	return { postort, postnummer, kommun, lan };
+	return { postort, postnummer, kommun, lan, order};
 }
 
 function loadRatsitCookies() {
@@ -744,70 +755,69 @@ async function main() {
 	const connection = await createDbConnection();
 	const scraper = new SwedenPersonerRatsitScraper();
 
-	try {
-		const whereClauses = [
-			`ratsit_link IS NOT NULL`,
-			`ratsit_link != ''`,
-			`is_done = 0`,
-			`is_queue = 1`,
-		];
-		const queryParams = [];
+	   try {
+		   const whereClauses = [
+			   `ratsit_link IS NOT NULL`,
+			   `ratsit_link != ''`,
+			   `is_done = 0`,
+			   `is_queue = 1`,
+		   ];
+		   const queryParams = [];
+		   const orderParams = ` ORDER BY id ${filters.order === 'asc' ? 'ASC' : 'DESC'}`;
 
-		if (filters.postort) {
-			whereClauses.push('postort = ?');
-			queryParams.push(filters.postort);
-		}
+		   if (filters.postort) {
+			   whereClauses.push('postort = ?');
+			   queryParams.push(filters.postort);
+		   }
 
-		if (filters.postnummer) {
-			whereClauses.push('postnummer = ?');
-			queryParams.push(filters.postnummer);
-		}
+		   if (filters.postnummer) {
+			   whereClauses.push('postnummer = ?');
+			   queryParams.push(filters.postnummer);
+		   }
 
-		if (filters.kommun) {
-			whereClauses.push('kommun = ?');
-			queryParams.push(filters.kommun);
-		}
+		   if (filters.kommun) {
+			   whereClauses.push('kommun = ?');
+			   queryParams.push(filters.kommun);
+		   }
 
-		if (filters.lan) {
-			whereClauses.push('lan = ?');
-			queryParams.push(filters.lan);
-		}
+		   // Removed lan filter as column does not exist
 
-		const query = `SELECT id, adress, postnummer, postort, kommun, fornamn, efternamn, personnamn, ratsit_link
-			 FROM sweden_personer
-			 WHERE ${whereClauses.join(' AND ')}
-			 ORDER BY id`;
+		   const query = `SELECT id, adress, postnummer, postort, kommun, fornamn, efternamn, personnamn, ratsit_link
+				FROM sweden_personer
+				WHERE ${whereClauses.join(' AND ')}
+				${orderParams}`;
 
-		const [rows] = await connection.execute(query, queryParams);
+		   const [rows] = await connection.execute(query, queryParams);
 
-		if (filters.postort || filters.postnummer || filters.kommun || filters.lan) {
-			console.log(`Applied filters: postort=${filters.postort || '-'} postnummer=${filters.postnummer || '-'} kommun=${filters.kommun || '-'} lan=${filters.lan || '-'}`);
-		}
+		   if (filters.postort || filters.postnummer || filters.kommun) {
+			   console.log(`Applied filters: postort=${filters.postort || '-'} postnummer=${filters.postnummer || '-'} kommun=${filters.kommun || '-'}`);
+		   }
 
-		console.log(`Found ${rows.length} person rows to process.\n`);
+		   console.log(`Found ${rows.length} person rows to process.\n`);
 
-		let successCount = 0;
-		let failCount = 0;
+		   let successCount = 0;
+		   let failCount = 0;
 
-		for (const [index, row] of rows.entries()) {
-			console.log(
-				`[${index + 1}/${rows.length}] Processing: ${row.personnamn || `${row.fornamn || ''} ${row.efternamn || ''}`.trim()} (${row.postnummer || ''} ${row.postort || ''})`,
-			);
+		   for (const [index, row] of rows.entries()) {
+			   console.log(
+				   `[${index + 1}/${rows.length}] Processing: ${row.personnamn || `${row.fornamn || ''} ${row.efternamn || ''}`.trim()} (${row.postnummer || ''} ${row.postort || ''})`,
+			   );
 
-			const ok = await processPersonRow(scraper, row, connection);
-			if (ok) {
-				successCount++;
-			} else {
-				failCount++;
-			}
-		}
+			   const ok = await processPersonRow(scraper, row, connection);
+			   if (ok) {
+				   successCount++;
+			   } else {
+				   failCount++;
+			   }
+		   }
 
-		console.log('\nAll sweden_personer rows processed.');
-		console.log(`  Success: ${successCount}`);
-		console.log(`  Failed:  ${failCount}`);
-	} finally {
-		await connection.end();
-	}
+		   console.log('\nAll sweden_personer rows processed.');
+		   console.log(`  Success: ${successCount}`);
+		   console.log(`  Failed:  ${failCount}`);
+	   }
+	   finally {
+		   await connection.end();
+	   }
 }
 
 main().catch((err) => {
