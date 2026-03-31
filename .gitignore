@@ -38,3 +38,5 @@ rr
 .env.testing
 .env.production
 env.txt
+/jobs/local
+/jobs/production
