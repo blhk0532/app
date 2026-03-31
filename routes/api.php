@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // BookingOutcallQueue API: latest phone for current user
 use App\Http\Controllers\Api\BookingOutcallQueueController;
 
-Route::middleware(['auth:sanctum'])->get('/booking-outcall-queue/latest-phone', [BookingOutcallQueueController::class, 'latestPhone']);
+Route::middleware(['auth'])->get('/booking-outcall-queue/latest-phone', [BookingOutcallQueueController::class, 'latestPhone']);
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/ringa-data/{id}/outcome', [RingaDataOutcomeController::class, 'store']);

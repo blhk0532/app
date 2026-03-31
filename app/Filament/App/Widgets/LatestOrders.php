@@ -11,6 +11,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Support\Facades\Auth;
+use Shreejan\ActionableColumn\Tables\Columns\ActionableColumn;
+use Zvizvi\UserFields\Components\UserColumn;
+use Webbingbrasil\FilamentCopyActions\Tables\CopyableTextColumn;
 
 class LatestOrders extends BaseWidget
 {
@@ -34,23 +37,59 @@ class LatestOrders extends BaseWidget
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('created_at')
-                    ->label('Order date')
-                    ->date()
-                    ->sortable(),
+
                 TextColumn::make('number')
+                ->hidden()
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('client.name')
+                    ->label('Fastighetsägare')
                     ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('client.street')
+                    ->label('Gatuadress')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('client.city')
+                    ->label('Postort')
+                    ->searchable()
+                    ->sortable()
+                                      ->toggleable(isToggledHiddenByDefault: true),
+                CopyableTextColumn::make('phone')
+                    ->label('Telefon')
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->searchable()
+                    ->toggleable()
                     ->sortable(),
-                TextColumn::make('status')
-                    ->badge(),
-                TextColumn::make('total_price')
+              TextColumn::make('created_at')
+                    ->label('Order date')
+                      ->toggleable(isToggledHiddenByDefault: true)
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('serviceUser.name')
+                    ->label('Tekniker')
+                      ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('service_date')
                     ->label('Service date')
+                    ->date()
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('status')
+                ->toggleable()
+                    ->badge(),
+                TextColumn::make('total_price')
+                    ->label('Total (SEK)')
+                    ->money('SEK', locale: 'sv')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('service_date')
+                    ->label('Service date')
+                    ->toggleable()
                     ->date()
                     ->sortable(),
             ])

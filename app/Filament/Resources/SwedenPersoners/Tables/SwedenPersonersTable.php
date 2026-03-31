@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\SwedenPersoners\Tables;
 
 use App\Exports\SwedenPersonerExporter;
+use App\Actions\TransferSwedenPersonerToRingaDataAction;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -22,6 +23,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Filament\Actions\BulkAction;
+use Filament\Actions\ExportBulkAction;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
+use Illuminate\Support\Collection;
 
 class SwedenPersonersTable
 {
@@ -36,7 +43,7 @@ class SwedenPersonersTable
             ->accessSelectedRecords()
             ->modalHeading('Transfer selected to Ringa Data')
             ->modalSubmitActionLabel('Transfer')
-            ->form([
+            ->schema([
                 TextInput::make('url')
                     ->label('Ringa Data API URL')
                     ->required()
@@ -92,6 +99,10 @@ class SwedenPersonersTable
             ->headerActions([
             ])
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('personnamn')
                     ->label('Namn')
                     ->searchable()
@@ -153,11 +164,13 @@ class SwedenPersonersTable
                 IconColumn::make('is_active')
                     ->label('Aktiv')
                     ->boolean()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 IconColumn::make('is_done')
                     ->label('Klar')
                     ->boolean()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -168,16 +181,9 @@ class SwedenPersonersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Filter::make('is_active')
-                    ->label('Aktiva')
-                    ->query(fn (Builder $query): Builder => $query->where('is_active', true))
-                    ->default(),
-                Filter::make('is_done')
-                    ->label('Klara')
-                    ->query(fn (Builder $query): Builder => $query->where('is_done', true)),
-                Filter::make('is_owner')
-                    ->label('Ägare')
-                    ->query(fn (Builder $query): Builder => $query->where('is_owner', true)),
+                Filter::make('telefon')
+                    ->label('Telefon')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('telefon')),
                 Filter::make('is_hus')
                     ->label('Hus')
                     ->query(fn (Builder $query): Builder => $query->where('is_hus', true)),
@@ -190,7 +196,21 @@ class SwedenPersonersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     static::exportToApiBulkAction(),
-                    static::transferToRingaDataBulkAction(),
+                    BulkAction::make('transferToRingaData')
+                        ->label('Transfer to Ringa Data')
+                        ->icon('heroicon-o-arrow-right')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records, array $data): void {
+                            $action = new TransferSwedenPersonerToRingaDataAction;
+                            $action->handle($records, $data);
+
+                            Notification::make()
+                                ->title('Success')
+                                ->body(count($records).' records transferred to Ringa Data')
+                                ->success()
+                                ->send();
+                        }),
                 ]),
                 Action::make('create')
                     ->label('Skapa Ny Person')

@@ -21,8 +21,9 @@ use Cachet\Filament\Widgets\AnnouncementEditorWidget;
 use Cachet\Filament\Widgets\AnnouncementWidget;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Pages\BasePage;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
-use Filament\Pages\Page as BasePage;
+use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -30,7 +31,7 @@ use Filament\Schemas\Schema;
 use UnitEnum;
 use Wallacemartinss\FilamentIconPicker\Enums\Heroicons;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
-
+use Filament\AdvancedExport\Widgets\AdvancedExportWidget;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
@@ -40,23 +41,23 @@ use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseSlowRequests;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseUsage;
 
-class AppDashboard extends BasePage
+class TeamPage extends BasePage
 {
     use HasFiltersForm;
 
     protected static ?string $title = '';
 
-    protected static ?string $slug = 'app-dashboard';
+    protected static ?string $slug = 'team-page';
 
     protected static ?string $navigationLabel = 'Team';
-
-    protected string $view = 'filament.app.dashboard';
 
     protected static ?int $navigationSort = 3;
 
     protected static ?int $sort = 3;
 
-    //   protected static string | UnitEnum | null $navigationGroup = '';
+    protected string $view = 'filament.app.pages.team-page';
+
+    //  protected static string | UnitEnum | null $navigationGroup = '';
 
     //  protected static string|BackedEnum|null $navigationIcon = Heroicons::OutlinedUserCircle;
     //  protected static string|BackedEnum|null $activeNavigationIcon = Heroicons::SolidUserCircle;
@@ -67,11 +68,11 @@ class AppDashboard extends BasePage
 
     // Prevent this app-level Dashboard from being auto-discovered so that
     // the explicit `AdminDashboard` can be registered as the admin panel root.
-    protected static bool $isDiscovered = true;
+    protected static bool $isDiscovered = false;
 
     public static function shouldRegisterNavigation(): bool
     {
-        return true;
+        return false;
     }
 
     public static function getNavigationBadge(): ?string
@@ -190,4 +191,9 @@ class AppDashboard extends BasePage
     {
         return '';
     }
-}
+
+       protected function registerRoutes(): void
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+    }
+    }

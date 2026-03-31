@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Booking\Clusters\Services\Resources\Services\Tables;
 
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Filament\Actions\CreateAction;
 
 class ServicesTable
 {
@@ -18,27 +20,30 @@ class ServicesTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                ->label('Service Tjänst')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('service_code')
-                    ->label('Service Code')
+                    ->label('Service Kod')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('brand.name')
+                    ->label('Företag')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('price')
-                    ->money()
+                    ->label('Pris (SEK)')
+                    ->money('SEK', locale: 'sv')
                     ->sortable(),
                 TextColumn::make('time_duration')
-                    ->label('Duration')
+                    ->label('Tid')
                     ->suffix(' min')
                     ->sortable()
                     ->toggleable(),
                 IconColumn::make('is_available')
-                    ->label('Available')
+                    ->label('Aktiv')
                     ->boolean()
                     ->sortable()
                     ->toggleable(),
@@ -55,11 +60,14 @@ class ServicesTable
                 TernaryFilter::make('is_visible')
                     ->label('Visible'),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
             ])
             ->toolbarActions([
-                DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+                CreateAction::make()
             ])
             ->defaultSort('created_at', 'desc');
     }

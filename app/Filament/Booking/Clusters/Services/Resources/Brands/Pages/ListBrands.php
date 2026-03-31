@@ -9,17 +9,23 @@ use App\Filament\Booking\Clusters\Services\Resources\Brands\BrandResource;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ExportAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListBrands extends ListRecords
 {
     protected static string $resource = BrandResource::class;
 
-    protected function getActions(): array
+
+        public function getBreadcrumbs(): array
     {
-        return [
-            ExportAction::make()
-                ->exporter(BrandExporter::class),
-            CreateAction::make(),
-        ];
+        return [];
+    }
+    protected function getHeaderActions(): array
+    {
+        return [];
+    }
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
     }
 }

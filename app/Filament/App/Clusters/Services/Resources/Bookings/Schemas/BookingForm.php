@@ -94,7 +94,7 @@ class BookingForm
         return [
 
             TextInput::make('number')
-                ->default('OR-'.random_int(100000, 999999))
+                ->default('OR-' . random_int(100000, 999999))
                 ->disabled()
                 ->dehydrated()
                 ->required()
@@ -152,41 +152,42 @@ class BookingForm
                         ->columns(2)
                         ->schema([
                             TextInput::make('name')
+                                ->label('Kund Namn')
                                 ->default($clientDefaults['name'] ?? null)
                                 ->required()
                                 ->maxLength(255),
-                            TextInput::make('personnummer')
+                            TextInput::make('personal_id')
+                                ->hidden()
                                 ->default($clientDefaults['personal_id'] ?? null)
-                                ->required()
                                 ->maxLength(255),
-                            TextInput::make('email')
-                                ->label('Email address')
-                                ->default($clientDefaults['email'] ?? null)
-                                ->email()
-                                ->maxLength(255)
-                                ->unique(),
-                            TextInput::make('phone')
-                                ->default($clientDefaults['phone'] ?? null)
-                                ->maxLength(255)
-                                ->required(),
-
                             TextInput::make('street')
-                                ->label('Street address')
+                                ->label('Gatuadress')
                                 ->default($clientDefaults['street'] ?? null)
                                 ->maxLength(255)
                                 ->required(),
 
                             TextInput::make('zip')
-                                ->label('Postal code')
+                                ->label('Postnummer')
                                 ->default($clientDefaults['zip'] ?? null)
                                 ->maxLength(20)
                                 ->required(),
 
                             TextInput::make('city')
+                                ->label('Postort')
                                 ->default($clientDefaults['city'] ?? null)
                                 ->maxLength(255)
                                 ->required(),
-
+                            TextInput::make('email')
+                                ->label('E-postadress')
+                                ->default($clientDefaults['email'] ?? null)
+                                ->email()
+                                ->maxLength(255)
+                                ->unique(),
+                            TextInput::make('phone')
+                                ->label('Telefonnummer')
+                                ->default($clientDefaults['phone'] ?? null)
+                                ->maxLength(255)
+                                ->required(),
                             TextInput::make('country')
                                 ->hidden()
                                 ->placeholder('Sweden'),
@@ -215,6 +216,7 @@ class BookingForm
             Group::make()
                 ->schema([
                     TextInput::make('phone')
+                        ->hidden()
                         ->label('Telefonnummer')
                         ->placeholder('Telefon bokning')
                         ->extraAlpineAttributes(['x-data' => '{}'])
@@ -226,18 +228,31 @@ class BookingForm
                                 ->label('Fyll från kö')
                                 ->extraAttributes([
                                     'x-data' => '{}',
-                                    'x-on:click' => 'fetch("/api/booking-outcall-queue/latest-phone").then(r=>r.json()).then(d=>{if(d.phone){$el.closest("div").querySelector("input").value=d.phone;$el.closest("div").querySelector("input").dispatchEvent(new Event("input"));}});',
+                                    'x-on:click' => 'fetch("/api/booking-outcall-queue/latest-phone", { headers: { "X-CSRF-TOKEN": document.querySelector(\'meta[name="csrf-token"]\').content } }).then(r=>r.json()).then(d=>{if(d.phone){$el.closest(".booking-phone-input").querySelector("input").value=d.phone;$el.closest(".booking-phone-input").querySelector("input").dispatchEvent(new Event("input"));}});',
                                 ])
                         )
                         ->maxLength(12)
                         ->columnSpan(1),
                     TextInput::make('personnummer')
+                        ->hidden()
                         ->label('Personnummer')
                         ->default($clientDefaults['personal_id'] ?? null)
                         ->placeholder('YYYYMMDDXXXX'),
                 ])
                 ->columns(2)
                 ->columnSpan(1),
+            TextInput::make('title')
+                ->hidden()
+                ->default($clientDefaults['title'] ?? null)
+                ->dehydrated(),
+            TextInput::make('description')
+                ->hidden()
+                ->default($clientDefaults['description'] ?? null)
+                ->dehydrated(),
+            TextInput::make('location')
+                ->hidden()
+                ->default($clientDefaults['location'] ?? null)
+                ->dehydrated(),
             TextInput::make('fastighetsbeteckning')
                 ->label('Fastighetsbeteckning')
                 ->suffixAction(Action::make('search_property')
@@ -295,7 +310,7 @@ class BookingForm
                     ->options(Service::query()->pluck('name', 'id'))
                     ->required()
                     ->live()
-                    ->afterStateUpdated(fn ($state, Set $set) => $set('unit_price', Service::find($state)?->price ?? 0))
+                    ->afterStateUpdated(fn($state, Set $set) => $set('unit_price', Service::find($state)?->price ?? 0))
                     ->distinct()
                     ->searchable()
                     ->columnSpan(2),

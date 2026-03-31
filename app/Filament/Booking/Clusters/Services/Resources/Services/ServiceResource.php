@@ -27,6 +27,8 @@ class ServiceResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+  //  protected static ?string $navigationLabel = 'Tjänster';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
     // protected static ?string $navigationLabel = 'Tjänster';

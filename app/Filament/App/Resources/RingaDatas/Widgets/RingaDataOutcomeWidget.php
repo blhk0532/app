@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\App\Resources\RingaDatas\Widgets;
 
 use App\Enums\Outcomes;
-use App\Models\BookingOutcallQueue;
 use App\Models\RingaData;
 use App\Models\RingaDataOutcome;
 use Filament\Forms\Components\Actions\Action;
@@ -52,18 +51,13 @@ class RingaDataOutcomeWidget extends Widget implements HasForms
     public function queueOutcall(string $phone): void
     {
         // Create a new record in booking_outcall_queues with the phone number and user context
-        BookingOutcallQueue::create([
+        \App\Models\BookingOutcallQueue::create([
             'phone' => $phone,
             'user_id' => Auth::user()?->id,
             'is_active' => true,
             // Add more fields as needed, e.g. name, address, etc.
         ]);
 
-        Notification::make()
-            ->title('Nummer köad')
-            ->body('Telefonnummeret har lagts till i utgående kö.')
-            ->success()
-            ->send();
     }
 
     public function updateRecord(int $recordId): void

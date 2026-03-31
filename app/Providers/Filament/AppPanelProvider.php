@@ -136,8 +136,8 @@ class AppPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop()
             ->spaUrlExceptions(['tel:*', 'mailto:*'])
             ->registerErrorNotification(
-                title: 'Oops!',
-                body: '/ᐠ •̀ ˕ •́ マ',
+                title: '',
+                body: '',
             )
             ->homeUrl(fn () => AppPanelRedirect::urlFor(Auth::user()))
             ->sidebarCollapsibleOnDesktop(true)
@@ -194,7 +194,7 @@ class AppPanelProvider extends PanelProvider
 
             ])
             ->pages([
-                AppDashboard::class,
+
                 AppChatDashboard::class,
                 //    ChatDashboard::class,
                 //    ChatsDashboard::class,

@@ -60,7 +60,7 @@
                                         tag="a"
                                         href="tel:{{ $dialable }}"
                                         color="gray"
-                                        wire:click.prevent="queueOutcall('{{ addslashes($phone) }}')"
+                                        wire:click="queueOutcall('{{ addslashes($phone) }}')"
                                         size="sm"
                                         class="w-full justify-start shadow-sm hover:bg-success-50 dark:hover:bg-gray-500/50 group transition-colors"
                                     >

@@ -940,6 +940,12 @@ final class RingaDataCalendar extends FullCalendarWidget implements HasCalendar
                     'ends_at' => $data['ends_at'] ?? 'NOT SET',
                     'keys' => array_keys($data),
                 ]);
+                logger()->info('BookingCalendarWidget: Booking fields', [
+                    'title' => $data['title'] ?? null,
+                    'description' => $data['description'] ?? null,
+                    'location' => $data['location'] ?? null,
+                    'phone' => $data['phone'] ?? null,
+                ]);
                 $booking = Booking::create($data);
                 logger()->info('BookingCalendarWidget: AFTER Booking::create()', [
                     'booking_id' => $booking->id,

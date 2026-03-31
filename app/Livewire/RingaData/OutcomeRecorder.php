@@ -152,7 +152,7 @@ class OutcomeRecorder extends Component implements HasActions, HasForms, HasSche
             ->size('sm')
             ->disabled($this->processingOutcome === 'Aterkommer')
             ->extraAttributes([
-                'class' => 'w-full',
+                'class' => 'overflow-hidden whitespace-nowrap w-full h-full px-3 py-2 rounded-lg font-semibold text-sm shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed',
                 'style' => "background-color: {$color} !important; color: white !important; border-color: {$color} !important;".($this->processingOutcome === 'Aterkommer' ? ' opacity: 0.9;' : ''),
             ])
             ->modal()
@@ -184,7 +184,7 @@ class OutcomeRecorder extends Component implements HasActions, HasForms, HasSche
             ->size('sm')
             ->disabled($this->processingOutcome === 'NyligenGjort')
             ->extraAttributes([
-                'class' => 'w-full',
+                                'class' => 'overflow-hidden whitespace-nowrap w-full h-full px-3 py-2 rounded-lg font-semibold text-sm shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed',
                 'style' => "background-color: {$color} !important; color: white !important; border-color: {$color} !important;".($this->processingOutcome === 'NyligenGjort' ? ' opacity: 0.5;' : ''),
             ])
             ->modal()
@@ -215,7 +215,7 @@ class OutcomeRecorder extends Component implements HasActions, HasForms, HasSche
             ->size('sm')
             ->disabled($this->processingOutcome === 'Offert')
             ->extraAttributes([
-                'class' => 'w-full',
+                               'class' => 'overflow-hidden whitespace-nowrap w-full h-full px-3 py-2 rounded-lg font-semibold text-sm shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed',
                 'style' => "background-color: {$color} !important; color: white !important; border-color: {$color} !important;".($this->processingOutcome === 'Offert' ? ' opacity: 0.5;' : ''),
             ])
             ->modal()
@@ -251,7 +251,7 @@ class OutcomeRecorder extends Component implements HasActions, HasForms, HasSche
             ->size('sm')
             ->disabled($this->processingOutcome === 'Kontakt')
             ->extraAttributes([
-                'class' => 'w-full',
+                              'class' => 'overflow-hidden whitespace-nowrap w-full h-full px-3 py-2 rounded-lg font-semibold text-sm shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed',
                 'style' => "background-color: {$color} !important; color: white !important; border-color: {$color} !important;".($this->processingOutcome === 'Kontakt' ? ' opacity: 0.5;' : ''),
             ])
             ->modal()
