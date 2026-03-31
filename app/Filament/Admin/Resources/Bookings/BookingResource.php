@@ -173,12 +173,12 @@ class BookingResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
+        $tenant = filament()->getTenant();
 
-        if (filament()->getTenant()->getAttribute('is_admin') !== true) {
+        if (! $tenant || $tenant->getAttribute('is_admin') !== true) {
             return true;
         }
 
         return false;
-
     }
 }
