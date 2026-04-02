@@ -9,6 +9,7 @@ use Filament\Pages\Page;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
+use Illuminate\Support\Str;
 
 class GoogleCalendar extends Page
 {
@@ -33,15 +34,18 @@ class GoogleCalendar extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Administration | TEAM';
+        $team = filament()->getTenant()?->name;
+        $name = \Illuminate\Support\Str::ucwords($team);
+
+         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
         // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (filament()->getTenant()->getAttribute('is_admin') !== true) {
-            return false;
-        }
+        // if (filament()->getTenant()->getAttribute('is_admin') !== true) {
+        //     return false;
+        // }
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'super' || Auth::user()->role === 'manager') {
             return true;
         }

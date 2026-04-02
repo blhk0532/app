@@ -1053,7 +1053,7 @@ form.fi-modal-window.fi-modal-window-has-close-btn.fi-modal-window-has-content.f
 
 
 .filament-fullcalendar.fc.fc-media-screen.fc-direction-ltr.fc-theme-standard.fc-liquid-hack{
-  min-height: 700px;
+  min-height: 666px;
 }
 
 div.fi-modal-icon-bg{
@@ -1213,9 +1213,9 @@ img.w-auto.object-contain{
 .outcome-recorder .fi-button,
 .ringa-data-outcome-widget .fi-btn,
 .ringa-data-outcome-widget .fi-button {
-    height: 38px !important;
-    min-height: 38px !important;
-    max-height: 38px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;

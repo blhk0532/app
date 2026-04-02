@@ -109,10 +109,10 @@ class BookingServicePeriod extends Model
             'end' => $end,
             'type' => 'blocking',
             'backgroundColor' => match ($this->period_type) {
-                'unavailable' => '#ede9fe', // light purple
-                'available' => '#ecfeff', // light cyan
-                'blocked' => '#ecfeff', // light cyan
-                default => '#f9fafb', // light gray
+                'unavailable' => '#c33a3a', // light purple
+                'available' => '#222ece', // light cyan
+                'blocked' => '#222ece', // light cyan
+                default => '#c33a3a', // light gray
             },
             'borderColor' => match ($this->period_type) {
                 'unavailable' => '#ddd6fe',

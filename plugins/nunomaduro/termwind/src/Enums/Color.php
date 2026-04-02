@@ -378,7 +378,7 @@ class Color
 
     public const VIOLET_50 = '#f5f3ff';
 
-    public const VIOLET_100 = '#ede9fe';
+    public const VIOLET_100 = '#c33a3a';
 
     public const VIOLET_200 = '#ddd6fe';
 

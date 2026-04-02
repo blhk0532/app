@@ -4,7 +4,6 @@
         "copilot"
     ],
     "guidelines": true,
-    "herd_mcp": false,
     "mcp": true,
     "nightwatch_mcp": false,
     "packages": [
@@ -14,7 +13,8 @@
         "inerba/filament-db-config",
         "livewire/blaze",
         "spatie/laravel-permission",
-        "spatie/laravel-query-builder"
+        "spatie/laravel-query-builder",
+        "relaticle/comments"
     ],
     "sail": false,
     "skills": [
@@ -35,6 +35,7 @@
         "filament-refresh-sidebar-development",
         "fortify-development",
         "blaze-optimize",
+        "comments-development",
         "laravel-permission-development",
         "laravel-query-builder"
     ]

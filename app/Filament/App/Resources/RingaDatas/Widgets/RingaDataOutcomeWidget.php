@@ -7,7 +7,11 @@ namespace App\Filament\App\Resources\RingaDatas\Widgets;
 use App\Enums\Outcomes;
 use App\Models\RingaData;
 use App\Models\RingaDataOutcome;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -15,8 +19,9 @@ use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
 
-class RingaDataOutcomeWidget extends Widget implements HasForms
+class RingaDataOutcomeWidget extends Widget implements HasActions, HasForms
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?RingaData $record = null;
@@ -58,6 +63,91 @@ class RingaDataOutcomeWidget extends Widget implements HasForms
             // Add more fields as needed, e.g. name, address, etc.
         ]);
 
+    }
+
+    public function addPhoneNumbersAction(): Action
+    {
+        return Action::make('addPhoneNumbers')
+            ->label('Lägg till nummer')
+            ->icon('heroicon-o-plus')
+            ->size('sm')
+            ->color('gray')
+            ->disabled(fn (): bool => ! $this->record)
+            ->modalHeading('Lägg till telefonnummer')
+            ->modalSubmitActionLabel('Spara nummer')
+            ->schema([
+                Repeater::make('phone_numbers')
+                    ->label('Telefonnummer')
+                    ->default(function (): array {
+                        if (! $this->record) {
+                            return [['number' => '']];
+                        }
+
+                        $existingNumbers = is_array($this->record->telfonnummer)
+                            ? $this->record->telfonnummer
+                            : [];
+
+                        if ($existingNumbers === []) {
+                            return [['number' => '']];
+                        }
+
+                        return collect($existingNumbers)
+                            ->map(fn (mixed $value): array => ['number' => (string) $value])
+                            ->values()
+                            ->all();
+                    })
+                    ->minItems(1)
+                    ->maxItems(5)
+                    ->schema([
+                        TextInput::make('number')
+                            ->label('Nummer')
+                            ->required()
+                            ->maxLength(30),
+                    ])
+                    ->columnSpanFull(),
+            ])
+            ->action(function (array $data): void {
+                if (! $this->record) {
+                    Notification::make()
+                        ->title('Ingen post vald')
+                        ->warning()
+                        ->send();
+
+                    return;
+                }
+
+                $rows = $data['phone_numbers'] ?? [];
+
+                $numbers = collect($rows)
+                    ->pluck('number')
+                    ->map(fn (mixed $number): string => trim((string) $number))
+                    ->filter(fn (string $number): bool => $number !== '')
+                    ->unique()
+                    ->take(5)
+                    ->values()
+                    ->all();
+
+                if ($numbers === []) {
+                    Notification::make()
+                        ->title('Inga nummer att spara')
+                        ->warning()
+                        ->send();
+
+                    return;
+                }
+
+                $this->record->update([
+                    'telfonnummer' => $numbers,
+                    'is_telefon' => true,
+                ]);
+
+                $this->record->refresh();
+
+                Notification::make()
+                    ->title('Telefonnummer sparade')
+                    ->success()
+                    ->send();
+            });
     }
 
     public function updateRecord(int $recordId): void

@@ -272,7 +272,7 @@ class MultiCalendar2 extends FullCalendarWidget implements HasCalendar, HasSchem
             'timeZone' => 'Europe/Stockholm',
             'now' => now()->setTimezone('Europe/Stockholm')->addHour()->toISOString(),
             'slotMinTime' => '07:00:00',
-            'slotMaxTime' => '20:00:00',
+            'slotMaxTime' => '19:00:00',
             'views' => [
                 'timeGridDay' => [
                     'slotMinTime' => $openingStart ? $openingStart : '08:00:00',
@@ -280,7 +280,7 @@ class MultiCalendar2 extends FullCalendarWidget implements HasCalendar, HasSchem
                 ],
                 'timeGridWeek' => [
                     'slotMinTime' => '07:00:00',
-                    'slotMaxTime' => '20:00:00',
+                    'slotMaxTime' => '19:00:00',
                 ],
                 'timeGridMonth' => [
                     'slotMinTime' => $openingStart ? $openingStart : '08:00:00',

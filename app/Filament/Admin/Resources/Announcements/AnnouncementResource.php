@@ -27,6 +27,8 @@ class AnnouncementResource extends Resource
 
     protected static ?string $navigationLabel = 'Nyheter';
 
+    protected static bool $shouldCheckPolicyExistence = false;
+
     public static function table(Table $table): Table
     {
         return AnnouncementsTable::configure($table);

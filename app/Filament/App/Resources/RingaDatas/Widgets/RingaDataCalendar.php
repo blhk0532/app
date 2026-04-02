@@ -109,7 +109,7 @@ final class RingaDataCalendar extends FullCalendarWidget implements HasCalendar
 
     protected static ?int $sort = -1;
 
-    protected string $view = 'adultdate/filament-booking::single-fullcalendar';
+    protected string $view = 'filament.fullcalendar';
 
     protected int|string|array $columnSpan = 'full';
 

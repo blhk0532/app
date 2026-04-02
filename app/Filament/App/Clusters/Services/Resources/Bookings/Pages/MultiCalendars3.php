@@ -7,6 +7,9 @@ namespace App\Filament\App\Clusters\Services\Resources\Bookings\Pages;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\MultiCalendar1;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\MultiCalendar2;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\MultiCalendar3;
+use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\MultiCalendar4;
+use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\MultiCalendar5;
+use App\Filament\App\Clusters\Services\Resources\Bookings\Widgets\MultiCalendar6;
 use BackedEnum;
 use Carbon\Carbon;
 use Closure;
@@ -100,7 +103,9 @@ class MultiCalendars3 extends BaseDashboard
             MultiCalendar1::class,
             MultiCalendar2::class,
             MultiCalendar3::class,
-
+            MultiCalendar4::class,
+            MultiCalendar5::class,
+            MultiCalendar6::class,
         ];
     }
 }

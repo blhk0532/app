@@ -41,13 +41,13 @@ class SingleCalendar extends BaseDashboard
 
     protected static ?string $title = '';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 2;
 
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 2;
 
     protected static string $routePath = 'single-calendar';
 
-    // protected static string|UnitEnum|null $navigationGroup = ' ';
+ protected static string|UnitEnum|null $navigationGroup = '';
 
     //   use HasFiltersForm;
     //  protected static ?string $slug = 'dashboard';
@@ -94,7 +94,7 @@ class SingleCalendar extends BaseDashboard
         //    return '🇹🇭 ' . now()->timezone('Asia/Bangkok')->format('H:i');
         $role = Str::upper(auth()->user()->role);
         Carbon::setLocale('sv');
-        $now = now()->timezone('Europe/Stockholm')->translatedFormat('l');
+        $now = now()->timezone('Europe/Stockholm')->translatedFormat('D');
 
         return Str::ucfirst($now);
     }

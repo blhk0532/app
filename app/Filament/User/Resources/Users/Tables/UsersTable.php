@@ -17,13 +17,6 @@ class UsersTable
     {
         return $table
             ->columns([
-                IconColumn::make('status')
-                    ->boolean()
-                    ->label(' ')
-                    ->trueIcon('heroicon-o-check-badge')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->sortable(),
-
                 UserColumn::make('user_display')
                     ->label('Användare')
                     ->getStateUsing(function ($record) {
@@ -50,41 +43,31 @@ class UsersTable
                     ->label('Senast Aktiv')
                     ->sortable()
                     ->state(fn ($record) => $record->id === auth()->id() ? 'Just nu' : ($record->active_at ? Carbon::parse($record->active_at)->diffForHumans() : 'N/A'))
-                    ->toggleable(),
+                    ->hidden(false),
+                IconColumn::make('status')
+                    ->boolean()
+                    ->hidden()
+                    ->label(' ')
+                    ->trueIcon('heroicon-o-check-badge')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->sortable(),
+                TextColumn::make('currentTeam.name')
+                    ->label('Team')
+                    ->badge(),
                 TextColumn::make('phone')
-                    ->searchable()
                     ->sortable()
                     ->copyable()
                     ->copyMessage('Copied!')
                     ->copyMessageDuration(1500)
-                    ->toggleable()
                     ->wrap(),
-
                 TextColumn::make('email')
-                    ->searchable()
                     ->sortable()
-                    ->toggleable()
+                    ->hidden()
                     ->wrap(),
                 TextColumn::make('company.name')
                     ->label('Company')
                     ->badge()
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make('currentTeam.name')
-                    ->label('Current Team')
-                    ->badge()
-                    ->searchable()
-                    ->toggleable(),
-
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->hidden(),
             ])
             ->filters([
                 //

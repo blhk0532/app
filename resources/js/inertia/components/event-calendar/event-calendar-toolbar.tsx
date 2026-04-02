@@ -102,6 +102,13 @@ export default function EventCalendarToolbar({
   onDateChange,
 }: EventCalendarToolbarProps) {
   const [technicians, setTechnicians] = useState<TechnicianMap>({});
+  const [hasManualTechnicianSelection, setHasManualTechnicianSelection] =
+    useState(false);
+  const effectiveSelectedTechnicianId =
+    !hasManualTechnicianSelection &&
+    (!selectedTechnicianId || selectedTechnicianId === 'all')
+      ? '5'
+      : selectedTechnicianId || '5';
   const {
     viewMode,
     locale,
@@ -130,6 +137,12 @@ export default function EventCalendarToolbar({
     })),
   );
   const localeObj = getLocaleFromCode(locale);
+  const selectedTechnicianLabel =
+    effectiveSelectedTechnicianId === 'all'
+      ? 'Alla'
+      : users?.find(
+          (user) => String(user.id) === effectiveSelectedTechnicianId,
+        )?.name || 'Tekniker';
 
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [filters, setFilters] = useState<FiltersState>(INITIAL_FILTERS);
@@ -274,16 +287,25 @@ export default function EventCalendarToolbar({
           map[String(tech.id)] = tech;
         });
         setTechnicians(map);
+
+        if (
+          !hasManualTechnicianSelection &&
+          onTechnicianChange &&
+          (!selectedTechnicianId || selectedTechnicianId === 'all') &&
+          map['5']
+        ) {
+          onTechnicianChange('5');
+        }
       } catch (error) {
         console.error('Error fetching technicians:', error);
       }
     };
 
     fetchTechnicians();
-  }, []);
+  }, [hasManualTechnicianSelection, onTechnicianChange, selectedTechnicianId]);
 
   useEffect(() => {
-    if (!selectedTechnicianId || selectedTechnicianId === 'all') {
+    if (effectiveSelectedTechnicianId === 'all') {
       setQuickAddDefaults({
         service_user_id: undefined,
         booking_calendar_id: undefined,
@@ -292,15 +314,15 @@ export default function EventCalendarToolbar({
       return;
     }
 
-    const technician = technicians[selectedTechnicianId];
+    const technician = technicians[effectiveSelectedTechnicianId];
     const calendarId = technician?.calendar_ids?.[0];
 
     setQuickAddDefaults({
-      service_user_id: selectedTechnicianId,
+      service_user_id: effectiveSelectedTechnicianId,
       booking_calendar_id: calendarId ? String(calendarId) : undefined,
       google_event_id: undefined,
     });
-  }, [selectedTechnicianId, technicians, setQuickAddDefaults]);
+  }, [effectiveSelectedTechnicianId, technicians, setQuickAddDefaults]);
 
   return (
     <div className="bg-transparent flex flex-col min-h-[80px]">
@@ -308,25 +330,34 @@ export default function EventCalendarToolbar({
         <div className="flex flex-wrap items-center justify-center lg:justify-between gap-x-4 gap-y-0 px-2">
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1 sm:gap-2">
-<div className="min-w-[120px]">
+<div className="min-w-[120px] boarder">
     {users && users.length > 0 && onTechnicianChange && (
               <Select
-                value={selectedTechnicianId}
-                onValueChange={onTechnicianChange}
+                value={effectiveSelectedTechnicianId}
+                onValueChange={(id) => {
+                  setHasManualTechnicianSelection(true);
+                  onTechnicianChange(id);
+                }}
               >
                 <SelectTrigger className="h-9 w-[120px] gap-2 text-sm font-medium">
-
-                  <SelectValue placeholder="Tekniker" />
+                  <SelectValue placeholder="Tekniker">
+                    {selectedTechnicianLabel}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="text-sm">
-                    Tekniker
-                  </SelectItem>
+
                   {users.map((user) => (
-                    <SelectItem key={user.id} value={user.id} className="text-sm">
+                    <SelectItem
+                      key={user.id}
+                      value={String(user.id)}
+                      className="text-sm"
+                    >
                       {user.name}
                     </SelectItem>
                   ))}
+                  <SelectItem value="all" className="text-sm">
+                    Alla
+                  </SelectItem>
                 </SelectContent>
               </Select>
             )}

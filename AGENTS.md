@@ -17,7 +17,6 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
 - laravel/horizon (HORIZON) - v5
-- laravel/nightwatch (NIGHTWATCH) - v1
 - laravel/octane (OCTANE) - v2
 - laravel/passport (PASSPORT) - v13
 - laravel/prompts (PROMPTS) - v0
@@ -61,6 +60,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 - `filament-refresh-sidebar-development` — Build and work with the Filament Refresh Sidebar plugin, including automatic and manual sidebar navigation refresh.
 - `fortify-development` — ACTIVATE when the user works on authentication in Laravel. This includes login, registration, password reset, email verification, two-factor authentication (2FA/TOTP/QR codes/recovery codes), profile updates, password confirmation, or any auth-related routes and controllers. Activate when the user mentions Fortify, auth, authentication, login, register, signup, forgot password, verify email, 2FA, or references app/Actions/Fortify/, CreateNewUser, UpdateUserProfileInformation, FortifyServiceProvider, config/fortify.php, or auth guards. Fortify is the frontend-agnostic authentication backend for Laravel that registers all auth routes and controllers. Also activate when building SPA or headless authentication, customizing login redirects, overriding response contracts like LoginResponse, or configuring login throttling. Do NOT activate for Laravel Passport (OAuth2 API tokens), Socialite (OAuth social login), or non-auth Laravel features.
 - `blaze-optimize` — Set up and optimize Blade component rendering with Blaze. Use when installing Blaze, optimizing components, or configuring @blaze directives and strategies.
+- `comments-development` — Full-featured commenting system for Filament panels with polymorphic comments, threaded replies, @mentions, emoji reactions, file attachments, and real-time notifications. Use when adding the HasComments trait to models, integrating CommentsAction/CommentsTableAction/CommentsEntry in Filament, configuring threading, reactions, mentions, attachments, notifications, broadcasting, or customizing the CommentPolicy.
 - `laravel-permission-development` — Build and work with Spatie Laravel Permission features, including roles, permissions, middleware, policies, teams, and Blade directives.
 - `laravel-query-builder` — Build filtered, sorted, and included API endpoints using spatie/laravel-query-builder. Activates when working with QueryBuilder, AllowedFilter, AllowedSort, AllowedInclude, or when the user mentions query parameters, API filtering, sorting, includes, or spatie/laravel-query-builder.
 

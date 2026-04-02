@@ -246,7 +246,7 @@ div.fi-header.fi-header-has-breadcrumbs {
 }
 
 .filament-fullcalendar.fc.fc-media-screen.fc-direction-ltr.fc-theme-standard.fc-liquid-hack {
-    min-height: 700px;
+    min-height: 6;
 }
 
 div.fi-modal-icon-bg {
@@ -397,9 +397,9 @@ img.w-auto.object-contain {
 .outcome-recorder .fi-button,
 .ringa-data-outcome-widget .fi-btn,
 .ringa-data-outcome-widget .fi-button {
-    height: 38px !important;
-    min-height: 38px !important;
-    max-height: 38px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;

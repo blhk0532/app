@@ -40,6 +40,7 @@
                                 @endif
                             </div>
                         </div>
+                                {{ $this->addPhoneNumbersAction() }}
                         @endif
                     </div>
 
@@ -47,15 +48,15 @@
                     @php
                         $telfonnummer = $this->record->telfonnummer ?? [];
                         $telefon = $this->record->telefon;
-                        
+
                         // Build phone numbers array from both fields
                         $phoneNumbers = [];
-                        
+
                         // Handle telfonnummer if it's an array
                         if (is_array($telfonnummer) && !empty($telfonnummer)) {
                             $phoneNumbers = $telfonnummer;
                         }
-                        
+
                         // Handle telefon field if it exists and is not already in telfonnummer
                         if ($telefon) {
                             if (is_array($telefon)) {
@@ -107,4 +108,6 @@
             @endif
         </div>
     </x-filament::section>
+
+    <x-filament-actions::modals />
 </x-filament-widgets::widget>

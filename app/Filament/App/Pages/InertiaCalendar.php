@@ -24,6 +24,8 @@ class InertiaCalendar extends Page
 
     // protected static ?string $title = '';
 
+     protected static string|UnitEnum|null $navigationGroup = '';
+
     protected static ?int $navigationSort = 4;
 
     protected static ?int $sort = 4;
@@ -61,7 +63,7 @@ class InertiaCalendar extends Page
 
     public static function getAppUrl(): ?string
     {
-        $appUrl = env('APP_URL', 'https://nordicdigitalthailand.com');
+        $appUrl = config('app.url', 'http://localhost:8000');
 
         return $appUrl        // Ensure the URL ends with a slash
             .(Str::endsWith($appUrl, '/') ? '' : '/')

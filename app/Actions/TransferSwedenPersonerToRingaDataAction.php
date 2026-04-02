@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Models\SwedenPersoner;
 use App\Models\RingaData;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 final readonly class TransferSwedenPersonerToRingaDataAction
@@ -17,10 +18,16 @@ final readonly class TransferSwedenPersonerToRingaDataAction
      * @param  Collection<SwedenPersoner>  $records
      * @param  array<string, mixed>  $data
      */
-    public function handle(Collection $records, array $data): void
+    public function handle(Collection $records, array $data): int
     {
-        DB::transaction(function () use ($records, $data): void {
-            $records->each(function (SwedenPersoner $record) use ($data): void {
+        return DB::transaction(function () use ($records, $data): int {
+            $createdCount = 0;
+
+            $records->each(function (SwedenPersoner $record) use ($data, &$createdCount): void {
+                if ($this->alreadyExistsInRingaData($record)) {
+                    return;
+                }
+
                 RingaData::create([
                     'gatuadress' => $record->adress,
                     'postnummer' => $record->postnummer,
@@ -64,13 +71,44 @@ final readonly class TransferSwedenPersonerToRingaDataAction
                     'is_telefon' => 1,
                     'is_hus' => 1,
                     'is_queued' => 1,
-                    'user_id' => $data['user_id'] ?? auth()->id(),
+                    'user_id' => $data['user_id'] ?? Auth::id(),
                     'team_id' => $data['team_id'] ?? filament()->getTenant()?->id,
                     'status' => null,
                     'outcome' => null,
                     'attempts' => 0,
                 ]);
+
+                $createdCount++;
             });
+
+            return $createdCount;
         });
+    }
+
+    private function alreadyExistsInRingaData(SwedenPersoner $record): bool
+    {
+        $query = RingaData::query();
+
+        if (filled($record->personnummer)) {
+            $query->where('personnummer', $record->personnummer);
+
+            return $query->exists();
+        }
+
+        if (filled($record->telefon)) {
+            $query
+                ->where('telefon', $record->telefon)
+                ->where('personnamn', $record->personnamn);
+
+            return $query->exists();
+        }
+
+        $query
+            ->where('personnamn', $record->personnamn)
+            ->where('gatuadress', $record->adress)
+            ->where('postnummer', $record->postnummer)
+            ->where('postort', $record->postort);
+
+        return $query->exists();
     }
 }

@@ -51,18 +51,22 @@ class RingaDataResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Administration | TEAM';
+             // return 'Administration | TEAM';
+        $team = filament()->getTenant()?->name;
+        $name = \Illuminate\Support\Str::ucwords($team);
+
+         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
         // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 
     public static function shouldRegisterNavigation(): bool
     {
 
-        if (filament()->getTenant()->getAttribute('is_admin') === true) {
+
         if (auth()->user()->role === 'admin' || auth()->user()->role === 'super' || auth()->user()->role === 'manager') {
             return true;
         }
-        }
+
 
         return false;
     }

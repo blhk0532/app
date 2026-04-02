@@ -10,7 +10,9 @@
 
 
 
-   {{ $this->form }}
+            <div wire:key="location-map-picker-form-{{ $this->mapRefreshKey }}">
+                {{ $this->form }}
+            </div>
 
 
             <div class="flex justify-end gap-2 relative top-2" style="top:0rem;">

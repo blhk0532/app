@@ -3,16 +3,15 @@
 namespace App\Filament\Admin\Pages;
 
 use App\Models\OutgoingEmail;
-use App\Models\OutgoingConfirmation;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Pages\Page;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class OutgoingEmailPage extends Page
 {
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-view-columns';
 
-    protected static ?string $navigationLabel = 'Skicka SMS';
+    protected static ?string $navigationLabel = 'Skicka Epost';
 
     protected static ?string $title = ' ';
 

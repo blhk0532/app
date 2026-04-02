@@ -18,8 +18,9 @@ use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\BookingCalenders
 use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\MultiCalendars3 as AppBookingMultiCalendar;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\MultiCalendars3 as Scheman;
 use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\SingleCalendar as AppBookingSinleCalendar;
+use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\MultiCalendars as MultiCalendars;
+use App\Filament\App\Clusters\Services\Resources\Bookings\Pages\SingleCalendar as SingleCalendar;
 use App\Filament\App\Pages\AppChatDashboard;
-use App\Filament\App\Pages\AppDashboard;
 use App\Filament\App\Pages\AppDataHistory;
 use App\Filament\App\Pages\AppRingLista;
 use App\Filament\App\Pages\ArbetslistaDashboard;
@@ -81,21 +82,21 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Str;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\View\View;
 use JeffersonGoncalves\Filament\RefreshSidebar\RefreshSidebarPlugin;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use Leek\FilamentDiceBear\DiceBearPlugin;
 use Leek\FilamentDiceBear\DiceBearProvider;
 use Leek\FilamentDiceBear\Enums\DiceBearStyle;
 use Muazzam\SlickScrollbar\SlickScrollbarPlugin;
 use Relaticle\Comments\CommentsPlugin;
-use Illuminate\Support\Str;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\Enums\Tabler;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
-use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
-use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 
 // / use YourVendor\FilamentNotificationBell\FilamentNotificationBellPlugin;
 
@@ -120,8 +121,8 @@ class AppPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
             ->tenantRegistration(RegisterTeam::class)
             ->tenantProfile(EditTeamProfile::class)
-            ->tenantSwitcher(fn () => Auth::user()->role === 'super' || Auth::user()->role === 'admin' ? true : false)
-            ->tenantMenu(fn () => Auth::user()->role === 'super' || Auth::user()->role === 'admin' ? true : false)
+            ->tenantSwitcher(fn () => Auth::user()->role === 'super' || Auth::user()->role === 'admin' || Auth::user()->role === 'manager' ? true : false)
+            ->tenantMenu(fn () => Auth::user()->role === 'super' || Auth::user()->role === 'admin' || Auth::user()->role === 'manager' ? true : false)
             ->homeUrl(fn () => AppPanelRedirect::urlFor(Auth::user()))
             ->favicon(fn () => asset('favicon.svg'))
             ->brandLogo(fn () => view('filament.app.logo'))
@@ -173,9 +174,6 @@ class AppPanelProvider extends PanelProvider
                 NavigationGroup::make(fn () => auth()->user()?->name ? auth()->user()?->name : 'X')
                     ->collapsed()
                     ->icon(Tabler::UserSquareRounded),
-     NavigationGroup::make('Administration | TEAM')
-                    ->collapsed()
-                    ->icon('heroicon-o-shield-check'),
                 NavigationGroup::make('Samtalslistor')
                     ->collapsed()
                     ->icon('heroicon-o-queue-list'),
@@ -194,12 +192,12 @@ class AppPanelProvider extends PanelProvider
 
             ])
             ->pages([
-
+                SingleCalendar::class,
                 AppChatDashboard::class,
                 //    ChatDashboard::class,
                 //    ChatsDashboard::class,
                 InertiaCalendar::class,
-                AppBookingSinleCalendar::class,
+                MultiCalendars::class,
                 AppBookingMultiCalendar::class,
                 QueueRingaData::class,
                 Scheman::class,
@@ -321,7 +319,7 @@ class AppPanelProvider extends PanelProvider
                     ->slug('my-profile')
                     ->setTitle(__(' '))
                     ->setNavigationLabel(__('Inställningar'))
-                    ->setNavigationGroup(fn () => auth()->user()->name ? auth()->user()->name . ' | ' . auth()->user()->getCompanyName() : 'Company')
+                    ->setNavigationGroup(fn () => auth()->user()->name ? auth()->user()->name.' | '.auth()->user()->getCompanyName() : 'Company')
                     ->setIcon('heroicon-o-user')
                     ->setSort(100)
                     ->shouldRegisterNavigation(false)
@@ -341,7 +339,7 @@ class AppPanelProvider extends PanelProvider
                     ]),
             ])
             ->userMenuItems([
-                  'profile' => Action::make('profile')
+                'profile' => Action::make('profile')
                     ->label(fn () => Str::ucfirst(Auth::user()->getNdsUserName()))
                     ->url(function (): string {
                         $panel = Filament::getCurrentOrDefaultPanel();

@@ -6,14 +6,15 @@ namespace App\Filament\Widgets;
 
 use App\Models\MapPin;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\ColorPicker;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
+use Illuminate\Support\Collection;
 
 class LocationMapPickerWidgetFull extends Widget implements HasForms
 {
@@ -21,11 +22,19 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
 
     public ?array $data = [];
 
+    public int $mapRefreshKey = 0;
+
     protected string $view = 'filament.queue.widgets.location-map-picker-widget-full';
 
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 1;
+
+    public Collection $map_pins;
+
+    protected array $extraWidgetAttributes = [
+        'wire:poll.10s' => 'refreshMaps',
+    ];
 
     public function mount(): void
     {
@@ -41,6 +50,8 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
             ],
         ]);
     }
+
+    protected $listeners = ['refresh-maps' => 'refreshMaps'];
 
     public function form(Schema $schema): Schema
     {
@@ -169,6 +180,16 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
             ->statePath('data');
     }
 
+    public function refreshMaps(): void
+    {
+        $this->map_pins = $this->loadMapPins();
+    }
+
+    protected function loadMapPins(): Collection
+    {
+        return MapPin::all();
+    }
+
     public function savePin(): void
     {
         $payload = $this->form->getState();
@@ -195,7 +216,19 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
             'data' => $payload,
         ]);
 
-        $this->form->fill();
+        // Keep the current coordinates in state so the map marker remains where the user saved it.
+        $this->form->fill([
+            ...$payload,
+            'pin_name' => null,
+            'location' => [
+                'lat' => (float) $lat,
+                'lng' => (float) $lng,
+            ],
+        ]);
+
+        // Force the map field to remount so GeoJSON is reloaded with the new pin immediately.
+        $this->mapRefreshKey++;
+        $this->refreshMaps();
 
         Notification::make()
             ->title('Success')
@@ -203,7 +236,7 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
             ->success()
             ->send();
 
-        \Log::info('LocationMapPickerWidgetFull: dispatching refresh-pins');
+        //    \Log::info('LocationMapPickerWidgetFull: dispatching refresh-pins');
         $this->dispatch('refresh-pins');
         $this->dispatch('refresh-maps');
     }

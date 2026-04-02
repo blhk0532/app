@@ -3,8 +3,9 @@
 namespace App\Filament\Admin\Resources\OutgoingSms\Pages;
 
 use App\Filament\Admin\Resources\OutgoingSms\OutgoingSmsResource;
-use Filament\Actions\CreateAction;
+use App\Filament\App\Widgets\OutgoingSmsWidget;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListOutgoingSms extends ListRecords
 {
@@ -13,7 +14,26 @@ class ListOutgoingSms extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+
+        ];
+    }
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            OutgoingSmsWidget::class,
         ];
     }
 }

@@ -501,10 +501,10 @@ class CalendarBookingController extends Controller
     private function getServicePeriodColor(?string $periodType): string
     {
         return match ($periodType) {
-            'unavailable' => '#ede9fe', // light purple
-            'available' => '#ecfeff', // light cyan
-            'blocked' => '#ecfeff', // light cyan
-            default => '#f9fafb', // light gray
+            'unavailable' => '#c33a3a', // light purple
+            'available' => '#222ece', // light cyan
+            'blocked' => '#c33a3a', // light cyan
+            default => '#c33a3a', // light gray
         };
     }
 

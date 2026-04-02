@@ -44,7 +44,7 @@ class LatestBookings extends BaseWidget
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('service_date')
-                    ->label('Service date')
+                    ->label('Datum')
                     ->date()
                     ->sortable(),
             ])

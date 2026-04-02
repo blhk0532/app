@@ -33,7 +33,7 @@ class TeamMembersWidget extends BaseWidget
         ]);
 
         return UsersTable::configure($table)
-            ->heading("{$tenantName} - Teammedlemmar")
+            ->heading(null)
             ->query(function () use ($tenantId) {
                 $threshold = now()->subMinutes(5);
 

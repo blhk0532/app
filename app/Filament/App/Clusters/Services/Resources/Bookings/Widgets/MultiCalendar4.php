@@ -110,7 +110,9 @@ class MultiCalendar4 extends Widget implements HasCalendar, HasSchemas
     protected static ?int $sort = -1;
 
     protected string $view = 'adultdate/filament-booking::multi-fullcalendar';
+
     // protected int | string | array $columnSpan = 3;
+    protected string $filterKey = 'booking_calendars_4';
 
     public function getHeading(): string|Htmlable
     {
@@ -278,6 +280,10 @@ class MultiCalendar4 extends Widget implements HasCalendar, HasSchemas
                 'center' => 'title',
                 'end' => 'timeGridWeek,timeGridDay',
             ],
+            'titleFormat' => [
+                'day' => 'numeric',
+                'month' => 'short',
+            ],
             'nowIndicator' => true,
             'selectable' => true,
             // Only admins/super_admins can drag/resize events
@@ -290,7 +296,7 @@ class MultiCalendar4 extends Widget implements HasCalendar, HasSchemas
             'timeZone' => 'Europe/Stockholm',
             'now' => now()->setTimezone('Europe/Stockholm')->addHour()->toISOString(),
             'slotMinTime' => '07:00:00',
-            'slotMaxTime' => '20:00:00',
+            'slotMaxTime' => '19:00:00',
             'views' => [
                 'timeGridDay' => [
                     'slotMinTime' => $openingStart ? $openingStart : '08:00:00',
@@ -298,7 +304,7 @@ class MultiCalendar4 extends Widget implements HasCalendar, HasSchemas
                 ],
                 'timeGridWeek' => [
                     'slotMinTime' => '07:00:00',
-                    'slotMaxTime' => '20:00:00',
+                    'slotMaxTime' => '19:00:00',
                 ],
                 'timeGridMonth' => [
                     'slotMinTime' => $openingStart ? $openingStart : '08:00:00',
@@ -1739,7 +1745,7 @@ class MultiCalendar4 extends Widget implements HasCalendar, HasSchemas
 
     public function refreshCalendar()
     {
-        $this->selectedTechnician4 = $this->pageFilters['booking_calendars_4'] ?? null;
+        $this->selectedTechnician4 = $this->pageFilters['booking_calendars_4'] ?? 'all';
         $this->refreshRecords();
     }
 
@@ -1892,6 +1898,7 @@ class MultiCalendar4 extends Widget implements HasCalendar, HasSchemas
 
     protected function getSelectedServiceUserId(): ?int
     {
+        $filters = $this->pageFilters ?? [];
         $selectedCalendarId = $this->selectedTechnician4;
 
         if ($selectedCalendarId && $selectedCalendarId !== 'all') {
@@ -1907,7 +1914,7 @@ class MultiCalendar4 extends Widget implements HasCalendar, HasSchemas
     {
         $filters = $this->pageFilters ?? [];
 
-        $value = $filters['booking_calendars_1'] ?? null;
+        $value = $filters['booking_calendars_3'] ?? null;
 
         return $value ? (int) $value : null;
     }

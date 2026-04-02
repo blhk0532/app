@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\SwedenPersoners\Tables;
 
-use App\Exports\SwedenPersonerExporter;
 use App\Actions\TransferSwedenPersonerToRingaDataAction;
+use App\Exports\SwedenPersonerExporter;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -21,14 +22,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Filament\Actions\BulkAction;
-use Filament\Actions\ExportBulkAction;
-use Filament\Tables\Enums\FiltersLayout;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
-use Illuminate\Support\Collection;
 
 class SwedenPersonersTable
 {
@@ -106,36 +102,43 @@ class SwedenPersonersTable
                 TextColumn::make('personnamn')
                     ->label('Namn')
                     ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('fornamn')
                     ->label('Förnamn')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('efternamn')
                     ->label('Efternamn')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('alder')
                     ->label('Ålder')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('kon')
                     ->label('Kön')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('adress')
                     ->label('Adress')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('postnummer')
                     ->label('Postnummer')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('postort')
                     ->label('Postort')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('kommun')
                     ->label('Kommun')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('telefon')
                     ->label('Telefon')
                     ->searchable()
@@ -203,11 +206,13 @@ class SwedenPersonersTable
                         ->requiresConfirmation()
                         ->action(function (Collection $records, array $data): void {
                             $action = new TransferSwedenPersonerToRingaDataAction;
-                            $action->handle($records, $data);
+
+                            $createdCount = $action->handle($records, $data);
+                            $skippedCount = max(0, $records->count() - $createdCount);
 
                             Notification::make()
                                 ->title('Success')
-                                ->body(count($records).' records transferred to Ringa Data')
+                                ->body($createdCount.' records transferred to Ringa Data'.($skippedCount > 0 ? ' ('.$skippedCount.' duplicates skipped)' : ''))
                                 ->success()
                                 ->send();
                         }),

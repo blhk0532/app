@@ -11,21 +11,26 @@ use App\Models\OutgoingSms;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class OutgoingSmsResource extends Resource
 {
     protected static ?string $model = OutgoingSms::class;
 
-        protected static ?string $navigationLabel = 'SMS Skickade';
+    protected static ?string $navigationLabel = 'Skicka SMS';
 
-          protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 1;
 
-    protected static string|BackedEnum|null $navigationIcon =  'heroicon-o-phone';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left';
 
-        protected static string|UnitEnum|null $navigationGroup = 'Outgoing';
+    public static function getNavigationGroup(): ?string
+    {
+       // return 'Administration | TEAM';
+        $team = filament()->getTenant()?->name;
+        $name = \Illuminate\Support\Str::ucwords($team);
+
+         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
+           }
 
     public static function form(Schema $schema): Schema
     {

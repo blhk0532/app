@@ -74,7 +74,7 @@ class LatestOrders extends BaseWidget
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('service_date')
-                    ->label('Service date')
+                    ->label('Datum')
                     ->date()
                     ->toggleable()
                     ->sortable(),
@@ -88,7 +88,7 @@ class LatestOrders extends BaseWidget
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('service_date')
-                    ->label('Service date')
+                    ->label('Datum')
                     ->toggleable()
                     ->date()
                     ->sortable(),

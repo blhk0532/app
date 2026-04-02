@@ -62,7 +62,6 @@
         "laravel/fortify": "@dev",
         "laravel/framework": "^13.0",
         "laravel/horizon": "@dev",
-        "laravel/nightwatch": "@dev",
         "laravel/octane": "@dev",
         "laravel/passport": "@dev",
         "laravel/pulse": "@dev",
