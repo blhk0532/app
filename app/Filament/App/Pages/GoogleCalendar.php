@@ -8,8 +8,8 @@ use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\Auth;
-use UnitEnum;
 use Illuminate\Support\Str;
+use UnitEnum;
 
 class GoogleCalendar extends Page
 {
@@ -35,9 +35,9 @@ class GoogleCalendar extends Page
     public static function getNavigationGroup(): ?string
     {
         $team = filament()->getTenant()?->name;
-        $name = \Illuminate\Support\Str::ucwords($team);
+        $name = Str::ucwords($team);
 
-         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
+        return $name ? ' TEAM | '.$name : 'TEAM | Administration';
         // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 

@@ -2,12 +2,38 @@
 
 declare(strict_types=1);
 
-use App\Models\Person;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 // Source tables have no migrations; create lightweight stubs for each test run.
 beforeEach(function (): void {
+    Schema::dropIfExists('sweden_personer');
+
+    Schema::create('sweden_personer', function ($t): void {
+        $t->id();
+        $t->string('adress')->nullable();
+        $t->string('postnummer')->nullable();
+        $t->string('postort')->nullable();
+        $t->string('fornamn')->nullable();
+        $t->string('efternamn')->nullable();
+        $t->string('personnamn')->nullable();
+        $t->integer('alder')->nullable();
+        $t->string('kommun')->nullable();
+        $t->string('personnummer')->nullable();
+        $t->string('kon')->nullable();
+        $t->json('telefonnummer')->nullable();
+        $t->string('civilstand')->nullable();
+        $t->string('adressandring')->nullable();
+        $t->string('bostadstyp')->nullable();
+        $t->string('agandeform')->nullable();
+        $t->string('boarea')->nullable();
+        $t->string('byggar')->nullable();
+        $t->string('bostadspris')->nullable();
+        $t->decimal('latitude', 10, 7)->nullable();
+        $t->decimal('longitude', 10, 7)->nullable();
+        $t->timestamps();
+    });
+
     foreach (['ratsit_data', 'merinfo_data', 'hitta_data', 'hitta_se', 'merinfos'] as $table) {
         Schema::dropIfExists($table);
     }
@@ -134,6 +160,8 @@ beforeEach(function (): void {
 });
 
 afterEach(function (): void {
+    Schema::dropIfExists('sweden_personer');
+
     foreach (['ratsit_data', 'merinfo_data', 'hitta_data', 'hitta_se', 'merinfos'] as $table) {
         Schema::dropIfExists($table);
     }
@@ -157,11 +185,10 @@ it('creates a new person record from ratsit_data', function (): void {
 
     $this->artisan('personer:sync')->assertSuccessful();
 
-    $person = Person::where('personnummer', '198001010000')->first();
+    $person = DB::table('sweden_personer')->where('personnummer', '198001010000')->first();
     expect($person)->not->toBeNull()
         ->and($person->personnamn)->toBe('Test Testsson')
-        ->and($person->gatuadress)->toBe('Storgatan 1')
-        ->and($person->sources)->toContain('ratsit_data');
+        ->and($person->adress)->toBe('Storgatan 1');
 });
 
 it('deduplicates records with the same personnummer across sources', function (): void {
@@ -188,12 +215,7 @@ it('deduplicates records with the same personnummer across sources', function ()
 
     $this->artisan('personer:sync')->assertSuccessful();
 
-    expect(Person::where('personnummer', '197005050001')->count())->toBe(1);
-
-    $person = Person::where('personnummer', '197005050001')->first();
-    expect($person->sources)
-        ->toContain('ratsit_data')
-        ->toContain('merinfo_data');
+    expect(DB::table('sweden_personer')->where('personnummer', '197005050001')->count())->toBe(1);
 });
 
 it('deduplicates by name+address+postnummer when personnummer is absent', function (): void {
@@ -220,13 +242,8 @@ it('deduplicates by name+address+postnummer when personnummer is absent', functi
     $this->artisan('personer:sync')->assertSuccessful();
 
     expect(
-        Person::where('personnamn', 'Lars Larsson')->where('postnummer', '66600')->count()
+        DB::table('sweden_personer')->where('personnamn', 'Lars Larsson')->where('postnummer', '66600')->count()
     )->toBe(1);
-
-    $person = Person::where('personnamn', 'Lars Larsson')->where('postnummer', '66600')->first();
-    expect($person->sources)
-        ->toContain('hitta_data')
-        ->toContain('hitta_se');
 });
 
 it('merges phone numbers from multiple sources without duplicates', function (): void {
@@ -256,8 +273,10 @@ it('merges phone numbers from multiple sources without duplicates', function ():
 
     $this->artisan('personer:sync')->assertSuccessful();
 
-    $person = Person::where('personnummer', '200001010001')->first();
-    expect($person->telefonnummer)
+    $person = DB::table('sweden_personer')->where('personnummer', '200001010001')->first();
+    $telefonnummer = json_decode((string) $person->telefonnummer, true);
+
+    expect($telefonnummer)
         ->toContain('0701234567')
         ->toContain('0709876543')
         ->toContain('0700000001')
@@ -289,6 +308,12 @@ it('does not overwrite ratsit_data values with data from lower-priority sources'
 
     $this->artisan('personer:sync')->assertSuccessful();
 
-    $person = Person::where('personnummer', '199912120002')->first();
-    expect($person->alder)->toBe('26');
+    $person = DB::table('sweden_personer')->where('personnummer', '199912120002')->first();
+    expect($person->alder)->toBe(26);
+});
+
+it('fails safely when fresh option is used', function (): void {
+    $this->artisan('personer:sync --fresh')
+        ->expectsOutput('The --fresh option is disabled for safety to prevent data loss in sweden_personer.')
+        ->assertFailed();
 });

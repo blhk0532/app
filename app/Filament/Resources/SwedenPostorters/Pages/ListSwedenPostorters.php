@@ -24,7 +24,13 @@ class ListSwedenPostorters extends ListRecords
         return [
 
             KommunerMapWidget2::make(),
-            LocationMapPickerWidget::class,   // Interactive picker
+        //    LocationMapPickerWidget::class,   // Interactive picker
         ];
+    }
+
+
+    public function getHeaderWidgetsColumns(): int|array
+    {
+        return 1;
     }
 }

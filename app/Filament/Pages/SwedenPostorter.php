@@ -55,10 +55,15 @@ class SwedenPostorter extends Page
         return [
 
               KommunerMapWidget2::make(),
-            LocationMapPickerWidget::class,   // Interactive picker
+        //    LocationMapPickerWidget::class,   // Interactive picker
             SwedenPostorterWidget::class,     // Table with map
         ];
     }
+
+public function getFooterWidgetsColumns(): int|array
+{
+    return 1;
+}
 
     public static function getNavigationBadge(): ?string
     {

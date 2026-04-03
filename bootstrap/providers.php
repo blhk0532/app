@@ -27,6 +27,7 @@ return [
     App\Providers\Filament\SuperPanelProvider::class,
     App\Providers\Filament\SystemPanelProvider::class,
     App\Providers\Filament\ToolsPanelProvider::class,
+    App\Providers\FolioServiceProvider::class,
     App\Providers\FortifyServiceProvider::class,
     App\Providers\HorizonServiceProvider::class,
     Cachet\CachetCoreServiceProvider::class,

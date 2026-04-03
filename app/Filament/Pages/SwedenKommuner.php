@@ -50,12 +50,17 @@ class SwedenKommuner extends Page
         ];
     }
 
+public function getFooterWidgetsColumns(): int|array
+{
+    return 1;
+}
+
     protected function getFooterWidgets(): array
     {
         return [
 
             KommunerMapWidget::make(),
-            LocationMapPickerWidget::class,   // Interactive picker
+        //    LocationMapPickerWidget::class,   // Interactive picker
             SwedenKommunerWidget::class,     // Table with map
         ];
     }

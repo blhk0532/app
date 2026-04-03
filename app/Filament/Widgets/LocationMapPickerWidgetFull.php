@@ -12,9 +12,12 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Collection;
+use Filament\Support\Colors\Color;
+use Livewire\Attributes\On;
 
 class LocationMapPickerWidgetFull extends Widget implements HasForms
 {
@@ -35,6 +38,11 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
     protected array $extraWidgetAttributes = [
         'wire:poll.10s' => 'refreshMaps',
     ];
+
+    protected function getExtraAttributes(): array
+    {
+        return array_merge($this->extraWidgetAttributes, ['class' => 'location-map-picker-widget-full']);
+    }
 
     public function mount(): void
     {
@@ -58,124 +66,155 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
         return $schema
             ->extraAttributes(['class' => 'pb-0 mb-0'])
             ->schema([
-                Grid::make(4)
+                Grid::make(5)
                     ->gridContainer()
-                    ->extraAttributes(['class' => 'gap-4'])
+                    ->extraAttributes(['class' => 'relative', 'style' => 'background-color:transparent;border:none;'])
                     ->schema([
-                        Map::make('location')
-                            ->label('Map')
-                            ->mapControls([
-                                'mapTypeControl' => true,
-                                'scaleControl' => true,
-                                'streetViewControl' => true,
-                                'rotateControl' => true,
-                                'fullscreenControl' => true,
-                                'searchBoxControl' => true,
-                                'zoomControl' => true,
-                            ])
-                            ->height('450px')
-                            ->defaultZoom(8)
-                            ->autocomplete('address_search')
-                            ->autocompleteReverse(true)
-                            ->reverseGeocode([
-                                'street' => '%S %n',
-                                'city' => '%L',
-                                'state' => '%A1',
-                                'zip' => '%z',
-                                'country' => '%c',
-                                //    'lat' => 'lat',
-                                //    'lng' => 'lng',
-                            ])
-                            ->debug(true)
-                            ->defaultLocation([60.1282, 18.6435])
-                            ->draggable(true)
-                            ->clickable(true)
-                            ->geolocate(true)
-                            ->geoJson(function () {
-                                $pins = MapPin::all();
-                                $features = $pins->map(function ($pin) {
-                                    $lat = (float) ($pin->latitude ?? $pin->data['lat'] ?? 0);
-                                    $lng = (float) ($pin->longitude ?? $pin->data['lng'] ?? 0);
+                        Section::make('Select Location')
+                            ->extraAttributes(['class' => 'map-picker-section'])
+                            ->heading(null)
+                            ->schema([
+                                Map::make('location')
+                                    ->label('Map')
+                                    ->mapControls([
+                                        'mapTypeControl' => true,
+                                        'scaleControl' => true,
+                                        'streetViewControl' => true,
+                                        'rotateControl' => true,
+                                        'fullscreenControl' => true,
+                                        'searchBoxControl' => true,
+                                        'zoomControl' => true,
+                                    ])
+                                    ->height('78vh')
+                                    ->defaultZoom(8)
+                                    ->autocomplete('address_search')
+                                    ->autocompleteReverse(true)
+                                    ->reverseGeocode([
+                                        'street' => '%S %n',
+                                        'city' => '%L',
+                                        'state' => '%A1',
+                                        'zip' => '%z',
+                                        'country' => '%c',
+                                        //    'lat' => 'lat',
+                                        //    'lng' => 'lng',
+                                    ])
+                                    ->debug(true)
+                                    ->defaultLocation([60.1282, 18.6435])
+                                    ->draggable(true)
+                                    ->clickable(true)
+                                    ->geolocate(true)
+                                    ->geoJson(function () {
+                                        $pins = MapPin::all();
+                                        $features = $pins->map(function ($pin) {
+                                            $lat = (float) ($pin->latitude ?? $pin->data['lat'] ?? 0);
+                                            $lng = (float) ($pin->longitude ?? $pin->data['lng'] ?? 0);
 
-                                    return [
-                                        'type' => 'Feature',
-                                        'geometry' => [
-                                            'type' => 'Point',
-                                            'coordinates' => [$lng, $lat],
-                                        ],
-                                        'properties' => [
-                                            'name' => $pin->name ?? 'Untitled Pin',
-                                        ],
-                                    ];
-                                });
+                                            return [
+                                                'type' => 'Feature',
+                                                'geometry' => [
+                                                    'type' => 'Point',
+                                                    'coordinates' => [$lng, $lat],
+                                                ],
+                                                'properties' => [
+                                                    'name' => $pin->name ?? 'Untitled Pin',
+                                                ],
+                                            ];
+                                        });
 
-                                return json_encode([
-                                    'type' => 'FeatureCollection',
-                                    'features' => $features,
-                                ]);
-                            })
-                            ->geoJsonVisible(true)
-                            ->geolocateLabel('Get My Location')
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, $set) {
-                                // Optional: logic when map state changes
-                            })
-                            ->required()
+                                        return json_encode([
+                                            'type' => 'FeatureCollection',
+                                            'features' => $features,
+                                        ]);
+                                    })
+                                    ->geoJsonVisible(true)
+                                    ->geolocateLabel('Get My Location')
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, $set) {
+                                        // Optional: logic when map state changes
+                                    })
+                                    ->required()
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(5)
                             ->columnSpanFull(),
-                        TextInput::make('street')
+                        Section::make('Location Details')
                             ->label(' ')
-                            ->hidden()
-                            ->maxLength(255)
-                            ->columnSpan(1)
-                            ->readOnly(),
-                        TextInput::make('zip')
-                            ->label(' ')
-                            ->columnSpan(1)
-                            ->maxLength(50)
-                            ->readOnly(),
-                        TextInput::make('city')
-                            ->label(' ')
-                            ->maxLength(255)
-                            ->columnSpan(1)
-                            ->readOnly(),
-                        TextInput::make('state')
-                            ->label(' ')
-                            ->maxLength(255)
-                            ->columnSpan(1)
-                            ->readOnly(),
-                        //    TextInput::make('latitude')
-                        //        ->label('...')
-                        //        ->maxLength(255)
-                        //        ->columnSpan(1)
-                        //        ->readOnly(),
-                        //    TextInput::make('longitude')
-                        //        ->label('...')
-                        //        ->maxLength(255)
-                        //        ->columnSpan(1)
-                        //        ->readOnly(),
-                        TextInput::make('country')
-                            ->label(' ')
-                            ->maxLength(255)
-                            ->columnSpan(1)
-                            ->readOnly(),
-                        TextInput::make('address_search')
-                            ->label('Sök address eller område')
-                            ->extraAttributes(['class' => 'sok-adress'])
-                            ->placeholder('Search by street, city, or postal code')
-                            ->maxLength(255)
-                            ->columnSpan(2),
+                            ->heading(null)
+                            ->extraAttributes(['class' => 'location-details-section absolute z-10', 'style' => 'background-color:transparent;border:none;top:50px;left:0px;opacity:0.9;'])
+                            ->schema([
 
-                        TextInput::make('pin_name')
-                            ->label('Pin Name / Note')
-                            ->placeholder('Enter a name for this location')
-                            ->columnSpan(1),
-                        ColorPicker::make('pin_color')
-                            ->label('Pin Color')
-                            ->placeholder('Enter a color for this pin')
-                            ->columnSpan(1),
+                                TextInput::make('state')
+                                    ->label(' ')
+                                    ->extraAttributes(['style' => 'background-color:#232326;color:#fff;'])
+                                    ->maxLength(255)
+                                    ->columnSpan(1)
+                                    ->readOnly(),
+                                TextInput::make('city')
+                                    ->label(' ')
+                                    ->extraAttributes(['style' => 'background-color:#232326;color:#fff;'])
+                                    ->maxLength(255)
+                                    ->columnSpan(1)
+                                    ->readOnly(),
+                                                TextInput::make('zip')
+                                    ->label(' ')
+                                    ->extraAttributes(['style' => 'background-color:#232326;color:#fff;'])
+                                    ->columnSpan(1)
+                                    ->maxLength(50)
+                                    ->readOnly(),
+                                TextInput::make('street')
+                                    ->label(' ')
+                                    ->extraAttributes(['style' => 'background-color:#232326;color:#fff;'])
+                                    ->maxLength(255)
+                                    ->columnSpan(1)
+                                    ->readOnly(),
+                                //    TextInput::make('latitude')
+                                //        ->label('...')
+                                //        ->maxLength(255)
+                                //        ->columnSpan(1)
+                                //        ->readOnly(),
+                                //    TextInput::make('longitude')
+                                //        ->label('...')
+                                //        ->maxLength(255)
+                                //        ->columnSpan(1)
+                                //        ->readOnly(),
+                                // TextInput::make('country')
+                                //     ->label(' ')
+                                //     ->hidden()
+                                //     ->maxLength(255)
+                                //     ->columnSpan(1)
+                                //     ->readOnly(),
+                            ]),
+
+                        Section::make('Pin Location')
+                            ->label(' ')
+                            ->heading(null)
+                            ->extraAttributes(['class' => 'pin-location-section absolute z-10', 'style' => 'background-color:transparent;border:none;bottom:20px;left:0px;opacity:1;'])
+                            ->schema([
+
+
+                                ColorPicker::make('pin_color')
+                                    ->label('Pin Color')
+                                    ->placeholder('Color')
+                                    ->extraAttributes(['style' => 'background-color:#232326;color:#fff;'])
+                                    ->columnSpan(1),
+                                TextInput::make('pin_name')
+                                    ->label('Pin Name / Note')
+                                    ->placeholder('Name')
+                                    ->extraAttributes(['style' => 'background-color:#232326;color:#fff;'])
+                                    ->columnSpan(1),
+                                TextInput::make('address_search')
+                                    ->label('Sök address eller område')
+                                    ->placeholder('Search')
+                                    ->extraAttributes(['style' => 'background-color:#232326;color:#fff;margin-right: 120px;'])
+                                    ->columnSpan(2)
+                                    ->maxLength(255),
+
+                            ])
+                            ->columns(2)
+
                     ])
-                    ->columns(4),
-
+                    ->columns(5)
+                    ->columnSpanFull()
             ])
             ->statePath('data');
     }
@@ -188,6 +227,21 @@ class LocationMapPickerWidgetFull extends Widget implements HasForms
     protected function loadMapPins(): Collection
     {
         return MapPin::all();
+    }
+
+    public function getMarkerColor(int $personerCount): array
+    {
+        if ($personerCount > 100000) {
+            return Color::Red;
+        }
+        if ($personerCount > 50000) {
+            return Color::Orange;
+        }
+        if ($personerCount > 20000) {
+            return Color::Gray;
+        }
+
+        return Color::Blue;
     }
 
     public function savePin(): void

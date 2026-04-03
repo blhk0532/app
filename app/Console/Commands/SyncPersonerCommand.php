@@ -4,17 +4,42 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Models\Person;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-#[Signature('personer:sync {--fresh : Truncate the personer table before syncing} {--table= : Only sync one source table}')]
-#[Description('Merge ratsit_data, merinfo_data, merinfos, hitta_data and hitta_se into the personer table without duplicates.')]
+#[Signature('personer:sync {--fresh : Disabled safety option (no truncation)} {--table= : Only sync one source table}')]
+#[Description('Merge ratsit_data, merinfo_data, merinfos, hitta_data and hitta_se into sweden_personer without duplicates.')]
 class SyncPersonerCommand extends Command
 {
     private const CHUNK_SIZE = 500;
+
+    private const TARGET_TABLE = 'sweden_personer';
+
+    /** @var array<int, string> */
+    private const TARGET_COLUMNS = [
+        'personnummer',
+        'personnamn',
+        'fornamn',
+        'efternamn',
+        'alder',
+        'kon',
+        'civilstand',
+        'adress',
+        'postnummer',
+        'postort',
+        'kommun',
+        'adressandring',
+        'longitude',
+        'latitude',
+        'telefonnummer',
+        'bostadstyp',
+        'bostadspris',
+        'agandeform',
+        'boarea',
+        'byggar',
+    ];
 
     /** @var array<string, string> */
     private const SOURCE_TABLES = [
@@ -36,8 +61,9 @@ class SyncPersonerCommand extends Command
         }
 
         if ($this->option('fresh')) {
-            DB::table('personer')->truncate();
-            $this->info('Truncated personer table.');
+            $this->error('The --fresh option is disabled for safety to prevent data loss in sweden_personer.');
+
+            return self::FAILURE;
         }
 
         $processors = $table !== null
@@ -48,8 +74,8 @@ class SyncPersonerCommand extends Command
             $this->$method();
         }
 
-        $total = Person::count();
-        $this->info("Sync complete. Total records in personer: {$total}");
+        $total = DB::table(self::TARGET_TABLE)->count();
+        $this->info("Sync complete. Total records in ".self::TARGET_TABLE.": {$total}");
 
         return self::SUCCESS;
     }
@@ -79,13 +105,10 @@ class SyncPersonerCommand extends Command
                     'alder' => $row->alder ?? null,
                     'kon' => $row->kon ?? null,
                     'civilstand' => $row->civilstand ?? null,
-                    'epost_adress' => $row->epost_adress ?? null,
-                    'gatuadress' => $row->gatuadress ?? null,
+                    'adress' => $row->adress ?? $row->gatuadress ?? null,
                     'postnummer' => $row->postnummer ?? null,
                     'postort' => $row->postort ?? null,
-                    'forsamling' => $row->forsamling ?? null,
                     'kommun' => $row->kommun ?? null,
-                    'lan' => $row->lan ?? null,
                     'adressandring' => $row->adressandring ?? null,
                     'longitude' => $row->longitude ?? null,
                     'latitud' => $row->latitud ?? null,
@@ -94,13 +117,7 @@ class SyncPersonerCommand extends Command
                     'agandeform' => $row->agandeform ?? null,
                     'boarea' => $row->boarea ?? null,
                     'byggar' => $row->byggar ?? null,
-                    'fastighet' => $row->fastighet ?? null,
-                    'foretag' => $row->foretag ?? null,
-                    'grannar' => $row->grannar ?? null,
-                    'fordon' => $row->fordon ?? null,
-                    'hundar' => $row->hundar ?? null,
-                    'bolagsengagemang' => $row->bolagsengagemang ?? null,
-                ], 'ratsit_data');
+                ]);
 
                 $bar->advance();
             }
@@ -131,13 +148,13 @@ class SyncPersonerCommand extends Command
                     'fornamn' => $row->givenNameOrFirstName ?? null,
                     'alder' => $row->alder ?? null,
                     'kon' => $row->kon ?? null,
-                    'gatuadress' => $row->gatuadress ?? null,
+                    'adress' => $row->adress ?? $row->gatuadress ?? null,
                     'postnummer' => $row->postnummer ?? null,
                     'postort' => $row->postort ?? null,
                     'telefonnummer' => $phones,
                     'bostadstyp' => $row->bostadstyp ?? null,
                     'bostadspris' => $row->bostadspris ?? null,
-                ], 'merinfo_data');
+                ]);
 
                 $bar->advance();
             }
@@ -185,7 +202,7 @@ class SyncPersonerCommand extends Command
                     'postnummer' => $postnummer,
                     'postort' => $postort,
                     'telefonnummer' => $phones,
-                ], 'merinfos');
+                ]);
 
                 $bar->advance();
             }
@@ -220,7 +237,7 @@ class SyncPersonerCommand extends Command
                     'telefonnummer' => $phones,
                     'bostadstyp' => $row->bostadstyp ?? null,
                     'bostadspris' => $row->bostadspris ?? null,
-                ], 'hitta_data');
+                ]);
 
                 $bar->advance();
             }
@@ -254,7 +271,7 @@ class SyncPersonerCommand extends Command
                     'telefonnummer' => $phones,
                     'bostadstyp' => $row->bostadstyp ?? null,
                     'bostadspris' => $row->bostadspris ?? null,
-                ], 'hitta_se');
+                ]);
 
                 $bar->advance();
             }
@@ -272,11 +289,13 @@ class SyncPersonerCommand extends Command
      *
      * @param  array<string, mixed>  $data
      */
-    private function upsertPerson(array $data, string $sourceTable): void
+    private function upsertPerson(array $data): void
     {
         $pin = $data['personnummer'] ?? null;
+        $data = $this->normalizeForTarget($data);
+
         $name = $this->normalize($data['personnamn'] ?? null);
-        $address = $this->normalize($data['gatuadress'] ?? null);
+        $address = $this->normalize($data['adress'] ?? null);
         $zip = trim((string) ($data['postnummer'] ?? ''));
 
         if (empty($name) && empty($pin)) {
@@ -286,70 +305,90 @@ class SyncPersonerCommand extends Command
         $existing = null;
 
         if ($pin) {
-            $existing = Person::where('personnummer', $pin)->first();
+            $existing = DB::table(self::TARGET_TABLE)
+                ->where('personnummer', $pin)
+                ->first();
         }
 
         if (! $existing && $name && $address && $zip) {
-            $existing = Person::whereRaw('LOWER(TRIM(personnamn)) = ?', [$name])
-                ->whereRaw('LOWER(TRIM(gatuadress)) = ?', [$address])
+            $existing = DB::table(self::TARGET_TABLE)
+                ->whereRaw('LOWER(TRIM(personnamn)) = ?', [$name])
+                ->whereRaw('LOWER(TRIM(adress)) = ?', [$address])
                 ->where('postnummer', $zip)
                 ->first();
         }
 
         if ($existing) {
-            $this->mergeIntoExisting($existing, $data, $sourceTable);
+            $this->mergeIntoExisting($existing, $data);
         } else {
-            $this->createNew($data, $sourceTable);
+            $this->createNew($data);
         }
     }
 
     /** @param array<string, mixed> $data */
-    private function createNew(array $data, string $sourceTable): void
+    private function createNew(array $data): void
     {
-        $data['sources'] = [$sourceTable];
-        $data['telefonnummer'] = $data['telefonnummer'] ?: null;
-        Person::create($data);
+        $phones = $data['telefonnummer'] ?? [];
+        $data['telefonnummer'] = $phones !== [] ? json_encode($phones, JSON_UNESCAPED_UNICODE) : null;
+        DB::table(self::TARGET_TABLE)->insert($data);
     }
 
     /** @param array<string, mixed> $data */
-    private function mergeIntoExisting(Person $person, array $data, string $sourceTable): void
+    private function mergeIntoExisting(object $person, array $data): void
     {
-        $changed = false;
+        $updates = [];
 
         foreach ($data as $column => $value) {
             if ($column === 'telefonnummer') {
                 continue;
             }
 
-            if (blank($person->$column) && filled($value)) {
-                $person->$column = $value;
-                $changed = true;
+            if (blank($person->$column ?? null) && filled($value)) {
+                $updates[$column] = $value;
             }
         }
 
         // Merge phone arrays
         $merged = $this->mergePhones(
-            $person->telefonnummer ?? [],
+            $this->decodeJson($person->telefonnummer ?? null),
             $data['telefonnummer'] ?? []
         );
 
-        if ($merged !== ($person->telefonnummer ?? [])) {
-            $person->telefonnummer = $merged ?: null;
-            $changed = true;
+        if ($merged !== $this->decodeJson($person->telefonnummer ?? null)) {
+            $updates['telefonnummer'] = $merged !== [] ? json_encode($merged, JSON_UNESCAPED_UNICODE) : null;
         }
 
-        // Track source
-        $sources = $person->sources ?? [];
+        if ($updates !== []) {
+            DB::table(self::TARGET_TABLE)
+                ->where('id', $person->id)
+                ->update($updates);
+        }
+    }
 
-        if (! in_array($sourceTable, $sources, true)) {
-            $sources[] = $sourceTable;
-            $person->sources = $sources;
-            $changed = true;
+    /**
+     * Map source payload keys to sweden_personer columns and drop unknown keys.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function normalizeForTarget(array $data): array
+    {
+        if (! isset($data['adress']) && isset($data['gatuadress'])) {
+            $data['adress'] = $data['gatuadress'];
         }
 
-        if ($changed) {
-            $person->save();
+        if (! isset($data['latitude']) && isset($data['latitud'])) {
+            $data['latitude'] = $data['latitud'];
         }
+
+        if (array_key_exists('alder', $data)) {
+            $digits = preg_replace('/\D+/', '', (string) $data['alder']);
+            $data['alder'] = $digits !== '' ? (int) $digits : null;
+        }
+
+        unset($data['gatuadress'], $data['latitud'], $data['sources']);
+
+        return array_intersect_key($data, array_flip(self::TARGET_COLUMNS));
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────

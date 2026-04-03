@@ -27,3 +27,19 @@
 .fi-fo-field-label-col{
     display:none!important;
 }
+span.fi-fo-field-label-content{
+    display:none!important;
+}
+div.fi-fo-field-label-col{
+    display:none!important;
+}
+.map-picker-location-widget .location-map-picker-form-0{
+    margin: 0px!important;
+  padding: 0px!important;
+}
+
+
+.filament-google-maps-widget-table .fi-section-content{
+    padding: 0px!important;
+    margin: 0px!important;
+}

@@ -24,6 +24,7 @@ use UnitEnum;
 use Wallacemartinss\FilamentIconPicker\Enums\BootstrapIcons;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\Enums\Tabler;
+use App\Filament\Geo\Widgets\MapPinsTableWidget;
 
 class Dashboard extends BaseDashboard
 {
@@ -119,7 +120,8 @@ class Dashboard extends BaseDashboard
             //    LatestOrders::class,
             // \App\Filament\Widgets\MyRinglistaWidget::class,
             //    WeatherWidget::class,
-            GeoMapWidget::class,
+            // ////////////////////////////////////////7    GeoMapWidget::class,
+            MapPinsTableWidget::class,
         ];
     }
 

@@ -22,6 +22,8 @@ class KommunerMapWidget2 extends MapWidget
 
     protected int $mapHeight = 660;
 
+    protected string $view = 'filament.widgets.map-widget';
+
     #[On('show-postorter')]
     public function handleShowPostorter(string $kommun): void
     {
@@ -117,4 +119,5 @@ class KommunerMapWidget2 extends MapWidget
 
         return Color::Gray;
     }
+
 }
