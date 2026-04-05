@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6232e9d16cbca685aa22fc2dffe02e7f",
+    "content-hash": "bcc60c6955c274bc9f7bd824e0cf9943",
     "packages": [
+        {
+            "name": "abather/relation-components",
+            "version": "v0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Abather/relation-components.git",
+                "reference": "2981e6b295b92f60b3ea3b439b292624a433d0ef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Abather/relation-components/zipball/2981e6b295b92f60b3ea3b439b292624a433d0ef",
+                "reference": "2981e6b295b92f60b3ea3b439b292624a433d0ef",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^4.0|^5.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Abather\\RelationComponents\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "column and entry for relations",
+            "homepage": "https://github.com/abather/relation-components",
+            "keywords": [
+                "TextEntry",
+                "belongsTo",
+                "filament",
+                "laravel",
+                "morphTo",
+                "relation",
+                "textColumn"
+            ],
+            "support": {
+                "issues": "https://github.com/Abather/relation-components/issues",
+                "source": "https://github.com/Abather/relation-components/tree/v0.2"
+            },
+            "time": "2026-03-31T18:18:21+00:00"
+        },
         {
             "name": "achyutn/filament-log-viewer",
             "version": "v2.1.1",
@@ -3557,6 +3605,71 @@
             "time": "2026-03-21T02:08:12+00:00"
         },
         {
+            "name": "devletes/filament-progress-bar",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/devletes/filament-progress-bar.git",
+                "reference": "3bd30bd18a9c6f972ab4bb061a38d1b69ce55227"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/devletes/filament-progress-bar/zipball/3bd30bd18a9c6f972ab4bb061a38d1b69ce55227",
+                "reference": "3bd30bd18a9c6f972ab4bb061a38d1b69ce55227",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.18",
+                "orchestra/testbench": "^9.0|^10.0",
+                "pestphp/pest": "^3.8",
+                "pestphp/pest-plugin-laravel": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Devletes\\FilamentProgressBar\\ProgressBarServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Devletes\\FilamentProgressBar\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Devletes",
+                    "email": "packages@devletes.com"
+                }
+            ],
+            "description": "Reusable progress bar components for Filament 5 tables and infolists.",
+            "homepage": "https://github.com/devletes/filament-progress-bar",
+            "keywords": [
+                "filament",
+                "filament-plugin",
+                "infolist",
+                "laravel",
+                "progress",
+                "progress-bar",
+                "table-column"
+            ],
+            "support": {
+                "issues": "https://github.com/devletes/filament-progress-bar/issues",
+                "source": "https://github.com/devletes/filament-progress-bar"
+            },
+            "time": "2026-04-01T01:55:36+00:00"
+        },
+        {
             "name": "devonab/filament-easy-footer",
             "version": "dev-main",
             "dist": {
@@ -6063,6 +6176,72 @@
                 "source": "https://github.com/geocoder-php/google-maps-provider/tree/4.8.0"
             },
             "time": "2025-04-15T13:24:32+00:00"
+        },
+        {
+            "name": "gheith3/filament-relation-pages",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gheith3/filament-relation-pages.git",
+                "reference": "3d5c7249f5e2ccc63f36109471d030239e1e35aa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gheith3/filament-relation-pages/zipball/3d5c7249f5e2ccc63f36109471d030239e1e35aa",
+                "reference": "3d5c7249f5e2ccc63f36109471d030239e1e35aa",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^4.0|^5.0",
+                "illuminate/contracts": "^12.0|^13.0",
+                "illuminate/support": "^12.0|^13.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^10.0|^11.0",
+                "pestphp/pest": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "gheith3\\FilamentRelationPages\\RelationPagesServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "gheith3\\FilamentRelationPages\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gheith",
+                    "email": "alrawahi.gheith@gmail.com"
+                }
+            ],
+            "description": "A Filament plugin to add custom free-form pages as tabs alongside Relation Managers",
+            "homepage": "https://github.com/gheith3/filament-relation-pages",
+            "keywords": [
+                "custom-tab",
+                "filament",
+                "filament-plugin",
+                "filamentphp",
+                "laravel",
+                "panel",
+                "relation-manager"
+            ],
+            "support": {
+                "issues": "https://github.com/gheith3/filament-relation-pages/issues",
+                "source": "https://github.com/gheith3/filament-relation-pages"
+            },
+            "time": "2026-04-04T09:50:22+00:00"
         },
         {
             "name": "giggsey/libphonenumber-for-php-lite",
@@ -27012,6 +27191,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "abather/relation-components": 20,
         "achyutn/filament-log-viewer": 20,
         "adultdate/filament-booking": 20,
         "adultdate/filament-wirechat": 20,
@@ -27040,6 +27220,7 @@
         "coringawc/filament-single-record-resource": 20,
         "deldius/filament-user-field": 20,
         "devletes/filament-pinnable-navigation": 20,
+        "devletes/filament-progress-bar": 20,
         "devonab/filament-easy-footer": 20,
         "devtical/filament-sanctum": 20,
         "eduardoribeirodev/filament-leaflet": 20,
@@ -27048,6 +27229,7 @@
         "fahiem/filament-pinpoint": 20,
         "filamentphp/advanced-export": 20,
         "flowframe/laravel-trend": 20,
+        "gheith3/filament-relation-pages": 20,
         "guava/filament-icon-select-column": 20,
         "guzzlehttp/guzzle": 20,
         "hammadzafar05/mobile-bottom-nav": 20,

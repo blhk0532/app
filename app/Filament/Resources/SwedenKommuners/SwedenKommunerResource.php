@@ -31,7 +31,7 @@ class SwedenKommunerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
- protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {
@@ -51,7 +51,12 @@ class SwedenKommunerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+
+            RelationPages\KommunPostorterPage::class,
+            RelationPages\KommunPostnummerPage::class,
+            RelationPages\KommunGatorPage::class,
+            RelationPages\KommunAdresserPage::class,
+            RelationPages\KommunPersonerPage::class,
         ];
     }
 

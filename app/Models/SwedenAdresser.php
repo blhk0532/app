@@ -13,7 +13,7 @@ class SwedenAdresser extends Model
 
     /** @var array<int, string> */
     protected $fillable = [
-        'gata', 'post_nummer', 'post_ort', 'kommun', 'lan', 'latitude', 'longitude', 'personer', 'foretag',
+        'adress', 'postnummer', 'postort', 'kommun', 'lan', 'latitude', 'longitude', 'personer', 'företag', 'adresser', 'ratsit_link',
     ];
 
     /**

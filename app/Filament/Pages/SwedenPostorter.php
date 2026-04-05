@@ -38,7 +38,8 @@ class SwedenPostorter extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-
+            KommunerMapWidget2::make(),
+            KommunerMapWidget2Db::make(),
         ];
     }
 
@@ -46,16 +47,23 @@ class SwedenPostorter extends Page
     {
         return [
 
-            KommunerMapWidget2::make(),
-            KommunerMapWidget2Db::make(),
-            //    LocationMapPickerWidget::class,   // Interactive picker
-            SwedenPostorterWidget::class,     // Table with map
+
+
+
+            SwedenPostorterWidget::class,
+
+
         ];
     }
 
     public function getFooterWidgetsColumns(): int|array
     {
         return 1;
+    }
+
+        public function getHeaderWidgetsColumns(): int|array
+    {
+        return 2;
     }
 
     public static function getNavigationBadge(): ?string

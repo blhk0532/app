@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\SwedenPersoners\Tables;
 
 use App\Actions\TransferSwedenPersonerToRingaDataAction;
+use App\Actions\UpdateSwedenPersonerAction;
 use App\Exports\SwedenPersonerExporter;
 use App\Models\SwedenPersoner;
 use EightyNine\ExcelImport\ExcelImportAction;
@@ -297,8 +298,31 @@ class SwedenPersonersTable
                                 ->send();
                         }),
                 ]),
+                BulkAction::make('refreshTable')
+                    ->label('Refresh')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->modalHeading('Refresh Database Counts')
+                    ->modalDescription('This will check and update database counts for the selected records. This may take a few moments.')
+                    ->modalSubmitActionLabel('Refresh Counts')
+                    ->deselectRecordsAfterCompletion()
+                    ->action(function (Collection $records): void {
+                        $records = $records->filter(fn ($record) => $record instanceof SwedenPersoner);
+                        $count = 0;
+                        foreach ($records as $record) {
+                            UpdateSwedenPersonerAction::execute($record, false);
+                            $count++;
+                        }
+
+                        Notification::make()
+                            ->success()
+                            ->title('Database Counts Updated')
+                            ->body("Successfully refreshed database counts for {$count} post nummer(s).")
+                            ->send();
+                    }),
                 Action::make('create')
-                    ->label('Skapa Ny Person')
+                    ->label('Create')
                     ->color('')
                     ->icon('heroicon-o-user-plus'),
                 ExcelImportAction::make()

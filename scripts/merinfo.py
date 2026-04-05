@@ -537,6 +537,13 @@ async def process_postnummer(page, postnummer, conn):
         except Exception as e:
             print(f"    [NET ERR] {e}")
         
+        # Send results after each page
+        if all_results:
+            page_data = {"results": all_results}
+            print(f"  Sending {len(all_results)} result groups to API...")
+            await send_to_bulk_api(page, page_data)
+            all_results = []
+        
         # Save all results to one file at the end
         if all_results:
             final_data = {"results": all_results}
@@ -544,8 +551,8 @@ async def process_postnummer(page, postnummer, conn):
             with open(filename, "w") as f:
                 json.dump(final_data, f, ensure_ascii=False, indent=2)
             print(f"  Saved all {len(all_results)} result groups to {filename}")
-            
-            await send_to_bulk_api(page, final_data)
+        else:
+            final_data = {"results": []}
         
         # Check next page
         try:

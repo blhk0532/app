@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "abather/relation-components": "@dev",
         "achyutn/filament-log-viewer": "@dev",
         "adultdate/filament-booking": "@dev",
         "adultdate/filament-wirechat": "@dev",
@@ -35,6 +36,7 @@
         "coringawc/filament-single-record-resource": "@dev",
         "deldius/filament-user-field": "@dev",
         "devletes/filament-pinnable-navigation": "@dev",
+        "devletes/filament-progress-bar": "@dev",
         "devonab/filament-easy-footer": "@dev",
         "devtical/filament-sanctum": "@dev",
         "eduardoribeirodev/filament-leaflet": "@dev",
@@ -45,6 +47,7 @@
         "filamentphp/advanced-export": "@dev",
         "finity-labs/fin-mail": "*",
         "flowframe/laravel-trend": "@dev",
+        "gheith3/filament-relation-pages": "@dev",
         "guava/filament-icon-select-column": "@dev",
         "guzzlehttp/guzzle": "@dev",
         "hammadzafar05/mobile-bottom-nav": "@dev",

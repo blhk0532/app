@@ -21,7 +21,7 @@ class ViewSwedenKommuner extends ViewRecord
         ];
     }
 
-    protected function getHeaderWidgets(): array
+    protected function getFooterWidgets(): array
     {
         return [
             KommunViewMapWidget::class,

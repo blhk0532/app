@@ -44,26 +44,17 @@ class KommunerMapWidget2Db extends MapWidget
     protected function getKommunerMarkers(): array
     {
         // Count actual records per kommun from sweden_personer,
-        // join sweden_postorter for a representative lat/lon per kommun.
-        // MySQL-compatible: use a subquery that picks one row per kommun.
-        $rows = DB::table('sweden_personer as sp')
-            ->join(
-                DB::raw('(SELECT po1.kommun, po1.latitude, po1.longitude
-                           FROM sweden_postorter po1
-                           INNER JOIN (
-                               SELECT kommun, MIN(id) AS min_id
-                               FROM sweden_postorter
-                               WHERE latitude IS NOT NULL AND longitude IS NOT NULL
-                               GROUP BY kommun
-                           ) AS po2 ON po1.id = po2.min_id) as po'),
-                'sp.kommun',
-                '=',
-                'po.kommun'
-            )
-            ->whereNotNull('po.latitude')
-            ->whereNotNull('po.longitude')
-            ->groupBy('sp.kommun', 'po.latitude', 'po.longitude')
-            ->selectRaw('sp.kommun, po.latitude, po.longitude, COUNT(sp.id) as total')
+        // use sweden_kommuner for canonical lat/lon per kommun.
+        $personCounts = DB::table('sweden_personer')
+            ->select('kommun')
+            ->selectRaw('COUNT(id) as total')
+            ->groupBy('kommun');
+
+        $rows = DB::table('sweden_kommuner as sk')
+            ->joinSub($personCounts, 'sp_counts', 'sk.kommun', '=', 'sp_counts.kommun')
+            ->whereNotNull('sk.latitude')
+            ->whereNotNull('sk.longitude')
+            ->select('sk.kommun', 'sk.latitude', 'sk.longitude', 'sp_counts.total')
             ->get();
 
         $markers = [];

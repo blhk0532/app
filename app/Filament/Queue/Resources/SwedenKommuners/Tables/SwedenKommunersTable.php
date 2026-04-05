@@ -1,8 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Queue\Resources\SwedenKommuners\Tables;
 
 use App\Actions\ImportSwedenKommunerCountsFromRatsit;
+use App\Jobs\RunAdresserRatsitJob;
+use App\Jobs\RunGatorRatsitJob;
+use App\Jobs\RunPersonerRatsitJob;
+use App\Models\SwedenPersoner;
+use Devletes\FilamentProgressBar\Tables\Columns\ProgressBarColumn;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -31,7 +38,40 @@ class SwedenKommunersTable
                     ->searchable(),
                 TextColumn::make('personer')
                     ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                ProgressBarColumn::make('personer_count')
+                    ->label('DB Progress (Persons)')
+                    ->maxValue(fn ($record) => $record->personer ?: 1)
+                    ->showProgressValue()
+                    ->showPercentage()
+                    ->textPosition('inside')
+                    ->size('sm')
                     ->sortable(),
+                TextColumn::make('sweden_postorter_count')
+                    ->counts('swedenPostorter')
+                    ->label('Postorter')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('sweden_postnummer_count')
+                    ->counts('swedenPostnummer')
+                    ->label('Postnummer')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('sweden_adresser_count')
+                    ->counts('swedenAdresser')
+                    ->label('Adresser')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('sweden_gator_count')
+                    ->counts('swedenGator')
+                    ->label('Gator')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('foretag')
                     ->numeric()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -89,10 +129,118 @@ class SwedenKommunersTable
                             }
                         })
                         ->deselectRecordsAfterCompletion(),
+                    BulkAction::make('runGatorRatsit')
+                        ->label('Run Gator Ratsit')
+                        ->icon('heroicon-o-map')
+                        ->color('info')
+                        ->requiresConfirmation()
+                        ->modalHeading('Queue Gator Ratsit')
+                        ->modalDescription('This will queue sweden_gator_ratsit.mjs --kommun for each selected kommun. Jobs will run asynchronously via the queue.')
+                        ->action(function (Collection $records): void {
+                            $queued = 0;
+
+                            foreach ($records as $record) {
+                                if (empty($record->kommun)) {
+                                    continue;
+                                }
+
+                                dispatch(new RunGatorRatsitJob($record->kommun));
+                                $queued++;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Gator Ratsit queued')
+                                ->body("Queued {$queued} job(s).")
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
+                    BulkAction::make('runAdresserRatsit')
+                        ->label('Run Adresser Ratsit')
+                        ->icon('heroicon-o-home')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Queue Adresser Ratsit')
+                        ->modalDescription('This will queue sweden_adresser_ratsit.mjs --kommun for each selected kommun. Jobs will run asynchronously via the queue.')
+                        ->action(function (Collection $records): void {
+                            $queued = 0;
+
+                            foreach ($records as $record) {
+                                if (empty($record->kommun)) {
+                                    continue;
+                                }
+
+                                dispatch(new RunAdresserRatsitJob($record->kommun));
+                                $queued++;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Adresser Ratsit queued')
+                                ->body("Queued {$queued} job(s).")
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
+                    BulkAction::make('updatePersonerCount')
+                        ->label('Update DB Persons Count')
+                        ->icon('heroicon-o-calculator')
+                        ->color('gray')
+                        ->requiresConfirmation()
+                        ->modalHeading('Update DB Persons Count')
+                        ->modalDescription('This counts actual records in sweden_personer for each selected kommun and saves the total to personer_count.')
+                        ->action(function (Collection $records): void {
+                            $updated = 0;
+
+                            foreach ($records as $record) {
+                                if (empty($record->kommun)) {
+                                    continue;
+                                }
+
+                                $count = SwedenPersoner::where('kommun', $record->kommun)->count();
+                                $record->update(['personer_count' => $count]);
+                                $updated++;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('DB Persons Count Updated')
+                                ->body("Updated {$updated} kommun(s).")
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
+                    BulkAction::make('runPersonerRatsit')
+                        ->label('Run Personer Ratsit')
+                        ->icon('heroicon-o-users')
+                        ->color('primary')
+                        ->requiresConfirmation()
+                        ->modalHeading('Queue Personer Ratsit')
+                        ->modalDescription('This will queue sweden_personer_ratsit.mjs --kommun for each selected kommun. Jobs will run asynchronously via the queue.')
+                        ->action(function (Collection $records): void {
+                            $queued = 0;
+
+                            foreach ($records as $record) {
+                                if (empty($record->kommun)) {
+                                    continue;
+                                }
+
+                                dispatch(new RunPersonerRatsitJob($record->kommun));
+                                $queued++;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Personer Ratsit queued')
+                                ->body("Queued {$queued} job(s).")
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->paginated([10, 25, 50, 100, 200, 500])
+            ->defaultPaginationPageOption(25);
     }
 }

@@ -220,6 +220,51 @@ class SwedenPostnummersTable
                         })
                         ->deselectRecordsAfterCompletion(),
                 ]),
+                BulkAction::make('refreshTable')
+                    ->label('Refresh')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->modalHeading('Refresh Database Counts')
+                    ->modalDescription('This will check and update database counts for the selected records. This may take a few moments.')
+                    ->modalSubmitActionLabel('Refresh Counts')
+                    ->deselectRecordsAfterCompletion()
+                    ->action(function (Collection $records): void {
+                        $updated = 0;
+
+                        foreach ($records as $record) {
+                            $postNummer = (string) $record->post_nummer;
+                            $normalizedPostNummer = $record->csv_id;
+
+                            $hittaCount = HittaData::query()
+                                ->where('postnummer', $postNummer)
+                                ->count();
+
+                            $merinfoCount = MerinfoData::query()
+                                ->where('postnummer', $postNummer)
+                                ->count();
+
+                            $ratsitCount = RatsitData::query()
+                                ->where('postnummer', $postNummer)
+                                ->count();
+
+                            SwedenPostnummer::query()
+                                ->whereKey($record->getKey())
+                                ->update([
+                                    'personer_hitta_saved' => $hittaCount,
+                                    'personer_merinfo_saved' => $merinfoCount,
+                                    'personer_ratsit_saved' => $ratsitCount,
+                                ]);
+
+                            $updated++;
+                        }
+
+                        Notification::make()
+                            ->success()
+                            ->title('DB Counts Updated')
+                            ->body("Updated saved counts for {$updated} record(s).")
+                            ->send();
+                    }),
                 Action::make('importFromFile')
                     ->label('Import')
                     ->icon('heroicon-o-document-arrow-down')

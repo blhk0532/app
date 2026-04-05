@@ -16,7 +16,8 @@ class SwedenKommunerInfolist
             ->components([
                 Group::make()
                     ->schema([
-                        Section::make('Kommun Information')
+                        Section::make()
+                            ->heading(null)
                             ->schema([
                                 TextEntry::make('kommun'),
                                 TextEntry::make('lan'),

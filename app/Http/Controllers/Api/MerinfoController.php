@@ -137,8 +137,8 @@ class MerinfoController extends Controller
      */
     public function bulkStore(Request $request): JsonResponse
     {
-        set_time_limit(300);
-        
+        set_time_limit(180);
+
         Log::info('MerinfoController bulkStore called', [
             'ip' => $request->ip(),
             'user_agent' => $request->header('User-Agent'),
@@ -259,10 +259,10 @@ class MerinfoController extends Controller
                     }
                 }
 
-                if ($street) {
-                    $isTelefon = isset($itemData['is_telefon']) ? (bool) $itemData['is_telefon'] : ! empty($phoneRaw);
-                    $isHus = isset($itemData['is_hus']) ? (bool) $itemData['is_hus'] : false;
+                $isTelefon = isset($itemData['is_telefon']) ? (bool) $itemData['is_telefon'] : ! empty($phoneRaw);
+                $isHus = isset($itemData['is_hus']) ? (bool) $itemData['is_hus'] : false;
 
+                if ($street) {
                     Log::info('MerinfoController saving to merinfo_data', [
                         'item_index' => $itemIndex,
                         'short_uuid' => $itemData['short_uuid'] ?? null,
@@ -313,27 +313,30 @@ class MerinfoController extends Controller
                     ]);
 
                     $merinfoData->wasRecentlyCreated ? $merinfoDataCreated++ : $merinfoDataUpdated++;
+                }
 
-                    $swedenSyncResult = $this->syncSwedenPersonerFromMerinfo(
-                        itemData: $itemData,
-                        street: $street,
-                        zipCode: $zipCode,
-                        city: $city,
-                        phoneRaw: $phoneRaw,
-                        phoneNumbers: $phoneNumbers,
-                        age: $age,
-                        personalNumber: $personalNumber,
-                        isTelefon: $isTelefon,
-                        isHus: $isHus,
-                    );
+                // Always sync to sweden_personer: updates existing records matched by personnummer
+                // or merinfo_link even when there is no street address; also inserts new records
+                // when a full address is available.
+                $swedenSyncResult = $this->syncSwedenPersonerFromMerinfo(
+                    itemData: $itemData,
+                    street: $street,
+                    zipCode: $zipCode,
+                    city: $city,
+                    phoneRaw: $phoneRaw,
+                    phoneNumbers: $phoneNumbers,
+                    age: $age,
+                    personalNumber: $personalNumber,
+                    isTelefon: $isTelefon,
+                    isHus: $isHus,
+                );
 
-                    if (($swedenSyncResult['created'] ?? false) === true) {
-                        $swedenPersonerCreated++;
-                    }
+                if (($swedenSyncResult['created'] ?? false) === true) {
+                    $swedenPersonerCreated++;
+                }
 
-                    if (($swedenSyncResult['updated'] ?? false) === true) {
-                        $swedenPersonerUpdated++;
-                    }
+                if (($swedenSyncResult['updated'] ?? false) === true) {
+                    $swedenPersonerUpdated++;
                 }
             } catch (Exception $e) {
                 $failed++;
