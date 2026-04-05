@@ -137,6 +137,8 @@ class MerinfoController extends Controller
      */
     public function bulkStore(Request $request): JsonResponse
     {
+        set_time_limit(300);
+        
         Log::info('MerinfoController bulkStore called', [
             'ip' => $request->ip(),
             'user_agent' => $request->header('User-Agent'),

@@ -72,7 +72,7 @@ div.location-map-picker-form-0{
                     icon="heroicon-o-map-pin"
                     class="spara-pin-knapp absolute"
                     style="position: absolute;
-  left: 410px;
+  left: 450px;
   bottom: 70px;
   z-index: 100;"
                 >

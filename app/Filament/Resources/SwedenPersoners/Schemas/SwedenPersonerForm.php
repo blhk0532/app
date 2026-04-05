@@ -51,6 +51,8 @@ class SwedenPersonerForm
                                     ->label('Postort'),
                                 TextInput::make('kommun')
                                     ->label('Kommun'),
+                                TextInput::make('lan')
+                                    ->label('Län'),
                                 TextInput::make('adressandring')
                                     ->label('Adressändring'),
                             ])

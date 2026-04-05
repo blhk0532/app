@@ -12,7 +12,6 @@ use App\Filament\Pages\SwedenKommuner;
 use App\Filament\Pages\SwedenPostnummer;
 use App\Filament\Pages\SwedenPostorter;
 use App\Filament\Widgets\LocationMapPickerWidgetFull;
-use App\Filament\Widgets\SwedenMapWidget;
 use App\Http\Middleware\FilamentPanelAccess;
 use App\Http\Middleware\FilamentResourceAccess;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
@@ -59,6 +58,7 @@ class GeoPanelProvider extends PanelProvider
             ->revealablePasswords(true)
             ->passwordReset()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->discoverResources(in: app_path('Filament/Geo/Resources'), for: 'App\Filament\Geo\Resources')
             //    ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,

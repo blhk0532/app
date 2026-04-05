@@ -20,6 +20,7 @@ class SwedenPersoner extends Model
         'personnamn',
         'alder',
         'kommun',
+        'lan',
         'latitude',
         'longitude',
         'personnummer',

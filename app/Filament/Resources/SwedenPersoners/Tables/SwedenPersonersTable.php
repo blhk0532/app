@@ -6,6 +6,7 @@ namespace App\Filament\Resources\SwedenPersoners\Tables;
 
 use App\Actions\TransferSwedenPersonerToRingaDataAction;
 use App\Exports\SwedenPersonerExporter;
+use App\Models\SwedenPersoner;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -17,9 +18,12 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -139,6 +143,11 @@ class SwedenPersonersTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('lan')
+                    ->label('Län')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('telefon')
                     ->label('Telefon')
                     ->searchable()
@@ -183,14 +192,85 @@ class SwedenPersonersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->filtersFormWidth(Width::FourExtraLarge)
+            ->filtersFormColumns(4)
             ->filters([
-                Filter::make('telefon')
-                    ->label('Telefon')
+                TernaryFilter::make('telefon')
+                    ->label('Phone')
                     ->query(fn (Builder $query): Builder => $query->whereNotNull('telefon')),
-                Filter::make('is_hus')
-                    ->label('Hus')
+                TernaryFilter::make('is_hus')
+                    ->label('House')
                     ->query(fn (Builder $query): Builder => $query->where('is_hus', true)),
-            ])
+                TernaryFilter::make('is_active')
+                    ->label('Active'),
+                TernaryFilter::make('is_queued')
+                    ->label('Queue'),
+
+                SelectFilter::make('postort')
+                    ->label('Postort')
+                    ->multiple()
+                    ->searchable()
+                    ->options(function () {
+                        return SwedenPersoner::query()
+                            ->whereNotNull('postort')
+                            ->distinct()
+                            ->orderBy('postort')
+                            ->pluck('postort', 'postort')
+                            ->toArray();
+                    }),
+
+                SelectFilter::make('kommun')
+                    ->label('Municipality')
+                    ->multiple()
+                    ->searchable()
+                    ->options(function () {
+                        return SwedenPersoner::query()
+                            ->whereNotNull('kommun')
+                            ->distinct()
+                            ->orderBy('kommun')
+                            ->pluck('kommun', 'kommun')
+                            ->toArray();
+                    }),
+
+                SelectFilter::make('lan')
+                    ->label('County')
+                    ->multiple()
+                    ->searchable()
+                    ->options(function () {
+                        return SwedenPersoner::query()
+                            ->whereNotNull('lan')
+                            ->distinct()
+                            ->orderBy('lan')
+                            ->pluck('lan', 'lan')
+                            ->toArray();
+                    }),
+
+                SelectFilter::make('agandeform')
+                    ->label('Ägandeform')
+                    ->multiple()
+                    ->searchable()
+                    ->options(function () {
+                        return SwedenPersoner::query()
+                            ->whereNotNull('agandeform')
+                            ->distinct()
+                            ->orderBy('agandeform')
+                            ->pluck('agandeform', 'agandeform')
+                            ->toArray();
+                    }),
+
+                SelectFilter::make('bostadstyp')
+                    ->label('Bostadstyp')
+                    ->multiple()
+                    ->searchable()
+                    ->options(function () {
+                        return SwedenPersoner::query()
+                            ->whereNotNull('bostadstyp')
+                            ->distinct()
+                            ->orderBy('bostadstyp')
+                            ->pluck('bostadstyp', 'bostadstyp')
+                            ->toArray();
+                    }),
+            ], layout: FiltersLayout::Modal)
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
@@ -233,7 +313,7 @@ class SwedenPersonersTable
                     ->color('danger'),
                 static::exportSqlAction(),
             ])
-            ->defaultSort('updated_at', 'desc')
+            ->defaultSort('Id', 'desc')
             ->paginated([10, 25, 50, 100, 200, 500])
             ->defaultPaginationPageOption(25);
     }

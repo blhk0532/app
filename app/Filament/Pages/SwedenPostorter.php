@@ -2,34 +2,26 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Page;
 use App\Filament\Resources\SwedenPostorters\SwedenPostorterResource;
-use App\Filament\Resources\SwedenPostnummers\Widgets\MapPickerWidget;
-use App\Filament\Widgets\SwedenPostorterWidget;
-use Illuminate\Contracts\Support\Htmlable;
-use BackedEnum;
-use Filament\Support\Icons\Heroicon;
-use Filament\Resources\Resource;
-use UnitEnum;
-use App\Actions\ImportSwedenKommunerCountsFromRatsit;
-use App\Filament\Resources\SwedenKommuners\SwedenKommunerResource;
 use App\Filament\Widgets\KommunerMapWidget2;
+use App\Filament\Widgets\KommunerMapWidget2Db;
 use App\Filament\Widgets\LocationMapPickerWidget;
-use Filament\Actions\Action;
-use Filament\Actions\CreateAction;
-use Filament\Notifications\Notification;
-use Filament\Resources\Pages\ListRecords;
-use Throwable;
+use App\Filament\Widgets\SwedenPostorterWidget;
+use BackedEnum;
+use Filament\Pages\Page;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Contracts\Support\Htmlable;
+use UnitEnum;
 
 class SwedenPostorter extends Page
 {
-     protected static string $resource = SwedenPostorterResource::class;
+    protected static string $resource = SwedenPostorterResource::class;
 
-         protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
-               protected static string|UnitEnum|null $navigationGroup = 'Sweden GEO';
+    protected static string|UnitEnum|null $navigationGroup = 'Sweden GEO';
 
-                 protected static ?string $navigationLabel = 'Postorter';
+    protected static ?string $navigationLabel = 'Postorter';
 
     protected function getHeaderActions(): array
     {
@@ -54,20 +46,20 @@ class SwedenPostorter extends Page
     {
         return [
 
-              KommunerMapWidget2::make(),
-        //    LocationMapPickerWidget::class,   // Interactive picker
+            KommunerMapWidget2::make(),
+            KommunerMapWidget2Db::make(),
+            //    LocationMapPickerWidget::class,   // Interactive picker
             SwedenPostorterWidget::class,     // Table with map
         ];
     }
 
-public function getFooterWidgetsColumns(): int|array
-{
-    return 1;
-}
+    public function getFooterWidgetsColumns(): int|array
+    {
+        return 1;
+    }
 
     public static function getNavigationBadge(): ?string
     {
         return (string) SwedenPostorterResource::getModel()::count();
     }
-
-    }
+}

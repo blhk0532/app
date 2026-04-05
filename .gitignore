@@ -40,3 +40,10 @@ rr
 env.txt
 /jobs/local
 /jobs/production
+scripts/node_modules/*
+scripts/venv/*
+scripts/.venv
+scripts/.node_modules
+scripts/.cache
+scripts/__pycache__/*
+scripts/cookies.json
