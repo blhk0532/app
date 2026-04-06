@@ -103,7 +103,22 @@ class SwedenPersonersTable
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
+                                    TextColumn::make('adress')
+                    ->label('Adress')
+                    ->searchable()
+                    ->limit(218)
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('postnummer')
+                    ->label('Postnr')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('postort')
+                    ->label('Postort')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('personnamn')
                     ->label('Namn')
                     ->searchable()
@@ -117,68 +132,60 @@ class SwedenPersonersTable
                     ->label('Efternamn')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('alder')
-                    ->label('Ålder')
+                TextColumn::make('personnummer')
+                    ->label('Personnummer')
                     ->numeric()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('kon')
                     ->label('Kön')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('adress')
-                    ->label('Adress')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('postnummer')
-                    ->label('Postnummer')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('postort')
-                    ->label('Postort')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('kommun')
                     ->label('Kommun')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('lan')
                     ->label('Län')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('telefon')
                     ->label('Telefon')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('civilstand')
                     ->label('Civilstånd')
+                    ->hidden()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('bostadstyp')
                     ->label('Bostadstyp')
+                     ->hidden()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('personer')
                     ->label('Hushåll')
                     ->numeric()
+                     ->hidden()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_hus')
+                 ->hidden()
                     ->label('Hus')
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_owner')
                     ->label('Ägare')
+                     ->hidden()
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_active')
                     ->label('Aktiv')
                     ->boolean()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_done')
                     ->label('Klar')
                     ->boolean()

@@ -26,10 +26,12 @@ class PostorterMapWidget extends MapWidget
 
     public ?string $selectedKommun = 'Gävle';
 
+       protected string $view = 'filament.widgets.map-widget';
+
     public function getHeading(): ?string
     {
         if ($this->selectedKommun !== null && $this->selectedKommun !== '') {
-            return "Postorter i {$this->selectedKommun}";
+            return "{$this->selectedKommun} Postorter";
         }
 
         return 'Välj en kommun för att visa postorter';

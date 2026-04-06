@@ -18,6 +18,8 @@ class ControlPanel extends CardsPage
 
     protected static ?string $navigationLabel = 'Control Panel';
 
+    protected static ?int $navigationSort = -1;
+
     protected static function getCards(): array
     {
         return [

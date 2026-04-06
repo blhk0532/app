@@ -13,7 +13,7 @@ class RunScriptForPostnummerJob implements ShouldQueue
 {
     use Queueable;
 
-    public int $timeout = 600;
+    public int $timeout = 9600;
 
     /**
      * Create a new job instance.

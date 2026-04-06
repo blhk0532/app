@@ -3,9 +3,8 @@
 namespace App\Filament\Resources\SwedenPostorters\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class SwedenPostorterInfolist
 {
@@ -13,24 +12,67 @@ class SwedenPostorterInfolist
     {
         return $schema
             ->components([
-                Group::make()
+                Section::make('Plats')
                     ->schema([
-                        Section::make('Kommun Information')
-                            ->schema([
-                TextEntry::make('post_ort'),
-                TextEntry::make('kommun')
-                    ->placeholder('-'),
-                TextEntry::make('lan')
-                    ->placeholder('-'),
-                TextEntry::make('personer')
-                    ->numeric()
-                    ->placeholder('-'),
-                            ])
-                            ->columnSpan('full')
-                            ->columns(4),
+                        TextEntry::make('post_ort')
+                            ->label('Postort'),
+                        TextEntry::make('kommun')
+                            ->label('Kommun')
+                            ->placeholder('-'),
+                        TextEntry::make('lan')
+                            ->label('Län')
+                            ->placeholder('-'),
+                        TextEntry::make('latitude')
+                            ->label('Latitud')
+                            ->placeholder('-'),
+                        TextEntry::make('longitude')
+                            ->label('Longitud')
+                            ->placeholder('-'),
                     ])
-                    ->columnSpan('full'),
+                    ->columns(5),
+
+                Section::make('Statistik')
+                    ->schema([
+                        TextEntry::make('personer')
+                            ->label('Personer')
+                            ->numeric()
+                            ->placeholder('-'),
+                        TextEntry::make('foretag')
+                            ->label('Företag')
+                            ->numeric()
+                            ->placeholder('-'),
+                        TextEntry::make('postnummer')
+                            ->label('Postnummer')
+                            ->numeric()
+                            ->placeholder('-'),
+                        TextEntry::make('gator')
+                            ->label('Gator')
+                            ->numeric()
+                            ->placeholder('-'),
+                        TextEntry::make('adresser')
+                            ->label('Adresser')
+                            ->numeric()
+                            ->placeholder('-'),
+                    ])
+                    ->columns(5),
+
+                Section::make('Övrigt')
+                    ->schema([
+                        TextEntry::make('ratsit_link')
+                            ->label('Ratsit-länk')
+                            ->placeholder('-')
+                            ->columnSpanFull(),
+                        TextEntry::make('created_at')
+                            ->label('Skapad')
+                            ->dateTime()
+                            ->placeholder('-'),
+                        TextEntry::make('updated_at')
+                            ->label('Uppdaterad')
+                            ->dateTime()
+                            ->placeholder('-'),
+                    ])
+                    ->columns(2)
+                    ->collapsed(),
             ]);
     }
 }
-

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Collection|Collections',
+    'resource_label' => 'Projekt|Projekt',
     'incident_count' => ':count Incident|:count Incidents',
     'visibility' => [
         'expanded' => 'Always Expanded',
@@ -17,8 +17,8 @@ return [
             'updated_at' => 'Updated at',
         ],
         'empty_state' => [
-            'heading' => 'Collections',
-            'description' => 'Collections related components together.',
+            'heading' => 'Projects are used to group components together.',
+            'description' => 'Projects related components together.',
         ],
     ],
     'form' => [

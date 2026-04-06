@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Wallo\FilamentCompanies\Company as FilamentCompaniesCompany;
@@ -81,5 +83,13 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
     {
         return $this->belongsToMany(User::class, 'company_owners')
             ->withTimestamps();
+    }
+
+    /**
+     * @param  array<array-key, Model>  $models
+     */
+    public function newCollection(array $models = []): EloquentCollection
+    {
+        return new EloquentCollection($models);
     }
 }

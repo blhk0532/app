@@ -30,10 +30,12 @@ class KommunViewMapWidget extends MapWidget
 
     public int|float|string|null $kommunPersoner = null;
 
+    protected string $view = 'filament.widgets.map-widget';
+
     public function getHeading(): ?string
     {
         if ($this->kommunName !== null && $this->kommunName !== '') {
-            return "Karta för {$this->kommunName}";
+            return "{$this->kommunName} Kommun";
         }
 
         return 'Kommun karta';

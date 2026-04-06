@@ -38,9 +38,9 @@ class Dashboard extends BaseDashboard
     //   protected static string|BackedEnum|null $navigationIcon = BootstrapIcons::PersonCheck;
     //   protected static string|BackedEnum|null $activeNavigationIcon = BootstrapIcons::PersonFillCheck;
 
-    protected static string|BackedEnum|null $navigationIcon = Remix::RiShieldUserLine;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-map';
 
-    protected static string|BackedEnum|null $activeNavigationIcon = Remix::RiShieldUserFill;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-map';
 
     //   protected static string|BackedEnum|null $navigationIcon = Remix::RiCalendarScheduleLine;
     //   protected static string|BackedEnum|null $activeNavigationIcon = Remix::RiCalendarScheduleFill;
@@ -50,7 +50,7 @@ class Dashboard extends BaseDashboard
 
     public static function getNavigationLabel(): string
     {
-        return ''.Str::ucfirst(Auth::user()->name) ?? 'User';
+        return 'Kartor MAPS';
     }
 
     public static function getNavigationBadge(): ?string
@@ -69,10 +69,6 @@ class Dashboard extends BaseDashboard
         return Width::Full;
     }
 
-    public function getWidgetsColumns(): int|array
-    {
-        return 1;
-    }
 
     public function getColumns(): int|array
     {
@@ -81,8 +77,8 @@ class Dashboard extends BaseDashboard
             'sm' => 1,
             'md' => 1,
             'lg' => 1,
-            'xl' => 3,
-            '2xl' => 3,
+            'xl' => 1,
+            '2xl' => 1,
         ];
     }
 
@@ -95,7 +91,7 @@ class Dashboard extends BaseDashboard
         //    AccountWidget::class,
         //    FilamentInfosWidget::class,
         //    StatsOverviewWidget::class,
-        //    GeoMapWidget::class,
+
             //    \App\Filament\App\Widgets\LatestOrders::class,
             //    \App\Filament\App\Widgets\StatsOverviewWidget::class,
 
@@ -109,6 +105,7 @@ class Dashboard extends BaseDashboard
        {
            return [
               LocationMapPickerWidgetFull::class,
+               GeoMapWidget::class,
            ];
        }
 
@@ -129,7 +126,10 @@ class Dashboard extends BaseDashboard
     {
         return 1;
     }
-
+    public function getWidgetsColumns(): int|array
+    {
+        return 1;
+    }
     public function getFooterWidgetsColumns(): int|array
     {
         return 1;

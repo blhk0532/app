@@ -44,7 +44,9 @@ class IncidentResource extends Resource
 {
     protected static ?string $model = Incident::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'cachet-incident';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map-pin';
+
+     protected static string|UnitEnum|null $navigationGroup = '';
 
     protected static bool $isScopedToTenant = false;
 
@@ -79,19 +81,28 @@ class IncidentResource extends Resource
                             ['undo', 'redo'],
                         ]),
                     Select::make('component_id')
-                        ->label(__('Tekniker'))
+                        ->label(__('Campaign'))
                         ->relationship('component', 'name')
+                        ->default(fn () => \Cachet\Models\Component::query()->orderBy('id')->value('id'))
                         ->searchable()
                         ->preload(),
+                    Select::make('service_user_id')
+                        ->label(__('Technician'))
+                        ->default(fn () => \App\Models\User::query()->where('role', 'service')->orderBy('id')->value('id'))
+                        ->options(fn () => \App\Models\User::query()->where('role', 'service')->pluck('name', 'id'))
+                        ->searchable()
+                        ->preload()
+                        ->nullable(),
                     DateTimePicker::make('occurred_at')
                         ->default(fn () => now())
-                        ->label(__('cachet::incident.form.occurred_at_label'))
-                        ->helperText(__('cachet::incident.form.occurred_at_helper')),
+                        ->label(__('Schemadag'))
+                        ->helperText(__('')),
                     ToggleButtons::make('visible')
                         ->label(__('cachet::incident.form.visible_label'))
                         ->inline()
+                        ->hidden()
                         ->options(ResourceVisibilityEnum::class)
-                        ->default(ResourceVisibilityEnum::team)
+                        ->default(ResourceVisibilityEnum::guest)
                         ->live()
                         ->required(),
                     Select::make('team_id')
@@ -126,7 +137,6 @@ class IncidentResource extends Resource
                 Section::make()->schema([
                     Select::make('user_id')
                         ->label(__('User'))
-                        ->hidden()
                         ->helperText(__('cachet::incident.form.user_helper'))
                         ->options(function (): array {
                             $userModel = config('cachet.user_model');
@@ -149,6 +159,7 @@ class IncidentResource extends Resource
                     TextInput::make('guid')
                         ->label(__('cachet::incident.form.guid_label'))
                         ->visibleOn(['edit'])
+                        ->hidden()
                         ->disabled()
                         ->readonly()
                         ->columnSpanFull(),
@@ -312,5 +323,15 @@ class IncidentResource extends Resource
         }
 
         return 'success';
+    }
+
+
+        public static function getNavigationGroup(): ?string
+    {
+              $team = filament()->getTenant()?->name;
+        $name = \Illuminate\Support\Str::ucwords($team);
+
+         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
+        // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 }

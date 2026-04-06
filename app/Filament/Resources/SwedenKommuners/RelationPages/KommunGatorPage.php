@@ -49,6 +49,11 @@ class KommunGatorPage extends RelationPage implements HasTable
                     ->label('Postort')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('lan')
+                    ->label('Län')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('personer')
                     ->label('Pers')
                     ->numeric()
@@ -57,6 +62,11 @@ class KommunGatorPage extends RelationPage implements HasTable
                     ->label('Adrs')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('företag')
+                    ->label('Företag')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('ratsit_link')
                     ->label('Ratsit')
                     ->limit(40)

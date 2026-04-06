@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\SwedenPostnummers\Widgets;
 
+use App\Exports\PeopleExporter;
 use App\Filament\Resources\SwedenPostnummers\Actions\RunRatsitHittaAction;
 use App\Filament\Resources\SwedenPostnummers\Actions\RunRatsitHittaBulkAction;
 use App\Jobs\RunHittaDataScriptJob;
@@ -11,17 +12,23 @@ use App\Jobs\RunMerinfoDataScriptJob;
 use App\Jobs\RunRatsitDataScriptJob;
 use App\Jobs\RunScriptForPostnummerJob;
 use App\Models\HittaData;
-use App\Models\HittaSe;
-use App\Models\Merinfo;
 use App\Models\MerinfoData;
 use App\Models\RatsitData;
+use App\Models\SwedenPersoner;
 use App\Models\SwedenPostnummer;
+use App\Services\GoogleSheets\PeopleSheetsSyncService;
+use App\Services\Import\PeopleImportService;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
+use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -38,18 +45,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\HtmlString;
-use Filament\Actions\ViewAction;
-use App\Exports\PeopleExporter;
-use App\Models\Person;
-use App\Services\GoogleSheets\PeopleSheetsSyncService;
-use App\Services\Import\PeopleImportService;
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ExportAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 
 class MapPickerWidget extends MapTableWidget
 {
@@ -59,12 +54,32 @@ class MapPickerWidget extends MapTableWidget
 
     public function table(Table $table): Table
     {
-        return $table->toolbarActions($this->getToolbarActions());
+        return $table
+            ->toolbarActions($this->getToolbarActions())
+            ->defaultSort('personer_merinfo_queue', 'desc')
+            ->modifyQueryUsing(fn (Builder $query) => $query->orderBy('personer_merinfo_queue', 'desc')->orderBy('updated_at', 'desc'));
     }
 
     protected function getTableQuery(): Builder
     {
-        return SwedenPostnummer::query();
+        return SwedenPostnummer::query()
+            ->addSelect('sweden_postnummer.*')
+            ->selectSub(
+                RatsitData::selectRaw('COUNT(*)')->whereColumn('postnummer', 'sweden_postnummer.post_nummer'),
+                'live_ratsit_count'
+            )
+            ->selectSub(
+                HittaData::selectRaw('COUNT(*)')->whereColumn('postnummer', 'sweden_postnummer.post_nummer'),
+                'live_hitta_count'
+            )
+            ->selectSub(
+                MerinfoData::selectRaw('COUNT(*)')->whereColumn('postnummer', 'sweden_postnummer.post_nummer'),
+                'live_merinfo_count'
+            )
+            ->selectSub(
+                SwedenPersoner::selectRaw('COUNT(*)')->whereRaw("REPLACE(`postnummer`, ' ', '') = REPLACE(`sweden_postnummer`.`post_nummer`, ' ', '')"),
+                'live_personer_count'
+            );
     }
 
     protected function paginateTableQuery(Builder $query): Paginator
@@ -85,18 +100,20 @@ class MapPickerWidget extends MapTableWidget
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
             TextColumn::make('post_ort')
+             ->label('Postort')
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
             TextColumn::make('kommun')
                 ->sortable()
-                ->toggleable(isToggledHiddenByDefault: false)
+                ->toggleable(isToggledHiddenByDefault: true)
                 ->label('Kommun')
                 ->searchable(),
             TextColumn::make('lan')
                 ->sortable()
                 ->label('Landskap')
-                ->toggleable(isToggledHiddenByDefault: false)
+                ->limit(12)
+                ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
             TextColumn::make('country')
                 ->hidden()
@@ -119,22 +136,28 @@ class MapPickerWidget extends MapTableWidget
                 ->dateTime()
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->sortable(),
-            TextColumn::make('personer_ratsit_saved')
+            TextColumn::make('live_ratsit_count')
                 ->label('Ratsit')
                 ->numeric()
+                ->placeholder('-')
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->sortable(),
-            TextColumn::make('personer_hitta_saved')
+            TextColumn::make('live_hitta_count')
                 ->label('Hitta')
-                ->placeholder('-')
-                ->default('-')
                 ->numeric()
+                ->placeholder('-')
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->sortable(),
-            TextColumn::make('personer_merinfo_saved')
+            TextColumn::make('live_merinfo_count')
                 ->label('Merinfo')
+                ->numeric()
                 ->placeholder('-')
-                ->default('-')
+                ->toggleable(isToggledHiddenByDefault: false)
+                ->sortable(),
+            TextColumn::make('live_personer_count')
+                ->label('DB')
+                ->numeric()
+                ->placeholder('-')
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->sortable(),
             ToggleColumn::make('personer_merinfo_queue')
@@ -170,12 +193,16 @@ class MapPickerWidget extends MapTableWidget
             Filter::make('has_personer')
                 ->label('Has Personer')
                 ->default(true)
-                ->query(fn(Builder $query) => $query->where('personer', '>', 0)),
+                ->query(fn (Builder $query) => $query->where('personer', '>', 0)),
+            Filter::make('is_queued')
+                ->label('Is Queued')
+                ->default(false)
+                ->query(fn (Builder $query) => $query->where('personer_merinfo_queue', true)),
             SelectFilter::make('post_nummer')
                 ->label('Postnr')
                 ->searchable()
                 ->multiple()
-                ->options(fn(): array => SwedenPostnummer::query()
+                ->options(fn (): array => SwedenPostnummer::query()
                     ->whereNotNull('post_nummer')
                     ->where('post_nummer', '<>', '')
                     ->orderBy('post_nummer')
@@ -185,7 +212,7 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Postort')
                 ->searchable()
                 ->multiple()
-                ->options(fn(): array => SwedenPostnummer::query()
+                ->options(fn (): array => SwedenPostnummer::query()
                     ->whereNotNull('post_ort')
                     ->where('post_ort', '<>', '')
                     ->orderBy('post_ort')
@@ -195,7 +222,7 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Kommun')
                 ->searchable()
                 ->multiple()
-                ->options(fn(): array => SwedenPostnummer::query()
+                ->options(fn (): array => SwedenPostnummer::query()
                     ->whereNotNull('kommun')
                     ->where('kommun', '<>', '')
                     ->orderBy('kommun')
@@ -205,7 +232,7 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Län')
                 ->searchable()
                 ->multiple()
-                ->options(fn(): array => SwedenPostnummer::query()
+                ->options(fn (): array => SwedenPostnummer::query()
                     ->whereNotNull('lan')
                     ->where('lan', '<>', '')
                     ->orderBy('lan')
@@ -263,7 +290,7 @@ class MapPickerWidget extends MapTableWidget
             BulkActionGroup::make([
                 DeleteBulkAction::make(),
                 BulkAction::make('setAllQueueFlags')
-                    ->label('Set All Queue = 1')
+                    ->label('Set All Queued')
                     ->icon('heroicon-o-queue-list')
                     ->color('warning')
                     ->requiresConfirmation()
@@ -280,6 +307,36 @@ class MapPickerWidget extends MapTableWidget
                                     'personer_hitta_queue' => 1,
                                     'personer_merinfo_queue' => 1,
                                     'personer_ratsit_queue' => 1,
+                                ]);
+
+                            $updated++;
+                        }
+
+                        Notification::make()
+                            ->success()
+                            ->title('Queue Columns Updated')
+                            ->body("Set all queue columns to 1 for {$updated} record(s).")
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+                BulkAction::make('setAllNotQueueFlags')
+                    ->label('Set All No Queue')
+                    ->icon('heroicon-o-queue-list')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Set Queue Columns')
+                    ->modalDescription('This will set personer_hitta_queue, personer_merinfo_queue, and personer_ratsit_queue to 0 for all selected records.')
+                    ->modalSubmitActionLabel('Set Queue = 0')
+                    ->action(function (Collection $records): void {
+                        $updated = 0;
+
+                        foreach ($records as $record) {
+                            SwedenPostnummer::query()
+                                ->whereKey($record->getKey())
+                                ->update([
+                                    'personer_hitta_queue' => 0,
+                                    'personer_merinfo_queue' => 0,
+                                    'personer_ratsit_queue' => 0,
                                 ]);
 
                             $updated++;
@@ -382,11 +439,11 @@ class MapPickerWidget extends MapTableWidget
                                 $scriptPaths = glob(base_path('scripts/*')) ?: [];
 
                                 return collect($scriptPaths)
-                                    ->filter(fn(string $path): bool => is_file($path))
-                                    ->map(fn(string $path): string => basename($path))
+                                    ->filter(fn (string $path): bool => is_file($path))
+                                    ->map(fn (string $path): string => basename($path))
                                     ->sort()
                                     ->values()
-                                    ->mapWithKeys(fn(string $name): array => [$name => $name])
+                                    ->mapWithKeys(fn (string $name): array => [$name => $name])
                                     ->all();
                             })
                             ->searchable()
@@ -486,17 +543,15 @@ class MapPickerWidget extends MapTableWidget
                     ->color('info')
                     ->action(function (Collection $records): void {
                         $total = $records->count();
-                        $withPin = $records->filter(fn(Person $record): bool => filled($record->personnummer))->count();
-                        $withPhone = $records->filter(function (Person $record): bool {
-                            $phones = $record->telefonnummer;
-
-                            return is_array($phones) && count(array_filter($phones)) > 0;
-                        })->count();
+                        $totalPersoner = $records->sum(fn (SwedenPostnummer $record): int => (int) $record->personer);
+                        $totalRatsit = $records->sum(fn (SwedenPostnummer $record): int => (int) $record->personer_ratsit_saved);
+                        $totalHitta = $records->sum(fn (SwedenPostnummer $record): int => (int) $record->personer_hitta_saved);
+                        $totalMerinfo = $records->sum(fn (SwedenPostnummer $record): int => (int) $record->personer_merinfo_saved);
 
                         Notification::make()
                             ->title('Database Match Summary')
                             ->success()
-                            ->body("Total: {$total} · With personnummer: {$withPin} · With phone: {$withPhone}")
+                            ->body("Areas: {$total} · Persons: {$totalPersoner} · Ratsit: {$totalRatsit} · Hitta: {$totalHitta} · Merinfo: {$totalMerinfo}")
                             ->send();
                     })
                     ->deselectRecordsAfterCompletion(),
@@ -578,7 +633,8 @@ class MapPickerWidget extends MapTableWidget
                             ->send();
                     }
                 }),
-            ExportAction::make()
+                            ExportAction::make()
+                 ->visible()
                 ->label('Export')
                 ->exporter(PeopleExporter::class)
                 ->icon('heroicon-o-arrow-up-tray')

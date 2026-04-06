@@ -27,7 +27,13 @@ class SwedenAdresserResource extends Resource
 
     protected static ?string $navigationLabel = 'Adresser';
 
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 5;
+
+
+        public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
+    }
 
     public static function form(Schema $schema): Schema
     {

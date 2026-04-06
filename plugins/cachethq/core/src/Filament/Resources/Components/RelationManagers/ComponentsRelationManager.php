@@ -9,6 +9,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -17,6 +18,8 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+
+use function GuzzleHttp\default_ca_bundle;
 
 class ComponentsRelationManager extends RelationManager
 {
@@ -39,8 +42,15 @@ class ComponentsRelationManager extends RelationManager
                     ->label(__('cachet::component.form.status_label'))
                     ->inline()
                     ->columnSpanFull()
+                    ->default('operational')
                     ->options(ComponentStatusEnum::class)
                     ->required(),
+                Select::make('group_id')
+                    ->label(__('cachet::component.form.campaign_group_label'))
+                    ->relationship('group', 'name')
+                    ->preload()
+                    ->searchable()
+                    ->nullable(),
                 MarkdownEditor::make('description')
                     ->label(__('cachet::component.form.description_label'))
                     ->columnSpanFull(),
@@ -55,8 +65,9 @@ class ComponentsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
-            ->modelLabel(trans_choice('cachet::component.resource_label', 1))
-            ->pluralModelLabel(trans_choice('cachet::component.resource_label', 2))
+            ->heading(__('Campaings'))
+            ->modelLabel(trans_choice('Campaings', 1))
+            ->pluralModelLabel(trans_choice('Campaings', 2))
             ->columns([
                 TextColumn::make('name')
                     ->label(__('cachet::component.list.headers.name')),
@@ -83,7 +94,7 @@ class ComponentsRelationManager extends RelationManager
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-                  CreateAction::make(),
+              //    CreateAction::make(),
             ])
             ->reorderable('order')
             ->defaultSort('order');

@@ -102,6 +102,7 @@ class Incident extends Model
         'message',
         'scheduled_at',
         'occurred_at',
+        'service_user_id',
     ];
 
     protected static function boot()

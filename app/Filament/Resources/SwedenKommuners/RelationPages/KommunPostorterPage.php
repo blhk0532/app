@@ -32,6 +32,8 @@ class KommunPostorterPage extends RelationPage implements HasTable
 
     public function table(Table $table): Table
     {
+        $maxPersoner = SwedenPostorter::where('kommun', $this->ownerRecord->kommun)->max('personer') ?: 1;
+
         return $table
             ->query(
                 SwedenPostorter::query()->where('kommun', $this->ownerRecord->kommun)
@@ -47,8 +49,35 @@ class KommunPostorterPage extends RelationPage implements HasTable
                     ->sortable(),
                 TextColumn::make('personer')
                     ->label('Personer')
+                    ->html()
+                    ->sortable()
+                    ->state(function (SwedenPostorter $record) use ($maxPersoner): string {
+                        $val = $record->personer ?? 0;
+                        $pct = (int) round(($val / $maxPersoner) * 100);
+                        $formatted = number_format($val);
+
+                        return '<div style="display:flex;align-items:center;gap:6px;min-width:130px">'
+                            .'<div style="flex:1;background-color:rgb(229 231 235);border-radius:9999px;height:5px;overflow:hidden">'
+                            .'<div style="background-color:rgb(99 102 241);height:5px;width:'.$pct.'%"></div>'
+                            .'</div>'
+                            .'<span style="font-size:0.75rem;min-width:3.5rem;text-align:right">'.$formatted.'</span>'
+                            .'</div>';
+                    }),
+                TextColumn::make('postnummer')
+                    ->label('Postnr')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('gator')
+                    ->label('Gator')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('adresser')
+                    ->label('Adresser')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('foretag')
                     ->label('Företag')
                     ->numeric()

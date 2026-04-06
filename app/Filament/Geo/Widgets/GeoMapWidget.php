@@ -27,12 +27,14 @@ class GeoMapWidget extends MapWidget
 
     public ?string $selectedKommun = null;
 
+     protected string $view = 'filament.widgets.map-widget';
+
     #[On('show-postorter')]
     public function handleShowPostorter(string $kommun): void
     {
         $this->selectedKommun = $kommun;
         $this->heading = "Postnummer in {$kommun}";
-        \Log::info("GeoMapWidget: show-postorter for {$kommun}");
+
         $this->refreshPins();
     }
 
@@ -128,6 +130,11 @@ class GeoMapWidget extends MapWidget
 
         return $markers;
     }
+
+public function getHeading(): ?string
+{
+    return 'Saved Pins Map';
+}
 
     protected function getTotalKommuner(): int
     {

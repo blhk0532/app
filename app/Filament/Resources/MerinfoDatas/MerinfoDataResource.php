@@ -26,7 +26,7 @@ class MerinfoDataResource extends Resource
     protected static ?string $navigationLabel = 'Merinfo Datas';
 
     //   protected static string | UnitEnum | null $navigationGroup = 'MERINFO DATABAS';
-    protected static UnitEnum|string|null $navigationGroup = 'Database SWE';
+    protected static UnitEnum|string|null $navigationGroup = 'Database SE';
 
     protected static ?string $modelLabel = 'Merinfo Data';
 

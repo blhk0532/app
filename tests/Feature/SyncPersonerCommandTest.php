@@ -28,7 +28,6 @@ beforeEach(function (): void {
         $t->string('agandeform')->nullable();
         $t->string('boarea')->nullable();
         $t->string('byggar')->nullable();
-        $t->string('bostadspris')->nullable();
         $t->decimal('latitude', 10, 7)->nullable();
         $t->decimal('longitude', 10, 7)->nullable();
         $t->timestamps();

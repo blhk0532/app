@@ -77,10 +77,10 @@ class SwedenKommunersTable
                     ->showProgressValue()
                     ->showPercentage()
                     ->textPosition('inside')
-                        ->warningThreshold(75)
+                        ->warningThreshold(50)
     ->dangerThreshold(95)
-    ->warningColor('#f59e0b')
-    ->dangerColor('#ef4444')
+    ->warningColor('#478b64')
+    ->dangerColor('#478b64')
                     ->size('sm')
                     ->sortable(),
                 TextColumn::make('latitude')

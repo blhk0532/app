@@ -7,6 +7,7 @@ use Cachet\Filament\Resources\Components\Pages\CreateComponent;
 use Cachet\Filament\Resources\Components\Pages\EditComponent;
 use Cachet\Filament\Resources\Components\Pages\ListComponents;
 use Cachet\Models\Component;
+use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -32,7 +33,7 @@ class ComponentResource extends Resource
 
     protected static bool $isScopedToTenant = false;
 
-    protected static ?string $slug = 'tekniker';
+    protected static ?string $slug = 'campaigns';
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-components';
 
@@ -54,17 +55,21 @@ class ComponentResource extends Resource
                         ->label(__('cachet::component.form.status_label'))
                         ->inline()
                         ->columnSpanFull()
-                        ->options(ComponentStatusEnum::class)
-                        ->required(),
+                        ->default(ComponentStatusEnum::operational)
+                        ->options(ComponentStatusEnum::class),
                     MarkdownEditor::make('description')
                         ->label(__('cachet::component.form.description_label'))
                         ->columnSpanFull(),
                     Select::make('component_group_id')
                         ->relationship('group', 'name')
-                        ->hidden()
                         ->searchable()
                         ->preload()
-                        ->label(__('Team Group')),
+                        ->label(__('Project')),
+                    Select::make('service_user_id')
+                    ->options(fn() => User::query()->where('role', 'service')->pluck('name', 'id'))
+                        ->searchable()
+                        ->preload()
+                        ->label(__('Tekniker')),
                     TextInput::make('link')
                         ->hidden()
                         ->label(__('cachet::component.form.link_label'))
@@ -101,7 +106,7 @@ class ComponentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('group.name')
                     ->label(__('cachet::component.list.headers.group'))
-                    ->hidden()
+
                     ->sortable(),
                 IconColumn::make('enabled')
                     ->label(__('cachet::component.list.headers.enabled'))
@@ -163,12 +168,12 @@ class ComponentResource extends Resource
 
     public static function getLabel(): ?string
     {
-        return trans_choice('Tekniker', 1);
+        return trans_choice('Kampanj', 1);
     }
 
     public static function getPluralLabel(): ?string
     {
-        return trans_choice('Tekniker', 2);
+        return trans_choice('Kampanjer', 2);
     }
 
     public static function getNavigationBadge(): ?string
@@ -183,5 +188,14 @@ class ComponentResource extends Resource
         }
 
         return 'success';
+    }
+
+            public static function getNavigationGroup(): ?string
+    {
+              $team = filament()->getTenant()?->name;
+        $name = \Illuminate\Support\Str::ucwords($team);
+
+         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
+        // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 }

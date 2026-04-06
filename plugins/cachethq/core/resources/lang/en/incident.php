@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title' => 'Områden',
-    'resource_label' => 'Områden|Områden',
+    'title' => 'Schema',
+    'resource_label' => 'Schema|Schema',
     'status' => [
         'investigating' => 'Investigating',
         'identified' => 'Identified',
@@ -10,13 +10,13 @@ return [
         'fixed' => 'Fixed',
         'reported' => 'Reported',
     ],
-    'edit_button' => 'Edit Områden',
+    'edit_button' => 'Edit Schema',
     'new_button' => 'Update',
-    'no_incidents_reported' => 'No Områden',
+    'no_incidents_reported' => 'No Schema',
     'timeline' => [
         'past_incidents_header' => '',
-        'recent_incidents_header' => 'Recent Områden',
-        'no_incidents_reported_between' => 'No Områden reported between :from and :to',
+        'recent_incidents_header' => 'Recent Schema',
+        'no_incidents_reported_between' => 'No Schema reported between :from and :to',
         'navigate' => [
             'previous' => 'Previous',
             'today' => 'Today',
@@ -40,8 +40,8 @@ return [
             'view_incident' => 'View information',
         ],
         'empty_state' => [
-            'heading' => 'Områden',
-            'description' => 'Områden is used to communicate and track the status of your services.',
+            'heading' => 'Schema',
+            'description' => 'Schema is used to communicate and track the status of your services.',
         ],
     ],
     'form' => [
@@ -57,9 +57,9 @@ return [
         'stickied_label' => 'Sticky Information?',
         'guid_label' => 'Information UUID',
         'add_component' => [
-            'action_label' => 'Add Tekniker',
-            'header' => 'Tekniker',
-            'component_label' => 'Tekniker',
+            'action_label' => 'Add Campaign',
+            'header' => 'Kampanj',
+            'component_label' => 'Kampanj',
             'status_label' => 'Status',
         ],
     ],

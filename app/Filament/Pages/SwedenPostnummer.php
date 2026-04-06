@@ -15,15 +15,20 @@ class SwedenPostnummer extends Page
 {
     protected string $view = 'filament.pages.sweden-postnummer';
 
-        protected static string|UnitEnum|null $navigationGroup = 'Sweden GEO';
+       protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
-            protected static ?string $navigationLabel = 'Postnummer';
+    protected static ?int $navigationSort = 3;
 
-              protected static ?int $navigationSort = 3;
+     protected static string|UnitEnum|null $navigationGroup = 'Sweden GEO';
 
     protected static ?string $model = SwedenPostnummer::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
+    protected static ?string $navigationLabel = 'Postnummer';
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
+    }
 
     protected function getHeaderWidgets(): array
     {

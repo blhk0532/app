@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\SwedenKommuners\RelationPages;
 
 use App\Models\SwedenPostnummer;
+use App\Models\SwedenPostorter;
 use BackedEnum;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -32,9 +33,16 @@ class KommunPostnummerPage extends RelationPage implements HasTable
 
     public function table(Table $table): Table
     {
+        $kommunName = $this->ownerRecord->kommun;
+
+        // Preload persons from postorter per post_ort to fill null persons in postnummer
+        $postorterPersoner = SwedenPostorter::where('kommun', $kommunName)
+            ->pluck('personer', 'post_ort')
+            ->all();
+
         return $table
             ->query(
-                SwedenPostnummer::query()->where('kommun', $this->ownerRecord->kommun)
+                SwedenPostnummer::query()->where('kommun', $kommunName)
             )
             ->columns([
                 TextColumn::make('post_nummer')
@@ -52,9 +60,23 @@ class KommunPostnummerPage extends RelationPage implements HasTable
                 TextColumn::make('personer')
                     ->label('Personer')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->state(function (SwedenPostnummer $record) use ($postorterPersoner): ?int {
+                        return $record->personer ?? ($postorterPersoner[$record->post_ort] ?? null);
+                    })
+                    ->placeholder('-'),
                 TextColumn::make('foretag')
                     ->label('Företag')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('gator')
+                    ->label('Gator')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('adresser')
+                    ->label('Adresser')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

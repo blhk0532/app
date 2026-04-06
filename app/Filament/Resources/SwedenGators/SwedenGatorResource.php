@@ -27,7 +27,13 @@ class SwedenGatorResource extends Resource
 
     protected static ?string $navigationLabel = 'Gator';
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 4;
+
+
+        public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
+    }
 
     public static function form(Schema $schema): Schema
     {

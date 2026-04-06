@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use Andreia\FilamentUiSwitcher\FilamentUiSwitcherServiceProvider;
+use App\Services\OctaneSafeFileManagerService;
 use BezhanSalleh\PanelSwitch\PanelSwitch;
+use MmesDesign\FilamentFileManager\Services\FileManagerService;
 use Carbon\CarbonImmutable;
 use Cheesegrits\FilamentGoogleMaps\FilamentGoogleMapsServiceProvider;
 use Filament\View\PanelsRenderHook;
@@ -29,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
         // when referenced by the short name 'DebugRequest' (some
         // configurations or cached middleware may reference it that way).
         $this->app->alias(DebugRequest::class, 'DebugRequest');
+
+        // Use a cache-free subclass to avoid "__PHP_Incomplete_Class" errors
+        // under Octane caused by serialised DirectoryListing DTOs in the cache.
+        $this->app->bind(FileManagerService::class, OctaneSafeFileManagerService::class);
     }
 
     /**

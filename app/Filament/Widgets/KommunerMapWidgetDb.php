@@ -8,9 +8,10 @@ use App\Models\SwedenKommuner;
 use EduardoRibeiroDev\FilamentLeaflet\Support\Markers\Marker;
 use EduardoRibeiroDev\FilamentLeaflet\Widgets\MapWidget;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 
-class KommunerMapWidget extends MapWidget
+class KommunerMapWidgetDb extends MapWidget
 {
     protected static ?int $sort = 1;
 
@@ -26,7 +27,7 @@ class KommunerMapWidget extends MapWidget
 
     public function getHeading(): ?string
     {
-        return 'Kommuner Karta';
+        return 'Kommuner DB';
     }
 
     #[On('show-postorter')]
@@ -48,23 +49,30 @@ class KommunerMapWidget extends MapWidget
 
     protected function getKommunerMarkers(): array
     {
-        $kommuner = SwedenKommuner::query()
-            ->whereNotNull('latitude')
-            ->whereNotNull('longitude')
+        $personCounts = DB::table('sweden_personer')
+            ->select('kommun')
+            ->selectRaw('COUNT(id) as total')
+            ->groupBy('kommun');
+
+        $rows = DB::table('sweden_kommuner as sk')
+            ->joinSub($personCounts, 'sp_counts', 'sk.kommun', '=', 'sp_counts.kommun')
+            ->whereNotNull('sk.latitude')
+            ->whereNotNull('sk.longitude')
+            ->select('sk.kommun', 'sk.latitude', 'sk.longitude', 'sp_counts.total')
             ->get();
 
         $markers = [];
-        foreach ($kommuner as $kommun) {
-            $personerCount = (int) $kommun->personer;
-            $kommunName = (string) $kommun->kommun;
+        foreach ($rows as $row) {
+            $count = (int) $row->total;
+            $kommunName = (string) $row->kommun;
 
-            $markers[] = Marker::make((float) $kommun->latitude, (float) $kommun->longitude)
-                ->title($kommun->kommun.' - '.number_format($personerCount).' personer')
-                ->popupContent($kommun->kommun.': '.number_format($personerCount).' personer')
+            $markers[] = Marker::make((float) $row->latitude, (float) $row->longitude)
+                ->title($kommunName.' - '.number_format($count).' personer')
+                ->popupContent($kommunName.': '.number_format($count).' personer')
                 ->onClick(function () use ($kommunName): void {
                     $this->dispatch('show-postorter', kommun: $kommunName);
                 })
-                ->color($this->getMarkerColor($personerCount));
+                ->color($this->getMarkerColor($count));
         }
 
         return $markers;
@@ -80,10 +88,7 @@ class KommunerMapWidget extends MapWidget
 
     protected function getTotalPersoner(): int
     {
-        return (int) SwedenKommuner::query()
-            ->whereNotNull('latitude')
-            ->whereNotNull('longitude')
-            ->sum('personer');
+        return (int) DB::table('sweden_personer')->count();
     }
 
     protected function getMarkerColor(int $personerCount): array

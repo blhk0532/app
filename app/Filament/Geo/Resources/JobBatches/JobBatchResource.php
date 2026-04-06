@@ -22,7 +22,7 @@ class JobBatchResource extends Resource
 {
     protected static ?string $model = JobBatch::class;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
 
     protected static ?string $navigationLabel = 'Job Batches';
 
@@ -30,9 +30,11 @@ class JobBatchResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Job Batches';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = -1;
 
-    //  protected static UnitEnum|string|null $navigationGroup = 'Tasks Queue';
+      protected static UnitEnum|string|null $navigationGroup = 'Queue JOBS';
+
+
 
     public static function form(Schema $schema): Schema
     {
@@ -73,6 +75,6 @@ class JobBatchResource extends Resource
 
     public static function getNavigationBadgeColor(): ?string
     {
-        return 'primary';
+        return 'danger';
     }
 }

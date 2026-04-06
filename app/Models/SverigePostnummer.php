@@ -43,6 +43,7 @@ class SverigePostnummer extends Model
         return [
             'personer_count' => 'integer',
             'foretag_count' => 'integer',
+            'post_nummer' => 'string',
         ];
     }
 }

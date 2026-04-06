@@ -29,10 +29,12 @@ class PostortViewMapWidget extends MapWidget
 
     public int|float|string|null $postortLongitude = null;
 
+     protected string $view = 'filament.widgets.map-widget';
+
     public function getHeading(): ?string
     {
         if ($this->postortName !== null && $this->postortName !== '') {
-            return "Karta för {$this->postortName}";
+            return "{$this->postortName} Postort";
         }
 
         return 'Postort karta';

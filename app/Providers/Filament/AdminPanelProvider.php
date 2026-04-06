@@ -71,11 +71,11 @@ use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use lockscreen\FilamentLockscreen\Lockscreen;
 use MmesDesign\FilamentFileManager\FileManagerPlugin;
+use Relaticle\Comments\CommentsPlugin;
 use WallaceMartinss\FilamentEvolution\FilamentEvolutionPlugin;
-use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 // use Wallo\FilamentCompanies\Pages\User\Profile;
 // use Rupadana\ApiService\ApiServicePlugin;
-use Relaticle\Comments\CommentsPlugin;
+use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
@@ -87,6 +87,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('auth/admin')
+            ->homeUrl(fn () => ControlPanel::getUrl())
             ->tenant(Team::class, slugAttribute: 'slug', ownershipRelationship: null)
             ->viteTheme('resources/css/filament/admin/theme.css')
             // ->login(fn ($config) => $config
@@ -120,7 +121,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             //    ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
-            //->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
+            // ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             // ->discoverResources(in: app_path('../plugins/adultdate/filament-booking/src/Filament/Resources'), for: 'Adultdate\\FilamentBooking\\Filament\\Resources')
 
             ->pages([
@@ -326,6 +327,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationItem::make('Access Tokens')
                     ->icon('heroicon-o-finger-print')
                     ->badge(fn () => Auth::user()->tokens()->count())
+                    ->sort(10)
                     ->url(static fn () => PersonalAccessTokens::getUrl()),
             ])
             ->tenantMiddleware([

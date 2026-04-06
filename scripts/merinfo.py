@@ -120,7 +120,7 @@ def clean_data(data):
 async def get_queue():
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get('https://nordicdigitalthailand.com/api/sweden-postnummer/get-queue') as resp:
+            async with session.get('http://localhost:8000/api/sweden-postnummer/get-queue') as resp:
                 if resp.content_type == 'application/json':
                     data = await resp.json()
                     return data.get('postnummer')
@@ -149,7 +149,7 @@ async def send_to_bulk_api(page, data):
             for result_group in data.get("results", []):
                 all_items.extend(result_group.get("items", []))
             
-            batch_size = 5
+            batch_size = 10
             total_batches = (len(all_items) + batch_size - 1) // batch_size
             print(f"    Sending {len(all_items)} items in {total_batches} batches of {batch_size}...")
             

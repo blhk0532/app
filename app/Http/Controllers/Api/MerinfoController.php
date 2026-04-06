@@ -146,11 +146,6 @@ class MerinfoController extends Controller
 
         $items = $this->extractBulkItems($request);
 
-        Log::info('MerinfoController extractBulkItems result', [
-            'items_count' => count($items),
-            'first_item' => $items[0] ?? null,
-        ]);
-
         $validated = Validator::make([
             'items' => $items,
         ], [
@@ -190,10 +185,6 @@ class MerinfoController extends Controller
             'items.*.merinfo_personer_queue' => 'nullable|integer',
         ])->validate();
 
-        Log::info('MerinfoController validation passed', [
-            'items_count' => count($validated['items']),
-        ]);
-
         $created = 0;
         $updated = 0;
         $failed = 0;
@@ -203,150 +194,124 @@ class MerinfoController extends Controller
         $swedenPersonerCreated = 0;
         $swedenPersonerUpdated = 0;
 
-        foreach ($validated['items'] as $itemIndex => $itemData) {
-            Log::info('MerinfoController foreach item', [
-                'item_index' => $itemIndex,
-                'item_data' => json_encode($itemData),
-                'has_is_hus' => array_key_exists('is_hus', $itemData),
-                'is_hus_value' => $itemData['is_hus'] ?? 'NOT_SET',
-            ]);
+        // Pre-derive fields for all items to avoid repeated computation per iteration.
+        $preparedItems = [];
+        foreach ($validated['items'] as $idx => $itemData) {
+            $preparedItems[$idx] = [
+                'raw' => $itemData,
+                'derived' => $this->deriveItemFields($itemData),
+            ];
+        }
 
-            try {
-                $record = Merinfo::updateOrCreate(
-                    ['short_uuid' => $itemData['short_uuid']],
-                    [
-                        'type' => $itemData['type'] ?? null,
-                        'title' => $itemData['title'] ?? null,
-                        'name' => $itemData['name'] ?? null,
-                        'givenNameOrFirstName' => $itemData['givenNameOrFirstName'] ?? null,
-                        'personalNumber' => $itemData['personalNumber'] ?? null,
-                        'pnr' => $itemData['pnr'] ?? null,
-                        'address' => $itemData['address'] ?? null,
-                        'gender' => $itemData['gender'] ?? null,
-                        'is_celebrity' => $itemData['is_celebrity'] ?? false,
-                        'has_company_engagement' => $itemData['has_company_engagement'] ?? false,
-                        'number_plus_count' => $itemData['number_plus_count'] ?? 0,
-                        'phone_number' => $itemData['phone_number'] ?? null,
-                        'url' => $itemData['url'] ?? null,
-                        'same_address_url' => $itemData['same_address_url'] ?? null,
-                    ]
-                );
+        // Pre-fetch sweden_personer records in bulk (2 queries instead of up to 3N).
+        $swedenCache = $this->buildSwedenPersonerCache($preparedItems);
 
-                $record->wasRecentlyCreated ? $created++ : $updated++;
-
-                $address = $itemData['address'] ?? [];
-                $street = is_array($address) && isset($address[0]['street']) ? $address[0]['street'] : ($itemData['gatuadress'] ?? null);
-                $zipCode = is_array($address) && isset($address[0]['zip_code']) ? $address[0]['zip_code'] : ($itemData['postnummer'] ?? null);
-                $city = is_array($address) && isset($address[0]['city']) ? $address[0]['city'] : ($itemData['postort'] ?? null);
-                $phoneNumbers = $itemData['phone_number'] ?? [];
-                $phoneRaw = is_array($phoneNumbers) && isset($phoneNumbers[0]['raw']) ? $phoneNumbers[0]['raw'] : ($itemData['telefon'] ?? null);
-
-                $age = $itemData['age'] ?? null;
-                $personalNumber = $itemData['personalNumber'] ?? null;
-                if (! $age && $personalNumber) {
-                    $pnr = preg_replace('/[^0-9]/', '', $personalNumber);
-                    if (strlen($pnr) >= 8) {
-                        $birthYear = (int) substr($pnr, 0, 4);
-                        $birthMonth = (int) substr($pnr, 4, 2);
-                        $birthDay = (int) substr($pnr, 6, 2);
-                        try {
-                            $birthDate = new DateTime("$birthYear-$birthMonth-$birthDay");
-                            $today = new DateTime('today');
-                            $age = $birthDate->diff($today)->y;
-                        } catch (Exception $e) {
-                            $age = null;
-                        }
-                    }
-                }
-
-                $isTelefon = isset($itemData['is_telefon']) ? (bool) $itemData['is_telefon'] : ! empty($phoneRaw);
-                $isHus = isset($itemData['is_hus']) ? (bool) $itemData['is_hus'] : false;
-
-                if ($street) {
-                    Log::info('MerinfoController saving to merinfo_data', [
-                        'item_index' => $itemIndex,
-                        'short_uuid' => $itemData['short_uuid'] ?? null,
-                        'is_hus_incoming' => $itemData['is_hus'] ?? null,
-                        'is_hus_type' => gettype($itemData['is_hus'] ?? null),
-                        'is_hus_bool' => $isHus,
-                        'is_telefon_incoming' => $itemData['is_telefon'] ?? null,
-                        'is_telefon_bool' => $isTelefon,
-                    ]);
-
-                    $merinfoData = MerinfoData::updateOrCreate(
+        DB::transaction(function () use (
+            $preparedItems,
+            &$swedenCache,
+            &$created,
+            &$updated,
+            &$failed,
+            &$errors,
+            &$merinfoDataCreated,
+            &$merinfoDataUpdated,
+            &$swedenPersonerCreated,
+            &$swedenPersonerUpdated,
+        ) {
+            foreach ($preparedItems as $itemIndex => ['raw' => $itemData, 'derived' => $derived]) {
+                try {
+                    $record = Merinfo::updateOrCreate(
+                        ['short_uuid' => $itemData['short_uuid']],
                         [
-                            'personnamn' => $itemData['name'] ?? $itemData['personnamn'] ?? null,
-                            'gatuadress' => $street,
-                        ],
-                        [
-                            'personnamn' => $itemData['name'] ?? $itemData['personnamn'] ?? null,
+                            'type' => $itemData['type'] ?? null,
+                            'title' => $itemData['title'] ?? null,
+                            'name' => $itemData['name'] ?? null,
                             'givenNameOrFirstName' => $itemData['givenNameOrFirstName'] ?? null,
-                            'alder' => $age,
-                            'personalNumber' => $personalNumber,
-                            'kon' => $itemData['gender'] ?? null,
-                            'gatuadress' => $street,
-                            'postnummer' => $zipCode,
-                            'postort' => $city,
-                            'telefon' => $phoneRaw,
-                            'telefoner' => $phoneNumbers,
-                            'link' => $itemData['url'] ?? null,
-                            'is_telefon' => $isTelefon,
-                            'is_hus' => $isHus,
-                            'is_active' => isset($itemData['is_active']) ? (bool) $itemData['is_active'] : true,
-                            'is_ratsit' => isset($itemData['is_ratsit']) ? (bool) $itemData['is_ratsit'] : false,
-                            'bostadstyp' => $itemData['bostadstyp'] ?? null,
-                            'bostadspris' => $itemData['bostadspris'] ?? null,
-                            'karta' => $itemData['karta'] ?? null,
-                            'telefonnummer' => $itemData['telefonnummer'] ?? null,
-                            'merinfo_personer_total' => $itemData['merinfo_personer_total'] ?? null,
-                            'merinfo_foretag_total' => $itemData['merinfo_foretag_total'] ?? null,
-                            'merinfo_personer_count' => $itemData['merinfo_personer_count'] ?? 0,
-                            'merinfo_personer_queue' => $itemData['merinfo_personer_queue'] ?? 0,
+                            'personalNumber' => $itemData['personalNumber'] ?? null,
+                            'pnr' => $itemData['pnr'] ?? null,
+                            'address' => $itemData['address'] ?? null,
+                            'gender' => $itemData['gender'] ?? null,
+                            'is_celebrity' => $itemData['is_celebrity'] ?? false,
+                            'has_company_engagement' => $itemData['has_company_engagement'] ?? false,
+                            'number_plus_count' => $itemData['number_plus_count'] ?? 0,
+                            'phone_number' => $itemData['phone_number'] ?? null,
+                            'url' => $itemData['url'] ?? null,
+                            'same_address_url' => $itemData['same_address_url'] ?? null,
                         ]
                     );
 
-                    Log::info('MerinfoController saved to merinfo_data', [
+                    $record->wasRecentlyCreated ? $created++ : $updated++;
+
+                    if ($derived['street']) {
+                        $merinfoData = MerinfoData::updateOrCreate(
+                            [
+                                'personnamn' => $itemData['name'] ?? $itemData['personnamn'] ?? null,
+                                'gatuadress' => $derived['street'],
+                            ],
+                            [
+                                'personnamn' => $itemData['name'] ?? $itemData['personnamn'] ?? null,
+                                'givenNameOrFirstName' => $itemData['givenNameOrFirstName'] ?? null,
+                                'alder' => $derived['age'],
+                                'personalNumber' => $derived['personalNumber'],
+                                'kon' => $itemData['gender'] ?? null,
+                                'gatuadress' => $derived['street'],
+                                'postnummer' => $derived['zipCode'],
+                                'postort' => $derived['city'],
+                                'telefon' => $derived['phoneRaw'],
+                                'telefoner' => $derived['phoneNumbers'],
+                                'link' => $itemData['url'] ?? null,
+                                'is_telefon' => $derived['isTelefon'],
+                                'is_hus' => $derived['isHus'],
+                                'is_active' => isset($itemData['is_active']) ? (bool) $itemData['is_active'] : true,
+                                'is_ratsit' => isset($itemData['is_ratsit']) ? (bool) $itemData['is_ratsit'] : false,
+                                'bostadstyp' => $itemData['bostadstyp'] ?? null,
+                                'bostadspris' => $itemData['bostadspris'] ?? null,
+                                'karta' => $itemData['karta'] ?? null,
+                                'telefonnummer' => $itemData['telefonnummer'] ?? null,
+                                'merinfo_personer_total' => $itemData['merinfo_personer_total'] ?? null,
+                                'merinfo_foretag_total' => $itemData['merinfo_foretag_total'] ?? null,
+                                'merinfo_personer_count' => $itemData['merinfo_personer_count'] ?? 0,
+                                'merinfo_personer_queue' => $itemData['merinfo_personer_queue'] ?? 0,
+                            ]
+                        );
+
+                        $merinfoData->wasRecentlyCreated ? $merinfoDataCreated++ : $merinfoDataUpdated++;
+                    }
+
+                    // Always sync to sweden_personer: updates existing records matched by personnummer
+                    // or merinfo_link even when there is no street address; also inserts new records
+                    // when a full address is available.
+                    $swedenSyncResult = $this->syncSwedenPersonerFromMerinfo(
+                        itemData: $itemData,
+                        street: $derived['street'],
+                        zipCode: $derived['zipCode'],
+                        city: $derived['city'],
+                        phoneRaw: $derived['phoneRaw'],
+                        phoneNumbers: $derived['phoneNumbers'],
+                        age: $derived['age'],
+                        personalNumber: $derived['personalNumber'],
+                        isTelefon: $derived['isTelefon'],
+                        isHus: $derived['isHus'],
+                        cache: $swedenCache,
+                    );
+
+                    if (($swedenSyncResult['created'] ?? false) === true) {
+                        $swedenPersonerCreated++;
+                    }
+
+                    if (($swedenSyncResult['updated'] ?? false) === true) {
+                        $swedenPersonerUpdated++;
+                    }
+                } catch (Exception $e) {
+                    $failed++;
+                    $errors[] = [
                         'item_index' => $itemIndex,
-                        'short_uuid' => $itemData['short_uuid'] ?? null,
-                        'is_telefon_saved' => $isTelefon,
-                        'is_hus_saved' => $isHus,
-                    ]);
-
-                    $merinfoData->wasRecentlyCreated ? $merinfoDataCreated++ : $merinfoDataUpdated++;
+                        'short_uuid' => $itemData['short_uuid'] ?? 'unknown',
+                        'error' => $e->getMessage(),
+                    ];
                 }
-
-                // Always sync to sweden_personer: updates existing records matched by personnummer
-                // or merinfo_link even when there is no street address; also inserts new records
-                // when a full address is available.
-                $swedenSyncResult = $this->syncSwedenPersonerFromMerinfo(
-                    itemData: $itemData,
-                    street: $street,
-                    zipCode: $zipCode,
-                    city: $city,
-                    phoneRaw: $phoneRaw,
-                    phoneNumbers: $phoneNumbers,
-                    age: $age,
-                    personalNumber: $personalNumber,
-                    isTelefon: $isTelefon,
-                    isHus: $isHus,
-                );
-
-                if (($swedenSyncResult['created'] ?? false) === true) {
-                    $swedenPersonerCreated++;
-                }
-
-                if (($swedenSyncResult['updated'] ?? false) === true) {
-                    $swedenPersonerUpdated++;
-                }
-            } catch (Exception $e) {
-                $failed++;
-                $errors[] = [
-                    'item_index' => $itemIndex,
-                    'short_uuid' => $itemData['short_uuid'] ?? 'unknown',
-                    'error' => $e->getMessage(),
-                ];
             }
-        }
+        });
 
         Log::info('MerinfoController bulkStore completed', [
             'created' => $created,
@@ -391,6 +356,7 @@ class MerinfoController extends Controller
         ?string $personalNumber,
         bool $isTelefon,
         bool $isHus,
+        array &$cache = [],
     ): array {
         $personnamn = $this->normalizeNullableString($itemData['name'] ?? $itemData['personnamn'] ?? null);
         $fornamn = $this->normalizeNullableString($itemData['givenNameOrFirstName'] ?? null);
@@ -455,11 +421,27 @@ class MerinfoController extends Controller
         $existing = null;
 
         if ($personnummer !== null) {
-            $existing = DB::table('sweden_personer')->where('personnummer', $personnummer)->first();
+            $existing = ($cache['by_personnummer'] ?? [])[$personnummer] ?? null;
+
+            if ($existing === null) {
+                $existing = DB::table('sweden_personer')->where('personnummer', $personnummer)->first();
+
+                if ($existing !== null) {
+                    $cache['by_personnummer'][$personnummer] = $existing;
+                }
+            }
         }
 
         if ($existing === null && $merinfoLink !== null) {
-            $existing = DB::table('sweden_personer')->where('merinfo_link', $merinfoLink)->first();
+            $existing = ($cache['by_merinfo_link'] ?? [])[$merinfoLink] ?? null;
+
+            if ($existing === null) {
+                $existing = DB::table('sweden_personer')->where('merinfo_link', $merinfoLink)->first();
+
+                if ($existing !== null) {
+                    $cache['by_merinfo_link'][$merinfoLink] = $existing;
+                }
+            }
         }
 
         if ($existing === null && $address !== null && $fornamn !== null && $efternamn !== null) {
@@ -542,6 +524,99 @@ class MerinfoController extends Controller
         DB::table('sweden_personer')->insert($insertData);
 
         return ['created' => true, 'updated' => false];
+    }
+
+    /**
+     * @param  array<string, mixed>  $itemData
+     * @return array{street: ?string, zipCode: ?string, city: ?string, phoneNumbers: array<int, mixed>, phoneRaw: ?string, age: ?int, personalNumber: ?string, isTelefon: bool, isHus: bool}
+     */
+    private function deriveItemFields(array $itemData): array
+    {
+        $address = $itemData['address'] ?? [];
+        $street = is_array($address) && isset($address[0]['street']) ? $address[0]['street'] : ($itemData['gatuadress'] ?? null);
+        $zipCode = is_array($address) && isset($address[0]['zip_code']) ? $address[0]['zip_code'] : ($itemData['postnummer'] ?? null);
+        $city = is_array($address) && isset($address[0]['city']) ? $address[0]['city'] : ($itemData['postort'] ?? null);
+        $phoneNumbers = $itemData['phone_number'] ?? [];
+        $phoneRaw = is_array($phoneNumbers) && isset($phoneNumbers[0]['raw']) ? $phoneNumbers[0]['raw'] : ($itemData['telefon'] ?? null);
+
+        $age = $itemData['age'] ?? null;
+        $personalNumber = $itemData['personalNumber'] ?? null;
+
+        if (! $age && $personalNumber) {
+            $pnr = preg_replace('/[^0-9]/', '', $personalNumber);
+
+            if (strlen($pnr) >= 8) {
+                $birthYear = (int) substr($pnr, 0, 4);
+                $birthMonth = (int) substr($pnr, 4, 2);
+                $birthDay = (int) substr($pnr, 6, 2);
+
+                try {
+                    $birthDate = new DateTime("$birthYear-$birthMonth-$birthDay");
+                    $today = new DateTime('today');
+                    $age = $birthDate->diff($today)->y;
+                } catch (Exception) {
+                    $age = null;
+                }
+            }
+        }
+
+        return [
+            'street' => $street,
+            'zipCode' => $zipCode,
+            'city' => $city,
+            'phoneNumbers' => is_array($phoneNumbers) ? $phoneNumbers : [],
+            'phoneRaw' => $phoneRaw,
+            'age' => $age,
+            'personalNumber' => $personalNumber,
+            'isTelefon' => isset($itemData['is_telefon']) ? (bool) $itemData['is_telefon'] : ! empty($phoneRaw),
+            'isHus' => isset($itemData['is_hus']) ? (bool) $itemData['is_hus'] : false,
+        ];
+    }
+
+    /**
+     * Pre-fetch sweden_personer records matching the given prepared items in bulk
+     * to avoid per-item DB lookups inside the processing loop.
+     *
+     * @param  array<int, array{raw: array<string, mixed>, derived: array<string, mixed>}>  $preparedItems
+     * @return array{by_personnummer: array<string, object>, by_merinfo_link: array<string, object>}
+     */
+    private function buildSwedenPersonerCache(array $preparedItems): array
+    {
+        $personnummers = [];
+        $merinfoLinks = [];
+
+        foreach ($preparedItems as ['raw' => $itemData, 'derived' => $derived]) {
+            $personnummer = $this->normalizeNullableString($derived['personalNumber']);
+            $merinfoLink = $this->normalizeNullableString($itemData['url'] ?? null);
+
+            if ($personnummer !== null) {
+                $personnummers[] = $personnummer;
+            }
+
+            if ($merinfoLink !== null) {
+                $merinfoLinks[] = $merinfoLink;
+            }
+        }
+
+        $byPersonnummer = [];
+        $byMerinfoLink = [];
+
+        if (! empty($personnummers)) {
+            foreach (DB::table('sweden_personer')->whereIn('personnummer', array_unique($personnummers))->get() as $row) {
+                $byPersonnummer[$row->personnummer] = $row;
+            }
+        }
+
+        if (! empty($merinfoLinks)) {
+            foreach (DB::table('sweden_personer')->whereIn('merinfo_link', array_unique($merinfoLinks))->get() as $row) {
+                $byMerinfoLink[$row->merinfo_link] = $row;
+            }
+        }
+
+        return [
+            'by_personnummer' => $byPersonnummer,
+            'by_merinfo_link' => $byMerinfoLink,
+        ];
     }
 
     private function normalizePostnummer(mixed $value): ?string

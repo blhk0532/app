@@ -51,7 +51,8 @@ class SwedenKommunerWidget extends BaseWidget
 
         $table = SwedenKommunersTable::configure($table);
 
-        $table->paginationMode(PaginationMode::Default);
+        $table->paginationMode(PaginationMode::Default)
+            ->defaultSort('personer_count', 'desc');
 
         // Override record actions to add the custom view URL
         return $table->recordActions([

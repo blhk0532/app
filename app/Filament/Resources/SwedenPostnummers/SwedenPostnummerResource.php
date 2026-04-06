@@ -20,7 +20,7 @@ use UnitEnum;
 
 class SwedenPostnummerResource extends Resource
 {
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationLabel = 'Postnummer';
 
@@ -31,6 +31,12 @@ class SwedenPostnummerResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
     protected static bool $shouldRegisterNavigation = false;
+
+
+        public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
+    }
 
     public static function form(Schema $schema): Schema
     {

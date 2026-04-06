@@ -25,7 +25,9 @@ class PersonResource extends Resource
 
     protected static ?string $navigationLabel = 'Person Databas';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Database SWE';
+    protected static string|UnitEnum|null $navigationGroup = 'Database SE';
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {

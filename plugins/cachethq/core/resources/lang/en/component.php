@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Tekniker|Tekniker',
+    'resource_label' => 'Kampanj|Kampanjer',
     'list' => [
         'headers' => [
             'name' => 'Name',
@@ -14,19 +14,19 @@ return [
             'deleted_at' => 'Deleted at',
         ],
         'empty_state' => [
-            'heading' => 'Tekniker',
-            'description' => 'Tekniker represent the various parts of your system that can affect the status of your status page.',
+            'heading' => 'Kampanjer',
+            'description' => 'Kampanjer representerar de olika delarna av ditt system som kan påverka statusen på din status-sida.',
         ],
     ],
     'last_updated' => ':timestamp',
-    'view_details' => 'View Details',
+    'view_details' => 'Visa detaljer',
     'form' => [
-        'name_label' => 'Tekniker',
+        'name_label' => 'Kampanj',
         'status_label' => 'Status',
-        'description_label' => 'Description',
-        'Tekniker_group_label' => 'Tekniker Group',
-        'link_label' => 'Link',
-        'link_helper' => 'Länk Tekniker.',
+        'description_label' => 'Beskrivning',
+        'campaign_group_label' => 'Kampanjgrupp',
+        'link_label' => 'änk',
+        'link_helper' => 'Länk till kampanj.',
     ],
     'status' => [
         'operational' => 'Operational',

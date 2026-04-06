@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Schedule|Schedule',
+    'resource_label' => 'Period|Perioder',
     'list' => [
         'headers' => [
             'name' => 'Name',
@@ -13,7 +13,7 @@ return [
             'deleted_at' => 'Deleted at',
         ],
         'empty_state' => [
-            'heading' => 'Schedule',
+            'heading' => 'Perioder',
             'description' => 'Plan and schedule your maintenance.',
         ],
         'actions' => [

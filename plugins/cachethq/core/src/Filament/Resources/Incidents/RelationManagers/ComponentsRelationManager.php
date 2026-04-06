@@ -23,7 +23,7 @@ class ComponentsRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('Tekniker');
+        return __('Kampanjer');
     }
 
     public function form(Schema $schema): Schema

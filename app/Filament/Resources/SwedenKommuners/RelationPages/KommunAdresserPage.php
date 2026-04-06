@@ -61,6 +61,11 @@ class KommunAdresserPage extends RelationPage implements HasTable
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('ratsit_link')
+                    ->label('Ratsit')
+                    ->limit(40)
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('adress')
             ->paginated([25, 50, 100, 200])

@@ -27,7 +27,7 @@ class Overview extends BaseWidget
     {
         return [
             Stat::make('total_incidents', Incident::count())
-                ->label(__('Områden'))
+                ->label(__('Scheman'))
                 ->description(__(''))
                 ->chart(DB::table('incidents')->selectRaw('count(*) as total')->groupByRaw('date(created_at)')->pluck('total')->toArray())
                 ->icon('cachet-incident')

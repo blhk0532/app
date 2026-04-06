@@ -55,6 +55,7 @@ class ComponentGroupResource extends Resource
                     ToggleButtons::make('visible')
                         ->label(__('cachet::component_group.form.visible_label'))
                         ->inline()
+                        ->hidden()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->live()
@@ -70,6 +71,7 @@ class ComponentGroupResource extends Resource
                     ToggleButtons::make('collapsed')
                         ->label(__('cachet::component_group.form.collapsed_label'))
                         ->required()
+                         ->hidden()
                         ->inline()
                         ->options(ComponentGroupVisibilityEnum::class)
                         ->default(ComponentGroupVisibilityEnum::expanded)
@@ -159,5 +161,14 @@ class ComponentGroupResource extends Resource
         }
 
         return 'gray';
+    }
+
+            public static function getNavigationGroup(): ?string
+    {
+              $team = filament()->getTenant()?->name;
+        $name = \Illuminate\Support\Str::ucwords($team);
+
+         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
+        // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 }

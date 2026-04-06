@@ -3,6 +3,7 @@
 @import '../../../../vendor/adultdate/filament-wirechat/resources/css/filament-wirechat.css';
 @import '../../../../vendor/bezhansalleh/filament-panel-switch/resources/css/panel-switch.css';
 
+@source '../../../../vendor/christmex/filament-toggle-table-group-action/resources/**/*.blade.php';
 
 @source '../../../../app/Filament/Tools/**/*';
 @source '../../../../resources/views/filament/tools/**/*';

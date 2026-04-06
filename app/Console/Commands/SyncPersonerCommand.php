@@ -35,7 +35,6 @@ class SyncPersonerCommand extends Command
         'latitude',
         'telefonnummer',
         'bostadstyp',
-        'bostadspris',
         'agandeform',
         'boarea',
         'byggar',
@@ -75,7 +74,7 @@ class SyncPersonerCommand extends Command
         }
 
         $total = DB::table(self::TARGET_TABLE)->count();
-        $this->info("Sync complete. Total records in ".self::TARGET_TABLE.": {$total}");
+        $this->info('Sync complete. Total records in '.self::TARGET_TABLE.": {$total}");
 
         return self::SUCCESS;
     }
@@ -153,7 +152,6 @@ class SyncPersonerCommand extends Command
                     'postort' => $row->postort ?? null,
                     'telefonnummer' => $phones,
                     'bostadstyp' => $row->bostadstyp ?? null,
-                    'bostadspris' => $row->bostadspris ?? null,
                 ]);
 
                 $bar->advance();
@@ -236,7 +234,6 @@ class SyncPersonerCommand extends Command
                     'postort' => $row->postort ?? null,
                     'telefonnummer' => $phones,
                     'bostadstyp' => $row->bostadstyp ?? null,
-                    'bostadspris' => $row->bostadspris ?? null,
                 ]);
 
                 $bar->advance();
@@ -270,7 +267,6 @@ class SyncPersonerCommand extends Command
                     'postort' => $row->postort ?? null,
                     'telefonnummer' => $phones,
                     'bostadstyp' => $row->bostadstyp ?? null,
-                    'bostadspris' => $row->bostadspris ?? null,
                 ]);
 
                 $bar->advance();

@@ -29,10 +29,12 @@ class KommunViewPostorterMapWidget extends MapWidget
 
     public int|float|string|null $kommunLongitude = null;
 
+       protected string $view = 'filament.widgets.map-widget';
+
     public function getHeading(): ?string
     {
         if ($this->kommunName !== null && $this->kommunName !== '') {
-            return "Postorter i {$this->kommunName}";
+            return "{$this->kommunName} Postorter";
         }
 
         return 'Postorter för kommun';

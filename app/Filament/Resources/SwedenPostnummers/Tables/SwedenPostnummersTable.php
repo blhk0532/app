@@ -13,7 +13,6 @@ use App\Jobs\RunRatsitDataScriptJob;
 use App\Jobs\RunScriptForPostnummerJob;
 use App\Models\HittaData;
 use App\Models\MerinfoData;
-use App\Models\Person;
 use App\Models\RatsitData;
 use App\Models\SwedenPostnummer;
 use App\Services\GoogleSheets\PeopleSheetsSyncService;
@@ -205,17 +204,15 @@ class SwedenPostnummersTable
                         ->color('info')
                         ->action(function (Collection $records): void {
                             $total = $records->count();
-                            $withPin = $records->filter(fn (Person $record): bool => filled($record->personnummer))->count();
-                            $withPhone = $records->filter(function (Person $record): bool {
-                                $phones = $record->telefonnummer;
-
-                                return is_array($phones) && count(array_filter($phones)) > 0;
-                            })->count();
+                            $totalPersoner = $records->sum(fn (SwedenPostnummer $record): int => (int) $record->personer);
+                            $totalRatsit = $records->sum(fn (SwedenPostnummer $record): int => (int) $record->personer_ratsit_saved);
+                            $totalHitta = $records->sum(fn (SwedenPostnummer $record): int => (int) $record->personer_hitta_saved);
+                            $totalMerinfo = $records->sum(fn (SwedenPostnummer $record): int => (int) $record->personer_merinfo_saved);
 
                             Notification::make()
                                 ->title('Selection Summary')
                                 ->success()
-                                ->body("Total: {$total} · With personnummer: {$withPin} · With phone: {$withPhone}")
+                                ->body("Total: {$total} · Persons: {$totalPersoner} · Ratsit: {$totalRatsit} · Hitta: {$totalHitta} · Merinfo: {$totalMerinfo}")
                                 ->send();
                         })
                         ->deselectRecordsAfterCompletion(),

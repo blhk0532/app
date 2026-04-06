@@ -33,6 +33,12 @@ class SwedenKommunerResource extends Resource
 
     protected static bool $shouldRegisterNavigation = false;
 
+
+        public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SwedenKommunerForm::configure($schema);

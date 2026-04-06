@@ -31,6 +31,13 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use BinaryBuilds\FilamentFailedJobs\FilamentFailedJobsPlugin;
+use Filament\Navigation\NavigationGroup;
+use Devletes\FilamentPinnableNavigation\PinnableNavigationPlugin;
+use Filament\Support\Icons\Tabler;
+use Filament\Support\Icons\Heroicon;
+use UnitEnum;
+use BackedEnum;
 
 class GeoPanelProvider extends PanelProvider
 {
@@ -49,8 +56,8 @@ class GeoPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
             ->spaUrlExceptions(['tel:*', 'mailto:*'])
             ->sidebarCollapsibleOnDesktop(true)
-            ->favicon(fn () => asset('favicon.svg'))
-            ->brandLogo(fn () => view('filament.app.logo'))
+            ->favicon(fn() => asset('favicon.svg'))
+            ->brandLogo(fn() => view('filament.app.logo'))
             ->brandLogoHeight('32px')
             ->sidebarWidth('21rem')
             ->brandName('Noridic Digital')
@@ -87,16 +94,34 @@ class GeoPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->navigationGroups([
+                NavigationGroup::make('Sweden GEO')
+                    ->extraSidebarAttributes(['class' => 'featured-sidebar-group'])
+                    ->icon('heroicon-o-map-pin'),
+                NavigationGroup::make('Queue JOBS')
+                    ->extraSidebarAttributes(['class' => 'featured-sidebar-group'])
+                    ->collapsed()
+                    ->icon('heroicon-o-queue-list'),
+                NavigationGroup::make('Database SE')
+                    ->extraSidebarAttributes(['class' => 'featured-sidebar-group'])
+                    ->collapsed()
+                    ->icon('heroicon-o-chart-pie'),
+            //    NavigationGroup::make('Pinned')
+            //        ->extraSidebarAttributes(['class' => 'featured-sidebar-group'])
+            //        ->collapsed()
+            //        ->icon('heroicon-o-star'),
+            ])
             ->plugin(
+                FilamentFailedJobsPlugin::make(),
                 AuthDesignerPlugin::make()
                     ->defaults(
-                        fn ($config) => $config
+                        fn($config) => $config
                             ->media(asset('assets/auth-bg.jpg'))
                             ->mediaPosition(MediaPosition::Cover)
                             ->blur(10)
                     )
                     ->login(
-                        fn ($config) => $config
+                        fn($config) => $config
                             ->media(asset('video/853789-hd_1920_1080_25fps.mp4'))
                     )
                     ->registration()
@@ -109,6 +134,7 @@ class GeoPanelProvider extends PanelProvider
                 //   FilamentDialerPlugin::make(),
 
             ])
+            ->plugin(PinnableNavigationPlugin::make())
             ->plugins([
                 FilamentWirechatPlugin::make()
                     ->excludeResources([

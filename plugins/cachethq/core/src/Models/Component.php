@@ -70,6 +70,7 @@ class Component extends Model
         'enabled',
         'meta',
         'team_id',
+        'service_user_id',
     ];
 
     protected $dispatchesEvents = [

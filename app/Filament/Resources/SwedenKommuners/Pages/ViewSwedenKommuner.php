@@ -7,6 +7,7 @@ use App\Filament\Widgets\KommunViewMapWidget;
 use App\Filament\Widgets\KommunViewPostorterMapWidget;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ViewSwedenKommuner extends ViewRecord
 {
@@ -14,14 +15,29 @@ class ViewSwedenKommuner extends ViewRecord
 
     protected static ?string $title = 'View Kommun';
 
+    public function getTitle(): string|Htmlable
+    {
+        return (string) ($record->kommun ?? '');
+    }
+
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+        //    EditAction::make(),
         ];
     }
 
-    protected function getFooterWidgets(): array
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
+    }
+
+    protected function getHeaderWidgets(): array
     {
         return [
             KommunViewMapWidget::class,

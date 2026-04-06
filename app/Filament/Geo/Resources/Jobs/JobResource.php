@@ -33,9 +33,9 @@ class JobResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Jobs';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = -2;
 
-    // protected static UnitEnum|string|null $navigationGroup = 'Tasks Queue';
+ protected static UnitEnum|string|null $navigationGroup = 'Queue JOBS';
 
     public static function form(Schema $schema): Schema
     {
@@ -76,7 +76,7 @@ class JobResource extends Resource
 
     public static function getNavigationBadgeColor(): ?string
     {
-        return 'primary';
+        return 'danger';
     }
 
     public static function getWidgets(): array

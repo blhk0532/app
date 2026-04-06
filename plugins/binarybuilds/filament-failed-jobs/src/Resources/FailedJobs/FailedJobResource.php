@@ -42,7 +42,17 @@ class FailedJobResource extends Resource
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return 'System';
+        return 'Queue JOBS';
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) FailedJob::query()->count() ?: null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'danger';
     }
 
     public static function getNavigationLabel(): string
@@ -57,7 +67,7 @@ class FailedJobResource extends Resource
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
-        return self::getPlugin()->getNavigationIcon();
+        return 'heroicon-o-queue-list';
     }
 
     public static function getPages(): array

@@ -23,7 +23,7 @@ class SwedenPersonerResource extends Resource
 {
     protected static ?string $model = SwedenPersoner::class;
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $navigationLabel = 'Personer';
 
@@ -32,6 +32,12 @@ class SwedenPersonerResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
     protected static bool $shouldRegisterNavigation = true;
+
+
+        public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
+    }
 
     public static function form(Schema $schema): Schema
     {

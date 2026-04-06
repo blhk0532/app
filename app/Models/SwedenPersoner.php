@@ -69,5 +69,6 @@ class SwedenPersoner extends Model
         'is_active' => 'boolean',
         'is_queue' => 'boolean',
         'is_done' => 'boolean',
+        'postnummer' => 'string',
     ];
 }
