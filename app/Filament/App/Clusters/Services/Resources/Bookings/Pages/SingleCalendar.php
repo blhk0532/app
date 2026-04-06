@@ -60,7 +60,7 @@ class SingleCalendar extends BaseDashboard
         //       Css::make('booking', __DIR__.'/../../../../resources/css/booking.css'),
         //   ]);
 
-        return true;
+        return false;
     }
 
     //    public static function getNavigationLabel(): string

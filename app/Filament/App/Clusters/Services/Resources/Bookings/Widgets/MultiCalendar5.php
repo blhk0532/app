@@ -31,6 +31,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Filament\Actions\Action;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -60,7 +61,7 @@ use Illuminate\Support\Str;
 use Throwable;
 use UnitEnum;
 
-class MultiCalendar5 extends Widget implements HasCalendar, HasSchemas
+class MultiCalendar5 extends Widget implements HasActions, HasCalendar, HasSchemas
 {
     use CanBeConfigured, CanRefreshCalendar, HasOptions, HasSchema, InteractsWithCalendar, InteractsWithEventRecord, InteractsWithEvents, InteractsWithPageFilters, InteractsWithRawJS, InteractsWithRecords, InteractsWithSchemas {
         // Prefer the contract-compatible refreshRecords (chainable) from CanRefreshCalendar

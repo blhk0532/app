@@ -50,10 +50,15 @@ class MultiCalendars extends BaseDashboard
         return true;
     }
 
-     public static function getNavigationBadge(): ?string
-      {
-          return 'TEST';
-      }
+    public static function getNavigationBadge(): ?string
+    {
+        //    return '🇹🇭 ' . now()->timezone('Asia/Bangkok')->format('H:i');
+        $role = Str::upper(auth()->user()->role);
+        Carbon::setLocale('sv');
+        $now = now()->timezone('Europe/Stockholm')->translatedFormat('D');
+
+        return Str::ucfirst($now);
+    }
 
 
     public static function getNavigationBadgeColor(): ?string
