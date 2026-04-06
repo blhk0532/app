@@ -20,6 +20,7 @@
 @import '../../../../vendor/bezhansalleh/filament-panel-switch/resources/css/panel-switch.css';
 
 @import '../../../../plugins/cachethq/core/resources/css/theme.css';
+@import '../../../../plugins/cachethq/core/resources/css/cachet.css';
 @source '../../../../plugins/cachethq/core/resources/views/**/*.blade.php';
 
 @source '../../../../vendor/awcodes/overlook/resources/**/*.blade.php';

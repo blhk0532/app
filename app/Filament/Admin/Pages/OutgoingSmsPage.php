@@ -30,6 +30,8 @@ class OutgoingSmsPage extends Page implements HasForms
 
     protected string $view = 'filament.pages.outgoing-sms';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public ?array $data = [];
 
     public function mount(): void

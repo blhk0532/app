@@ -963,7 +963,7 @@ class MultiCalendar2 extends FullCalendarWidget implements HasCalendar, HasSchem
 
                 $services = array_values(array_unique(array_filter(array_map('trim', $services))));
 
-                return view('filament-booking.modal.booking-description', [
+                return view('filament.booking.booking-description', [
                     'client_name' => $clientName,
                     'phone' => $phone,
                     'street' => $street,

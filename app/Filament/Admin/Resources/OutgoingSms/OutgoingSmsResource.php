@@ -25,11 +25,7 @@ class OutgoingSmsResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-       // return 'Administration | TEAM';
-        $team = filament()->getTenant()?->name;
-        $name = \Illuminate\Support\Str::ucwords($team);
-
-         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
+        return 'Outgoing';
            }
 
     public static function form(Schema $schema): Schema

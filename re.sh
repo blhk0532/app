@@ -22,7 +22,7 @@ echo "Step 2: Enable maintenance mode..."
 $PHP artisan down || true
 
 echo "Step 3: Install Composer dependencies..."
-composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+composer install --no-interaction --prefer-dist --no-scripts --no-dev
 
 echo "Step 4: Install frontend dependencies..."
 pnpm install --frozen-lockfile

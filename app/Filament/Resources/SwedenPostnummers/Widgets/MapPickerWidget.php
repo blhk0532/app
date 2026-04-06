@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\HtmlString;
 
 class MapPickerWidget extends MapTableWidget
@@ -77,7 +78,7 @@ class MapPickerWidget extends MapTableWidget
                 'live_merinfo_count'
             )
             ->selectSub(
-                SwedenPersoner::selectRaw('COUNT(*)')->whereRaw("REPLACE(`postnummer`, ' ', '') = REPLACE(`sweden_postnummer`.`post_nummer`, ' ', '')"),
+                SwedenPersoner::selectRaw('COUNT(*)')->whereColumn('postnummer', 'sweden_postnummer.post_nummer'),
                 'live_personer_count'
             );
     }
@@ -100,7 +101,7 @@ class MapPickerWidget extends MapTableWidget
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
             TextColumn::make('post_ort')
-             ->label('Postort')
+                ->label('Postort')
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
@@ -202,42 +203,42 @@ class MapPickerWidget extends MapTableWidget
                 ->label('Postnr')
                 ->searchable()
                 ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
+                ->options(fn (): array => Cache::remember('filter_options_post_nummer', 3600, fn () => SwedenPostnummer::query()
                     ->whereNotNull('post_nummer')
                     ->where('post_nummer', '<>', '')
                     ->orderBy('post_nummer')
                     ->pluck('post_nummer', 'post_nummer')
-                    ->all()),
+                    ->all())),
             SelectFilter::make('post_ort')
                 ->label('Postort')
                 ->searchable()
                 ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
+                ->options(fn (): array => Cache::remember('filter_options_post_ort', 3600, fn () => SwedenPostnummer::query()
                     ->whereNotNull('post_ort')
                     ->where('post_ort', '<>', '')
                     ->orderBy('post_ort')
                     ->pluck('post_ort', 'post_ort')
-                    ->all()),
+                    ->all())),
             SelectFilter::make('kommun')
                 ->label('Kommun')
                 ->searchable()
                 ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
+                ->options(fn (): array => Cache::remember('filter_options_kommun', 3600, fn () => SwedenPostnummer::query()
                     ->whereNotNull('kommun')
                     ->where('kommun', '<>', '')
                     ->orderBy('kommun')
                     ->pluck('kommun', 'kommun')
-                    ->all()),
+                    ->all())),
             SelectFilter::make('lan')
                 ->label('Län')
                 ->searchable()
                 ->multiple()
-                ->options(fn (): array => SwedenPostnummer::query()
+                ->options(fn (): array => Cache::remember('filter_options_lan', 3600, fn () => SwedenPostnummer::query()
                     ->whereNotNull('lan')
                     ->where('lan', '<>', '')
                     ->orderBy('lan')
                     ->pluck('lan', 'lan')
-                    ->all()),
+                    ->all())),
             MapIsFilter::make('map')
                 ->label('Map Bounds'),
         ];
@@ -633,8 +634,8 @@ class MapPickerWidget extends MapTableWidget
                             ->send();
                     }
                 }),
-                            ExportAction::make()
-                 ->visible()
+            ExportAction::make()
+                ->visible()
                 ->label('Export')
                 ->exporter(PeopleExporter::class)
                 ->icon('heroicon-o-arrow-up-tray')
