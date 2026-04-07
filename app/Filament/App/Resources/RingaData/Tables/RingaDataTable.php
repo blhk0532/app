@@ -582,51 +582,49 @@ final class RingaDataTable
                         $field = $data['duplicate_field'];
                         $user = auth()->user();
                         $tenantId = filament()->getTenant()?->id;
+                        $isSuperAdmin = in_array($user->role, ['super', 'admin']);
 
-                        // Mirror getEloquentQuery: super/admin see all records, others are scoped to team
-                        $scopedQuery = function () use ($user, $tenantId) {
-                            $q = RingaData::query();
-                            if (! in_array($user->role, ['super', 'admin'])) {
-                                $q->where('team_id', $tenantId);
-                            }
-
-                            return $q;
-                        };
+                        // Build team scope clause for raw SQL
+                        $teamClause = (! $isSuperAdmin && $tenantId)
+                            ? 'AND team_id = '.intval($tenantId)
+                            : '';
 
                         if ($field === 'gatuadress') {
-                            $keepIds = $scopedQuery()
-                                ->selectRaw('MIN(id) as id')
-                                ->whereNotNull('gatuadress')
-                                ->where('gatuadress', '!=', '')
-                                ->whereNotNull('personnamn')
-                                ->where('personnamn', '!=', '')
-                                ->groupByRaw('gatuadress, personnamn')
-                                ->pluck('id');
-
-                            $deleteQuery = $scopedQuery()
-                                ->whereNotNull('gatuadress')
-                                ->where('gatuadress', '!=', '')
-                                ->whereNotNull('personnamn')
-                                ->where('personnamn', '!=', '')
-                                ->whereNotIn('id', $keepIds);
+                            $groupCol = 'gatuadress, personnamn';
+                            $nullCheck = "gatuadress IS NOT NULL AND gatuadress != '' AND personnamn IS NOT NULL AND personnamn != ''";
                         } else {
-                            $keepIds = $scopedQuery()
-                                ->selectRaw('MIN(id) as id')
-                                ->whereNotNull($field)
-                                ->where($field, '!=', '')
-                                ->groupBy($field)
-                                ->pluck('id');
-
-                            $deleteQuery = $scopedQuery()
-                                ->whereNotNull($field)
-                                ->where($field, '!=', '')
-                                ->whereNotIn('id', $keepIds);
+                            $col = preg_replace('/[^a-z_]/', '', $field); // sanitize column name
+                            $groupCol = $col;
+                            $nullCheck = "{$col} IS NOT NULL AND {$col} != ''";
                         }
 
-                        $count = (clone $deleteQuery)->count();
+                        $count = DB::selectOne("
+                            SELECT COUNT(*) as cnt
+                            FROM ringa_data
+                            WHERE {$nullCheck} {$teamClause}
+                            AND id NOT IN (
+                                SELECT min_id FROM (
+                                    SELECT MIN(id) as min_id
+                                    FROM ringa_data
+                                    WHERE {$nullCheck} {$teamClause}
+                                    GROUP BY {$groupCol}
+                                ) AS keep_table
+                            )
+                        ")?->cnt ?? 0;
 
                         if ($count > 0) {
-                            $deleteQuery->delete();
+                            DB::statement("
+                                DELETE FROM ringa_data
+                                WHERE {$nullCheck} {$teamClause}
+                                AND id NOT IN (
+                                    SELECT min_id FROM (
+                                        SELECT MIN(id) as min_id
+                                        FROM ringa_data
+                                        WHERE {$nullCheck} {$teamClause}
+                                        GROUP BY {$groupCol}
+                                    ) AS keep_table
+                                )
+                            ");
                         }
 
                         Notification::make()
@@ -635,6 +633,7 @@ final class RingaDataTable
                             ->body("{$count} dubblettpost(er) har tagits bort.")
                             ->send();
                     })
+                    ->successRedirectUrl(fn () => request()->url())
                     ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
             ]);
     }

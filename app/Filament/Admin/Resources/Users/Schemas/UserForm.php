@@ -98,6 +98,7 @@ class UserForm
                             ->columnSpanFull(),
                         Select::make('role')
                             ->label('Role')
+                             ->visible(fn () => auth()->user()->role === 'super')
                             ->options(collect(AuthRole::cases())->mapWithKeys(fn (AuthRole $role) => [
                                 $role->value => $role->label(),
                             ])->toArray())
