@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SwedenPersoner extends Model
 {
@@ -71,4 +72,9 @@ class SwedenPersoner extends Model
         'is_done' => 'boolean',
         'postnummer' => 'string',
     ];
+
+    public function swedenKommun(): BelongsTo
+    {
+        return $this->belongsTo(SwedenKommuner::class, 'kommun', 'kommun');
+    }
 }

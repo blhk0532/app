@@ -55,7 +55,7 @@ class MultiCalendars extends BaseDashboard
         //    return '🇹🇭 ' . now()->timezone('Asia/Bangkok')->format('H:i');
         $role = Str::upper(auth()->user()->role);
         Carbon::setLocale('sv');
-        $now = now()->timezone('Europe/Stockholm')->translatedFormat('D');
+        $now = now()->timezone('Europe/Stockholm')->translatedFormat('l');
 
         return Str::ucfirst($now);
     }
@@ -63,7 +63,7 @@ class MultiCalendars extends BaseDashboard
 
     public static function getNavigationBadgeColor(): ?string
     {
-        return 'warning';
+        return 'gray';
     }
 
     public function getPermissionCheckClosure(): Closure

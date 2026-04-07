@@ -457,19 +457,7 @@ final class RingaDataTable
 
                                             return DB::table('users')
                                                 ->where(function ($query) use ($tenantId) {
-                                                    $query->where('current_team_id', $tenantId)
-                                                        ->orWhereExists(function ($sub) use ($tenantId) {
-                                                            $sub->selectRaw(1)
-                                                                ->from('membership')
-                                                                ->whereColumn('membership.user_id', 'users.id')
-                                                                ->where('membership.team_id', $tenantId);
-                                                        })
-                                                        ->orWhereExists(function ($sub) use ($tenantId) {
-                                                            $sub->selectRaw(1)
-                                                                ->from('teams')
-                                                                ->whereColumn('teams.user_id', 'users.id')
-                                                                ->where('teams.id', $tenantId);
-                                                        });
+                                                    $query->where('role', '!=', 'service');
                                                 })
                                                 ->orderBy('name')
                                                 ->pluck('name', 'id')
@@ -480,7 +468,7 @@ final class RingaDataTable
                                             'required' => 'Detta fält är obligatoriskt.',
                                         ]),
                                     Select::make('teams')
-                                        ->label('Välj Arbetsgrupp')
+                                        ->label('Välj Team')
                                         ->multiple()
                                         ->searchable()
                                         ->options(Team::pluck('name', 'id')->toArray()),
@@ -509,6 +497,7 @@ final class RingaDataTable
                                             'required' => 'Detta fält är obligatoriskt.',
                                         ]),
                                     DatePicker::make('available_at')
+                                    ->hidden()
                                         ->default(Carbon::yesterday())
                                         ->label('Available At'),
                                     DatePicker::make('started_at')

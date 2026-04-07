@@ -60,6 +60,6 @@ class GoogleCalendar extends Page
 
     public static function getNavigationBadge(): ?string
     {
-        return 'OK';
+        return '6';
     }
 }

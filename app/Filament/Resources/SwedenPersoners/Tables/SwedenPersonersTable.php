@@ -105,7 +105,7 @@ class SwedenPersonersTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
-                                    TextColumn::make('adress')
+                TextColumn::make('adress')
                     ->label('Adress')
                     ->searchable()
                     ->limit(218)
@@ -146,7 +146,7 @@ class SwedenPersonersTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('lan')
+                TextColumn::make('swedenKommun.lan')
                     ->label('Län')
                     ->searchable()
                     ->sortable()
@@ -162,23 +162,23 @@ class SwedenPersonersTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('bostadstyp')
                     ->label('Bostadstyp')
-                     ->hidden()
+                    ->hidden()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('personer')
                     ->label('Hushåll')
                     ->numeric()
-                     ->hidden()
+                    ->hidden()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_hus')
-                 ->hidden()
+                    ->hidden()
                     ->label('Hus')
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_owner')
                     ->label('Ägare')
-                     ->hidden()
+                    ->hidden()
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_active')
@@ -339,19 +339,21 @@ class SwedenPersonersTable
                 static::importSqlAction(),
                 ExportAction::make()
                     ->label('CSV')
+                      ->visible(fn () => auth()->user()->role === 'super')
                     ->exporter(SwedenPersonerExporter::class)
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),
                 static::exportSqlAction(),
             ])
             ->defaultSort('Id', 'desc')
-            ->paginated([10, 25, 50, 100, 200, 500])
+            ->paginated([10, 25, 50, 100, 200, 500, 1000])
             ->defaultPaginationPageOption(25);
     }
 
     private static function exportToApiBulkAction(): Action
     {
         return Action::make('exportToApi')
+           ->visible(fn () => auth()->user()->role === 'super')
             ->label('Exportera till API')
             ->icon('heroicon-o-cloud-arrow-up')
             ->color('primary')
@@ -541,6 +543,7 @@ class SwedenPersonersTable
     {
         return Action::make('exportSql')
             ->label('SQL')
+              ->visible(fn () => auth()->user()->role === 'super')
             ->icon('heroicon-o-arrow-up-on-square')
             ->color('danger')
             ->action(function () {

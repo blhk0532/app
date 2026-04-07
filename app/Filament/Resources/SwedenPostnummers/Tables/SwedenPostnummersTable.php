@@ -341,6 +341,7 @@ class SwedenPostnummersTable
                     }),
                 ExportAction::make()
                     ->label('Export')
+                      ->visible(fn () => auth()->user()->role === 'super')
                     ->exporter(PeopleExporter::class)
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),

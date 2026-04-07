@@ -107,6 +107,7 @@ class SwedenAdressersTable
                 static::importSqlAction(),
                 ExportAction::make()
                     ->label('CSV')
+                      ->visible(fn () => auth()->user()->role === 'super')
                     ->exporter(SwedenAdresserExporter::class)
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),
@@ -121,6 +122,7 @@ class SwedenAdressersTable
     {
         return Action::make('exportSql')
             ->label('SQL')
+              ->visible(fn () => auth()->user()->role === 'super')
             ->icon('heroicon-o-arrow-up-on-square')
             ->color('danger')
             ->action(function () {

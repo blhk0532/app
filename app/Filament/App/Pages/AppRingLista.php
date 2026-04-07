@@ -26,7 +26,7 @@ class AppRingLista extends Page
 
     protected string $view = 'filament.app.pages.ring-lista';
 
-    //  protected static string|UnitEnum|null $navigationGroup = '';
+    protected static string|UnitEnum|null $navigationGroup = ' ';
 
     protected static ?int $navigationSort = 10;
 

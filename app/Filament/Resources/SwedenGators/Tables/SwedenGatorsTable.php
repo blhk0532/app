@@ -94,6 +94,7 @@ class SwedenGatorsTable
                 ExcelImportAction::make()
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
+                      ->visible(fn () => auth()->user()->role === 'super')
                     ->label('CSV'),
                 static::importSqlAction(),
                 ExportAction::make()
@@ -112,6 +113,7 @@ class SwedenGatorsTable
     {
         return Action::make('exportSql')
             ->label('SQL')
+              ->visible(fn () => auth()->user()->role === 'super')
             ->icon('heroicon-o-arrow-up-on-square')
             ->color('danger')
             ->action(function () {

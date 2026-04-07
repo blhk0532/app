@@ -19,7 +19,7 @@ class OutgoingSmsResource extends Resource
 
     protected static ?string $navigationLabel = 'Skicka SMS';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left';
 
@@ -60,6 +60,11 @@ class OutgoingSmsResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return parent::getNavigationBadge();
+        return static::getModel()::count() > 0 ? (string) static::getModel()::count() : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
     }
 }

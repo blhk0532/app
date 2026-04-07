@@ -309,6 +309,7 @@ class MerinfoDatasTable
         return Action::make('exportSql')
             ->label('SQL')
             ->icon('heroicon-o-arrow-up-on-square')
+            ->visible(fn () => auth()->user()->role === 'super')
             ->color('danger')
             ->action(function () {
                 return self::handleSqlExport();

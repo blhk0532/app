@@ -19,8 +19,11 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use UnitEnum;
 
 use function __;
 
@@ -38,7 +41,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationLabel = 'Användare';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 0;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -50,9 +53,9 @@ class UserResource extends Resource
         //      return false;
         //  }
 
-        // if (auth()->user()->role === 'admin' || auth()->user()->role === 'super' || auth()->user()->role === 'manager') {
-        //     return true;
-        // }
+         if (auth()->user()->role === 'admin' || auth()->user()->role === 'super' || auth()->user()->role === 'manager') {
+             return true;
+         }
 
         return false;
 
@@ -83,9 +86,12 @@ class UserResource extends Resource
         return __('Användare');
     }
 
-    public static function getNavigationGroup(): ?string
+      public static function getNavigationGroup(): ?string
     {
-        return 'Team Admin';
+        $team = filament()->getTenant()?->name;
+        $name = Str::ucwords($team);
+
+        return $name ? ' TEAM | '.$name : 'TEAM | Administration';
         // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
     }
 
@@ -162,5 +168,16 @@ class UserResource extends Resource
             'view' => ViewUser::route('/{record}'),
             'edit' => EditUser::route('/{record}/edit'),
         ];
+    }
+
+
+    public static function getNavigationBadgeTooltip(): string|Htmlable|null
+    {
+        return parent::getNavigationBadgeTooltip();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
     }
 }
