@@ -35,7 +35,7 @@ class AppChatDashboard extends BasePage
 
   //  protected static string|UnitEnum|null $navigationGroup = '';
 
-    protected static ?int $navigationSort = 20;
+    protected static ?int $navigationSort = -2;
 
     protected static ?int $sort = 0;
 
@@ -58,7 +58,7 @@ class AppChatDashboard extends BasePage
         //        return true;
         //    }
 
-        return false;
+        return true;
 
     }
 
@@ -101,12 +101,12 @@ class AppChatDashboard extends BasePage
 
     public static function getNavigationSort(): ?int
     {
-        return 20;
+        return -2;
     }
 
     public static function getSort(): ?int
     {
-        return 20;
+        return -2;
     }
 
     public function getColumns(): int

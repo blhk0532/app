@@ -633,7 +633,6 @@ final class RingaDataTable
                             ->body("{$count} dubblettpost(er) har tagits bort.")
                             ->send();
                     })
-                    ->successRedirectUrl(fn () => request()->url())
                     ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
             ]);
     }

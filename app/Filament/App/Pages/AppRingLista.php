@@ -28,9 +28,9 @@ class AppRingLista extends Page
 
     protected static string|UnitEnum|null $navigationGroup = ' ';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = -1;
 
-    protected static ?int $sort = 10;
+    protected static ?int $sort = -1;
 
     protected static string|BackedEnum|null $navigationIcon = Remix::RiTimerFlashLine;
 
@@ -48,6 +48,16 @@ class AppRingLista extends Page
     public static function getNavigationLabel(): string
     {
         return 'Ringlistor';
+    }
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+      //  $name = auth()->user()->name ? auth()->user()->name . ' | ' . filament()->getTenant()?->name . ' | Team' : 'X';
+    $name = auth()->user()->name ? auth()->user()->name . ' | ' . auth()->user()->getCompanyName() : 'Company';
+        return $name;
+
+
+      return $name;
     }
 
     public static function getNavigationBadgeColor(): ?string
@@ -75,12 +85,12 @@ class AppRingLista extends Page
 
     public static function getNavigationSort(): ?int
     {
-        return 4;
+        return -1;
     }
 
     public static function getSort(): ?int
     {
-        return 4;
+        return -1;
     }
 
     public function filtersForm(Schema $schema): Schema

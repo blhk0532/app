@@ -76,6 +76,7 @@ class UserForm
                             ->email()
                             ->columnSpan(1),
                         DateTimePicker::make('email_verified_at')
+                        ->hidden()
                             ->required(),
                         TextInput::make('password')
                             ->password()
