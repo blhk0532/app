@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WallaceMartinss\FilamentEvolution\Models;
 
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -55,7 +56,7 @@ class WhatsappInstance extends Model
      */
     public function user()
     {
-        return $this->belongsTo(\App\Models\Team::class, 'tenant_id');
+        return $this->belongsTo(Team::class, 'tenant_id');
     }
 
     public function isConnected(): bool

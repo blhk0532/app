@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Adultdate\FilamentBooking\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\BookingCalendar;
+use App\UserRole;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +17,7 @@ use Zap\Models\Concerns\HasSchedules;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, HasSchedules, Notifiable, TwoFactorAuthenticatable;
 
     /**
@@ -49,7 +52,7 @@ class User extends Authenticatable
 
     public function calendars()
     {
-        return $this->hasMany(\App\Models\BookingCalendar::class, 'owner_id');
+        return $this->hasMany(BookingCalendar::class, 'owner_id');
     }
 
     /**
@@ -74,7 +77,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => \App\UserRole::class,
+            'role' => UserRole::class,
         ];
     }
 }

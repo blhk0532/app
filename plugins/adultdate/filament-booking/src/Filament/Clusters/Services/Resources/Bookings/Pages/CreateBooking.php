@@ -7,6 +7,7 @@ namespace Adultdate\FilamentBooking\Filament\Clusters\Services\Resources\Booking
 use Adultdate\FilamentBooking\Filament\Clusters\Services\Resources\Bookings\BookingResource;
 use Adultdate\FilamentBooking\Filament\Clusters\Services\Resources\Bookings\Schemas\BookingForm;
 use Adultdate\FilamentBooking\Models\Booking\Booking;
+use App\Models\Admin;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -25,7 +26,7 @@ class CreateBooking extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $user = Auth::user();
-        if ($user instanceof \App\Models\Admin) {
+        if ($user instanceof Admin) {
             $data['admin_id'] = $user->id;
             $data['booking_user_id'] = null;
         } else {

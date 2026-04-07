@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentBooking\Models\Booking;
 
+use Adultdate\FilamentBooking\Enums\BookingState;
 use Adultdate\FilamentBooking\Enums\BookingStatus;
+use Adultdate\FilamentBooking\Models\BookingCalendar;
+use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -69,7 +72,7 @@ class Booking extends Model
         'ends_at' => 'datetime',
         'start_time' => 'datetime',
         'end_time' => 'datetime',
-        'state' => \Adultdate\FilamentBooking\Enums\BookingState::class,
+        'state' => BookingState::class,
         'title',
         'description',
         'location',
@@ -88,7 +91,7 @@ class Booking extends Model
      */
     public function admin(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\Admin::class, 'admin_id');
+        return $this->belongsTo(Admin::class, 'admin_id');
     }
 
     /** @return MorphOne<OrderAddress, $this> */
@@ -134,10 +137,10 @@ class Booking extends Model
         return $this->bookingLocation();
     }
 
-    /** @return BelongsTo<\Adultdate\FilamentBooking\Models\BookingCalendar, $this> */
+    /** @return BelongsTo<BookingCalendar, $this> */
     public function bookingCalendar(): BelongsTo
     {
-        return $this->belongsTo(\Adultdate\FilamentBooking\Models\BookingCalendar::class, 'booking_calendar_id');
+        return $this->belongsTo(BookingCalendar::class, 'booking_calendar_id');
     }
 
     /** @return HasMany<BookingItem, $this> */
@@ -258,6 +261,6 @@ class Booking extends Model
 
     protected function registerStates(): void
     {
-        $this->addState('state', \Adultdate\FilamentBooking\Enums\BookingState::class);
+        $this->addState('state', BookingState::class);
     }
 }

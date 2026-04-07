@@ -5,6 +5,21 @@ declare(strict_types=1);
 namespace AdultDate\FilamentWirechat;
 
 use AdultDate\FilamentWirechat\Commands\InstallWirechatCommand;
+use AdultDate\FilamentWirechat\Filament\Widgets\WirechatWidget;
+use Adultdate\Wirechat\Facades\Wirechat;
+use Adultdate\Wirechat\Livewire\Chat\Chat;
+use Adultdate\Wirechat\Livewire\Chat\Drawer;
+use Adultdate\Wirechat\Livewire\Chat\Group\AddMembers;
+use Adultdate\Wirechat\Livewire\Chat\Group\Members;
+use Adultdate\Wirechat\Livewire\Chat\Group\Permissions;
+use Adultdate\Wirechat\Livewire\Chat\Info;
+use Adultdate\Wirechat\Livewire\Chats\Chats;
+use Adultdate\Wirechat\Livewire\Modals\Modal;
+use Adultdate\Wirechat\Livewire\New\Group;
+use Adultdate\Wirechat\Middleware\BelongsToConversation;
+use Adultdate\Wirechat\Middleware\EnsureWirechatPanelAccess;
+use Adultdate\Wirechat\Middleware\SetCurrentPanel;
+use Adultdate\Wirechat\PanelRegistry;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Support\Assets\Asset;
@@ -12,6 +27,7 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Vite;
@@ -77,10 +93,10 @@ class FilamentWirechatServiceProvider extends PackageServiceProvider
         }
 
         // Register PanelRegistry for standalone wirechat panels
-        if (class_exists(\Adultdate\Wirechat\PanelRegistry::class)) {
-            if (! $this->app->bound(\Adultdate\Wirechat\PanelRegistry::class)) {
-                $this->app->singleton(\Adultdate\Wirechat\PanelRegistry::class, function ($app) {
-                    return new \Adultdate\Wirechat\PanelRegistry;
+        if (class_exists(PanelRegistry::class)) {
+            if (! $this->app->bound(PanelRegistry::class)) {
+                $this->app->singleton(PanelRegistry::class, function ($app) {
+                    return new PanelRegistry;
                 });
             }
 
@@ -160,21 +176,21 @@ class FilamentWirechatServiceProvider extends PackageServiceProvider
 
     protected function registerLivewireComponents(): void
     {
-        \Livewire\Livewire::component('filament-wirechat.chats', \Adultdate\Wirechat\Livewire\Chats\Chats::class);
-        \Livewire\Livewire::component('filament-wirechat.chat', \Adultdate\Wirechat\Livewire\Chat\Chat::class);
-        \Livewire\Livewire::component('filament-wirechat.chat.drawer', \Adultdate\Wirechat\Livewire\Chat\Drawer::class);
-        \Livewire\Livewire::component('filament-wirechat.chat.info', \Adultdate\Wirechat\Livewire\Chat\Info::class);
+        \Livewire\Livewire::component('filament-wirechat.chats', Chats::class);
+        \Livewire\Livewire::component('filament-wirechat.chat', Chat::class);
+        \Livewire\Livewire::component('filament-wirechat.chat.drawer', Drawer::class);
+        \Livewire\Livewire::component('filament-wirechat.chat.info', Info::class);
         \Livewire\Livewire::component('filament-wirechat.chat.group.info', \Adultdate\Wirechat\Livewire\Chat\Group\Info::class);
-        \Livewire\Livewire::component('filament-wirechat.chat.group.members', \Adultdate\Wirechat\Livewire\Chat\Group\Members::class);
-        \Livewire\Livewire::component('filament-wirechat.chat.group.add-members', \Adultdate\Wirechat\Livewire\Chat\Group\AddMembers::class);
-        \Livewire\Livewire::component('filament-wirechat.chat.group.permissions', \Adultdate\Wirechat\Livewire\Chat\Group\Permissions::class);
+        \Livewire\Livewire::component('filament-wirechat.chat.group.members', Members::class);
+        \Livewire\Livewire::component('filament-wirechat.chat.group.add-members', AddMembers::class);
+        \Livewire\Livewire::component('filament-wirechat.chat.group.permissions', Permissions::class);
         \Livewire\Livewire::component('filament-wirechat.new.chat', \Adultdate\Wirechat\Livewire\New\Chat::class);
-        \Livewire\Livewire::component('filament-wirechat.new.group', \Adultdate\Wirechat\Livewire\New\Group::class);
-        \Livewire\Livewire::component('filament-wirechat.modal', \Adultdate\Wirechat\Livewire\Modals\Modal::class);
+        \Livewire\Livewire::component('filament-wirechat.new.group', Group::class);
+        \Livewire\Livewire::component('filament-wirechat.modal', Modal::class);
         \Livewire\Livewire::component('filament-wirechat.widget', \Adultdate\Wirechat\Livewire\Widgets\Wirechat::class);
         \Livewire\Livewire::component('filament-wirechat.chats-icon-button', Livewire\Components\ChatsIconButton::class);
         \Livewire\Livewire::component('chats-sidebar', Livewire\Components\ChatsSidebar::class);
-        \Livewire\Livewire::component(\AdultDate\FilamentWirechat\Filament\Widgets\WirechatWidget::class);
+        \Livewire\Livewire::component(WirechatWidget::class);
     }
 
     protected function getAssetPackageName(): ?string
@@ -249,17 +265,17 @@ class FilamentWirechatServiceProvider extends PackageServiceProvider
 
         \Livewire\Livewire::component('wirechat.pages.index', \Adultdate\Wirechat\Livewire\Pages\Chats::class);
         \Livewire\Livewire::component('wirechat.pages.view', \Adultdate\Wirechat\Livewire\Pages\Chat::class);
-        \Livewire\Livewire::component('wirechat.chats', \Adultdate\Wirechat\Livewire\Chats\Chats::class);
-        \Livewire\Livewire::component('wirechat.modal', \Adultdate\Wirechat\Livewire\Modals\Modal::class);
+        \Livewire\Livewire::component('wirechat.chats', Chats::class);
+        \Livewire\Livewire::component('wirechat.modal', Modal::class);
         \Livewire\Livewire::component('wirechat.new.chat', \Adultdate\Wirechat\Livewire\New\Chat::class);
-        \Livewire\Livewire::component('wirechat.new.group', \Adultdate\Wirechat\Livewire\New\Group::class);
-        \Livewire\Livewire::component('wirechat.chat', \Adultdate\Wirechat\Livewire\Chat\Chat::class);
-        \Livewire\Livewire::component('wirechat.chat.info', \Adultdate\Wirechat\Livewire\Chat\Info::class);
+        \Livewire\Livewire::component('wirechat.new.group', Group::class);
+        \Livewire\Livewire::component('wirechat.chat', Chat::class);
+        \Livewire\Livewire::component('wirechat.chat.info', Info::class);
         \Livewire\Livewire::component('wirechat.chat.group.info', \Adultdate\Wirechat\Livewire\Chat\Group\Info::class);
-        \Livewire\Livewire::component('wirechat.chat.drawer', \Adultdate\Wirechat\Livewire\Chat\Drawer::class);
-        \Livewire\Livewire::component('wirechat.chat.group.add-members', \Adultdate\Wirechat\Livewire\Chat\Group\AddMembers::class);
-        \Livewire\Livewire::component('wirechat.chat.group.members', \Adultdate\Wirechat\Livewire\Chat\Group\Members::class);
-        \Livewire\Livewire::component('wirechat.chat.group.permissions', \Adultdate\Wirechat\Livewire\Chat\Group\Permissions::class);
+        \Livewire\Livewire::component('wirechat.chat.drawer', Drawer::class);
+        \Livewire\Livewire::component('wirechat.chat.group.add-members', AddMembers::class);
+        \Livewire\Livewire::component('wirechat.chat.group.members', Members::class);
+        \Livewire\Livewire::component('wirechat.chat.group.permissions', Permissions::class);
         \Livewire\Livewire::component('adultdate', \Adultdate\Wirechat\Livewire\Widgets\Wirechat::class);
     }
 
@@ -268,15 +284,15 @@ class FilamentWirechatServiceProvider extends PackageServiceProvider
      */
     protected function registerStandaloneWirechatMiddleware(): void
     {
-        if (! class_exists(\Adultdate\Wirechat\Middleware\BelongsToConversation::class)) {
+        if (! class_exists(BelongsToConversation::class)) {
             return;
         }
 
-        $router = $this->app->make(\Illuminate\Routing\Router::class);
+        $router = $this->app->make(Router::class);
 
-        $router->aliasMiddleware('belongsToConversation', \Adultdate\Wirechat\Middleware\BelongsToConversation::class);
-        $router->aliasMiddleware('wirechat.setPanel', \Adultdate\Wirechat\Middleware\SetCurrentPanel::class);
-        $router->aliasMiddleware('wirechat.panelAccess', \Adultdate\Wirechat\Middleware\EnsureWirechatPanelAccess::class);
+        $router->aliasMiddleware('belongsToConversation', BelongsToConversation::class);
+        $router->aliasMiddleware('wirechat.setPanel', SetCurrentPanel::class);
+        $router->aliasMiddleware('wirechat.panelAccess', EnsureWirechatPanelAccess::class);
     }
 
     /**
@@ -285,7 +301,7 @@ class FilamentWirechatServiceProvider extends PackageServiceProvider
     protected function loadStandaloneWirechatRoutes(): void
     {
         // Only load standalone routes if PanelRegistry exists (standalone wirechat)
-        if (! class_exists(\Adultdate\Wirechat\PanelRegistry::class) || ! app()->bound(\Adultdate\Wirechat\PanelRegistry::class)) {
+        if (! class_exists(PanelRegistry::class) || ! app()->bound(PanelRegistry::class)) {
             return;
         }
 
@@ -311,7 +327,7 @@ class FilamentWirechatServiceProvider extends PackageServiceProvider
     protected function registerStandaloneWirechatBladeDirectives(): void
     {
         // Only register if the standalone wirechat facade exists
-        if (! class_exists(\Adultdate\Wirechat\Facades\Wirechat::class)) {
+        if (! class_exists(Wirechat::class)) {
             return;
         }
 

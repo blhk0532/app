@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Spatie\LaravelSettings\SettingsRepositories;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelSettings\Models\SettingsProperty;
 
 class DatabaseSettingsRepository implements SettingsRepository
 {
-    /** @var class-string<\Illuminate\Database\Eloquent\Model> */
+    /** @var class-string<Model> */
     private string $propertyModel;
 
     private ?string $connection;

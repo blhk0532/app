@@ -6,18 +6,18 @@ use Closure;
 
 trait HasMessagePreview
 {
-    protected bool | Closure $hiddenPreview = false;
-    
-    protected string | Closure | null $previewLabel = null;
+    protected bool|Closure $hiddenPreview = false;
 
-    public function hiddenPreview(bool | Closure $condition = true): static
+    protected string|Closure|null $previewLabel = null;
+
+    public function hiddenPreview(bool|Closure $condition = true): static
     {
         $this->hiddenPreview = $condition;
 
         return $this;
     }
 
-    public function previewLabel(string | Closure | null $label): static
+    public function previewLabel(string|Closure|null $label): static
     {
         $this->previewLabel = $label;
 

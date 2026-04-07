@@ -8,6 +8,7 @@ use Adultdate\Schedule\Concerns\HasHeaderActions;
 use Adultdate\Schedule\Filament\Widgets\Concerns\CanBeConfigured;
 use Adultdate\Schedule\Filament\Widgets\Concerns\InteractsWithRawJS;
 use Adultdate\Schedule\SchedulePlugin;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -79,21 +80,21 @@ class FullCalendarWidget extends Widget implements HasActions, HasForms
     protected function headerActions(): array
     {
         return [
-            \Filament\Actions\Action::make('create'),
+            Action::make('create'),
         ];
     }
 
     protected function modalActions(): array
     {
         return [
-            \Filament\Actions\Action::make('edit'),
-            \Filament\Actions\Action::make('delete'),
+            Action::make('edit'),
+            Action::make('delete'),
         ];
     }
 
-    protected function viewAction(): \Filament\Actions\Action
+    protected function viewAction(): Action
     {
         // Use a non-colliding action name so it doesn't overwrite the widget's `$view` property
-        return \Filament\Actions\Action::make('viewEvent');
+        return Action::make('viewEvent');
     }
 }

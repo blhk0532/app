@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentUser\Filament\Resources\UserType\Tables;
 
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -16,9 +18,9 @@ class UserTypesTable
             TextColumn::make('slug')->sortable()->searchable(),
             TextColumn::make('label')->sortable()->searchable(),
         ])->filters([])->actions([
-            \Filament\Tables\Actions\EditAction::make(),
+            EditAction::make(),
         ])->bulkActions([
-            \Filament\Tables\Actions\DeleteBulkAction::make(),
+            DeleteBulkAction::make(),
         ]);
     }
 }

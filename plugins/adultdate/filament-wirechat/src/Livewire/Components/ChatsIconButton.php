@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdultDate\FilamentWirechat\Livewire\Components;
 
 use Adultdate\Wirechat\Helpers\MorphClassResolver;
+use Filament\Facades\Filament;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -39,7 +40,7 @@ class ChatsIconButton extends Component
 
         // Listen to all conversations for this user to detect new messages
         // We'll refresh the count when any message is created for this user
-        $panelId = \Filament\Facades\Filament::getCurrentPanel()?->getId() ?? 'admin';
+        $panelId = Filament::getCurrentPanel()?->getId() ?? 'admin';
         $channelName = "{$panelId}.participant.{$encodedType}.{$userId}";
         $listeners["echo-private:{$channelName},.Adultdate\\Wirechat\\Events\\NotifyParticipant"] = 'handleNewMessage';
 

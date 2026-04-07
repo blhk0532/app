@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdultDate\FilamentWirechat\Models;
 
+use AdultDate\FilamentWirechat\Database\Factories\GroupFactory;
 use AdultDate\FilamentWirechat\Enums\GroupType;
 use AdultDate\FilamentWirechat\Enums\ParticipantRole;
 use Adultdate\Wirechat\Facades\Wirechat;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -25,8 +27,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property bool $allow_members_to_edit_group_info
  * @property int $admins_must_approve_new_members when turned on, admins must approve anyone who wants to join group
  * @property string|null $deleted_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read Conversation $conversation
  * @property-read Attachment|null $cover
  * @property-read string|null $cover_url
@@ -157,6 +159,6 @@ class Group extends Model
      */
     protected static function newFactory()
     {
-        return \AdultDate\FilamentWirechat\Database\Factories\GroupFactory::new();
+        return GroupFactory::new();
     }
 }

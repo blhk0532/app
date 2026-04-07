@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdultDate\FilamentWirechat\Models;
 
+use AdultDate\FilamentWirechat\Database\Factories\MessageFactory;
 use AdultDate\FilamentWirechat\Enums\Actions;
 use AdultDate\FilamentWirechat\Enums\MessageType;
 use AdultDate\FilamentWirechat\Models\Scopes\WithoutRemovedMessages;
@@ -12,6 +13,8 @@ use Adultdate\Wirechat\Facades\Wirechat;
 use Adultdate\Wirechat\Helpers\Helper;
 use Eloquent;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -30,11 +34,11 @@ use Illuminate\Support\Facades\DB;
  * @property int|null $reply_id
  * @property string|null $body
  * @property MessageType $type
- * @property \Illuminate\Support\Carbon|null $kept_at filled when a message is kept from disappearing
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Action> $actions
+ * @property Carbon|null $kept_at filled when a message is kept from disappearing
+ * @property Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, Action> $actions
  * @property-read int|null $actions_count
  * @property-read Attachment|null $attachment
  * @property-read Conversation|null $conversation
@@ -61,7 +65,7 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder|Message withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Message withoutTrashed()
  *
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Message extends Model
 {
@@ -115,7 +119,7 @@ class Message extends Model
     /**
      * Get a new query builder instance for the model.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function newQuery()
     {
@@ -389,7 +393,7 @@ class Message extends Model
      */
     protected static function newFactory()
     {
-        return \AdultDate\FilamentWirechat\Database\Factories\MessageFactory::new();
+        return MessageFactory::new();
     }
 
     protected static function booted()

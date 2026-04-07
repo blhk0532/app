@@ -50,19 +50,9 @@ class Dashboard extends BaseDashboard
 
     public static function getNavigationLabel(): string
     {
-        return 'Kartor MAPS';
+        return 'Kartor PINS';
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return '❍nline';
-
-    }
-
-    public static function getNavigationBadgeColor(): ?string
-    {
-        return 'success';
-    }
 
     public function getMaxContentWidth(): Width
     {

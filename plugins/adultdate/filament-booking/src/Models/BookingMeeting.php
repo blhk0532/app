@@ -6,13 +6,14 @@ namespace Adultdate\FilamentBooking\Models;
 
 use Adultdate\FilamentBooking\Contracts\Eventable;
 use Adultdate\FilamentBooking\ValueObjects\CalendarEvent;
+use Database\Factories\MeetingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class BookingMeeting extends Model implements Eventable
 {
-    /** @use HasFactory<\Database\Factories\MeetingFactory> */
+    /** @use HasFactory<MeetingFactory> */
     use HasFactory;
 
     /**

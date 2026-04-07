@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdultDate\FilamentWirechat\Models;
 
+use AdultDate\FilamentWirechat\Database\Factories\ActionFactory;
 use AdultDate\FilamentWirechat\Enums\Actions;
 use Adultdate\Wirechat\Facades\Wirechat;
 use Eloquent;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -20,8 +22,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $actor_type
  * @property Actions $type
  * @property string|null $data Some additional information about the action
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read Model|Eloquent $actionable
  * @property-read Model|Eloquent $actor
  *
@@ -40,7 +42,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static Builder|Action whereUpdatedAt($value)
  * @method static Builder|Action withoutActor(\Illuminate\Database\Eloquent\Model $user)
  *
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Action extends Model
 {
@@ -144,6 +146,6 @@ class Action extends Model
      */
     protected static function newFactory()
     {
-        return \AdultDate\FilamentWirechat\Database\Factories\ActionFactory::new();
+        return ActionFactory::new();
     }
 }

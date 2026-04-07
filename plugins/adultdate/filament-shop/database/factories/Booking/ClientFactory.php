@@ -6,6 +6,7 @@ namespace Adultdate\FilamentShop\Database\Factories\Booking;
 
 use Adultdate\FilamentShop\Models\Booking\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Client>
@@ -20,7 +21,7 @@ class ClientFactory extends Factory
     public function definition(): array
     {
         return [
-            'ulid' => (string) \Illuminate\Support\Str::ulid(),
+            'ulid' => (string) Str::ulid(),
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),

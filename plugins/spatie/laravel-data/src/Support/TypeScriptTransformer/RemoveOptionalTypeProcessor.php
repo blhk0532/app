@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spatie\LaravelData\Support\TypeScriptTransformer;
 
 use Exception;
+use Illuminate\Support\Collection;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Object_;
@@ -26,7 +27,7 @@ class RemoveOptionalTypeProcessor implements TypeProcessor
             return $type;
         }
 
-        /** @var \Illuminate\Support\Collection $types */
+        /** @var Collection $types */
         $types = collect(iterator_to_array($type->getIterator()))
             ->reject(function (Type $type) {
                 if (! $type instanceof Object_) {

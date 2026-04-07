@@ -7,6 +7,7 @@ namespace AdultDate\FilamentWirechat\Filament\Resources\Messages\Tables;
 use AdultDate\FilamentWirechat\Enums\MessageType;
 use AdultDate\FilamentWirechat\Filament\Resources\Conversations\ConversationResource;
 use AdultDate\FilamentWirechat\Models\Conversation;
+use AdultDate\FilamentWirechat\Models\Message;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -98,7 +99,7 @@ class MessagesTable
                         return User::query()
                             ->whereIn('id', function ($query) {
                                 $query->select('sendable_id')
-                                    ->from((new \AdultDate\FilamentWirechat\Models\Message)->getTable())
+                                    ->from((new Message)->getTable())
                                     ->where('sendable_type', User::class)
                                     ->distinct();
                             })

@@ -30,7 +30,7 @@ class ServicesTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('price')
-                ->label('Pris')
+                    ->label('Pris')
                     ->money('SEK', locale: 'sv')
                     ->sortable(),
                 TextColumn::make('time_duration')

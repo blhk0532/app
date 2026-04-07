@@ -90,6 +90,7 @@ use Spatie\LaravelData\Attributes\Validation\Size;
 use Spatie\LaravelData\Attributes\Validation\Sometimes;
 use Spatie\LaravelData\Attributes\Validation\StartsWith;
 use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\Validation\StringValidationAttribute;
 use Spatie\LaravelData\Attributes\Validation\Timezone;
 use Spatie\LaravelData\Attributes\Validation\Ulid;
 use Spatie\LaravelData\Attributes\Validation\Unique;
@@ -104,7 +105,7 @@ class ValidationRuleFactory
     {
         [$keyword, $parameters] = ValidationRuleParser::parse($rule);
 
-        /** @var \Spatie\LaravelData\Attributes\Validation\StringValidationAttribute|null $ruleClass */
+        /** @var StringValidationAttribute|null $ruleClass */
         $ruleClass = $this->mapping()[Str::snake($keyword)] ?? null;
 
         if ($ruleClass === null) {

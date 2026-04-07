@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdultDate\FilamentWirechat\Filament\Resources\Conversations\RelationManagers;
 
 use AdultDate\FilamentWirechat\Enums\MessageType;
+use AdultDate\FilamentWirechat\Models\Message;
 use App\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -82,7 +83,7 @@ class MessagesRelationManager extends RelationManager
                         return User::query()
                             ->whereIn('id', function ($query) use ($conversationId) {
                                 $query->select('sendable_id')
-                                    ->from((new \AdultDate\FilamentWirechat\Models\Message)->getTable())
+                                    ->from((new Message)->getTable())
                                     ->where('sendable_type', User::class)
                                     ->where('conversation_id', $conversationId)
                                     ->distinct();

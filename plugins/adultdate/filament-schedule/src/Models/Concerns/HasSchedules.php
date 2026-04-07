@@ -9,6 +9,9 @@ use Adultdate\Schedule\Data\FrequencyConfig;
 use Adultdate\Schedule\Enums\ScheduleTypes;
 use Adultdate\Schedule\Models\Schedule;
 use Adultdate\Schedule\Services\ConflictDetectionService;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
@@ -18,7 +21,7 @@ use Illuminate\Support\Collection;
  * This trait provides scheduling capabilities to any Eloquent model.
  * Use this trait in models that need to be schedulable.
  *
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 trait HasSchedules
 {
@@ -194,8 +197,8 @@ trait HasSchedules
         $bufferMinutes = max(0, $bufferMinutes);
 
         $slots = [];
-        $currentTime = \Carbon\Carbon::parse($date.' '.$dayStart);
-        $endTime = \Carbon\Carbon::parse($date.' '.$dayEnd);
+        $currentTime = Carbon::parse($date.' '.$dayStart);
+        $endTime = Carbon::parse($date.' '.$dayEnd);
 
         // If end time is before or equal to start time, return empty array
         if ($endTime->lessThanOrEqualTo($currentTime)) {
@@ -274,8 +277,8 @@ trait HasSchedules
 
         // Generate slots for each availability period
         $availabilityPeriods->each(function ($period) use ($date, $slotDuration, $bufferMinutes, $slotInterval, $blockingSchedules, &$allSlots) {
-            $currentTime = \Carbon\Carbon::parse($date.' '.$period->start_time);
-            $periodEnd = \Carbon\Carbon::parse($date.' '.$period->end_time);
+            $currentTime = Carbon::parse($date.' '.$period->start_time);
+            $periodEnd = Carbon::parse($date.' '.$period->end_time);
 
             while ($currentTime->lessThan($periodEnd)) {
                 $slotEnd = $currentTime->copy()->addMinutes($slotDuration);
@@ -339,7 +342,7 @@ trait HasSchedules
         }
 
         $startDate = $afterDate ?? now()->format('Y-m-d');
-        $checkDate = \Carbon\Carbon::parse($startDate);
+        $checkDate = Carbon::parse($startDate);
 
         // Check up to 365 days in the future to cover all recurring frequencies
         for ($i = 0; $i < 365; $i++) {
@@ -380,7 +383,7 @@ trait HasSchedules
         }
 
         $startDate = $afterDate ?? now()->format('Y-m-d');
-        $checkDate = \Carbon\Carbon::parse($startDate);
+        $checkDate = Carbon::parse($startDate);
 
         // Check up to 30 days in the future
         for ($i = 0; $i < 30; $i++) {
@@ -467,7 +470,7 @@ trait HasSchedules
      */
     protected function recurringScheduleBlocksTime(Schedule $schedule, string $date, string $startTime, string $endTime, int $bufferMinutes = 0): bool
     {
-        $checkDate = \Carbon\Carbon::parse($date);
+        $checkDate = Carbon::parse($date);
 
         // Check if this date should have a recurring instance
         if (! $this->shouldCreateRecurringInstance($schedule, $checkDate)) {
@@ -489,7 +492,7 @@ trait HasSchedules
     /**
      * Check if a recurring instance should be created for the given date.
      */
-    protected function shouldCreateRecurringInstance(Schedule $schedule, \Carbon\CarbonInterface $date): bool
+    protected function shouldCreateRecurringInstance(Schedule $schedule, CarbonInterface $date): bool
     {
         $config = $schedule->frequency_config ?? [];
 
@@ -525,10 +528,10 @@ trait HasSchedules
         }
 
         $baseDate = '2024-01-01';
-        $s1 = \Carbon\Carbon::parse($baseDate.' '.$start1)->subMinutes($bufferMinutes);
-        $e1 = \Carbon\Carbon::parse($baseDate.' '.$end1)->addMinutes($bufferMinutes);
-        $s2 = \Carbon\Carbon::parse($baseDate.' '.$start2);
-        $e2 = \Carbon\Carbon::parse($baseDate.' '.$end2);
+        $s1 = Carbon::parse($baseDate.' '.$start1)->subMinutes($bufferMinutes);
+        $e1 = Carbon::parse($baseDate.' '.$end1)->addMinutes($bufferMinutes);
+        $s2 = Carbon::parse($baseDate.' '.$start2);
+        $e2 = Carbon::parse($baseDate.' '.$end2);
 
         return $s1->lt($e2) && $e1->gt($s2);
     }
@@ -538,7 +541,7 @@ trait HasSchedules
      */
     protected function getAvailabilityPeriodsForDate(string $date): Collection
     {
-        $checkDate = \Carbon\Carbon::parse($date);
+        $checkDate = Carbon::parse($date);
 
         // Get all availability schedules for this date
         $availabilitySchedules = Schedule::where('schedulable_type', get_class($this))

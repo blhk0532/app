@@ -9,7 +9,7 @@ use AdultDate\FilamentWirechat\Models\Conversation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\AdultDate\FilamentWirechat\Models\Conversation>
+ * @extends Factory<Conversation>
  */
 class ConversationFactory extends Factory
 {

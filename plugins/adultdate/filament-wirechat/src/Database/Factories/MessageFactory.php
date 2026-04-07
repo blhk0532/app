@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Auth\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\AdultDate\FilamentWirechat\Models\Message>
+ * @extends Factory<Message>
  */
 class MessageFactory extends Factory
 {

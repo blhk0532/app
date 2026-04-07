@@ -31,6 +31,12 @@ use UnitEnum;
 use Wallacemartinss\FilamentIconPicker\Enums\Heroicons;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 
+use App\Filament\App\Widgets\StatusComponentsWidget;
+use App\Filament\App\Widgets\StatusSupportWidget;
+use App\Filament\App\Widgets\StatusTimelineWidget;
+use App\Filament\App\Widgets\StatusScheduleWidget;
+use App\Filament\App\Widgets\StatusAboutWidget;
+
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
@@ -168,8 +174,17 @@ class AppDashboard extends BasePage
             //    WorldClockWidget::class,
             //    CalendarWidget::class,
             //    MyRinglistaWidget::class,
-            AnnouncementWidget::class,
+
+
+           /// StatusSupportWidget::class,
+           StatusScheduleWidget::class,
+            StatusTimelineWidget::class,
+
+
+
             TeamMembersWidget::class,
+             StatusComponentsWidget::class,
+             AnnouncementWidget::class,
             AnnouncementEditorWidget::class,
             // ControlPanelCardsWidget::class, // Disabled - needs to be fixed (uses CardsPage methods but extends Widget)
         ];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentAuth\Models;
 
+use Database\Factories\TeamFactory;
 use Filament\Models\Contracts\HasCurrentTenantLabel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ use Illuminate\Support\Str;
 
 class Team extends Model implements HasCurrentTenantLabel
 {
-    /** @use HasFactory<\Database\Factories\TeamFactory> */
+    /** @use HasFactory<TeamFactory> */
     use HasFactory;
 
     /**

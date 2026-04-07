@@ -8,6 +8,8 @@ use Adultdate\FilamentBooking\Attributes\CalendarEventContent;
 use Adultdate\FilamentBooking\Enums\CalendarViewType;
 use Adultdate\FilamentBooking\Enums\Priority;
 use Adultdate\FilamentBooking\Filament\Actions\CreateAction;
+use Adultdate\FilamentBooking\Filament\Resources\Booking\DailyLocations\Schemas\DailyLocationForm;
+use Adultdate\FilamentBooking\FilamentBookingPlugin;
 use Adultdate\FilamentBooking\Models\Booking\DailyLocation;
 use Adultdate\FilamentBooking\Models\BookingMeeting;
 use Adultdate\FilamentBooking\Models\BookingSprint;
@@ -16,6 +18,7 @@ use Adultdate\FilamentBooking\ValueObjects\DateSelectInfo;
 use Adultdate\FilamentBooking\ValueObjects\EventDropInfo;
 use Adultdate\FilamentBooking\ValueObjects\EventResizeInfo;
 use Adultdate\FilamentBooking\ValueObjects\FetchInfo;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -27,6 +30,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 
 class LocationCalendarWidget extends FullCalendarWidget implements HasActions, HasSchemas
@@ -64,7 +68,7 @@ class LocationCalendarWidget extends FullCalendarWidget implements HasActions, H
     {
         return array_replace_recursive(
             $this->config(),
-            \Adultdate\FilamentBooking\FilamentBookingPlugin::get()->getConfig(),
+            FilamentBookingPlugin::get()->getConfig(),
         );
     }
 
@@ -112,7 +116,7 @@ class LocationCalendarWidget extends FullCalendarWidget implements HasActions, H
         $allDay = (bool) $allDay;
 
         $timezone = config('app.timezone');
-        $startDate = \Carbon\Carbon::parse($date, $timezone);
+        $startDate = Carbon::parse($date, $timezone);
 
         if ($allDay) {
             $this->mountAction('create-daily-location', [
@@ -126,7 +130,7 @@ class LocationCalendarWidget extends FullCalendarWidget implements HasActions, H
         $allDay = (bool) $allDay;
 
         $timezone = config('app.timezone');
-        $startDate = \Carbon\Carbon::parse($start, $timezone);
+        $startDate = Carbon::parse($start, $timezone);
 
         if ($allDay) {
             $this->mountAction('create-daily-location', [
@@ -140,7 +144,7 @@ class LocationCalendarWidget extends FullCalendarWidget implements HasActions, H
         return Action::make('create-daily-location')
             ->label('Create Daily Location')
             ->icon('heroicon-o-plus')
-            ->schema(fn (Schema $schema) => \Adultdate\FilamentBooking\Filament\Resources\Booking\DailyLocations\Schemas\DailyLocationForm::configure($schema))
+            ->schema(fn (Schema $schema) => DailyLocationForm::configure($schema))
             ->action(function (array $data, array $arguments) {
                 if (isset($arguments['date'])) {
                     $data['date'] = $arguments['date'];
@@ -177,7 +181,7 @@ class LocationCalendarWidget extends FullCalendarWidget implements HasActions, H
 
                 return $dailyLocation ? $dailyLocation->toArray() : [];
             })
-            ->schema(fn (Schema $schema) => \Adultdate\FilamentBooking\Filament\Resources\Booking\DailyLocations\Schemas\DailyLocationForm::configure($schema))
+            ->schema(fn (Schema $schema) => DailyLocationForm::configure($schema))
             ->action(function (array $data, array $arguments) {
                 $dailyLocation = DailyLocation::find($arguments['id']);
                 if ($dailyLocation) {
@@ -223,7 +227,7 @@ class LocationCalendarWidget extends FullCalendarWidget implements HasActions, H
         $start = $info->start->toMutable()->startOfDay();
         $end = $info->end->toMutable()->endOfDay();
 
-        \Illuminate\Support\Facades\Log::info('getEvents called', ['start' => $start, 'end' => $end]);
+        Log::info('getEvents called', ['start' => $start, 'end' => $end]);
 
         // Also include DailyLocation entries as all-day events on calendar
         $dailyLocations = DailyLocation::query()

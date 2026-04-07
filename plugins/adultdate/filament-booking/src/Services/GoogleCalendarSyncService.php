@@ -7,10 +7,13 @@ namespace Adultdate\FilamentBooking\Services;
 use Adultdate\FilamentBooking\Models\Booking\Booking;
 use Adultdate\FilamentBooking\Models\BookingCalendar;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Spatie\GoogleCalendar\Event;
+use Spatie\GoogleCalendar\GoogleCalendarFactory;
 
 class GoogleCalendarSyncService
 {
@@ -72,7 +75,7 @@ class GoogleCalendarSyncService
             $event = $this->fetchGoogleEvent($booking->google_event_id, $googleCalendarId);
 
             // If the API returned a collection, use the first item
-            if ($event instanceof \Illuminate\Support\Collection) {
+            if ($event instanceof Collection) {
                 $event = $event->first();
             }
 
@@ -143,7 +146,7 @@ class GoogleCalendarSyncService
         $event = $this->fetchGoogleEvent($booking->google_event_id, $googleCalendarId);
 
         // If the API returned a collection, use the first item
-        if ($event instanceof \Illuminate\Support\Collection) {
+        if ($event instanceof Collection) {
             $event = $event->first();
         }
 
@@ -177,7 +180,7 @@ class GoogleCalendarSyncService
      */
     private function fetchGoogleEvent(string $eventId, string $googleCalendarId): mixed
     {
-        $googleCalendar = \Spatie\GoogleCalendar\GoogleCalendarFactory::createForCalendarId($googleCalendarId);
+        $googleCalendar = GoogleCalendarFactory::createForCalendarId($googleCalendarId);
         $googleEvent = $googleCalendar->getEvent($eventId);
 
         return Event::createFromGoogleCalendarEvent($googleEvent, $googleCalendar->getCalendarId());
@@ -253,7 +256,7 @@ class GoogleCalendarSyncService
     {
         $dateTime = $booking->starts_at ?? Carbon::parse($booking->service_date.' '.$booking->start_time);
 
-        return $dateTime instanceof \Carbon\CarbonImmutable ? $dateTime->toMutable() : $dateTime;
+        return $dateTime instanceof CarbonImmutable ? $dateTime->toMutable() : $dateTime;
     }
 
     /**
@@ -263,7 +266,7 @@ class GoogleCalendarSyncService
     {
         $dateTime = $booking->ends_at ?? Carbon::parse($booking->service_date.' '.$booking->end_time);
 
-        return $dateTime instanceof \Carbon\CarbonImmutable ? $dateTime->toMutable() : $dateTime;
+        return $dateTime instanceof CarbonImmutable ? $dateTime->toMutable() : $dateTime;
     }
 
     /**

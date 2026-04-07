@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Spatie\Image\Drivers\Concerns;
 
-/** @mixin \Spatie\Image\Drivers\ImageDriver */
+use Spatie\Image\Drivers\ImageDriver;
+
+/** @mixin ImageDriver */
 trait CalculatesFocalCropCoordinates
 {
     /** @return array{0: int, 1: int, 2: int|null, 3: int|null} */

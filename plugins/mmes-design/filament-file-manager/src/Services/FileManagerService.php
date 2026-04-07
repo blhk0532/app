@@ -6,12 +6,14 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\UnableToRetrieveMetadata;
 use MmesDesign\FilamentFileManager\DTOs\DirectoryListing;
 use MmesDesign\FilamentFileManager\DTOs\FileItem;
 use MmesDesign\FilamentFileManager\DTOs\FolderItem;
 use MmesDesign\FilamentFileManager\Enums\SortDirection;
 use MmesDesign\FilamentFileManager\Enums\SortField;
 use MmesDesign\FilamentFileManager\Support\PathSanitizer;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileManagerService
 {
@@ -233,7 +235,7 @@ class FileManagerService
         return $count;
     }
 
-    public function download(string $disk, string $path): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function download(string $disk, string $path): StreamedResponse
     {
         $path = $this->pathSanitizer->sanitize($path);
 
@@ -279,7 +281,7 @@ class FileManagerService
         return array_map(function (string $directory) use ($storage): FolderItem {
             try {
                 $lastModified = $storage->lastModified($directory);
-            } catch (\League\Flysystem\UnableToRetrieveMetadata) {
+            } catch (UnableToRetrieveMetadata) {
                 $lastModified = 0;
             }
 
@@ -313,7 +315,7 @@ class FileManagerService
                 try {
                     $size = $storage->size($file);
                     $lastModified = $storage->lastModified($file);
-                } catch (\League\Flysystem\UnableToRetrieveMetadata) {
+                } catch (UnableToRetrieveMetadata) {
                     $size = 0;
                     $lastModified = 0;
                 }

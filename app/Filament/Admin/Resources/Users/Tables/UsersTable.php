@@ -19,7 +19,7 @@ use Filament\Tables\Table;
 use Guava\FilamentIconSelectColumn\Tables\Columns\IconSelectColumn;
 use Mokhosh\FilamentRating\Columns\RatingColumn;
 use STS\FilamentImpersonate\Actions\Impersonate;
-
+use Filament\Actions\CreateAction;
 class UsersTable
 {
     public static function configure(Table $table): Table
@@ -100,6 +100,7 @@ class UsersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+                CreateAction::make(),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -108,9 +109,9 @@ class UsersTable
                 Impersonate::make()
                 ->color('success')
                 ->label('Login')
-                ->visible(fn ($record) => Filament::auth()->user()->hasRole('super') || ! $record->hasRole('super_admin')),
+               ->visible(fn () => auth()->user()->role === 'super'),
                 DeleteAction::make()
-                    ->visible(fn ($record) => Filament::auth()->user()->hasRole('super') || ! $record->hasRole('super_admin')),
+                    ->visible(fn () => auth()->user()->role === 'super')
             ]);
     }
 }

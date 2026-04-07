@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Adultdate\FilamentBooking\Filament\Actions;
 
 use Adultdate\FilamentBooking\Contracts\HasCalendar;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 
 class CreateBlockPeriodAction extends Action
@@ -42,17 +43,17 @@ class CreateBlockPeriodAction extends Action
             ->color('danger')
             ->icon('heroicon-o-clock')
             ->action(function () {
-                $startDate = \Carbon\Carbon::parse($this->calendarData['start'])->format('Y-m-d');
-                $startTime = \Carbon\Carbon::parse($this->calendarData['start'])->format('H:i');
-                $endTime = \Carbon\Carbon::parse($this->calendarData['end'])->format('H:i');
+                $startDate = Carbon::parse($this->calendarData['start'])->format('Y-m-d');
+                $startTime = Carbon::parse($this->calendarData['start'])->format('H:i');
+                $endTime = Carbon::parse($this->calendarData['end'])->format('H:i');
                 $startVal = $this->calendarData['start_val'];
                 $endVal = $this->calendarData['end_val'];
                 $dateVal = $this->calendarData['date_val'];
                 if ($endTime === $startTime) {
                     //  $endTime = \Carbon\Carbon::parse($startTime)->addHour()->format('H:i');
-                    $startDate = \Carbon\Carbon::parse($dateVal)->format('Y-m-d');
-                    $startTime = \Carbon\Carbon::parse($startVal)->format('H:i');
-                    $endTime = \Carbon\Carbon::parse($endVal)->format('H:i');
+                    $startDate = Carbon::parse($dateVal)->format('Y-m-d');
+                    $startTime = Carbon::parse($startVal)->format('H:i');
+                    $endTime = Carbon::parse($endVal)->format('H:i');
                 }
                 $data = [
                     'date' => $startDate->format('Y-m-d'),

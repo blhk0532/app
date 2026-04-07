@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+use Adultdate\Wirechat\Facades\Wirechat;
+use Adultdate\Wirechat\Facades\WirechatColor;
 
 if (! function_exists('wirechat')) {
     /**
@@ -8,7 +10,7 @@ if (! function_exists('wirechat')) {
      */
     function wirechat()
     {
-        return Adultdate\Wirechat\Facades\Wirechat::getFacadeRoot();
+        return Wirechat::getFacadeRoot();
     }
 }
 
@@ -18,6 +20,6 @@ if (! function_exists('wirechatColor')) {
      */
     function wirechatColor()
     {
-        return Adultdate\Wirechat\Facades\WirechatColor::getFacadeRoot();
+        return WirechatColor::getFacadeRoot();
     }
 }

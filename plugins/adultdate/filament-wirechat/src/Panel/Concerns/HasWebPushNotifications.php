@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Adultdate\Wirechat\Panel\Concerns;
 
 use Closure;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use RuntimeException;
 
 /**
@@ -72,7 +73,7 @@ trait HasWebPushNotifications
      * Requires that webPushNotifications() has been called at least once,
      * or that serviceWorkerPath() was explicitly set.
      *
-     * @throws RuntimeException|\Illuminate\Contracts\Container\BindingResolutionException if no path is available.
+     * @throws RuntimeException|BindingResolutionException if no path is available.
      */
     public function getServiceWorkerPath(): string
     {

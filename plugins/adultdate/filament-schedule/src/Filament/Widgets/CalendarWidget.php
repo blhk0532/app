@@ -10,8 +10,10 @@ use Adultdate\Schedule\Concerns\HasHeaderActions;
 use Adultdate\Schedule\Concerns\HasSchema;
 use Adultdate\Schedule\Concerns\InteractsWithCalendar;
 use Adultdate\Schedule\Concerns\InteractsWithEventRecord;
+use Adultdate\Schedule\Contracts\HasCalendar;
 use Adultdate\Schedule\Filament\Widgets\Concerns\CanBeConfigured;
 use Adultdate\Schedule\Filament\Widgets\Concerns\InteractsWithRawJS;
+use Adultdate\Schedule\Models\CalendarEvent;
 use Adultdate\Schedule\Models\CalendarSettings;
 use Adultdate\Schedule\ValueObjects\FetchInfo;
 use Carbon\Carbon;
@@ -27,7 +29,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
-class CalendarWidget extends FullCalendarWidget implements \Adultdate\Schedule\Contracts\HasCalendar
+class CalendarWidget extends FullCalendarWidget implements HasCalendar
 {
     use CanBeConfigured, CanRefreshCalendar, HasHeaderActions, HasSchema, InteractsWithCalendar, InteractsWithEventRecord, InteractsWithRawJS {
         InteractsWithCalendar::getOptions insteadof CanBeConfigured;
@@ -235,7 +237,7 @@ class CalendarWidget extends FullCalendarWidget implements \Adultdate\Schedule\C
             return collect();
         }
 
-        return \Adultdate\Schedule\Models\CalendarEvent::query()
+        return CalendarEvent::query()
             ->where('user_id', $userId)
             ->whereDate('end', '>=', $start)
             ->whereDate('start', '<=', $end)

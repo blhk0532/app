@@ -6,6 +6,7 @@ namespace Adultdate\FilamentBooking\Filament\Clusters\Services\Pages;
 
 // use Adultdate\FilamentBooking\Filament\Widgets\BookingCalendarWidget;
 use BackedEnum;
+use Filament\Actions\CreateAction;
 use Filament\Pages\Page;
 use Filament\Widgets\Widget;
 use UnitEnum;
@@ -48,7 +49,7 @@ class BookingService extends Page
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\CreateAction::make('create-new-booking')::make()
+            CreateAction::make('create-new-booking')::make()
                 ->label('New schedule')
                 ->icon('heroicon-o-calendar'), ];
     }

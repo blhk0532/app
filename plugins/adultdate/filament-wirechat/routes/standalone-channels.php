@@ -2,17 +2,20 @@
 
 declare(strict_types=1);
 
+use Adultdate\Wirechat\Helpers\MorphClassResolver;
+use Adultdate\Wirechat\Models\Conversation;
 use Adultdate\Wirechat\PanelRegistry;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
 
 // Use Adultdate\Wirechat classes if available, fallback to AdultDate\FilamentWirechat
-$morphClassResolver = class_exists(Adultdate\Wirechat\Helpers\MorphClassResolver::class)
-    ? Adultdate\Wirechat\Helpers\MorphClassResolver::class
+$morphClassResolver = class_exists(MorphClassResolver::class)
+    ? MorphClassResolver::class
     : AdultDate\FilamentWirechat\Helpers\MorphClassResolver::class;
 
-$conversationClass = class_exists(Adultdate\Wirechat\Models\Conversation::class)
-    ? Adultdate\Wirechat\Models\Conversation::class
+$conversationClass = class_exists(Conversation::class)
+    ? Conversation::class
     : AdultDate\FilamentWirechat\Models\Conversation::class;
 
 /*
@@ -29,7 +32,7 @@ $conversationClass = class_exists(Adultdate\Wirechat\Models\Conversation::class)
 $panels = app(PanelRegistry::class)->all();
 
 if (empty($panels)) {
-    Illuminate\Support\Facades\Log::warning('No panels registered in wirechatPanelRegistry for channels');
+    Log::warning('No panels registered in wirechatPanelRegistry for channels');
 
     return;
 }

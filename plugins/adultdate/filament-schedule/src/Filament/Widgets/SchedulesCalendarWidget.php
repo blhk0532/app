@@ -6,6 +6,7 @@ namespace Adultdate\Schedule\Filament\Widgets;
 
 use Adultdate\Schedule\Concerns\CanRefreshCalendar;
 use Adultdate\Schedule\Concerns\HasHeaderActions;
+use Adultdate\Schedule\Concerns\HasOptions;
 use Adultdate\Schedule\Concerns\HasSchema;
 use Adultdate\Schedule\Concerns\InteractsWithEventRecord;
 use Adultdate\Schedule\Contracts\HasCalendar;
@@ -15,9 +16,15 @@ use Adultdate\Schedule\Filament\Widgets\Concerns\CanBeConfigured;
 use Adultdate\Schedule\Filament\Widgets\Concerns\InteractsWithEvents;
 use Adultdate\Schedule\Filament\Widgets\Concerns\InteractsWithRawJS;
 use Adultdate\Schedule\Models\Schedule;
+use Adultdate\Schedule\Models\SchedulePeriod;
+use Adultdate\Schedule\SchedulePlugin;
 use Adultdate\Schedule\ValueObjects\DateClickInfo;
+use Adultdate\Schedule\ValueObjects\DateSelectInfo;
+use Adultdate\Schedule\ValueObjects\FetchInfo;
 use Adultdate\Schedule\ValueObjects\NoEventsClickInfo;
+use App\Models\User;
 use Carbon\Carbon;
+use Filament\Actions\CreateAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\CodeEditor\Enums\Language as CodeLanguage;
@@ -26,13 +33,17 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Schema;
+use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
 {
-    use \Adultdate\Schedule\Concerns\HasOptions, \Adultdate\Schedule\Concerns\InteractsWithCalendar, CanBeConfigured, CanRefreshCalendar, HasHeaderActions, HasSchema, InteractsWithEventRecord, InteractsWithEvents, InteractsWithRawJS {
+    use \Adultdate\Schedule\Concerns\InteractsWithCalendar, CanBeConfigured, CanRefreshCalendar, HasHeaderActions, HasOptions, HasSchema, InteractsWithEventRecord, InteractsWithEvents, InteractsWithRawJS {
         // Prefer the contract-compatible refreshRecords (chainable) from CanRefreshCalendar
         CanRefreshCalendar::refreshRecords insteadof InteractsWithEvents;
 
@@ -44,7 +55,7 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
         InteractsWithEvents::onDateSelect insteadof \Adultdate\Schedule\Concerns\InteractsWithCalendar;
 
         // Resolve getOptions collision: prefer HasOptions' getOptions which merges config and options
-        \Adultdate\Schedule\Concerns\HasOptions::getOptions insteadof CanBeConfigured;
+        HasOptions::getOptions insteadof CanBeConfigured;
     }
 
     /**
@@ -103,7 +114,7 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
             \Adultdate\Schedule\Actions\CreateAction::make()
                 ->mountUsing(function ($formOrSchema, array $arguments) {
                     // Reset form state to avoid leftover values from previous mounts
-                    if ($formOrSchema instanceof \Filament\Schemas\Schema) {
+                    if ($formOrSchema instanceof Schema) {
                         $formOrSchema->fill([]);
                     } elseif (is_object($formOrSchema) && method_exists($formOrSchema, 'fill')) {
                         $formOrSchema->fill([]);
@@ -118,7 +129,7 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
                         return;
                     }
 
-                    $timezone = \Adultdate\Schedule\SchedulePlugin::make()->getTimezone();
+                    $timezone = SchedulePlugin::make()->getTimezone();
 
                     // Prefer explicit date/time arguments when present
                     if (isset($arguments['start_date']) || isset($arguments['start_time'])) {
@@ -153,7 +164,7 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
                     }
 
                     // Support Schema instances and other mount types depending on how Filament mounts the action
-                    if ($formOrSchema instanceof \Filament\Schemas\Schema) {
+                    if ($formOrSchema instanceof Schema) {
                         // fillPartially will only hydrate the provided state paths
                         $formOrSchema->fillPartially($values, array_keys($values));
 
@@ -171,7 +182,7 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
                 ->mutateDataUsing(function (array $data): array {
                     // Ensure schedulable points to the current user by default
                     if (! isset($data['schedulable_type'])) {
-                        $data['schedulable_type'] = \App\Models\User::class;
+                        $data['schedulable_type'] = User::class;
                     }
 
                     if (! isset($data['schedulable_id'])) {
@@ -221,7 +232,7 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
 
                     // Use explicit creation to avoid relationship edge cases in tests
                     try {
-                        $created = \Adultdate\Schedule\Models\SchedulePeriod::create([
+                        $created = SchedulePeriod::create([
                             'schedule_id' => $record->id,
                             'date' => $date,
                             'start_time' => $startTime,
@@ -236,7 +247,7 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
 
                     return $record;
                 })
-                ->after(function (\Filament\Actions\CreateAction $action, Schedule $record) {
+                ->after(function (CreateAction $action, Schedule $record) {
                     // Prefer mutated data if available, fallback to raw data
                     $raw = $action->getData() ?: $action->getRawData();
 
@@ -340,10 +351,10 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
         $periodId = $event['extendedProps']['period_id'] ?? null;
 
         if ($periodId) {
-            $period = \Adultdate\Schedule\Models\SchedulePeriod::find($periodId);
+            $period = SchedulePeriod::find($periodId);
 
             if ($period) {
-                $timezone = \Adultdate\Schedule\SchedulePlugin::make()->getTimezone();
+                $timezone = SchedulePlugin::make()->getTimezone();
 
                 $start = Carbon::parse($event['start'], $timezone);
                 $period->date = $start->format('Y-m-d');
@@ -373,10 +384,10 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
         $periodId = $event['extendedProps']['period_id'] ?? null;
 
         if ($periodId) {
-            $period = \Adultdate\Schedule\Models\SchedulePeriod::find($periodId);
+            $period = SchedulePeriod::find($periodId);
 
             if ($period) {
-                $timezone = \Adultdate\Schedule\SchedulePlugin::make()->getTimezone();
+                $timezone = SchedulePlugin::make()->getTimezone();
 
                 if (isset($event['start'])) {
                     $start = Carbon::parse($event['start'], $timezone);
@@ -406,7 +417,7 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
     {
         // Support both the older signature (start, end, allDay, view, resource) and the
         // new DateSelectInfo object (when called via onDateSelectJs -> the trait will pass a DateSelectInfo).
-        if ($startOrInfo instanceof \Adultdate\Schedule\ValueObjects\DateSelectInfo) {
+        if ($startOrInfo instanceof DateSelectInfo) {
             $info = $startOrInfo;
 
             $startIso = $info->start->toIsoString();
@@ -606,13 +617,13 @@ class SchedulesCalendarWidget extends FullCalendarWidget implements HasCalendar
 
     public function eventAssetUrl(): string
     {
-        return \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-event', 'adultdate/schedule');
+        return FilamentAsset::getAlpineComponentSrc('calendar-event', 'adultdate/schedule');
     }
 
     /**
      * Adapter for Guava calendar's `getEvents` contract which expects a FetchInfo VO.
      */
-    protected function getEvents(\Adultdate\Schedule\ValueObjects\FetchInfo $info): \Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Builder|array
+    protected function getEvents(FetchInfo $info): Collection|Builder|array
     {
         return $this->fetchEvents([
             'start' => $info->start->toIsoString(),

@@ -6,4 +6,3 @@ return [
     'incoming' => 'Incoming',
     'outgoing' => 'Outgoing',
 ];
-

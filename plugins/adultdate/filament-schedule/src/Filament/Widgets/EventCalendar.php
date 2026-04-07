@@ -12,6 +12,7 @@ use Adultdate\Schedule\Filament\CalendarWidget;
 use Adultdate\Schedule\Models\CalendarSettings;
 use Adultdate\Schedule\Models\Meeting;
 use Adultdate\Schedule\Models\Sprint;
+use Adultdate\Schedule\SchedulePlugin;
 use Adultdate\Schedule\ValueObjects\DateClickInfo;
 use Adultdate\Schedule\ValueObjects\DateSelectInfo;
 use Adultdate\Schedule\ValueObjects\EventDropInfo;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 
 class EventCalendar extends CalendarWidget
@@ -57,7 +59,7 @@ class EventCalendar extends CalendarWidget
     {
         return array_replace_recursive(
             $this->config(),
-            \Adultdate\Schedule\SchedulePlugin::get()->getConfig(),
+            SchedulePlugin::get()->getConfig(),
         );
     }
 
@@ -129,7 +131,7 @@ class EventCalendar extends CalendarWidget
         $start = $info->start->toMutable()->startOfDay();
         $end = $info->end->toMutable()->endOfDay();
 
-        \Illuminate\Support\Facades\Log::info('getEvents called', ['start' => $start, 'end' => $end]);
+        Log::info('getEvents called', ['start' => $start, 'end' => $end]);
 
         $meetings = Meeting::query()
             ->withCount('users')
@@ -146,7 +148,7 @@ class EventCalendar extends CalendarWidget
             ->push(...$meetings)
             ->push(...$sprints);
 
-        \Illuminate\Support\Facades\Log::info('Events returned', ['count' => $events->count()]);
+        Log::info('Events returned', ['count' => $events->count()]);
 
         return $events;
 

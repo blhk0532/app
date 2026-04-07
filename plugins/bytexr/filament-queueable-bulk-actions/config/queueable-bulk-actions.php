@@ -1,6 +1,11 @@
 <?php
 
 declare(strict_types=1);
+use Bytexr\QueueableBulkActions\Enums\StatusEnum;
+use Bytexr\QueueableBulkActions\Filament\Resources\BulkActionResource;
+use Bytexr\QueueableBulkActions\Models\BulkAction;
+use Bytexr\QueueableBulkActions\Models\BulkActionRecord;
+use Filament\Tables\View\TablesRenderHook;
 
 return [
     /**
@@ -15,8 +20,8 @@ return [
      * Models used in the package, they can be overridden with your own models, just make sure to extend the ones below
      */
     'models' => [
-        'bulk_action' => Bytexr\QueueableBulkActions\Models\BulkAction::class,
-        'bulk_action_record' => Bytexr\QueueableBulkActions\Models\BulkActionRecord::class,
+        'bulk_action' => BulkAction::class,
+        'bulk_action_record' => BulkActionRecord::class,
     ],
 
     /**
@@ -24,7 +29,7 @@ return [
      *
      * More information: 'https://ndsth.com'/4.x/advanced/render-hooks
      */
-    'render_hook' => Filament\Tables\View\TablesRenderHook::TOOLBAR_BEFORE,
+    'render_hook' => TablesRenderHook::TOOLBAR_BEFORE,
 
     /**
      * How often notification component will be polled, set to null if don't want to poll
@@ -42,7 +47,7 @@ return [
     /**
      * Resource used to display historical bulk actions, set to null if you would not like to have this functionality
      */
-    'resource' => Bytexr\QueueableBulkActions\Filament\Resources\BulkActionResource::class,
+    'resource' => BulkActionResource::class,
 
     /**
      * Default colors used to display notifications and statuses. Uses filament colors.
@@ -50,9 +55,9 @@ return [
      * More information: 'https://ndsth.com'/3.x/support/colors
      */
     'colors' => [
-        Bytexr\QueueableBulkActions\Enums\StatusEnum::QUEUED->value => 'gray',
-        Bytexr\QueueableBulkActions\Enums\StatusEnum::IN_PROGRESS->value => 'info',
-        Bytexr\QueueableBulkActions\Enums\StatusEnum::FINISHED->value => 'success',
-        Bytexr\QueueableBulkActions\Enums\StatusEnum::FAILED->value => 'danger',
+        StatusEnum::QUEUED->value => 'gray',
+        StatusEnum::IN_PROGRESS->value => 'info',
+        StatusEnum::FINISHED->value => 'success',
+        StatusEnum::FAILED->value => 'danger',
     ],
 ];

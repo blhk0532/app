@@ -8,6 +8,8 @@ use Adultdate\FilamentBooking\Concerns\HasHeaderActions;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\CanBeConfigured;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\InteractsWithRawJS;
 use Adultdate\FilamentBooking\FilamentBookingPlugin;
+use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
@@ -54,7 +56,7 @@ class BookingFullCalendarWidget extends Widget implements HasActions, HasForms
 
     public function getTechnicianOptions(): array
     {
-        return \App\Models\User::whereHas('roles', function ($query) {
+        return User::whereHas('roles', function ($query) {
             $query->whereIn('name', ['technician', 'admin', 'super_admin']);
         })->pluck('name', 'id')->toArray();
     }
@@ -116,21 +118,21 @@ class BookingFullCalendarWidget extends Widget implements HasActions, HasForms
     protected function headerActions(): array
     {
         return [
-            \Filament\Actions\Action::make('create'),
+            Action::make('create'),
         ];
     }
 
     protected function modalActions(): array
     {
         return [
-            \Filament\Actions\Action::make('edit'),
-            \Filament\Actions\Action::make('delete'),
+            Action::make('edit'),
+            Action::make('delete'),
         ];
     }
 
-    protected function viewAction(): \Filament\Actions\Action
+    protected function viewAction(): Action
     {
         // Use a non-colliding action name so it doesn't overwrite the widget's `$view` property
-        return \Filament\Actions\Action::make('viewEvent');
+        return Action::make('viewEvent');
     }
 }

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Adultdate\Wirechat\Livewire\Concerns;
 
+use AdultDate\FilamentWirechat\Models\Conversation;
 use Adultdate\Wirechat\Livewire\Chat\Chats;
 use Livewire\Attributes\Locked;
 
 /**
  * Trait Actionable
  *
- * @property \AdultDate\FilamentWirechat\Models\Conversation|null $conversation
+ * @property Conversation|null $conversation
  */
 trait Widget
 {

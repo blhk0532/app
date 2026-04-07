@@ -6,7 +6,13 @@ namespace Adultdate\Schedule\Filament\Actions;
 
 use Adultdate\Schedule\Concerns\CalendarAction;
 use Adultdate\Schedule\Contracts\HasCalendar;
+use Adultdate\Schedule\Models\Meeting;
+use Adultdate\Schedule\Models\Schedule;
+use Adultdate\Schedule\Models\Sprint;
+use Adultdate\Schedule\SchedulePlugin;
+use Carbon\Carbon;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class CreateAction extends \Filament\Actions\CreateAction
 {
@@ -23,9 +29,9 @@ class CreateAction extends \Filament\Actions\CreateAction
             )
             ->mutateFormDataUsing(function (array $data): array {
                 $model = $this->getModel();
-                if ($model && is_a($model, \Adultdate\Schedule\Models\Schedule::class, true)) {
+                if ($model && is_a($model, Schedule::class, true)) {
                     if (! isset($data['schedulable_type']) || ! isset($data['schedulable_id'])) {
-                        $user = \Illuminate\Support\Facades\Auth::user();
+                        $user = Auth::user();
                         if ($user) {
                             $data['schedulable_type'] = $user::class;
                             $data['schedulable_id'] = $user->id;
@@ -58,7 +64,7 @@ class CreateAction extends \Filament\Actions\CreateAction
                     return;
                 }
 
-                $timezone = \Adultdate\Schedule\SchedulePlugin::make()->getTimezone();
+                $timezone = SchedulePlugin::make()->getTimezone();
 
                 // Model-aware mapping: if the action creates Meetings or Sprints, set starts_at/ends_at datetimes,
                 // otherwise provide start_date/start_time style values for Schedule forms.
@@ -68,8 +74,8 @@ class CreateAction extends \Filament\Actions\CreateAction
 
                 // Avoid hard dependency by checking class names
                 if ($model) {
-                    $isEventModel = is_a($model, \Adultdate\Schedule\Models\Meeting::class, true)
-                        || is_a($model, \Adultdate\Schedule\Models\Sprint::class, true);
+                    $isEventModel = is_a($model, Meeting::class, true)
+                        || is_a($model, Sprint::class, true);
                 }
 
                 if ($isEventModel) {
@@ -84,16 +90,16 @@ class CreateAction extends \Filament\Actions\CreateAction
                         $endsAt = null;
 
                         if ($startDate) {
-                            $startDate = \Carbon\Carbon::parse($startDate, $timezone)->format('Y-m-d');
-                            $startsAt = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $startDate.' '.$startTime, $timezone)->toDateTimeString();
+                            $startDate = Carbon::parse($startDate, $timezone)->format('Y-m-d');
+                            $startsAt = Carbon::createFromFormat('Y-m-d H:i', $startDate.' '.$startTime, $timezone)->toDateTimeString();
                         }
 
                         if ($endDate) {
-                            $endDate = \Carbon\Carbon::parse($endDate, $timezone)->format('Y-m-d');
+                            $endDate = Carbon::parse($endDate, $timezone)->format('Y-m-d');
                             $et = $endTime ?? ($startTime ?? '00:00');
-                            $endsAt = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $endDate.' '.$et, $timezone)->toDateTimeString();
+                            $endsAt = Carbon::createFromFormat('Y-m-d H:i', $endDate.' '.$et, $timezone)->toDateTimeString();
                         } elseif (isset($arguments['end'])) {
-                            $endsAt = \Carbon\Carbon::parse($arguments['end'], $timezone)->toDateTimeString();
+                            $endsAt = Carbon::parse($arguments['end'], $timezone)->toDateTimeString();
                         }
 
                         $meta = $arguments['metadata'] ?? null;
@@ -108,8 +114,8 @@ class CreateAction extends \Filament\Actions\CreateAction
                         ];
                     } else {
                         // Use ISO start/end values
-                        $start = isset($arguments['start']) ? \Carbon\Carbon::parse($arguments['start'], $timezone) : null;
-                        $end = isset($arguments['end']) ? \Carbon\Carbon::parse($arguments['end'], $timezone) : null;
+                        $start = isset($arguments['start']) ? Carbon::parse($arguments['start'], $timezone) : null;
+                        $end = isset($arguments['end']) ? Carbon::parse($arguments['end'], $timezone) : null;
 
                         $meta = $arguments['metadata'] ?? null;
                         if (is_array($meta)) {
@@ -139,21 +145,21 @@ class CreateAction extends \Filament\Actions\CreateAction
                             'metadata' => $meta,
                         ];
 
-                        $user = \Illuminate\Support\Facades\Auth::user();
+                        $user = Auth::user();
                         if ($user) {
                             $values['schedulable_type'] = $user::class;
                             $values['schedulable_id'] = $user->id;
                         }
                     } else {
-                        $start = \Carbon\Carbon::parse($arguments['start'], $timezone);
+                        $start = Carbon::parse($arguments['start'], $timezone);
 
                         $values = [
                             'start_date' => $start->format('Y-m-d'),
-                            'end_date' => isset($arguments['end']) ? \Carbon\Carbon::parse($arguments['end'], $timezone)->format('Y-m-d') : null,
+                            'end_date' => isset($arguments['end']) ? Carbon::parse($arguments['end'], $timezone)->format('Y-m-d') : null,
                             'metadata' => $arguments['metadata'] ?? [],
                         ];
 
-                        $user = \Illuminate\Support\Facades\Auth::user();
+                        $user = Auth::user();
                         if ($user) {
                             $values['schedulable_type'] = $user::class;
                             $values['schedulable_id'] = $user->id;
@@ -164,7 +170,7 @@ class CreateAction extends \Filament\Actions\CreateAction
                         }
 
                         if (isset($arguments['end'])) {
-                            $end = \Carbon\Carbon::parse($arguments['end'], $timezone);
+                            $end = Carbon::parse($arguments['end'], $timezone);
                             if ($end->format('H:i:s') !== '00:00:00') {
                                 $values['end_time'] = $end->format('H:i');
                             }

@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Adultdate\FilamentBooking\Filament\Clusters\Services\Resources\Bookings\Tables;
 
 use Adultdate\FilamentBooking\Enums\BookingState;
+use Adultdate\FilamentBooking\Enums\Failed;
+use Adultdate\FilamentBooking\Enums\Paid;
+use Adultdate\FilamentBooking\Enums\Pending;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
@@ -46,9 +49,9 @@ class BookingsTable
                 IconSelectColumn::make('state')
                     ->options(BookingState::toOptions())
                     ->icons([
-                        \Adultdate\FilamentBooking\Enums\Pending::class => 'heroicon-o-clock',
-                        \Adultdate\FilamentBooking\Enums\Paid::class => 'heroicon-o-check-circle',
-                        \Adultdate\FilamentBooking\Enums\Failed::class => 'heroicon-o-x-circle',
+                        Pending::class => 'heroicon-o-clock',
+                        Paid::class => 'heroicon-o-check-circle',
+                        Failed::class => 'heroicon-o-x-circle',
                     ]),
                 TextColumn::make('created_at')
                     ->label('Booking date')

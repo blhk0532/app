@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentUser\Resources\UserResource\Tables;
 
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -22,9 +24,9 @@ class UsersTable
         ])->filters([
             // add filters here
         ])->actions([
-            \Filament\Tables\Actions\EditAction::make(),
+            EditAction::make(),
         ])->bulkActions([
-            \Filament\Tables\Actions\DeleteBulkAction::make(),
+            DeleteBulkAction::make(),
         ]);
     }
 }

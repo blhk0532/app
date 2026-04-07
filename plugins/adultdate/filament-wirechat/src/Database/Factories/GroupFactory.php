@@ -10,7 +10,7 @@ use AdultDate\FilamentWirechat\Models\Group;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\AdultDate\FilamentWirechat\Models\Group>
+ * @extends Factory<Group>
  */
 class GroupFactory extends Factory
 {

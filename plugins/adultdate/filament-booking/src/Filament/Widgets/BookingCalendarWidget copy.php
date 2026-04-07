@@ -23,7 +23,9 @@ use Adultdate\FilamentBooking\Models\Booking\Service;
 use Adultdate\FilamentBooking\ValueObjects\FetchInfo;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -32,6 +34,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Schema as FilamentSchema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -287,7 +290,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
 
     protected function generateNumber(): string
     {
-        return Str::upper(auth()->user()->name) . ' - ' . Str::upper(filament()->getTenant()?->slug) . '-' . now()->timestamp;
+        return Str::upper(auth()->user()->name).' - '.Str::upper(filament()->getTenant()?->slug).'-'.now()->timestamp;
     }
 
     protected function getDefaultFormData(array $seed = []): array
@@ -313,15 +316,15 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
     {
         logger()->debug('booking.form.normalize.before', $data);
 
-        if (! empty($data['service_date']) && $data['service_date'] instanceof \Carbon\CarbonInterface) {
+        if (! empty($data['service_date']) && $data['service_date'] instanceof CarbonInterface) {
             $data['service_date'] = $data['service_date']->toDateString();
         }
 
-        if (! empty($data['start_time']) && $data['start_time'] instanceof \Carbon\CarbonInterface) {
+        if (! empty($data['start_time']) && $data['start_time'] instanceof CarbonInterface) {
             $data['start_time'] = $data['start_time']->format('H:i:s');
         }
 
-        if (! empty($data['end_time']) && $data['end_time'] instanceof \Carbon\CarbonInterface) {
+        if (! empty($data['end_time']) && $data['end_time'] instanceof CarbonInterface) {
             $data['end_time'] = $data['end_time']->format('H:i:s');
         }
 
@@ -515,7 +518,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
 
         $data['start_time'] = $startDate->format('H:i');
         if ($end) {
-            $data['end_time'] = \Carbon\Carbon::parse($end, $timezone)->format('H:i');
+            $data['end_time'] = Carbon::parse($end, $timezone)->format('H:i');
         }
 
         if (! $allDay && $startDate->format('H:i:s') !== '00:00:00') {
@@ -561,7 +564,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
                 // Here you would implement the logic to block the period
                 // For example, create blocked bookings or mark dates as unavailable
                 // For now, just show a success message
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Period blocked successfully')
                     ->body("Blocked from {$data['start_date']} to {$data['end_date']}")
                     ->success()
@@ -623,7 +626,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
     protected function getActions(): array
     {
         return [
-            \Filament\Actions\Action::make('view')
+            Action::make('view')
                 ->label('View')
                 ->icon('heroicon-o-eye')
                 ->modalHeading('View Booking')
@@ -646,7 +649,7 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
                     $form->disabled();
                 }),
 
-            \Filament\Actions\Action::make('edit')
+            Action::make('edit')
                 ->label('Edit')
                 ->icon('heroicon-o-pencil')
                 ->modalHeading('Edit Booking')
@@ -683,13 +686,13 @@ class BookingCalendarWidget extends FullCalendarWidget implements HasCalendar
                     $record->update($data);
                     $this->syncBookingItems($record, $items);
                     $this->dispatch('refresh-calendar');
-                    \Filament\Notifications\Notification::make()
+                    Notification::make()
                         ->title('Booking updated successfully')
                         ->success()
                         ->send();
                 }),
 
-            \Filament\Actions\DeleteAction::make('delete')
+            DeleteAction::make('delete')
                 ->label('Delete')
                 ->icon('heroicon-o-trash')
                 ->color('danger')

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentBooking\Filament\Pages;
 
+use Adultdate\FilamentBooking\Filament\Widgets\AccountWidget;
+use Adultdate\FilamentBooking\Filament\Widgets\FilamentInfosWidget;
+use Adultdate\FilamentBooking\Filament\Widgets\StatsOverviewWidget;
 use Closure;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Illuminate\Contracts\Support\Htmlable;
@@ -29,9 +32,9 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            \Adultdate\FilamentBooking\Filament\Widgets\StatsOverviewWidget::class,
-            \Adultdate\FilamentBooking\Filament\Widgets\AccountWidget::class,
-            \Adultdate\FilamentBooking\Filament\Widgets\FilamentInfosWidget::class,
+            StatsOverviewWidget::class,
+            AccountWidget::class,
+            FilamentInfosWidget::class,
         ];
     }
 

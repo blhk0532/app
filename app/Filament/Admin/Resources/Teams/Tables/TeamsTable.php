@@ -58,7 +58,8 @@ class TeamsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                 ->visible(fn () => auth()->user()->role === 'super'),
             ]);
     }
 }

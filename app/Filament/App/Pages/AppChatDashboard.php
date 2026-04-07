@@ -12,8 +12,7 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Icons\Heroicon;
 use UnitEnum;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
 // use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
@@ -33,7 +32,7 @@ class AppChatDashboard extends BasePage
 
     protected static ?string $navigationLabel = 'Meddelande';
 
-  //  protected static string|UnitEnum|null $navigationGroup = '';
+    //  protected static string|UnitEnum|null $navigationGroup = '';
 
     protected static ?int $navigationSort = -2;
 
@@ -47,24 +46,22 @@ class AppChatDashboard extends BasePage
 
     public static function shouldRegisterNavigation(): bool
     {
-            $teneant = filament()->getTenant();
-            if (filament()->getTenant()->getAttribute('is_admin') !== true) {
-                return true;
-            }
-        //    if (filament()->getTenant()->getAttribute('is_admin') === true) {
-        //        return false;
-        //    }
-        //    if (auth()->user()->role === 'admin' || auth()->user()->role === 'super' || auth()->user()->role === 'manager') {
-        //        return true;
-        //    }
+        if (! filament()->getId() || filament()->getId() !== 'app') {
+            return false;
+        }
+
+        $tenant = filament()->getTenant();
+        if ($tenant && $tenant->getAttribute('is_admin') !== true) {
+            return true;
+        }
 
         return true;
-
     }
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        $name = auth()->user()->name ? auth()->user()->name . ' | ' . auth()->user()->getCompanyName() : 'Company';
+        $name = auth()->user()->name ? auth()->user()->name.' | '.auth()->user()->getCompanyName() : 'Company';
+
         return $name;
     }
 

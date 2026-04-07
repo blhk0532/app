@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentAuth\Models;
 
+use AdultDate\FilamentWirechat\Models\Conversation;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasDefaultTenant;
@@ -13,6 +14,7 @@ use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -134,7 +136,7 @@ class UserAccount extends Authenticatable implements FilamentUser, HasAvatar, Ha
      * Override belongsToConversation to accept both Filament and standalone Conversation types.
      * This method works with both Filament wirechat routes and standalone wirechat routes.
      */
-    public function belongsToConversation(\AdultDate\FilamentWirechat\Models\Conversation $conversation, bool $withoutGlobalScopes = false): bool
+    public function belongsToConversation(Conversation $conversation, bool $withoutGlobalScopes = false): bool
     {
         // Check if participants are already loaded
         if ($conversation->relationLoaded('participants')) {
@@ -181,7 +183,7 @@ class UserAccount extends Authenticatable implements FilamentUser, HasAvatar, Ha
             return $this->avatar_url;
         }
 
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('public');
 
         return $disk->url($this->avatar_url);

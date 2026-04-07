@@ -34,7 +34,7 @@ use Spatie\LaravelData\Support\EloquentCasts\DataCollectionEloquentCast;
  */
 class PaginatedDataCollection implements BaseDataCollectableContract, ContextableDataContract, Countable, IncludeableDataContract, IteratorAggregate, Responsable, ResponsableDataContract, TransformableDataContract, WrappableDataContract
 {
-    /** @use \Spatie\LaravelData\Concerns\BaseDataCollectable<TKey, TValue> */
+    /** @use BaseDataCollectable<TKey, TValue> */
     use BaseDataCollectable;
 
     use ContextableData;

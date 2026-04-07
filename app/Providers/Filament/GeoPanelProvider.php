@@ -38,6 +38,7 @@ use Filament\Support\Icons\Tabler;
 use Filament\Support\Icons\Heroicon;
 use UnitEnum;
 use BackedEnum;
+use App\Filament\Geo\Pages\MentorMap;
 
 class GeoPanelProvider extends PanelProvider
 {
@@ -66,12 +67,13 @@ class GeoPanelProvider extends PanelProvider
             ->passwordReset()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverResources(in: app_path('Filament/Geo/Resources'), for: 'App\Filament\Geo\Resources')
-            //    ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+                ->discoverPages(in: app_path('Filament/Geo/Pages'), for: 'App\Filament\Geo\Pages')
             ->pages([
                 Dashboard::class,
                 SwedenPostnummer::class,
                 SwedenKommuner::class,
                 SwedenPostorter::class,
+                MentorMap::class,
             ])
             //    ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

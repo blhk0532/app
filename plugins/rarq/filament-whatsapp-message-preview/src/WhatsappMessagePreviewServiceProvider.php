@@ -13,21 +13,10 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class WhatsappMessagePreviewServiceProvider extends PackageServiceProvider
 {
-    /**
-     * @var string
-     */
     public static string $name = 'filament-whatsapp-message-preview';
 
-    /**
-     * @var string
-     */
     public static string $viewNamespace = 'filament-whatsapp-message-preview';
 
-    /**
-     * @param Package $package
-     * 
-     * @return void
-     */
     public function configurePackage(Package $package): void
     {
         $package->name(static::$name)
@@ -38,17 +27,11 @@ class WhatsappMessagePreviewServiceProvider extends PackageServiceProvider
         }
     }
 
-    /**
-     * @return void
-     */
     public function packageRegistered(): void
     {
         //
     }
 
-    /**
-     * @return void
-     */
     public function packageBooted(): void
     {
         // Asset Registration
@@ -69,9 +52,6 @@ class WhatsappMessagePreviewServiceProvider extends PackageServiceProvider
         Testable::mixin(new TestsWhatsappMessagePreview);
     }
 
-    /**
-     * @return string|null
-     */
     protected function getAssetPackageName(): ?string
     {
         return 'rarq/filament-whatsapp-message-preview';
@@ -83,8 +63,8 @@ class WhatsappMessagePreviewServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            Js::make('whatsapp-preview', __DIR__ . '/../resources/js/whatsapp-message-preview.js'),
-            Css::make('whatsapp-preview', __DIR__ . '/../resources/css/whatsapp-message-preview.css'),
+            Js::make('whatsapp-preview', __DIR__.'/../resources/js/whatsapp-message-preview.js'),
+            Css::make('whatsapp-preview', __DIR__.'/../resources/css/whatsapp-message-preview.css'),
         ];
     }
 

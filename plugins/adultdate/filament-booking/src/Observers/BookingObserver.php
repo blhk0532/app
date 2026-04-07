@@ -7,6 +7,10 @@ namespace Adultdate\FilamentBooking\Observers;
 use Adultdate\FilamentBooking\Jobs\SyncBookingToGoogleCalendar;
 use Adultdate\FilamentBooking\Models\Booking\Booking;
 use Adultdate\FilamentBooking\Services\GoogleCalendarSyncService;
+use App\Models\Admin;
+use App\Models\User;
+use App\Services\RawWhatsappService;
+use Carbon\Carbon;
 use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
@@ -39,14 +43,14 @@ class BookingObserver
             foreach ($booking->bookingCalendar->notification_user_ids as $id) {
                 if (str_starts_with($id, 'user-')) {
                     $userId = str_replace('user-', '', $id);
-                    $user = \App\Models\User::find($userId);
+                    $user = User::find($userId);
                     if ($user && ! $recipientIds->contains("user-{$user->id}")) {
                         $recipients->push($user);
                         $recipientIds->push("user-{$user->id}");
                     }
                 } elseif (str_starts_with($id, 'admin-')) {
                     $adminId = str_replace('admin-', '', $id);
-                    $admin = \App\Models\Admin::find($adminId);
+                    $admin = Admin::find($adminId);
                     if ($admin && ! $recipientIds->contains("admin-{$admin->id}")) {
                         $recipients->push($admin);
                         $recipientIds->push("admin-{$admin->id}");
@@ -56,7 +60,7 @@ class BookingObserver
 
             // Add the booking creator if not already in recipients
             if ($booking->booking_user_id) {
-                $creator = \App\Models\User::find($booking->booking_user_id);
+                $creator = User::find($booking->booking_user_id);
                 if ($creator && ! $recipientIds->contains("user-{$creator->id}")) {
                     $recipients->push($creator);
                     $recipientIds->push("user-{$creator->id}");
@@ -184,9 +188,9 @@ class BookingObserver
             $clientName = $booking->client?->name ?? 'Client';
             $clientPhone = $booking->client?->phone ?? 'Unknown';
             $BookingNumber = $booking->number ?? 'N/A';
-            $date = \Carbon\Carbon::parse($booking->service_date ?: $booking->starts_at ?: now())->format('Y-m-d');
-            $start = $booking->start_time ?: \Carbon\Carbon::parse($booking->starts_at ?: now())->format('H:i');
-            $end = $booking->end_time ?: \Carbon\Carbon::parse($booking->ends_at ?: now())->format('H:i');
+            $date = Carbon::parse($booking->service_date ?: $booking->starts_at ?: now())->format('Y-m-d');
+            $start = $booking->start_time ?: Carbon::parse($booking->starts_at ?: now())->format('H:i');
+            $end = $booking->end_time ?: Carbon::parse($booking->ends_at ?: now())->format('H:i');
             $addr = mb_trim(($booking->client?->address ?? '').' '.($booking->client?->city ?? ''));
             $datenow = now()->format('d-m-Y');
             $serviceUserName = $booking->serviceUser?->name ?? null;
@@ -205,7 +209,7 @@ class BookingObserver
             $message = implode("\n", $lines);
 
             // Send raw number directly to Evolution API (no formatting)
-            app(\App\Services\RawWhatsappService::class)->sendTextRaw($instanceId, (string) $to, (string) $message);
+            app(RawWhatsappService::class)->sendTextRaw($instanceId, (string) $to, (string) $message);
 
             Log::info('Whatsapp booking notification sent', [
                 'booking_id' => $booking->id,

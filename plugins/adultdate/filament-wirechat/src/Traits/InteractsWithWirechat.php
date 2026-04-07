@@ -14,6 +14,7 @@ use Adultdate\Wirechat\Facades\Wirechat;
 use Adultdate\Wirechat\Panel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +37,7 @@ trait InteractsWithWirechat
     /**
      * Establishes a relationship between the user and conversations.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return HasManyThrough
      */
     public function conversations()
     {

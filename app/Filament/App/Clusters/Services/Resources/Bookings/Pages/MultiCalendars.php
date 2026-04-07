@@ -35,9 +35,9 @@ class MultiCalendars extends BaseDashboard
 
     // protected static string|BackedEnum|null $navigationIcon = Tabler::CalendarMonth;
     // protected static string|BackedEnum|null $activeNavigationIcon = Tabler::CalendarMonthF;
-    protected static string|BackedEnum|null $navigationIcon = Remix::RiCalendarScheduleLine;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static string|BackedEnum|null $activeNavigationIcon = Remix::RiCalendarScheduleFill;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-calendar-days';
 
     protected static ?int $navigationSort = 8;
 

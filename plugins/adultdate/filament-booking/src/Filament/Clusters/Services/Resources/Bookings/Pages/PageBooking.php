@@ -9,6 +9,7 @@ use Adultdate\FilamentBooking\Filament\Clusters\Services\Resources\Bookings\Widg
 use App\Models\BookingCalendar as BookingCalendarModel;
 use App\UserRole;
 use BackedEnum;
+use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Filament\Pages\Page as BasePage;
@@ -74,7 +75,7 @@ class PageBooking extends BasePage
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\CreateAction::make('create-new-booking')::make()
+            CreateAction::make('create-new-booking')::make()
                 ->label('New schedule')
                 ->icon('heroicon-o-calendar'), ];
     }

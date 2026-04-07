@@ -11,6 +11,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions; // Use fully-qualified class to avoid static analysis issues with the facade import.
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Widgets\Widget;
 
 abstract class SimpleCalendarWidget extends Widget implements HasActions, HasForms
@@ -26,6 +27,6 @@ abstract class SimpleCalendarWidget extends Widget implements HasActions, HasFor
 
     final public function eventAssetUrl(): string
     {
-        return \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-event', 'adultdate/filament-booking');
+        return FilamentAsset::getAlpineComponentSrc('calendar-event', 'adultdate/filament-booking');
     }
 }

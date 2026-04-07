@@ -7,6 +7,7 @@ namespace Adultdate\Wirechat\Livewire\Concerns;
 use Adultdate\Wirechat\Exceptions\NoPanelProvidedException;
 use Adultdate\Wirechat\Facades\Wirechat;
 use Adultdate\Wirechat\Panel;
+use Adultdate\Wirechat\PanelRegistry;
 use Livewire\Attributes\Computed;
 
 trait HasPanel
@@ -41,7 +42,7 @@ trait HasPanel
             throw NoPanelProvidedException::make();
         }
 
-        app(\Adultdate\Wirechat\PanelRegistry::class)->setCurrent($this->panel);
+        app(PanelRegistry::class)->setCurrent($this->panel);
     }
 
     #[Computed(cache: false)]

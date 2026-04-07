@@ -8,6 +8,11 @@ use Adultdate\FilamentBooking\Filament\Actions\CreateAction;
 use Adultdate\FilamentBooking\Filament\Actions\DeleteAction;
 use Adultdate\FilamentBooking\Filament\Actions\EditAction;
 use Adultdate\FilamentBooking\Filament\Actions\ViewAction;
+use Adultdate\FilamentBooking\Models\Booking\Booking;
+use Adultdate\FilamentBooking\Models\Booking\DailyLocation;
+use Adultdate\FilamentBooking\Models\BookingMeeting;
+use Adultdate\FilamentBooking\Models\BookingServicePeriod;
+use Adultdate\FilamentBooking\Models\BookingSprint;
 use Filament\Actions\Action;
 use Illuminate\Support\Str;
 use Throwable;
@@ -62,31 +67,31 @@ trait HasDefaultActions
     {
         // Cache common create actions used by the calendar widgets.
         try {
-            $this->cacheAction($this->createAction(\Adultdate\FilamentBooking\Models\BookingMeeting::class, 'ctxCreateMeeting'));
+            $this->cacheAction($this->createAction(BookingMeeting::class, 'ctxCreateMeeting'));
         } catch (Throwable $e) {
             // Swallow - caching is best-effort during boot.
         }
 
         try {
-            $this->cacheAction($this->createAction(\Adultdate\FilamentBooking\Models\BookingSprint::class, 'ctxCreateSprint'));
+            $this->cacheAction($this->createAction(BookingSprint::class, 'ctxCreateSprint'));
         } catch (Throwable $e) {
             // Swallow
         }
 
         try {
-            $this->cacheAction($this->createAction(\Adultdate\FilamentBooking\Models\Booking\DailyLocation::class, 'ctxCreateDailyLocation'));
+            $this->cacheAction($this->createAction(DailyLocation::class, 'ctxCreateDailyLocation'));
         } catch (Throwable $e) {
             // Swallow - caching is best-effort during boot.
         }
 
         try {
-            $this->cacheAction($this->createAction(\Adultdate\FilamentBooking\Models\Booking\Booking::class, 'ctxCreateBooking'));
+            $this->cacheAction($this->createAction(Booking::class, 'ctxCreateBooking'));
         } catch (Throwable $e) {
             // Swallow
         }
 
         try {
-            $this->cacheAction($this->createAction(\Adultdate\FilamentBooking\Models\BookingServicePeriod::class, 'ctxCreateServicePeriod'));
+            $this->cacheAction($this->createAction(BookingServicePeriod::class, 'ctxCreateServicePeriod'));
         } catch (Throwable $e) {
             // Swallow
         }

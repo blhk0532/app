@@ -28,6 +28,7 @@ use App\Filament\App\Pages\InertiaCalendar as AppInertiaCalendar;
 use App\Filament\App\Resources\RingaDatas\Pages\QueueRingaData;
 use App\Filament\Booking\Pages\GoogleCalendar;
 use App\Filament\Booking\Pages\InertiaCalendar;
+use App\UserRole;
 use Closure;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
@@ -258,7 +259,7 @@ HTML,
 
         $user = Auth::user();
 
-        return in_array($user->role, [\App\UserRole::ADMIN, \App\UserRole::SUPER_ADMIN]);
+        return in_array($user->role, [UserRole::ADMIN, UserRole::SUPER_ADMIN]);
     }
 
     public function selectable(bool $selectable = true): static

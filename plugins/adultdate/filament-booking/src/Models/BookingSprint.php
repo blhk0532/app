@@ -7,12 +7,13 @@ namespace Adultdate\FilamentBooking\Models;
 use Adultdate\FilamentBooking\Contracts\Eventable;
 use Adultdate\FilamentBooking\Enums\Priority;
 use Adultdate\FilamentBooking\ValueObjects\CalendarEvent;
+use Database\Factories\SprintFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BookingSprint extends Model implements Eventable
 {
-    /** @use HasFactory<\Database\Factories\SprintFactory> */
+    /** @use HasFactory<SprintFactory> */
     use HasFactory;
 
     /**

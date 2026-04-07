@@ -7,6 +7,7 @@ namespace SolutionForest\TabLayoutPlugin\Components;
 use Closure;
 use Filament\Support\Concerns\CanBeContained;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
+use Livewire\Component;
 use SolutionForest\TabLayoutPlugin\Contracts\HasTabs;
 use Throwable;
 
@@ -73,7 +74,7 @@ class Tabs extends FilamentComponent
                 if (
                     filled($tabQueryStringKey) &&
                     ($livewire = $this->getLivewire()) &&
-                    ($livewire instanceof \Livewire\Component) &&
+                    ($livewire instanceof Component) &&
                     (property_exists($livewire, $tabQueryStringKey))
                 ) {
                     $queryStringTab = $livewire->{$tabQueryStringKey};

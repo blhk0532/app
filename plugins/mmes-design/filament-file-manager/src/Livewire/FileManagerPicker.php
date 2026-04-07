@@ -27,10 +27,10 @@ class FileManagerPicker extends Component implements HasActions, HasForms
     use HandlesNavigation;
     use HandlesPagination;
     use HandlesSelection;
-    use InteractsWithActions;
     use HandlesUpload, InteractsWithForms {
         HandlesUpload::_uploadErrored insteadof InteractsWithForms;
     }
+    use InteractsWithActions;
 
     protected FileManagerService $fileManagerService;
 

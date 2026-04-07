@@ -41,6 +41,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LocationCalendarWidget extends Widget implements HasCalendar
 {
@@ -204,7 +205,7 @@ class LocationCalendarWidget extends Widget implements HasCalendar
         $start = $info->start->toMutable()->startOfDay();
         $end = $info->end->toMutable()->endOfDay();
 
-        \Illuminate\Support\Facades\Log::info('getEvents called', ['start' => $start, 'end' => $end]);
+        Log::info('getEvents called', ['start' => $start, 'end' => $end]);
 
         $dailyLocations = DailyLocation::query()
             ->whereBetween('date', [$start, $end])
@@ -227,7 +228,7 @@ class LocationCalendarWidget extends Widget implements HasCalendar
             ->push(...$meetings)
             ->push(...$sprints);
 
-        \Illuminate\Support\Facades\Log::info('Events returned', ['count' => $events->count()]);
+        Log::info('Events returned', ['count' => $events->count()]);
 
         return $events;
 

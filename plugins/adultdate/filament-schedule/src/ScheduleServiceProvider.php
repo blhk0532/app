@@ -8,6 +8,7 @@ use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -93,10 +94,10 @@ class ScheduleServiceProvider extends PackageServiceProvider
         // Ensure Livewire can resolve package widgets by their dotted name (e.g. adultdate.schedule.filament.widgets.calendar-widget)
         if (class_exists('\Livewire\Livewire')) {
             // Register explicit aliases that match the dotted names Livewire expects
-            \Livewire\Livewire::component('adultdate.schedule.filament.widgets.calendar-widget', Filament\Widgets\CalendarWidget::class);
-            \Livewire\Livewire::component('adultdate.schedule.filament.widgets.schedules-calendar-widget', Filament\Widgets\SchedulesCalendarWidget::class);
-            \Livewire\Livewire::component('adultdate.schedule.filament.widgets.full-calendar-widget', Filament\Widgets\FullCalendarWidget::class);
-            \Livewire\Livewire::component('adultdate.schedule.filament.widgets.event-calendar', Filament\Widgets\EventCalendar::class);
+            Livewire::component('adultdate.schedule.filament.widgets.calendar-widget', Filament\Widgets\CalendarWidget::class);
+            Livewire::component('adultdate.schedule.filament.widgets.schedules-calendar-widget', Filament\Widgets\SchedulesCalendarWidget::class);
+            Livewire::component('adultdate.schedule.filament.widgets.full-calendar-widget', Filament\Widgets\FullCalendarWidget::class);
+            Livewire::component('adultdate.schedule.filament.widgets.event-calendar', Filament\Widgets\EventCalendar::class);
         }
     }
 }

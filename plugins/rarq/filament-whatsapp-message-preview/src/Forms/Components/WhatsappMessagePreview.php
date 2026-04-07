@@ -8,8 +8,8 @@ use Rarq\FilamentWhatsappMessagePreview\Traits\HasMessagePreview;
 
 class WhatsappMessagePreview extends Textarea
 {
-    use HasMessagePreview;
     use HasMessageDirection;
+    use HasMessagePreview;
 
     /**
      * @var view-string

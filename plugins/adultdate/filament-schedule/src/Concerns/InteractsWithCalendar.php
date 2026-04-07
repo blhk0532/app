@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Adultdate\Schedule\Concerns;
 
+use Carbon\Carbon;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Support\Concerns\EvaluatesClosures;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -84,7 +86,7 @@ trait InteractsWithCalendar
 
         if ($tmpStartsAtForDefault && ! $tmpEndsAtForDefault && ! $isAllDay) {
             try {
-                $enrich['ends_at'] = \Carbon\Carbon::parse($tmpStartsAtForDefault)->addHour()->toIsoString();
+                $enrich['ends_at'] = Carbon::parse($tmpStartsAtForDefault)->addHour()->toIsoString();
             } catch (Throwable $_) {
                 // ignore parsing errors
             }
@@ -113,13 +115,13 @@ trait InteractsWithCalendar
             $tmpEndsAt = $enrich['ends_at'] ?? ($incomingData['ends_at'] ?? null);
 
             if (! isset($enrich['start_date']) && $tmpStartsAt) {
-                $dt = \Carbon\Carbon::parse($tmpStartsAt);
+                $dt = Carbon::parse($tmpStartsAt);
                 $enrich['start_date'] = $dt->format('Y-m-d');
                 $enrich['start_time'] = $dt->format('H:i');
             }
 
             if (! isset($enrich['end_date']) && $tmpEndsAt) {
-                $dt2 = \Carbon\Carbon::parse($tmpEndsAt);
+                $dt2 = Carbon::parse($tmpEndsAt);
                 $enrich['end_date'] = $dt2->format('Y-m-d');
                 $enrich['end_time'] = $dt2->format('H:i');
             }
@@ -130,7 +132,7 @@ trait InteractsWithCalendar
         // Ensure placeholders exist for expected keys
         $enrich['description'] = $incomingData['description'] ?? null;
         $enrich['users'] = $incomingData['users'] ?? [];
-        $enrich['user_id'] = $incomingData['user_id'] ?? \Illuminate\Support\Facades\Auth::user()?->id;
+        $enrich['user_id'] = $incomingData['user_id'] ?? Auth::user()?->id;
 
         // Ensure metadata exists for forms that expect it. Convert arrays to JSON string so
         // components like CodeEditor (which expect a string) don't receive an array and throw

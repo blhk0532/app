@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Spatie\LaravelData\Contracts;
 
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 interface ResponsableData extends Responsable
 {
@@ -17,8 +19,8 @@ interface ResponsableData extends Responsable
     public static function allowedRequestExcept(): ?array;
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function toResponse($request);
 }

@@ -47,6 +47,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class EventCalendar extends BookingCalendarWidget implements HasCalendar
@@ -359,7 +360,7 @@ class EventCalendar extends BookingCalendarWidget implements HasCalendar
         $start = $info->start->toMutable()->startOfDay();
         $end = $info->end->toMutable()->endOfDay();
 
-        \Illuminate\Support\Facades\Log::info('getEvents called', ['start' => $start, 'end' => $end]);
+        Log::info('getEvents called', ['start' => $start, 'end' => $end]);
 
         $dailyLocations = DailyLocation::query()
             ->whereBetween('date', [$start, $end])
@@ -372,7 +373,7 @@ class EventCalendar extends BookingCalendarWidget implements HasCalendar
             ->whereBetween('service_date', [$start, $end])
             ->get();
 
-        \Illuminate\Support\Facades\Log::info('Bookings fetched', ['count' => $bookings->count()]);
+        Log::info('Bookings fetched', ['count' => $bookings->count()]);
 
         $meetings = BookingMeeting::query()
             ->withCount('users')
@@ -391,7 +392,7 @@ class EventCalendar extends BookingCalendarWidget implements HasCalendar
             ->push(...$meetings)
             ->push(...$sprints);
 
-        \Illuminate\Support\Facades\Log::info('Events returned', ['count' => $events->count()]);
+        Log::info('Events returned', ['count' => $events->count()]);
 
         return $events;
 
@@ -545,7 +546,7 @@ class EventCalendar extends BookingCalendarWidget implements HasCalendar
                             return $a;
                         }, $args);
 
-                        \Illuminate\Support\Facades\Log::info('EventCalendar date-select mount args', ['args' => $debugArgs]);
+                        Log::info('EventCalendar date-select mount args', ['args' => $debugArgs]);
                     } catch (Throwable $e) {
                         // ignore logging failures
                     }

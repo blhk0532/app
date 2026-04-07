@@ -4,6 +4,8 @@ namespace MmesDesign\FilamentFileManager;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use MmesDesign\FilamentFileManager\Livewire\FileManager;
+use MmesDesign\FilamentFileManager\Livewire\FileManagerPicker;
 
 class FileManagerServiceProvider extends ServiceProvider
 {
@@ -31,7 +33,7 @@ class FileManagerServiceProvider extends ServiceProvider
             ], 'filament-file-manager-translations');
         }
 
-        Livewire::component('filament-file-manager', \MmesDesign\FilamentFileManager\Livewire\FileManager::class);
-        Livewire::component('filament-file-manager-picker', \MmesDesign\FilamentFileManager\Livewire\FileManagerPicker::class);
+        Livewire::component('filament-file-manager', FileManager::class);
+        Livewire::component('filament-file-manager-picker', FileManagerPicker::class);
     }
 }

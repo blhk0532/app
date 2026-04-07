@@ -6,6 +6,8 @@ namespace Spatie\LaravelData\Concerns;
 
 use ArrayAccess;
 use Closure;
+use Illuminate\Support\ItemNotFoundException;
+use Illuminate\Support\MultipleItemsFoundException;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -157,8 +159,8 @@ trait EnumerableMethods
      * @param  (callable(TValue, TKey): bool)|string|null  $key
      * @return TValue
      *
-     * @throws \Illuminate\Support\ItemNotFoundException
-     * @throws \Illuminate\Support\MultipleItemsFoundException
+     * @throws ItemNotFoundException
+     * @throws MultipleItemsFoundException
      *
      * @deprecated In v5, use a regular Laravel collection instead
      */

@@ -6,6 +6,7 @@ namespace MWGuerra\WebTerminal\Livewire;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\HtmlString;
+use Livewire\Livewire;
 use MWGuerra\WebTerminal\Data\ConnectionConfig;
 use MWGuerra\WebTerminal\Enums\ConnectionType;
 use MWGuerra\WebTerminal\Enums\TerminalPermission;
@@ -512,12 +513,12 @@ class TerminalBuilder
 
         if ($key !== null) {
             return new HtmlString(
-                \Livewire\Livewire::mount('web-terminal', $params, $key)->html()
+                Livewire::mount('web-terminal', $params, $key)->html()
             );
         }
 
         return new HtmlString(
-            \Livewire\Livewire::mount('web-terminal', $params)->html()
+            Livewire::mount('web-terminal', $params)->html()
         );
     }
 

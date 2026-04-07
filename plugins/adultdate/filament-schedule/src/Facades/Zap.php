@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Adultdate\Schedule\Facades;
 
 use Adultdate\Schedule\Builders\ScheduleBuilder;
+use Adultdate\Schedule\Services\ScheduleService;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array findConflicts(\Adultdate\Schedule\Models\Schedule $schedule)
  * @method static bool hasConflicts(\Adultdate\Schedule\Models\Schedule $schedule)
  *
- * @see \Adultdate\Schedule\Services\ScheduleService
+ * @see ScheduleService
  */
 class Zap extends Facade
 {

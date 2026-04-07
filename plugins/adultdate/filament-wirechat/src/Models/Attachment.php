@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace AdultDate\FilamentWirechat\Models;
 
+use AdultDate\FilamentWirechat\Database\Factories\AttachmentFactory;
 use Adultdate\Wirechat\Facades\Wirechat;
 use Eloquent;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -21,8 +23,8 @@ use Illuminate\Support\Facades\Storage;
  * @property string $original_name
  * @property string $url
  * @property string $mime_type
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read Model|Eloquent $attachable
  * @property-read string $clean_mime_type
  *
@@ -40,7 +42,7 @@ use Illuminate\Support\Facades\Storage;
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereUrl($value)
  *
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Attachment extends Model
 {
@@ -75,7 +77,7 @@ class Attachment extends Model
      */
     protected static function newFactory()
     {
-        return \AdultDate\FilamentWirechat\Database\Factories\AttachmentFactory::new();
+        return AttachmentFactory::new();
     }
 
     protected static function boot(): void

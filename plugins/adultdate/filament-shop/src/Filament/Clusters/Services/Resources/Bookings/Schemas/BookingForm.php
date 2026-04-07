@@ -10,10 +10,12 @@ use Adultdate\FilamentBooking\Models\Booking\Client;
 use Adultdate\FilamentBooking\Models\Booking\Service;
 use App\Models\User;
 use Filament\Actions\Action;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Group;
@@ -104,21 +106,21 @@ class BookingForm
                 ->searchable()
                 ->required(),
 
-            \Filament\Forms\Components\DatePicker::make('service_date')
+            DatePicker::make('service_date')
                 ->label('Datum')
                 ->required()
                 ->columnSpan(1),
 
             Group::make()
                 ->schema([
-                    \Filament\Forms\Components\TimePicker::make('start_time')
+                    TimePicker::make('start_time')
                         ->label('Starttid')
                         ->seconds(false)
                         ->displayFormat('H:i')
                         ->native(false)
                         ->required(),
 
-                    \Filament\Forms\Components\TimePicker::make('end_time')
+                    TimePicker::make('end_time')
                         ->label('Sluttid')
                         ->seconds(false)
                         ->displayFormat('H:i')

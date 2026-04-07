@@ -7,13 +7,14 @@ namespace Adultdate\Schedule\Models;
 use Adultdate\Schedule\Contracts\Eventable;
 use Adultdate\Schedule\ValueObjects\CalendarEvent;
 use App\Models\User;
+use Database\Factories\MeetingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Meeting extends Model implements Eventable
 {
-    /** @use HasFactory<\Database\Factories\MeetingFactory> */
+    /** @use HasFactory<MeetingFactory> */
     use HasFactory;
 
     /**

@@ -78,7 +78,7 @@ use WallaceMartinss\FilamentEvolution\FilamentEvolutionPlugin;
 use Wallacemartinss\FilamentIconPicker\Enums\Remix;
 use Wallacemartinss\FilamentIconPicker\FilamentIconPickerPlugin;
 use Wallo\FilamentCompanies\FilamentCompanies;
-
+use AdultDate\FilamentWirechat\Filament\Pages\ChatDashboard;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -371,7 +371,8 @@ class AdminPanelProvider extends PanelProvider
 
             ])
             ->plugins([
-                FilamentWirechatPlugin::make()
+                  FilamentWirechatPlugin::make()
+                    ->onlyPages([ChatDashboard::class])
                     ->excludeResources([
                         ConversationResource::class,
                         MessageResource::class,

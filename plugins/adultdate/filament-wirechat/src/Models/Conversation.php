@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdultDate\FilamentWirechat\Models;
 
+use AdultDate\FilamentWirechat\Database\Factories\ConversationFactory;
 use AdultDate\FilamentWirechat\Enums\Actions;
 use AdultDate\FilamentWirechat\Enums\ConversationType;
 use AdultDate\FilamentWirechat\Enums\ParticipantRole;
@@ -767,6 +768,6 @@ class Conversation extends Model
      */
     protected static function newFactory()
     {
-        return \AdultDate\FilamentWirechat\Database\Factories\ConversationFactory::new();
+        return ConversationFactory::new();
     }
 }

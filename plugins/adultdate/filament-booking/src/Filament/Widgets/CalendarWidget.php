@@ -10,8 +10,10 @@ use Adultdate\FilamentBooking\Concerns\HasHeaderActions;
 use Adultdate\FilamentBooking\Concerns\HasSchema;
 use Adultdate\FilamentBooking\Concerns\InteractsWithCalendar;
 use Adultdate\FilamentBooking\Concerns\InteractsWithEventRecord;
+use Adultdate\FilamentBooking\Contracts\HasCalendar;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\CanBeConfigured;
 use Adultdate\FilamentBooking\Filament\Widgets\Concerns\InteractsWithRawJS;
+use Adultdate\FilamentBooking\Models\CalendarEvent;
 use Adultdate\FilamentBooking\Models\CalendarSettings;
 use Adultdate\FilamentBooking\ValueObjects\FetchInfo;
 use Carbon\Carbon;
@@ -27,7 +29,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
-class CalendarWidget extends FullCalendarWidget implements \Adultdate\FilamentBooking\Contracts\HasCalendar
+class CalendarWidget extends FullCalendarWidget implements HasCalendar
 {
     use CanBeConfigured, CanRefreshCalendar, HasHeaderActions, HasSchema, InteractsWithCalendar, InteractsWithEventRecord, InteractsWithRawJS {
         InteractsWithCalendar::getOptions insteadof CanBeConfigured;
@@ -240,7 +242,7 @@ class CalendarWidget extends FullCalendarWidget implements \Adultdate\FilamentBo
             return collect();
         }
 
-        return \Adultdate\FilamentBooking\Models\CalendarEvent::query()
+        return CalendarEvent::query()
             ->where('user_id', $userId)
             ->whereDate('end', '>=', $start)
             ->whereDate('start', '<=', $end)

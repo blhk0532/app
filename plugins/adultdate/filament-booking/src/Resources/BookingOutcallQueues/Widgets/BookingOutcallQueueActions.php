@@ -7,6 +7,7 @@ namespace Adultdate\FilamentBooking\BookingOutcallQueues\Widgets;
 use App\Models\BookingOutcallQueue;
 use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\Storage;
 
 class BookingOutcallQueueActions extends Widget
 {
@@ -79,9 +80,9 @@ class BookingOutcallQueueActions extends Widget
 
         // Store temporary csv and provide download link via notification
         $path = 'exports/booking_outcall_queues_'.time().'.csv';
-        \Illuminate\Support\Facades\Storage::disk(config('filesystems.default'))->put($path, $csv);
+        Storage::disk(config('filesystems.default'))->put($path, $csv);
 
-        $url = \Illuminate\Support\Facades\Storage::disk(config('filesystems.default'))->url($path);
+        $url = Storage::disk(config('filesystems.default'))->url($path);
 
         Notification::make()
             ->title('CSV exported')

@@ -6,6 +6,7 @@ namespace MWGuerra\WebTerminal\Filament\Pages;
 
 use BackedEnum;
 use Filament\Pages\Page;
+use Filament\Panel;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -54,7 +55,7 @@ class Terminal extends Page implements HasSchemas
         return 'System';
     }
 
-    public static function getSlug(?\Filament\Panel $panel = null): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return static::$slug ?? 'terminal';
     }

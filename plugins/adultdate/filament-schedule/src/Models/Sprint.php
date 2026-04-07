@@ -7,12 +7,13 @@ namespace Adultdate\Schedule\Models;
 use Adultdate\Schedule\Contracts\Eventable;
 use Adultdate\Schedule\Enums\Priority;
 use Adultdate\Schedule\ValueObjects\CalendarEvent;
+use Database\Factories\SprintFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Sprint extends Model implements Eventable
 {
-    /** @use HasFactory<\Database\Factories\SprintFactory> */
+    /** @use HasFactory<SprintFactory> */
     use HasFactory;
 
     /**

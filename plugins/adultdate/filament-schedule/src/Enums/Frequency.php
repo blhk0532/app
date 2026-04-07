@@ -4,7 +4,15 @@ declare(strict_types=1);
 
 namespace Adultdate\Schedule\Enums;
 
+use Adultdate\Schedule\Data\AnnuallyFrequencyConfig;
+use Adultdate\Schedule\Data\BiMonthlyFrequencyConfig;
+use Adultdate\Schedule\Data\BiWeeklyFrequencyConfig;
+use Adultdate\Schedule\Data\DailyFrequencyConfig;
 use Adultdate\Schedule\Data\FrequencyConfig;
+use Adultdate\Schedule\Data\MonthlyFrequencyConfig;
+use Adultdate\Schedule\Data\QuarterlyFrequencyConfig;
+use Adultdate\Schedule\Data\SemiAnnuallyFrequencyConfig;
+use Adultdate\Schedule\Data\WeeklyFrequencyConfig;
 use Carbon\CarbonInterface;
 
 enum Frequency: string
@@ -57,14 +65,14 @@ enum Frequency: string
     public function configClass(): string
     {
         return match ($this) {
-            self::DAILY => \Adultdate\Schedule\Data\DailyFrequencyConfig::class,
-            self::WEEKLY => \Adultdate\Schedule\Data\WeeklyFrequencyConfig::class,
-            self::BIWEEKLY => \Adultdate\Schedule\Data\BiWeeklyFrequencyConfig::class,
-            self::MONTHLY => \Adultdate\Schedule\Data\MonthlyFrequencyConfig::class,
-            self::BIMONTHLY => \Adultdate\Schedule\Data\BiMonthlyFrequencyConfig::class,
-            self::QUARTERLY => \Adultdate\Schedule\Data\QuarterlyFrequencyConfig::class,
-            self::SEMIANNUALLY => \Adultdate\Schedule\Data\SemiAnnuallyFrequencyConfig::class,
-            self::ANNUALLY => \Adultdate\Schedule\Data\AnnuallyFrequencyConfig::class,
+            self::DAILY => DailyFrequencyConfig::class,
+            self::WEEKLY => WeeklyFrequencyConfig::class,
+            self::BIWEEKLY => BiWeeklyFrequencyConfig::class,
+            self::MONTHLY => MonthlyFrequencyConfig::class,
+            self::BIMONTHLY => BiMonthlyFrequencyConfig::class,
+            self::QUARTERLY => QuarterlyFrequencyConfig::class,
+            self::SEMIANNUALLY => SemiAnnuallyFrequencyConfig::class,
+            self::ANNUALLY => AnnuallyFrequencyConfig::class,
         };
     }
 }

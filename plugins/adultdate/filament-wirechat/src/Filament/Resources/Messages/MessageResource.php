@@ -16,6 +16,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class MessageResource extends Resource
@@ -77,7 +78,7 @@ class MessageResource extends Resource
      * Get the query builder for global search.
      * Only search messages in conversations where the current user is a participant.
      */
-    public static function getGlobalSearchEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    public static function getGlobalSearchEloquentQuery(): Builder
     {
         $user = auth()->user();
 

@@ -9,6 +9,7 @@ use Adultdate\FilamentBooking\Enums\BookingStatus;
 use Adultdate\FilamentBooking\Enums\CalendarViewType;
 use Adultdate\FilamentBooking\Enums\Priority;
 use Adultdate\FilamentBooking\Filament\Actions\CreateAction;
+use Adultdate\FilamentBooking\FilamentBookingPlugin;
 use Adultdate\FilamentBooking\Models\Booking\Booking;
 use Adultdate\FilamentBooking\Models\BookingMeeting;
 use Adultdate\FilamentBooking\Models\BookingSprint;
@@ -18,6 +19,7 @@ use Adultdate\FilamentBooking\ValueObjects\DateSelectInfo;
 use Adultdate\FilamentBooking\ValueObjects\EventDropInfo;
 use Adultdate\FilamentBooking\ValueObjects\EventResizeInfo;
 use Adultdate\FilamentBooking\ValueObjects\FetchInfo;
+use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -30,6 +32,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 
 class EventCalendar extends CalendarWidget
@@ -64,7 +67,7 @@ class EventCalendar extends CalendarWidget
     {
         return array_replace_recursive(
             $this->config(),
-            \Adultdate\FilamentBooking\FilamentBookingPlugin::get()->getConfig(),
+            FilamentBookingPlugin::get()->getConfig(),
         );
     }
 
@@ -136,7 +139,7 @@ class EventCalendar extends CalendarWidget
         $start = $info->start->toMutable()->startOfDay();
         $end = $info->end->toMutable()->endOfDay();
 
-        \Illuminate\Support\Facades\Log::info('getEvents called', ['start' => $start, 'end' => $end]);
+        Log::info('getEvents called', ['start' => $start, 'end' => $end]);
 
         $meetings = BookingMeeting::query()
             ->withCount('users')
@@ -159,7 +162,7 @@ class EventCalendar extends CalendarWidget
             ->push(...$sprints)
             ->push(...$bookings);
 
-        \Illuminate\Support\Facades\Log::info('Events returned', ['count' => $events->count()]);
+        Log::info('Events returned', ['count' => $events->count()]);
 
         return $events;
     }
@@ -224,7 +227,7 @@ class EventCalendar extends CalendarWidget
 
                             Select::make('service_user_id')
                                 ->label('Service User')
-                                ->options(\App\Models\User::where('role', 'service')->pluck('name', 'id'))
+                                ->options(User::where('role', 'service')->pluck('name', 'id'))
                                 ->searchable()
                                 ->required()
                                 ->columnSpanFull(),

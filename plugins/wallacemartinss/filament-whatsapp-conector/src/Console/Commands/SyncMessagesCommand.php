@@ -6,6 +6,7 @@ namespace WallaceMartinss\FilamentEvolution\Console\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use WallaceMartinss\FilamentEvolution\Enums\MessageDirectionEnum;
 use WallaceMartinss\FilamentEvolution\Enums\MessageStatusEnum;
@@ -75,7 +76,7 @@ class SyncMessagesCommand extends Command
 
         do {
             try {
-                /** @var \Illuminate\Http\Client\Response $response */
+                /** @var Response $response */
                 $response = Http::withHeaders([
                     'apikey' => $apiKey,
                     'Content-Type' => 'application/json',

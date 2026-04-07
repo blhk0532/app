@@ -8,6 +8,7 @@ use Adultdate\Schedule\Concerns\InteractsWithCalendar;
 use Adultdate\Schedule\Contracts\HasCalendar;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Widgets\Widget;
 
 abstract class CalendarWidget extends Widget implements HasActions, HasCalendar, HasSchemas
@@ -20,6 +21,6 @@ abstract class CalendarWidget extends Widget implements HasActions, HasCalendar,
 
     final public function eventAssetUrl(): string
     {
-        return \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-event', 'adultdate-schedule');
+        return FilamentAsset::getAlpineComponentSrc('calendar-event', 'adultdate-schedule');
     }
 }

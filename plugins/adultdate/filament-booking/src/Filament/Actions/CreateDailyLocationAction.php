@@ -7,6 +7,7 @@ namespace Adultdate\FilamentBooking\Filament\Actions;
 use Adultdate\FilamentBooking\Contracts\HasCalendar;
 use Adultdate\FilamentBooking\Models\Booking\DailyLocation;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
 class CreateDailyLocationAction extends Action
@@ -52,7 +53,7 @@ class CreateDailyLocationAction extends Action
                 $data['created_by'] = Auth::id();
                 DailyLocation::updateOrCreate(['date' => $data['date'], 'service_user_id' => $data['service_user_id']], $data);
                 $this->refreshRecords();
-                \Filament\Notifications\Notification::make()
+                Notification::make()
                     ->title('Location saved successfully')
                     ->success()
                     ->send();

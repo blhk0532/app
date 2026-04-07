@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Adultdate\Schedule\Models;
 
 use App\Models\User;
+use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -55,6 +56,6 @@ class CalendarEvent extends Model
      * Return header widgets for the page so Filament will render them
      * in the page header area (the framework filters by canView()).
      *
-     * @return array<class-string<\Filament\Widgets\Widget>>
+     * @return array<class-string<Widget>>
      */
 }

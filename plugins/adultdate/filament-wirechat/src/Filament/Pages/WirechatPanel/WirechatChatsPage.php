@@ -7,6 +7,7 @@ namespace AdultDate\FilamentWirechat\Filament\Pages\WirechatPanel;
 use AdultDate\FilamentWirechat\Livewire\Chats\Chats as ChatsComponent;
 use Filament\Pages\Page;
 use Filament\Panel;
+use Illuminate\Contracts\View\View;
 
 class WirechatChatsPage extends Page
 {
@@ -36,7 +37,7 @@ class WirechatChatsPage extends Page
     /**
      * Hide the page header
      */
-    public function getHeader(): ?\Illuminate\Contracts\View\View
+    public function getHeader(): ?View
     {
         return null;
     }

@@ -7,6 +7,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use MmesDesign\FilamentFileManager\Concerns\HandlesBulkOperations;
@@ -30,10 +31,10 @@ class FileManager extends Component implements HasActions, HasForms
     use HandlesNavigation;
     use HandlesPagination;
     use HandlesSelection;
-    use InteractsWithActions;
     use HandlesUpload, InteractsWithForms {
         HandlesUpload::_uploadErrored insteadof InteractsWithForms;
     }
+    use InteractsWithActions;
 
     protected FileManagerService $fileManagerService;
 
@@ -97,7 +98,7 @@ class FileManager extends Component implements HasActions, HasForms
             ->action(fn () => null);
     }
 
-    public function render(): \Illuminate\Contracts\View\View
+    public function render(): View
     {
         $paginated = $this->getPaginatedListing();
 

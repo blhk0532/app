@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace AdultDate\FilamentWirechat\Models\Concerns;
 
 use Adultdate\Wirechat\Facades\Wirechat;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 
 trait HasDynamicIds
@@ -52,10 +55,10 @@ trait HasDynamicIds
     /**
      * Retrieve the model for a bound value.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\Relation  $query
+     * @param  Model|Relation  $query
      * @param  mixed  $value
      * @param  string|null  $field
-     * @return \Illuminate\Contracts\Database\Eloquent\Builder
+     * @return Builder
      *
      * @throws ModelNotFoundException
      */

@@ -8,6 +8,8 @@ use Adultdate\Schedule\Filament\Actions\CreateAction;
 use Adultdate\Schedule\Filament\Actions\DeleteAction;
 use Adultdate\Schedule\Filament\Actions\EditAction;
 use Adultdate\Schedule\Filament\Actions\ViewAction;
+use Adultdate\Schedule\Models\Meeting;
+use Adultdate\Schedule\Models\Sprint;
 use Filament\Actions\Action;
 use Illuminate\Support\Str;
 use Throwable;
@@ -62,13 +64,13 @@ trait HasDefaultActions
     {
         // Cache common create actions used by the calendar widgets.
         try {
-            $this->cacheAction($this->createAction(\Adultdate\Schedule\Models\Meeting::class, 'ctxCreateMeeting'));
+            $this->cacheAction($this->createAction(Meeting::class, 'ctxCreateMeeting'));
         } catch (Throwable $e) {
             // Swallow - caching is best-effort during boot.
         }
 
         try {
-            $this->cacheAction($this->createAction(\Adultdate\Schedule\Models\Sprint::class, 'ctxCreateSprint'));
+            $this->cacheAction($this->createAction(Sprint::class, 'ctxCreateSprint'));
         } catch (Throwable $e) {
             // Swallow
         }

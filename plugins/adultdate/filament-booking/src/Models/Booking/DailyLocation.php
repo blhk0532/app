@@ -6,6 +6,7 @@ namespace Adultdate\FilamentBooking\Models\Booking;
 
 use Adultdate\FilamentBooking\Contracts\Eventable;
 use Adultdate\FilamentBooking\ValueObjects\CalendarEvent;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -34,13 +35,13 @@ class DailyLocation extends Model implements Eventable
 
     public function serviceUser()
     {
-        return $this->belongsTo(\App\Models\User::class, 'service_user_id')
+        return $this->belongsTo(User::class, 'service_user_id')
             ->where('role', 'service');
     }
 
     public function creator()
     {
-        return $this->belongsTo(\App\Models\User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function setServiceDateAttribute($value)

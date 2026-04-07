@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SolutionForest\TabLayoutPlugin\Schemas\Components;
 
 use Filament\Support\Concerns\EvaluatesClosures;
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component as ViewComponent;
 use SolutionForest\TabLayoutPlugin\Concerns\Components\CanBeHidden;
 use SolutionForest\TabLayoutPlugin\Concerns\Components\CanSpanColumns;
@@ -29,7 +30,7 @@ class TabContentContainer extends ViewComponent
         return $static;
     }
 
-    public function render(): \Illuminate\Contracts\View\View
+    public function render(): View
     {
         return view('tab-layout-plugin::schemas.components.tab-content-container', [
             'object' => $this->object,

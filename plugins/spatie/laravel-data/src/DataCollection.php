@@ -38,12 +38,12 @@ use Spatie\LaravelData\Support\EloquentCasts\DataCollectionEloquentCast;
  */
 class DataCollection implements ArrayAccess, BaseDataCollectableContract, ContextableDataContract, Countable, IncludeableDataContract, IteratorAggregate, Responsable, ResponsableDataContract, TransformableDataContract, WrappableDataContract
 {
-    /** @use \Spatie\LaravelData\Concerns\BaseDataCollectable<TKey, TValue> */
+    /** @use BaseDataCollectable<TKey, TValue> */
     use BaseDataCollectable;
 
     use ContextableData;
 
-    /** @use \Spatie\LaravelData\Concerns\EnumerableMethods<TKey, TValue> */
+    /** @use EnumerableMethods<TKey, TValue> */
     use EnumerableMethods;
 
     use IncludeableData;

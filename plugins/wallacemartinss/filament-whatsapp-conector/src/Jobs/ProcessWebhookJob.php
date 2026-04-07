@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use WallaceMartinss\FilamentEvolution\Data\QrCodeData;
 use WallaceMartinss\FilamentEvolution\Data\Webhooks\ConnectionUpdateData;
 use WallaceMartinss\FilamentEvolution\Data\Webhooks\MessageUpsertData;
 use WallaceMartinss\FilamentEvolution\Data\Webhooks\QrCodeUpdatedData;
@@ -118,7 +119,7 @@ class ProcessWebhookJob implements ShouldQueue
 
         event(new QrCodeUpdated(
             $instance,
-            new \WallaceMartinss\FilamentEvolution\Data\QrCodeData(
+            new QrCodeData(
                 code: $data->code,
                 base64: $data->base64,
                 pairingCode: $data->pairingCode,

@@ -4,7 +4,15 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentBooking\Enums;
 
+use Adultdate\FilamentBooking\Data\AnnuallyFrequencyConfig;
+use Adultdate\FilamentBooking\Data\BiMonthlyFrequencyConfig;
+use Adultdate\FilamentBooking\Data\BiWeeklyFrequencyConfig;
+use Adultdate\FilamentBooking\Data\DailyFrequencyConfig;
 use Adultdate\FilamentBooking\Data\FrequencyConfig;
+use Adultdate\FilamentBooking\Data\MonthlyFrequencyConfig;
+use Adultdate\FilamentBooking\Data\QuarterlyFrequencyConfig;
+use Adultdate\FilamentBooking\Data\SemiAnnuallyFrequencyConfig;
+use Adultdate\FilamentBooking\Data\WeeklyFrequencyConfig;
 use Carbon\CarbonInterface;
 
 enum Frequency: string
@@ -57,14 +65,14 @@ enum Frequency: string
     public function configClass(): string
     {
         return match ($this) {
-            self::DAILY => \Adultdate\FilamentBooking\Data\DailyFrequencyConfig::class,
-            self::WEEKLY => \Adultdate\FilamentBooking\Data\WeeklyFrequencyConfig::class,
-            self::BIWEEKLY => \Adultdate\FilamentBooking\Data\BiWeeklyFrequencyConfig::class,
-            self::MONTHLY => \Adultdate\FilamentBooking\Data\MonthlyFrequencyConfig::class,
-            self::BIMONTHLY => \Adultdate\FilamentBooking\Data\BiMonthlyFrequencyConfig::class,
-            self::QUARTERLY => \Adultdate\FilamentBooking\Data\QuarterlyFrequencyConfig::class,
-            self::SEMIANNUALLY => \Adultdate\FilamentBooking\Data\SemiAnnuallyFrequencyConfig::class,
-            self::ANNUALLY => \Adultdate\FilamentBooking\Data\AnnuallyFrequencyConfig::class,
+            self::DAILY => DailyFrequencyConfig::class,
+            self::WEEKLY => WeeklyFrequencyConfig::class,
+            self::BIWEEKLY => BiWeeklyFrequencyConfig::class,
+            self::MONTHLY => MonthlyFrequencyConfig::class,
+            self::BIMONTHLY => BiMonthlyFrequencyConfig::class,
+            self::QUARTERLY => QuarterlyFrequencyConfig::class,
+            self::SEMIANNUALLY => SemiAnnuallyFrequencyConfig::class,
+            self::ANNUALLY => AnnuallyFrequencyConfig::class,
         };
     }
 }

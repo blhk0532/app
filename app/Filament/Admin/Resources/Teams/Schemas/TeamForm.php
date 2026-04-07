@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Teams\Schemas;
 
+
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
+use Filament\Schemas\Components\Section;
 
 class TeamForm
 {
@@ -44,15 +47,20 @@ class TeamForm
                 TextInput::make('city')
                     ->maxLength(255),
                 TextInput::make('country')
+                ->hidden()
                     ->maxLength(255),
                 Textarea::make('description')
                     ->rows(3)
                     ->columnSpanFull(),
                 TextInput::make('slug')
                     ->required(),
-                Toggle::make('personal_team'),
-                Toggle::make('is_admin')
-                    ->label(__('Admin team')),
+                Section::make(__(' '))
+                    ->schema([
+                        Toggle::make('personal_team'),
+                        Toggle::make('is_admin')
+                            ->label(__('Admin team')),
+                    ])
+                    ->columns(2)
             ]);
     }
 }

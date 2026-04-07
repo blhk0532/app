@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Laravel\Prompts\Prompt;
 
 class FilamentAuthCommand extends Command
 {
@@ -22,7 +23,7 @@ class FilamentAuthCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->hasPrompts = class_exists(\Laravel\Prompts\Prompt::class);
+        $this->hasPrompts = class_exists(Prompt::class);
     }
 
     public function handle(): int

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentShop\Models\Shop;
 
+use Adultdate\FilamentShop\Database\Factories\Shop\ClientFactory;
 use Adultdate\FilamentShop\Models\Address;
 use Adultdate\FilamentShop\Models\Comment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,7 @@ use Illuminate\Support\Str;
 
 class Client extends Model
 {
-    /** @use HasFactory<\Adultdate\FilamentShop\Database\Factories\Shop\ClientFactory> */
+    /** @use HasFactory<ClientFactory> */
     use HasFactory;
 
     use SoftDeletes;
@@ -95,7 +96,7 @@ class Client extends Model
 
     protected static function newFactory()
     {
-        return \Adultdate\FilamentShop\Database\Factories\Shop\ClientFactory::new();
+        return ClientFactory::new();
     }
 
     protected static function boot(): void

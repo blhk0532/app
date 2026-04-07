@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Adultdate\Wirechat\Http\Resources;
 
+use AdultDate\FilamentWirechat\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \AdultDate\FilamentWirechat\Models\Message
+ * @mixin Message
  */
 class MessageResource extends JsonResource
 {

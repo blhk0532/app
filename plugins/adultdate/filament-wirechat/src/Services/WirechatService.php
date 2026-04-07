@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace AdultDate\FilamentWirechat\Services;
 
+use Adultdate\Wirechat\Panel;
+use Adultdate\Wirechat\PanelRegistry;
+
 class WirechatService
 {
     /**
@@ -168,12 +171,12 @@ class WirechatService
     /**
      * Get the default panel instance.
      *
-     * @return \Adultdate\Wirechat\Panel|null
+     * @return Panel|null
      */
     public function getDefaultPanel()
     {
-        if (class_exists(\Adultdate\Wirechat\PanelRegistry::class) && app()->bound(\Adultdate\Wirechat\PanelRegistry::class)) {
-            return app(\Adultdate\Wirechat\PanelRegistry::class)->getDefault();
+        if (class_exists(PanelRegistry::class) && app()->bound(PanelRegistry::class)) {
+            return app(PanelRegistry::class)->getDefault();
         }
 
         return null;
@@ -182,12 +185,12 @@ class WirechatService
     /**
      * Get a panel by its ID.
      *
-     * @return \Adultdate\Wirechat\Panel|null
+     * @return Panel|null
      */
     public function getPanel(string $panelId)
     {
-        if (class_exists(\Adultdate\Wirechat\PanelRegistry::class) && app()->bound(\Adultdate\Wirechat\PanelRegistry::class)) {
-            return app(\Adultdate\Wirechat\PanelRegistry::class)->get($panelId);
+        if (class_exists(PanelRegistry::class) && app()->bound(PanelRegistry::class)) {
+            return app(PanelRegistry::class)->get($panelId);
         }
 
         return null;
@@ -196,12 +199,12 @@ class WirechatService
     /**
      * Get the current panel instance.
      *
-     * @return \Adultdate\Wirechat\Panel|null
+     * @return Panel|null
      */
     public function currentPanel()
     {
-        if (class_exists(\Adultdate\Wirechat\PanelRegistry::class) && app()->bound(\Adultdate\Wirechat\PanelRegistry::class)) {
-            return app(\Adultdate\Wirechat\PanelRegistry::class)->getCurrent();
+        if (class_exists(PanelRegistry::class) && app()->bound(PanelRegistry::class)) {
+            return app(PanelRegistry::class)->getCurrent();
         }
 
         return null;

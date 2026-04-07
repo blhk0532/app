@@ -7,6 +7,7 @@ namespace Adultdate\FilamentBooking\Jobs;
 use Adultdate\FilamentBooking\Models\Booking\Booking;
 use Adultdate\FilamentBooking\Services\GoogleCalendarSyncService;
 use App\Services\RawWhatsappService;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -113,9 +114,9 @@ class SyncBookingToGoogleCalendar implements ShouldQueue
             $clientName = $booking->client?->name ?? 'Client';
             $clientPhone = $booking->client?->phone ?? 'Unknown';
             $bookingNumber = $booking->number ?? 'N/A';
-            $date = \Carbon\Carbon::parse($booking->service_date ?: $booking->starts_at ?: now())->format('Y-m-d');
-            $start = $booking->start_time ?: \Carbon\Carbon::parse($booking->starts_at ?: now())->format('H:i');
-            $end = $booking->end_time ?: \Carbon\Carbon::parse($booking->ends_at ?: now())->format('H:i');
+            $date = Carbon::parse($booking->service_date ?: $booking->starts_at ?: now())->format('Y-m-d');
+            $start = $booking->start_time ?: Carbon::parse($booking->starts_at ?: now())->format('H:i');
+            $end = $booking->end_time ?: Carbon::parse($booking->ends_at ?: now())->format('H:i');
             $addr = mb_trim(($booking->client?->address ?? '').' '.($booking->client?->city ?? ''));
             $serviceUserName = $booking->serviceUser?->name ?? null;
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdultDate\FilamentWirechat\Models;
 
+use AdultDate\FilamentWirechat\Database\Factories\ParticipantFactory;
 use AdultDate\FilamentWirechat\Enums\Actions;
 use AdultDate\FilamentWirechat\Enums\ParticipantRole;
 use AdultDate\FilamentWirechat\Models\Scopes\WithoutRemovedActionScope;
@@ -12,10 +13,12 @@ use Adultdate\Wirechat\Facades\Wirechat;
 use Eloquent;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -24,15 +27,15 @@ use Illuminate\Support\Facades\DB;
  * @property ParticipantRole $role
  * @property int $participantable_id
  * @property string $participantable_type
- * @property \Illuminate\Support\Carbon|null $exited_at
- * @property \Illuminate\Support\Carbon|null $last_active_at
- * @property \Illuminate\Support\Carbon|null $conversation_cleared_at
- * @property \Illuminate\Support\Carbon|null $conversation_deleted_at
- * @property \Illuminate\Support\Carbon|null $conversation_read_at
+ * @property Carbon|null $exited_at
+ * @property Carbon|null $last_active_at
+ * @property Carbon|null $conversation_cleared_at
+ * @property Carbon|null $conversation_deleted_at
+ * @property Carbon|null $conversation_read_at
  * @property string|null $deleted_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Action> $actions
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, Action> $actions
  * @property-read int|null $actions_count
  * @property-read Conversation $conversation
  * @property-read Model|Eloquent $participantable
@@ -61,7 +64,7 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Participant withExited()
  * @method static Builder|Participant withoutParticipantable(\Illuminate\Database\Eloquent\Model|\Illuminate\Contracts\Auth\Authenticatable $user)
  *
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Participant extends Model
 {
@@ -340,10 +343,10 @@ class Participant extends Model
      * the resolver cannot guess the correct namespace for your Factory class.
      * so we exlicilty tell it the correct namespace
      *
-     * @return \AdultDate\FilamentWirechat\Database\Factories\ParticipantFactory
+     * @return ParticipantFactory
      */
     protected static function newFactory()
     {
-        return \AdultDate\FilamentWirechat\Database\Factories\ParticipantFactory::new();
+        return ParticipantFactory::new();
     }
 }

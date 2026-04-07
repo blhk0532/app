@@ -6,6 +6,7 @@ namespace Adultdate\Schedule\Filament\Pages;
 
 use Adultdate\Schedule\Filament\Widgets\SchedulesCalendarWidget;
 use Filament\Pages\Page as BasePage;
+use Filament\Widgets\Widget;
 use UnitEnum;
 
 class SchedulesCalendar extends BasePage
@@ -22,7 +23,7 @@ class SchedulesCalendar extends BasePage
      * Return header widgets for the page so Filament will render them
      * in the page header area (the framework filters by canView()).
      *
-     * @return array<class-string<\Filament\Widgets\Widget>>
+     * @return array<class-string<Widget>>
      */
     protected function getHeaderWidgets(): array
     {

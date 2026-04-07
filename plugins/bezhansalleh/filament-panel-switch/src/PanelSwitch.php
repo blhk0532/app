@@ -92,60 +92,58 @@ class PanelSwitch extends Component
     {
         $static = static::make();
 
+        FilamentView::registerRenderHook(
+            name: PanelsRenderHook::TOPBAR_LOGO_BEFORE,
+            hook: function () use ($static) {
 
-            FilamentView::registerRenderHook(
-                name: PanelsRenderHook::TOPBAR_LOGO_BEFORE,
-                hook: function () use ($static) {
+                if (! $static->isVisible()) {
+                    return '';
+                }
 
-                    if (! $static->isVisible()) {
-                        return '';
-                    }
+                return view('filament.admin.panel-switch-menu', [
+                    'currentPanel' => $static->getCurrentPanel(),
+                    'heading' => $static->getModalHeading(),
+                    'icons' => $static->getIcons(),
+                    'iconSize' => $static->getIconSize(),
+                    'isSimple' => $static->isSimple(),
+                    'isSlideOver' => $static->isModalSlideOver(),
+                    'labels' => $static->getLabels(),
+                    'modalWidth' => $static->getModalWidth(),
+                    'panels' => $static->getPanels(),
+                    'renderIconAsImage' => $static->getRenderIconAsImage(),
+                ]);
+            },
+        );
 
-                    return view('filament.admin.panel-switch-menu', [
-                        'currentPanel' => $static->getCurrentPanel(),
-                        'heading' => $static->getModalHeading(),
-                        'icons' => $static->getIcons(),
-                        'iconSize' => $static->getIconSize(),
-                        'isSimple' => $static->isSimple(),
-                        'isSlideOver' => $static->isModalSlideOver(),
-                        'labels' => $static->getLabels(),
-                        'modalWidth' => $static->getModalWidth(),
-                        'panels' => $static->getPanels(),
-                        'renderIconAsImage' => $static->getRenderIconAsImage(),
-                    ]);
-                },
-            );
+        FilamentView::registerRenderHook(
+            name: PanelsRenderHook::SIDEBAR_LOGO_BEFORE,
+            hook: function () use ($static) {
 
-            FilamentView::registerRenderHook(
-                name: PanelsRenderHook::SIDEBAR_LOGO_BEFORE,
-                hook: function () use ($static) {
+                if (! $static->isVisible()) {
+                    return '';
+                }
 
-                    if (! $static->isVisible()) {
-                        return '';
-                    }
+                return view('filament.admin.panel-switch-menu', [
+                    'currentPanel' => $static->getCurrentPanel(),
+                    'heading' => $static->getModalHeading(),
+                    'icons' => $static->getIcons(),
+                    'iconSize' => $static->getIconSize(),
+                    'isSimple' => $static->isSimple(),
+                    'isSlideOver' => $static->isModalSlideOver(),
+                    'labels' => $static->getLabels(),
+                    'modalWidth' => $static->getModalWidth(),
+                    'panels' => $static->getPanels(),
+                    'renderIconAsImage' => $static->getRenderIconAsImage(),
+                ]);
+            },
+        );
 
-                    return view('filament.admin.panel-switch-menu', [
-                        'currentPanel' => $static->getCurrentPanel(),
-                        'heading' => $static->getModalHeading(),
-                        'icons' => $static->getIcons(),
-                        'iconSize' => $static->getIconSize(),
-                        'isSimple' => $static->isSimple(),
-                        'isSlideOver' => $static->isModalSlideOver(),
-                        'labels' => $static->getLabels(),
-                        'modalWidth' => $static->getModalWidth(),
-                        'panels' => $static->getPanels(),
-                        'renderIconAsImage' => $static->getRenderIconAsImage(),
-                    ]);
-                },
-            );
+        PanelSwitch::configureUsing(function (PanelSwitch $switch): void {});
 
-            PanelSwitch::configureUsing(function (PanelSwitch $switch): void {});
-
-            FilamentView::registerRenderHook(
-                PanelsRenderHook::TOPBAR_LOGO_AFTER,
-                fn () => view('filament.app.user-notes-icon-topbar')
-            );
-
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::TOPBAR_LOGO_AFTER,
+            fn () => view('filament.app.user-notes-icon-topbar')
+        );
 
     }
 

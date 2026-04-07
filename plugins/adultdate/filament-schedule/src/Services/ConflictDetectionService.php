@@ -8,6 +8,8 @@ use Adultdate\Schedule\Data\FrequencyConfig;
 use Adultdate\Schedule\Enums\ScheduleTypes;
 use Adultdate\Schedule\Models\Schedule;
 use Adultdate\Schedule\Models\SchedulePeriod;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -167,9 +169,9 @@ class ConflictDetectionService
     private function dateRangesOverlap(Schedule $schedule1, Schedule $schedule2): bool
     {
         $start1 = $schedule1->start_date;
-        $end1 = $schedule1->end_date ?? \Carbon\Carbon::parse('2099-12-31');
+        $end1 = $schedule1->end_date ?? Carbon::parse('2099-12-31');
         $start2 = $schedule2->start_date;
-        $end2 = $schedule2->end_date ?? \Carbon\Carbon::parse('2099-12-31');
+        $end2 = $schedule2->end_date ?? Carbon::parse('2099-12-31');
 
         return $start1 <= $end2 && $end1 >= $start2;
     }
@@ -294,7 +296,7 @@ class ConflictDetectionService
     /**
      * Check if a recurring instance should be created for the given date.
      */
-    private function shouldCreateRecurringInstance(Schedule $schedule, \Carbon\CarbonInterface $date): bool
+    private function shouldCreateRecurringInstance(Schedule $schedule, CarbonInterface $date): bool
     {
         $config = $schedule->frequency_config ?? [];
 
@@ -308,7 +310,7 @@ class ConflictDetectionService
     /**
      * Get the next recurrence date for a recurring schedule.
      */
-    private function getNextRecurrence(Schedule $schedule, \Carbon\CarbonInterface $current): \Carbon\CarbonInterface
+    private function getNextRecurrence(Schedule $schedule, CarbonInterface $current): CarbonInterface
     {
         $config = $schedule->frequency_config ?? [];
 
@@ -322,7 +324,7 @@ class ConflictDetectionService
     /**
      * Get the next weekly occurrence for the given days.
      */
-    private function getNextWeeklyOccurrence(\Carbon\CarbonInterface $current, array $allowedDays): \Carbon\CarbonInterface
+    private function getNextWeeklyOccurrence(CarbonInterface $current, array $allowedDays): CarbonInterface
     {
         $next = $current->copy()->addDay();
 
@@ -369,10 +371,10 @@ class ConflictDetectionService
     /**
      * Parse a time string to Carbon instance.
      */
-    private function parseTime(string $time): \Carbon\Carbon
+    private function parseTime(string $time): Carbon
     {
         $baseDate = '2024-01-01'; // Use a consistent base date for time parsing
 
-        return \Carbon\Carbon::parse($baseDate.' '.$time);
+        return Carbon::parse($baseDate.' '.$time);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adultdate\FilamentBooking\Models\Booking;
 
+use Adultdate\FilamentBooking\Database\Factories\Booking\ClientFactory;
 use Adultdate\FilamentBooking\Models\Address;
 use Adultdate\FilamentBooking\Models\BookingComment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,7 @@ use Illuminate\Support\Str;
 
 class Client extends Model
 {
-    /** @use HasFactory<\Adultdate\FilamentBooking\Database\Factories\Booking\ClientFactory> */
+    /** @use HasFactory<ClientFactory> */
     use HasFactory;
 
     use SoftDeletes;
@@ -95,7 +96,7 @@ class Client extends Model
 
     protected static function newFactory()
     {
-        return \Adultdate\FilamentBooking\Database\Factories\Booking\ClientFactory::new();
+        return ClientFactory::new();
     }
 
     /**
