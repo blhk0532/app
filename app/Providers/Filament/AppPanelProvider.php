@@ -151,8 +151,8 @@ class AppPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop()
             ->spaUrlExceptions(['tel:*', 'mailto:*'])
             ->registerErrorNotification(
-                title: 'Oops!',
-                body: '/ᐠ •̀ ˕ •́ マ',
+                title: ' ',
+                body: ' ',
             )
             ->navigationGroups([
                 NavigationGroup::make('Administration')

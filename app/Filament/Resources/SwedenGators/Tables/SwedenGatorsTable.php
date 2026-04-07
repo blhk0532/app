@@ -94,11 +94,11 @@ class SwedenGatorsTable
                 ExcelImportAction::make()
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                      ->visible(fn () => auth()->user()->role === 'super')
                     ->label('CSV'),
                 static::importSqlAction(),
                 ExportAction::make()
                     ->label('CSV')
+                       ->visible(fn () => auth()->user()->role === 'super')
                     ->exporter(SwedenGatorExporter::class)
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),

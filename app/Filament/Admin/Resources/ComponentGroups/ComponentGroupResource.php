@@ -165,10 +165,8 @@ class ComponentGroupResource extends Resource
 
             public static function getNavigationGroup(): ?string
     {
-              $team = filament()->getTenant()?->name;
-        $name = \Illuminate\Support\Str::ucwords($team);
 
-         return $name ? ' TEAM | ' . $name : 'TEAM | Administration';
-        // return filament()->getTenant()?->name ? filament()->getTenant()?->name : 'Administration';
+
+         return 'Administration';
     }
 }

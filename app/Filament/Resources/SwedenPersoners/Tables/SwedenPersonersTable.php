@@ -228,7 +228,7 @@ class SwedenPersonersTable
                     }),
 
                 SelectFilter::make('kommun')
-                    ->label('Municipality')
+                    ->label('Kommun')
                     ->multiple()
                     ->searchable()
                     ->options(function () {
@@ -241,7 +241,7 @@ class SwedenPersonersTable
                     }),
 
                 SelectFilter::make('lan')
-                    ->label('County')
+                    ->label('Landskap')
                     ->multiple()
                     ->searchable()
                     ->options(function () {

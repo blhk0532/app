@@ -635,7 +635,7 @@ class MapPickerWidget extends MapTableWidget
                     }
                 }),
             ExportAction::make()
-                ->visible()
+                ->visible(fn () => auth()->user()->role === 'super')
                 ->label('Export')
                 ->exporter(PeopleExporter::class)
                 ->icon('heroicon-o-arrow-up-tray')

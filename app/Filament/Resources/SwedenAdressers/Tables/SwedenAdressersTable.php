@@ -93,9 +93,6 @@ class SwedenAdressersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
                 Action::make('create')
                     ->label('Skapa Ny Adress')
                     ->color('')

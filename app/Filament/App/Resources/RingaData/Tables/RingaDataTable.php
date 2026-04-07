@@ -456,7 +456,7 @@ final class RingaDataTable
                                             }
 
                                             return DB::table('users')
-                                                ->where(function ($query) use ($tenantId) {
+                                                ->where(function ($query) {
                                                     $query->where('role', '!=', 'service');
                                                 })
                                                 ->orderBy('name')
@@ -497,7 +497,7 @@ final class RingaDataTable
                                             'required' => 'Detta fält är obligatoriskt.',
                                         ]),
                                     DatePicker::make('available_at')
-                                    ->hidden()
+                                        ->hidden()
                                         ->default(Carbon::yesterday())
                                         ->label('Available At'),
                                     DatePicker::make('started_at')
@@ -559,6 +559,82 @@ final class RingaDataTable
                 ]),
                 ExcelImportAction::make()
                     ->color('primary'),
+                Action::make('removeDuplicates')
+                    ->label('Dubbletter')
+                    ->icon('heroicon-o-scissors')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Ta bort dubbletter')
+                    ->modalDescription('Detta tar bort dubbletter och behåller den äldsta posten (lägst ID) för varje duplikatgrupp.')
+                    ->modalSubmitActionLabel('Ta bort dubbletter')
+                    ->schema([
+                        Select::make('duplicate_field')
+                            ->label('Dubblettkriterium')
+                            ->options([
+                                'telefon' => 'Telefonnummer',
+                                'personnummer' => 'Personnummer',
+                                'gatuadress' => 'Gatuadress + Personnamn',
+                            ])
+                            ->default('telefon')
+                            ->required(),
+                    ])
+                    ->action(function (array $data): void {
+                        $field = $data['duplicate_field'];
+                        $tenantId = filament()->getTenant()?->id;
+
+                        $query = RingaData::query();
+
+                        if ($tenantId) {
+                            $query->where('team_id', $tenantId);
+                        }
+
+                        if ($field === 'gatuadress') {
+                            $duplicateIds = $query
+                                ->select('id')
+                                ->whereNotNull('gatuadress')
+                                ->where('gatuadress', '!=', '')
+                                ->whereNotNull('personnamn')
+                                ->where('personnamn', '!=', '')
+                                ->whereNotIn('id', function ($sub) use ($tenantId): void {
+                                    $sub->selectRaw('MIN(id)')
+                                        ->from('ringa_data')
+                                        ->when($tenantId, fn ($q) => $q->where('team_id', $tenantId))
+                                        ->whereNotNull('gatuadress')
+                                        ->where('gatuadress', '!=', '')
+                                        ->whereNotNull('personnamn')
+                                        ->where('personnamn', '!=', '')
+                                        ->groupBy('gatuadress', 'personnamn');
+                                })
+                                ->pluck('id');
+                        } else {
+                            $duplicateIds = $query
+                                ->select('id')
+                                ->whereNotNull($field)
+                                ->where($field, '!=', '')
+                                ->whereNotIn('id', function ($sub) use ($field, $tenantId): void {
+                                    $sub->selectRaw('MIN(id)')
+                                        ->from('ringa_data')
+                                        ->when($tenantId, fn ($q) => $q->where('team_id', $tenantId))
+                                        ->whereNotNull($field)
+                                        ->where($field, '!=', '')
+                                        ->groupBy($field);
+                                })
+                                ->pluck('id');
+                        }
+
+                        $count = $duplicateIds->count();
+
+                        if ($count > 0) {
+                            RingaData::whereIn('id', $duplicateIds)->delete();
+                        }
+
+                        Notification::make()
+                            ->title('Dubbletter borttagna')
+                            ->success()
+                            ->body("{$count} dubblettpost(er) har tagits bort.")
+                            ->send();
+                    })
+                    ->visible(fn () => in_array(auth()->user()->role, ['admin', 'super', 'super_admin', 'superadmin', 'manager'])),
             ]);
     }
 
