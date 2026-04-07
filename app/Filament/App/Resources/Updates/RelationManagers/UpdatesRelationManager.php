@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Updates\RelationManagers;
+namespace App\Filament\App\Resources\Updates\RelationManagers;
 
 use Cachet\Enums\IncidentStatusEnum;
 use Filament\Actions\BulkActionGroup;
