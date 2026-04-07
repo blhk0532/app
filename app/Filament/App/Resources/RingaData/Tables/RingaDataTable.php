@@ -580,52 +580,53 @@ final class RingaDataTable
                     ])
                     ->action(function (array $data): void {
                         $field = $data['duplicate_field'];
+                        $user = auth()->user();
                         $tenantId = filament()->getTenant()?->id;
 
-                        $query = RingaData::query();
+                        // Mirror getEloquentQuery: super/admin see all records, others are scoped to team
+                        $scopedQuery = function () use ($user, $tenantId) {
+                            $q = RingaData::query();
+                            if (! in_array($user->role, ['super', 'admin'])) {
+                                $q->where('team_id', $tenantId);
+                            }
 
-                        if ($tenantId) {
-                            $query->where('team_id', $tenantId);
-                        }
+                            return $q;
+                        };
 
                         if ($field === 'gatuadress') {
-                            $duplicateIds = $query
-                                ->select('id')
+                            $keepIds = $scopedQuery()
+                                ->selectRaw('MIN(id) as id')
                                 ->whereNotNull('gatuadress')
                                 ->where('gatuadress', '!=', '')
                                 ->whereNotNull('personnamn')
                                 ->where('personnamn', '!=', '')
-                                ->whereNotIn('id', function ($sub) use ($tenantId): void {
-                                    $sub->selectRaw('MIN(id)')
-                                        ->from('ringa_data')
-                                        ->when($tenantId, fn ($q) => $q->where('team_id', $tenantId))
-                                        ->whereNotNull('gatuadress')
-                                        ->where('gatuadress', '!=', '')
-                                        ->whereNotNull('personnamn')
-                                        ->where('personnamn', '!=', '')
-                                        ->groupBy('gatuadress', 'personnamn');
-                                })
+                                ->groupByRaw('gatuadress, personnamn')
                                 ->pluck('id');
+
+                            $deleteQuery = $scopedQuery()
+                                ->whereNotNull('gatuadress')
+                                ->where('gatuadress', '!=', '')
+                                ->whereNotNull('personnamn')
+                                ->where('personnamn', '!=', '')
+                                ->whereNotIn('id', $keepIds);
                         } else {
-                            $duplicateIds = $query
-                                ->select('id')
+                            $keepIds = $scopedQuery()
+                                ->selectRaw('MIN(id) as id')
                                 ->whereNotNull($field)
                                 ->where($field, '!=', '')
-                                ->whereNotIn('id', function ($sub) use ($field, $tenantId): void {
-                                    $sub->selectRaw('MIN(id)')
-                                        ->from('ringa_data')
-                                        ->when($tenantId, fn ($q) => $q->where('team_id', $tenantId))
-                                        ->whereNotNull($field)
-                                        ->where($field, '!=', '')
-                                        ->groupBy($field);
-                                })
+                                ->groupBy($field)
                                 ->pluck('id');
+
+                            $deleteQuery = $scopedQuery()
+                                ->whereNotNull($field)
+                                ->where($field, '!=', '')
+                                ->whereNotIn('id', $keepIds);
                         }
 
-                        $count = $duplicateIds->count();
+                        $count = (clone $deleteQuery)->count();
 
                         if ($count > 0) {
-                            RingaData::whereIn('id', $duplicateIds)->delete();
+                            $deleteQuery->delete();
                         }
 
                         Notification::make()
