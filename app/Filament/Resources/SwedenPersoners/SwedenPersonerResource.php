@@ -33,6 +33,8 @@ class SwedenPersonerResource extends Resource
 
     protected static bool $shouldRegisterNavigation = true;
 
+    protected static bool $isScopedToTenant = false;
+
 
         public static function getNavigationBadgeColor(): string|array|null
     {

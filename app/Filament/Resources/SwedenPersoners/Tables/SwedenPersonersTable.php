@@ -203,12 +203,32 @@ class SwedenPersonersTable
             ->filtersFormWidth(Width::FourExtraLarge)
             ->filtersFormColumns(4)
             ->filters([
-                TernaryFilter::make('telefon')
+                SelectFilter::make('telefon')
                     ->label('Phone')
-                    ->query(fn (Builder $query): Builder => $query->whereNotNull('telefon')),
-                TernaryFilter::make('is_hus')
+                    ->options([
+                        'yes' => 'Yes',
+                        'no' => 'No',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return match ($data['value'] ?? null) {
+                            'yes' => $query->whereNotNull('telefon'),
+                            'no' => $query->whereNull('telefon'),
+                            default => $query,
+                        };
+                    }),
+                SelectFilter::make('is_hus')
                     ->label('House')
-                    ->query(fn (Builder $query): Builder => $query->where('is_hus', true)),
+                    ->options([
+                        'yes' => 'Yes',
+                        'no' => 'No',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return match ($data['value'] ?? null) {
+                            'yes' => $query->where('is_hus', true),
+                            'no' => $query->where('is_hus', false),
+                            default => $query,
+                        };
+                    }),
                 TernaryFilter::make('is_active')
                     ->label('Active'),
                 TernaryFilter::make('is_queue')
