@@ -211,7 +211,7 @@ class SwedenPersonersTable
                     ->query(fn (Builder $query): Builder => $query->where('is_hus', true)),
                 TernaryFilter::make('is_active')
                     ->label('Active'),
-                TernaryFilter::make('is_queued')
+                TernaryFilter::make('is_queue')
                     ->label('Queue'),
 
                 SelectFilter::make('postort')
